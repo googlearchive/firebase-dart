@@ -113,7 +113,7 @@ class Query {
    * specified number of children.
    */
   Query limit(int limit) =>
-      Query.fromJsObject(_fb.callMethod('limit', [limit]));
+      new Query.fromJsObject(_fb.callMethod('limit', [limit]));
 
   /**
    * Create a Query with the specified starting point. The starting point is
@@ -136,7 +136,7 @@ class Query {
     if (name != null) {
       args.add(name);
     }
-    return new Query.fromJsObject(_fb.callMethod('startAt', args));
+    return (new Query.fromJsObject(_fb.callMethod('startAt', args)));
   }
 
   /**
@@ -160,7 +160,7 @@ class Query {
     if (name != null) {
       args.add(name);
     }
-    return new Query.fromJsObject(_fb.callMethod('endAt', args));
+    return (new Query.fromJsObject(_fb.callMethod('endAt', args)));
   }
 
   /**
