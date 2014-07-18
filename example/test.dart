@@ -102,8 +102,7 @@ main() {
       .then((_) => testPush(f))
       .then((_) => testPriorities(f))
       .then((_) => testTransaction(f))
-      .then((_) => testValue(f))
-      .then((_) => testStartAt(f));
+      .then((_) => testValue(f));
 
   print('HELLO!!!!');
 }
