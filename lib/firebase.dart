@@ -4,9 +4,9 @@ import 'dart:js';
 import 'dart:async';
 import 'dart:convert';
 
-part 'query.dart';
-part 'snapshot.dart';
-part 'disconnect.dart';
+part 'src/firebase/query.dart';
+part 'src/firebase/snapshot.dart';
+part 'src/firebase/disconnect.dart';
 
 List _removeNulls(List args) {
   args.removeWhere((args) => args == null);
