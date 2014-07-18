@@ -148,7 +148,9 @@ class Firebase extends Query {
    */
   Future update(value) {
     var c = new Completer();
-    value = new JsObject.jsify(value);
+    if (value is Iterable || value is Map) {
+      value = new JsObject.jsify(value);
+    }
     _fb.callMethod('update', [value, (err, res) {
       _resolveFuture(c, err, res);
     }]);
@@ -221,6 +223,7 @@ class Firebase extends Query {
      _fb.callMethod('setPriority', [priority, (err, res) {
        _resolveFuture(c, err, res);
      }]);
+     return c.future;
    }
 
    /**
