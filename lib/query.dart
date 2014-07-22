@@ -129,14 +129,7 @@ class Query {
    * restrictive queries.
    */
   Query startAt({int priority, String name}) {
-    var args = [];
-    if (priority != null) {
-      args.add(priority);
-    }
-    if (name != null) {
-      args.add(name);
-    }
-    return (new Query.fromJsObject(_fb.callMethod('startAt', args)));
+    return (new Query.fromJsObject(_fb.callMethod('startAt', _transformArg([priority, name]))));
   }
 
   /**
@@ -153,14 +146,8 @@ class Query {
    * restrictive queries.
    */
   Query endAt({int priority, String name}) {
-    var args = [];
-    if (priority != null) {
-      args.add(priority);
-    }
-    if (name != null) {
-      args.add(name);
-    }
-    return (new Query.fromJsObject(_fb.callMethod('endAt', args)));
+
+    return (new Query.fromJsObject(_fb.callMethod('endAt', _transformArg([priority, name]))));
   }
 
   /**
