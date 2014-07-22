@@ -128,9 +128,7 @@ class Query {
    * startAt() can be combined with endAt() or limit() to create further
    * restrictive queries.
    */
-  Query startAt({int priority, String name}) {
-    return (new Query.fromJsObject(_fb.callMethod('startAt', _transformArg([priority, name]))));
-  }
+  Query startAt({int priority, String name}) => new Query.fromJsObject(_fb.callMethod('startAt', _transformArg([priority, name])));
 
   /**
    * Create a Query with the specified ending point. The ending point is
@@ -145,10 +143,7 @@ class Query {
    * endAt() can be combined with startAt() or limit() to create further
    * restrictive queries.
    */
-  Query endAt({int priority, String name}) {
-
-    return (new Query.fromJsObject(_fb.callMethod('endAt', _transformArg([priority, name]))));
-  }
+  Query endAt({int priority, String name}) => new Query.fromJsObject(_fb.callMethod('endAt', _transformArg([priority, name])));
 
   /**
    * Queries are attached to a location in your Firebase. This method will
