@@ -128,8 +128,8 @@ class Query {
    * startAt() can be combined with endAt() or limit() to create further
    * restrictive queries.
    */
-  Query startAt({priority, name}) {
-    List args = new List();
+  Query startAt({int priority, String name}) {
+    var args = [];
     if (priority != null) {
       args.add(priority);
     }
@@ -152,8 +152,8 @@ class Query {
    * endAt() can be combined with startAt() or limit() to create further
    * restrictive queries.
    */
-  Query endAt({priority, name}) {
-    List args = new List();
+  Query endAt({int priority, String name}) {
+    var args = [];
     if (priority != null) {
       args.add(priority);
     }
