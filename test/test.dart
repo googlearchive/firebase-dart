@@ -138,5 +138,24 @@ void main() {
         expect(snapshot.val(), value);
       });
     });
+
+    // TODO: transactions seem to be broken - does not send existing value
+    skip_test('simple value, existing value', () {
+      var testRef = f.child('tx3');
+      return testRef.set(42).then((_) {
+        return testRef.transaction((curVal) {
+          expect(curVal, 42);
+          return 42;
+        });
+      }).then((result) {
+        expect(result.committed, isTrue);
+        expect(result.error, isNull);
+
+        var snapshot = result.snapshot;
+        expect(snapshot.hasChildren, false);
+        expect(snapshot.numChildren, 0);
+        expect(snapshot.val(), null);
+      });
+    });
   });
 }
