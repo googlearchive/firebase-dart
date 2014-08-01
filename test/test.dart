@@ -1,6 +1,6 @@
 import 'package:firebase/firebase.dart';
 import 'package:unittest/unittest.dart';
-import 'package:unittest/html_enhanced_config.dart';
+import 'package:unittest/html_config.dart';
 
 const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
 
@@ -20,7 +20,7 @@ final _testKey = '$_dateKey'.replaceAll(_replaceRegExp, '_');
 final _testUrl = TEST_URL + _testKey + '/';
 
 void main() {
-  useHtmlEnhancedConfiguration();
+  useHtmlConfiguration();
 
   Firebase f;
 
