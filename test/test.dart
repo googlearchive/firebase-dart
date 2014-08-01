@@ -36,21 +36,20 @@ void main() {
     }
   });
 
-  group('auth', () {
+  if (AUTH_KEY != null) {
+    group('auth', () {
+      test('bad auth should fail', () {
+        expect(f.auth(INVALID_TOKEN), throwsA((error) {
+          expect(error['code'], 'INVALID_TOKEN');
+          return true;
+        }));
+      });
 
-    test('bad auth should fail', () {
-      expect(f.auth(INVALID_TOKEN), throwsA((error) {
-        expect(error['code'], 'INVALID_TOKEN');
-        return true;
-      }));
-    });
-
-    if (AUTH_KEY != null) {
       test('good auth key', () {
         return f.auth(AUTH_KEY);
       });
-    }
-  });
+    });
+  }
 
   group('non-auth', () {
     test('child', () {
