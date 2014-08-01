@@ -7,6 +7,7 @@ import 'auth_response.dart';
 import 'data_snapshot.dart';
 import 'disconnect.dart';
 import 'event.dart';
+import 'transaction_result.dart';
 
 /**
  * A firebase represents a particular location in your Firebase and can be used
@@ -213,7 +214,7 @@ class Firebase extends Query {
     * no conflicts with other clients writing to the same location at the same
     * time.
     *
-    * To accomplish this, you pass transaction() an update function which is
+    * To accomplish this, you pass [transaction] an update function which is
     * used to transform the current value into a new value. If another client
     * writes to the location before your new value is successfully written,
     * your update function will be called again with the new current value, and
@@ -221,20 +222,20 @@ class Firebase extends Query {
     * succeeds without conflict or you abort the transaction by not returning
     * a value from your update function.
     *
-    * The returned Future will be completed after the transaction has finished.
+    * The returned [Future] will be completed after the transaction has
+    * finished.
     */
-   Future transaction(update(currentVal), {bool applyLocally}) {
+   Future<TransactionResult> transaction(update(currentVal),
+       {bool applyLocally}) {
      var c = new Completer();
-     _fb.callMethod('transaction', [(var val) {
+     _fb.callMethod('transaction', [(val) {
        return update(val);
      }, (err, committed, snapshot) {
        if (err != null) {
          c.completeError(err);
        } else {
-         c.complete({
-           'committed': committed,
-           'snapshot': new DataSnapshot.fromJsObject(snapshot)
-         });
+         snapshot = new DataSnapshot.fromJsObject(snapshot);
+         c.complete(new TransactionResult(err, committed, snapshot));
        }
      }]);
      return c.future;

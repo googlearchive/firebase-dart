@@ -103,10 +103,11 @@ void main() {
       return testRef.transaction((curVal) {
         expect(curVal, isNull);
         return 42;
-      }).then((Map status) {
-        expect(status, containsPair('committed', true));
+      }).then((result) {
+        expect(result.committed, isTrue);
+        expect(result.error, isNull);
 
-        var snapshot = status['snapshot'] as DataSnapshot;
+        var snapshot = result.snapshot;
         expect(snapshot.val(), 42);
       });
     });
