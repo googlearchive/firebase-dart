@@ -393,6 +393,22 @@ class Query {
    * return a Firebase reference to that location.
    */
   Firebase ref() => new Firebase.fromJsObject(_fb.callMethod('ref'));
+
+  /**
+   * Listens for exactly one event of the specified event type, and then stops
+   * listening.
+   */
+  Future<DataSnapshot> once(String eventType) {
+    var completer = new Completer<DataSnapshot>();
+
+    _fb.callMethod('once', [eventType, (jsSnapshot) {
+      var snapshot = new DataSnapshot.fromJsObject(jsSnapshot);
+      completer.complete(snapshot);
+    }, (error) {
+      completer.completeError(error);
+    }]);
+    return completer.future;
+  }
 }
 
 List _removeNulls(List args) {

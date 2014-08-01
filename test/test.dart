@@ -105,6 +105,23 @@ void main() {
     });
   });
 
+  group('once', () {
+    test('set a value and get', () {
+      var testRef = f.child('once');
+
+      testRef.once('child_added').then(expectAsync((value) {
+        var ds = value as DataSnapshot;
+        expect(ds.hasChildren, false);
+        expect(ds.numChildren, 0);
+        expect(ds.name, 'a');
+        expect(ds.val(), 'b');
+      }));
+
+      return testRef.set({'a': 'b'});
+    });
+
+  });
+
   group('transaction', () {
     test('simple value, nothing exists', () {
       var testRef = f.child('tx1');
