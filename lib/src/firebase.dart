@@ -8,6 +8,7 @@ import 'data_snapshot.dart';
 import 'disconnect.dart';
 import 'event.dart';
 import 'transaction_result.dart';
+import 'util.dart';
 
 /**
  * A firebase represents a particular location in your Firebase and can be used
@@ -113,7 +114,7 @@ class Firebase extends Query {
    */
   Future set(value) {
     var c = new Completer();
-    if (value is Map || value is Iterable) value = new JsObject.jsify(value);
+    value = jsify(value);
     _fb.callMethod('set', [value, (err, res) {
       _resolveFuture(c, err, res);
     }]);
@@ -130,8 +131,7 @@ class Firebase extends Query {
    */
   Future update(Map<String, dynamic> value) {
     var c = new Completer();
-    var jsValue = new JsObject.jsify(value);
-
+    var jsValue = jsify(value);
     _fb.callMethod('update', [jsValue, (err, res) {
       _resolveFuture(c, err, res);
     }]);
@@ -179,7 +179,7 @@ class Firebase extends Query {
     */
    Future setWithPriority(value, int priority) {
      var c = new Completer();
-     if (value is Map || value is Iterable) value = new JsObject.jsify(value);
+     value = jsify(value);
      _fb.callMethod('setWithPriority', [value, priority, (err, res) {
        _resolveFuture(c, err, res);
      }]);
