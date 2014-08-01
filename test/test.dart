@@ -98,8 +98,16 @@ void main() {
       });
     });
 
-    test('transaction', () {
-      var testRef = f.child('transaction');
+    test('value', () {
+      return f.onValue.first.then((Event e) {
+        //TODO actually test the result
+      });
+    });
+  });
+
+  group('transaction', () {
+    test('simple value, nothing exists', () {
+      var testRef = f.child('tx1');
       return testRef.transaction((curVal) {
         expect(curVal, isNull);
         return 42;
@@ -108,13 +116,26 @@ void main() {
         expect(result.error, isNull);
 
         var snapshot = result.snapshot;
+        expect(snapshot.hasChildren, false);
+        expect(snapshot.numChildren, 0);
         expect(snapshot.val(), 42);
       });
     });
 
-    test('value', () {
-      return f.onValue.first.then((Event e) {
-        //TODO actually test the result
+    test('complex value, nothing exists', () {
+      var value = const {'int': 42, 'bool': true, 'str': 'string'};
+      var testRef = f.child('tx2');
+      return testRef.transaction((curVal) {
+        expect(curVal, isNull);
+        return value;
+      }).then((result) {
+        expect(result.committed, isTrue);
+        expect(result.error, isNull);
+
+        var snapshot = result.snapshot;
+        expect(snapshot.hasChildren, true);
+        expect(snapshot.numChildren, 3);
+        expect(snapshot.val(), value);
       });
     });
   });

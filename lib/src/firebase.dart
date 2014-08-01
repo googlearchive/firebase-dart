@@ -229,7 +229,8 @@ class Firebase extends Query {
        {bool applyLocally}) {
      var c = new Completer();
      _fb.callMethod('transaction', [(val) {
-       return update(val);
+       var retValue = update(val);
+       return jsify(retValue);
      }, (err, committed, snapshot) {
        if (err != null) {
          c.completeError(err);
