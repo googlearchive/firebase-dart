@@ -127,12 +127,11 @@ class Firebase extends Query {
    * The returned Future will be complete when the synchronization has
    * completed with the Firebase servers.
    */
-  Future update(value) {
+  Future update(Map<String, dynamic> value) {
     var c = new Completer();
-    if (value is Iterable || value is Map) {
-      value = new JsObject.jsify(value);
-    }
-    _fb.callMethod('update', [value, (err, res) {
+    var jsValue = new JsObject.jsify(value);
+
+    _fb.callMethod('update', [jsValue, (err, res) {
       _resolveFuture(c, err, res);
     }]);
     return c.future;

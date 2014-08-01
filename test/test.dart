@@ -84,15 +84,6 @@ void main() {
       });
     });
 
-    test('update string that does not exist', () {
-      var child = f.child('update_string');
-      expect(() => child.update('not found'), throwsA((error) {
-        expect(error, 'Error: Firebase.update failed: First argument  must be '
-            'an Object containing the children to replace.');
-        return true;
-      }));
-    });
-
     test('push', () {
       // TODO: actually validate the result
       var pushRef = f.push();
