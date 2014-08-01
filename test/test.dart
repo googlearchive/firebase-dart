@@ -54,13 +54,13 @@ void main() {
   group('non-auth', () {
     test('child', () {
       var child = f.child('trad');
-      expect(child.name(), 'trad');
+      expect(child.name, 'trad');
 
       var parent = child.parent();
-      expect(parent.name(), _testKey);
+      expect(parent.name, _testKey);
 
       var root = child.root();
-      expect(root.name(), isNull);
+      expect(root.name, isNull);
     });
 
     test('set', () {

@@ -89,11 +89,11 @@ class Firebase extends Query {
   Firebase root() => new Firebase.fromJsObject(_fb.callMethod('root'));
 
   /**
-   * The last token in a Firebase location is considered its name. Calling
-   * name() on any Firebase reference will return this name. Calling name()
-   * on the root of a Firebase will return null.
+   * The last token in a Firebase location is considered its name.
+   *
+   * [name] on the root of a Firebase is `null`.
    */
-  String name() => _fb.callMethod('name');
+  String get name => _fb.callMethod('name');
 
   /**
    * Write data to this Firebase location. This will overwrite any data at
