@@ -21,6 +21,7 @@ final _testUrl = TEST_URL + _testKey + '/';
 
 void main() {
   useHtmlConfiguration();
+  groupSep = ' - ';
 
   Firebase f;
 
