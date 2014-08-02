@@ -10,12 +10,8 @@ const AUTH_KEY = null;
 
 const INVALID_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
 
-final _now = new DateTime.now().toUtc();
-final _dateKey = _now.toIso8601String();
-
-final _replaceRegExp = new RegExp(r'[\.]');
-
-final _testKey = '$_dateKey'.replaceAll(_replaceRegExp, '_');
+final _dateKey = new DateTime.now().toUtc().toIso8601String();
+final _testKey = '$_dateKey'.replaceAll(new RegExp(r'[\.]'), '_');
 
 final _testUrl = TEST_URL + _testKey + '/';
 
@@ -64,7 +60,7 @@ void main() {
     });
 
     test('set', () {
-      var value = {'number value': _now.millisecond};
+      var value = {'number value': 42};
       return f.set(value).then((v) {
         // TODO: check the value?
       });
