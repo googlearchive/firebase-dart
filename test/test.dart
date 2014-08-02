@@ -23,13 +23,13 @@ void main() {
 
   setUp(() {
     f = new Firebase(_testUrl);
-  });
 
-  tearDown(() {
-    if (f != null) {
-      f.unauth();
-      f = null;
-    }
+    currentSchedule.onComplete.schedule(() {
+      if (f != null) {
+        f.unauth();
+        f = null;
+      }
+    });
   });
 
   if (AUTH_KEY != null) {
