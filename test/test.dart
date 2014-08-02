@@ -101,6 +101,44 @@ void main() {
     });
   });
 
+  group('on', () {
+    test('onChildChanged', () {
+      Firebase testRef;
+      var eventCount = 0;
+      bool isDone = false;
+
+      schedule(() {
+        testRef = f.child('onChildChanged');
+        testRef.onChildChanged.listen((event) {
+          var ss = event.snapshot;
+          expect(ss.name, 'key');
+
+          eventCount++;
+
+          expect(ss.val(), eventCount);
+        });
+
+        return testRef.set({'key': 0});
+      });
+
+      schedule(() {
+        return testRef.set({'key': 1});
+      });
+
+      schedule(() {
+        return testRef.set({'key': 2});
+      });
+
+      schedule(() {
+        return testRef.set({'key': 3});
+      });
+
+      schedule(() {
+        expect(eventCount, 3);
+      });
+    });
+  });
+
   group('once', () {
     test('set a value and get', () {
       var testRef = f.child('once');
