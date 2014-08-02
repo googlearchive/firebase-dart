@@ -1,5 +1,5 @@
 import 'package:firebase/firebase.dart';
-import 'package:unittest/unittest.dart';
+import 'package:scheduled_test/scheduled_test.dart';
 import 'package:unittest/html_config.dart';
 
 const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
