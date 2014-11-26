@@ -15,7 +15,7 @@ const INVALID_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
 
 // Update CREDENTAILS_EMAIL to an email address to test
 // auth using email/password credentials
-const CREDENTIALS_EMAIL = 'email@email.com';
+const CREDENTIALS_EMAIL = null;
 const CREDENTIALS_PASSWORD = 'right';
 const CREDENTIALS_WRONG_PASSWORD = 'wrong';
 
