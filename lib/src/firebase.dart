@@ -297,7 +297,7 @@ class Firebase extends Query {
      } else {
        c.complete(res);
      }
-   }   
+   }
 }
 
 /**
