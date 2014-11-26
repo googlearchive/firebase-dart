@@ -5,7 +5,8 @@ import 'package:firebase/firebase.dart';
 import 'package:scheduled_test/scheduled_test.dart';
 import 'package:unittest/html_config.dart';
 
-const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
+//const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
+const TEST_URL = 'https://resplendent-fire-5447.firebaseio.com/';
 
 // Update TEST_URL to a valid URL and update AUTH_KEY to a corresponding
 // key to test authentication.
@@ -16,7 +17,7 @@ const INVALID_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
 // auth using email/password credentials.
 // Unfortunately, createUser does not work with the firebaseio demo test URL,
 // if you want to enable this, you will likely need to change TEST_URL to your own.
-const CREDENTIALS_EMAIL = null;
+const CREDENTIALS_EMAIL = "email@email.com";
 const CREDENTIALS_PASSWORD = 'right';
 const CREDENTIALS_WRONG_PASSWORD = 'wrong';
 
@@ -43,7 +44,7 @@ void main() {
   });
 
   if (AUTH_KEY != null) {
-    group('auth-key', () {
+    group('auth', () {
       test('bad auth should fail', () {
         expect(f.auth(INVALID_TOKEN), throwsA((error) {
           expect(error['code'], 'INVALID_TOKEN');
@@ -63,12 +64,12 @@ void main() {
         'password':CREDENTIALS_PASSWORD});
       var badCredentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL, 
         'password':CREDENTIALS_WRONG_PASSWORD});
-            
-      test('credentials', () {
+      
+      test('auth-credentials', () {
         f.createUser(credentials).then((err) { 
           expect(err, null);
           f.authWithPassword(credentials).then((authResponse) { 
-            expect(authResponse.expires, isPositive);
+            expect(authResponse.auth, isNotNull);
             expect(f.authWithPassword(badCredentials), throwsA((error) {
               expect(error['code'], 'INVALID_PASSWORD');
               f.removeUser(credentials).then((err) { expect(err, null); }); 
