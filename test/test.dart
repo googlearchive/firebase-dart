@@ -5,8 +5,7 @@ import 'package:firebase/firebase.dart';
 import 'package:scheduled_test/scheduled_test.dart';
 import 'package:unittest/html_config.dart';
 
-//const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
-const TEST_URL = 'https://resplendent-fire-5447.firebaseio.com/';
+const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
 
 // Update TEST_URL to a valid URL and update AUTH_KEY to a corresponding
 // key to test authentication.
@@ -14,7 +13,9 @@ const AUTH_KEY = null;
 const INVALID_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
 
 // Update CREDENTAILS_EMAIL to an email address to test
-// auth using email/password credentials
+// auth using email/password credentials.
+// Unfortunately, createUser does not work with the firebaseio demo test URL,
+// if you want to enable this, you will likely need to change TEST_URL to your own.
 const CREDENTIALS_EMAIL = null;
 const CREDENTIALS_PASSWORD = 'right';
 const CREDENTIALS_WRONG_PASSWORD = 'wrong';
