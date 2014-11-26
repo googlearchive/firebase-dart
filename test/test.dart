@@ -1,16 +1,23 @@
 import 'dart:async';
+import 'dart:js';
 
 import 'package:firebase/firebase.dart';
 import 'package:scheduled_test/scheduled_test.dart';
 import 'package:unittest/html_config.dart';
 
-const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
+//const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
+const TEST_URL = 'https://resplendent-fire-5447.firebaseio.com/';
 
 // Update TEST_URL to a valid URL and update AUTH_KEY to a corresponding
 // key to test authentication.
 const AUTH_KEY = null;
-
 const INVALID_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
+
+// Update CREDENTAILS_EMAIL to an email address to test
+// auth using email/password credentials
+const CREDENTIALS_EMAIL = 'email@email.com';
+const CREDENTIALS_PASSWORD = 'right';
+const CREDENTIALS_WRONG_PASSWORD = 'wrong';
 
 final _dateKey = new DateTime.now().toUtc().toIso8601String();
 final _testKey = '$_dateKey'.replaceAll(new RegExp(r'[\.]'), '_');
@@ -35,7 +42,7 @@ void main() {
   });
 
   if (AUTH_KEY != null) {
-    group('auth', () {
+    group('auth-key', () {
       test('bad auth should fail', () {
         expect(f.auth(INVALID_TOKEN), throwsA((error) {
           expect(error['code'], 'INVALID_TOKEN');
@@ -45,6 +52,29 @@ void main() {
 
       test('good auth key', () {
         return f.auth(AUTH_KEY);
+      });
+    });
+  }
+  
+  if (CREDENTIALS_EMAIL != null) {
+    group('auth-credentials', () {
+      var credentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL, 
+        'password':CREDENTIALS_PASSWORD});
+      var badCredentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL, 
+        'password':CREDENTIALS_WRONG_PASSWORD});
+            
+      test('credentials', () {
+        f.createUser(credentials).then((err) { 
+          expect(err, null);
+          f.authWithPassword(credentials).then((authResponse) { 
+            expect(authResponse.expires, isPositive);
+            expect(f.authWithPassword(badCredentials), throwsA((error) {
+              expect(error['code'], 'INVALID_PASSWORD');
+              f.removeUser(credentials).then((err) { expect(err, null); }); 
+              return true;
+            }));
+          });
+        });
       });
     });
   }
