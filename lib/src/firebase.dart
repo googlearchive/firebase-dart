@@ -160,8 +160,8 @@ class Firebase extends Query {
   Future set(value) {
     var c = new Completer();
     value = jsify(value);
-    _fb.callMethod('set', [value, (err, res) {
-      _resolveFuture(c, err, res);
+    _fb.callMethod('set', [value, (err) {
+      _resolveFuture(c, err);
     }]);
     return c.future;
   }
@@ -177,8 +177,8 @@ class Firebase extends Query {
   Future update(Map<String, dynamic> value) {
     var c = new Completer();
     var jsValue = jsify(value);
-    _fb.callMethod('update', [jsValue, (err, res) {
-      _resolveFuture(c, err, res);
+    _fb.callMethod('update', [jsValue, (err) {
+      _resolveFuture(c, err);
     }]);
     return c.future;
   }
@@ -195,8 +195,8 @@ class Firebase extends Query {
    */
   Future remove() {
     var c = new Completer();
-    _fb.callMethod('remove', [(err, res) {
-      _resolveFuture(c, err, res);
+    _fb.callMethod('remove', [(err) {
+      _resolveFuture(c, err);
     }]);
     return c.future;
   }
@@ -226,8 +226,8 @@ class Firebase extends Query {
    Future setWithPriority(value, int priority) {
      var c = new Completer();
      value = jsify(value);
-     _fb.callMethod('setWithPriority', [value, priority, (err, res) {
-       _resolveFuture(c, err, res);
+     _fb.callMethod('setWithPriority', [value, priority, (err) {
+       _resolveFuture(c, err);
      }]);
      return c.future;
    }
@@ -247,8 +247,8 @@ class Firebase extends Query {
     */
    Future setPriority(int priority) {
      var c = new Completer();
-     _fb.callMethod('setPriority', [priority, (err, res) {
-       _resolveFuture(c, err, res);
+     _fb.callMethod('setPriority', [priority, (err) {
+       _resolveFuture(c, err);
      }]);
      return c.future;
    }
@@ -313,7 +313,7 @@ class Firebase extends Query {
    /**
     * Resolve a future, given an error and result.
     */
-   void _resolveFuture(Completer c, err, res) {
+   void _resolveFuture(Completer c, err, [res = null]) {
      if (err != null) {
        c.completeError(err);
      } else {
@@ -361,7 +361,7 @@ class Query {
   Stream<Event> _createStream(String type) {
     StreamController<Event> controller;
     void startListen() {
-      _fb.callMethod('on', [type, (snapshot, prevChild) {
+      _fb.callMethod('on', [type, (snapshot, [prevChild = null]) {
         controller.add(
             new Event(new DataSnapshot.fromJsObject(snapshot), prevChild));
       }]);
