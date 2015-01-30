@@ -7,10 +7,10 @@ import 'package:unittest/html_config.dart';
 
 const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
 
-// Update TEST_URL to a valid URL and update AUTH_KEY to a corresponding
-// key to test authentication.
-const AUTH_KEY = null;
-const INVALID_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
+// Update TEST_URL to a valid URL and update AUTH_TOKEN to a corresponding
+// authentication token to test authentication.
+const AUTH_TOKEN = null;
+const INVALID_AUTH_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
 
 // Update CREDENTAILS_EMAIL to an email address to test
 // auth using email/password credentials.
@@ -42,17 +42,17 @@ void main() {
     });
   });
 
-  if (AUTH_KEY != null) {
+  if (AUTH_TOKEN != null) {
     group('authWithCustomToken', () {
       test('bad auth token should fail', () {
-        expect(f.authWithCustomToken(INVALID_TOKEN), throwsA((error) {
+        expect(f.authWithCustomToken(INVALID_AUTH_TOKEN), throwsA((error) {
           expect(error['code'], 'INVALID_TOKEN');
           return true;
         }));
       });
 
       test('good auth token', () {
-        return f.authWithCustomToken(AUTH_KEY);
+        return f.authWithCustomToken(AUTH_TOKEN);
       });
     });
   }
