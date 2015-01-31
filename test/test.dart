@@ -186,17 +186,20 @@ void main() {
     });
   });
 
-  group('on', () {
+  group('on & off', () {
 
+    List<String> addedKeys = [];
     test('onChildAdded', () {
       Firebase testRef;
+      StreamSubscription<Event> subscription;
       var eventCount = 0;
 
       schedule(() {
         testRef = f.child('onChildAdded');
-        testRef.onChildAdded.listen((event) {
+        subscription = testRef.onChildAdded.listen((event) {
           var ss = event.snapshot;
-          eventCount++;
+          addedKeys.add(ss.name);
+          expect(++eventCount, lessThan(3));
           expect(ss.val(), eventCount);
         });
 
@@ -208,21 +211,24 @@ void main() {
       });
 
       schedule(() {
-        return testRef.push(value: 3);
-      });
-
-      schedule(() {
-        expect(eventCount, 3);
+        Future waitFuture = subscription.cancel();
+        if (waitFuture == null) {
+          return testRef.push(value: 3);
+        }
+        else waitFuture.then((_) {
+          return testRef.push(value: 3);
+        });
       });
     });
 
     test('onChildChanged', () {
       Firebase testRef;
+      StreamSubscription<Event> subscription;
       var eventCount = 0;
 
       schedule(() {
         testRef = f.child('onChildChanged');
-        testRef.onChildChanged.listen((event) {
+        subscription = testRef.onChildChanged.listen((event) {
           var ss = event.snapshot;
           expect(ss.name, 'key');
           eventCount++;
@@ -241,42 +247,78 @@ void main() {
       });
 
       schedule(() {
-        return testRef.set({'key': 3});
+        Future waitFuture = subscription.cancel();
+        if (waitFuture == null) {
+          return testRef.set({'key': 3});
+        }
+        else waitFuture.then((_) {
+          return testRef.set({'key': 3});
+        });
       });
 
       schedule(() {
-        expect(eventCount, 3);
+        expect(eventCount, 2);
       });
     });
 
-    test('onChildRemoved & onValue', () {
+    test('onChildRemoved', () {
+      Firebase testRef;
+      StreamSubscription<Event> onChildRemovedSubscription;
+      int childRemovedCount = 0;
+
+      schedule(() {
+        testRef = f.child('onChildAdded');
+        onChildRemovedSubscription = testRef.onChildRemoved.listen((event) {
+          var ss = event.snapshot;
+          expect(++childRemovedCount, 1);
+          expect(ss.name, addedKeys[0]);
+        });
+
+        return testRef.child(addedKeys[0]).remove();
+      });
+
+      schedule(() {
+        Future waitFuture = onChildRemovedSubscription.cancel();
+        if (waitFuture == null) {
+          return testRef.child(addedKeys[1]).remove();
+        }
+        else waitFuture.then((_) {
+          return testRef.child(addedKeys[1]).remove();
+        });
+      });
+    });
+
+    test('onValue', () {
+      Firebase testRef;
+      StreamSubscription<Event> onValueSubscription;
       int valueCount = 0;
 
       schedule(() {
-        Firebase testRef = f.child('onChildRemoved');
-        testRef.onValue.listen((event) {
+        testRef = f.child('onValue');
+        onValueSubscription = testRef.onValue.listen((event) {
           var ss = event.snapshot;
-          if (valueCount++ == 0) {
-            expect(ss.name, 'onChildRemoved');
-            expect(ss.val(), {'key': 1});
-          }
-          else {
-            expect(ss.name, 'onChildRemoved');
-            expect(ss.val(), isNull);
-          }
-          testRef.onChildRemoved.listen((event) {
-            var ss = event.snapshot;
-            expect(ss.name, 'key');
-          });
-          return testRef.child('key').remove();
+          expect(ss.name, 'onValue');
+          expect(ss.val(), {'key': ++valueCount});
+          expect(valueCount, lessThan(3));
         });
         return testRef.set({'key': 1});
       });
 
       schedule(() {
-        expect(valueCount, 2);
+        return testRef.update({'key': 2});
+      });
+
+      schedule(() {
+        Future waitFuture = onValueSubscription.cancel();
+        if (waitFuture == null) {
+          return testRef.update({'key': 3});
+        }
+        else waitFuture.then((_) {
+          return testRef.update({'key': 3});
+        });
       });
     });
+
   });
 
   group('once', () {
