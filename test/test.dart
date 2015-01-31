@@ -12,7 +12,7 @@ const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
 const AUTH_TOKEN = null;
 const INVALID_AUTH_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
 
-// Update CREDENTAILS_EMAIL to an email address to test
+// Update CREDENTIALS_EMAIL to an email address to test
 // auth using email/password credentials.
 // Unfortunately, createUser does not work with the firebaseio demo test URL,
 // if you want to enable this, you will likely need to change TEST_URL to your own.
@@ -187,19 +187,45 @@ void main() {
   });
 
   group('on', () {
+
+    test('onChildAdded', () {
+      Firebase testRef;
+      var eventCount = 0;
+
+      schedule(() {
+        testRef = f.child('onChildAdded');
+        testRef.onChildAdded.listen((event) {
+          var ss = event.snapshot;
+          eventCount++;
+          expect(ss.val(), eventCount);
+        });
+
+        return testRef.push(value: 1);
+      });
+
+      schedule(() {
+        return testRef.push(value: 2);
+      });
+
+      schedule(() {
+        return testRef.push(value: 3);
+      });
+
+      schedule(() {
+        expect(eventCount, 3);
+      });
+    });
+
     test('onChildChanged', () {
       Firebase testRef;
       var eventCount = 0;
-      bool isDone = false;
 
       schedule(() {
         testRef = f.child('onChildChanged');
         testRef.onChildChanged.listen((event) {
           var ss = event.snapshot;
           expect(ss.name, 'key');
-
           eventCount++;
-
           expect(ss.val(), eventCount);
         });
 
@@ -220,6 +246,35 @@ void main() {
 
       schedule(() {
         expect(eventCount, 3);
+      });
+    });
+
+    test('onChildRemoved & onValue', () {
+      int valueCount = 0;
+
+      schedule(() {
+        Firebase testRef = f.child('onChildRemoved');
+        testRef.onValue.listen((event) {
+          var ss = event.snapshot;
+          if (valueCount++ == 0) {
+            expect(ss.name, 'onChildRemoved');
+            expect(ss.val(), {'key': 1});
+          }
+          else {
+            expect(ss.name, 'onChildRemoved');
+            expect(ss.val(), isNull);
+          }
+          testRef.onChildRemoved.listen((event) {
+            var ss = event.snapshot;
+            expect(ss.name, 'key');
+          });
+          return testRef.child('key').remove();
+        });
+        return testRef.set({'key': 1});
+      });
+
+      schedule(() {
+        expect(valueCount, 2);
       });
     });
   });
