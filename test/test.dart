@@ -63,15 +63,15 @@ void main() {
         'password':CREDENTIALS_PASSWORD});
       var badCredentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL, 
         'password':CREDENTIALS_WRONG_PASSWORD});
-      
+
       test('auth-credentials', () {
-        f.createUser(credentials).then((err) { 
+        f.createUser(credentials).then((err) {
           expect(err, null);
-          f.authWithPassword(credentials).then((authResponse) { 
+          f.authWithPassword(credentials).then((authResponse) {
             expect(authResponse.auth, isNotNull);
             expect(f.authWithPassword(badCredentials), throwsA((error) {
               expect(error['code'], 'INVALID_PASSWORD');
-              f.removeUser(credentials).then((err) { expect(err, null); }); 
+              f.removeUser(credentials).then((err) { expect(err, null); });
               return true;
             }));
           });
@@ -292,4 +292,42 @@ void main() {
       });
     });
   });
+
+  group('onDisconnect', () {
+
+    test('set', () {
+      var value = {'onDisconnect set': 1};
+      return f.onDisconnect.set(value).then((v) {
+        // Unable to check value (value set upon disconnect.)
+      });
+    });
+
+    test('setWithPriority', () {
+      var priority = 1;
+      var value = {'onDisconnect setWithPriority': 2};
+      return f.onDisconnect.setWithPriority(value, priority).then((v) {
+        // Unable to check value (value set upon disconnect.)
+      });
+    });
+
+    test('update', () {
+      var value = {'onDisconnect update': 3};
+      return f.onDisconnect.update(value).then((v) {
+        // Unable to check value (value updated upon disconnect.)
+      });
+    });
+
+    test('remove', () {
+      return f.onDisconnect.remove().then((v) {
+        // Unable to check value (value removed upon disconnect.)
+      });
+    });
+
+    test('cancel', () {
+      return f.onDisconnect.cancel().then((v) {
+        // TODO: confirm that queued set/update events are cancelled.
+      });
+    });
+  });
+
 }
