@@ -316,6 +316,23 @@ void main() {
         else waitFuture.then((_) {
           return testRef.update({'key': 3});
         });
+
+    test('value events triggered last', () {
+      schedule(() {
+        int numAdded = 0;
+        var value = {
+            'a':'b', 'c':'d', 'e':'f'
+        };
+        Firebase testRef = f.child("things");
+        testRef.onValue.listen((Event event) {
+          var ss = event.snapshot;
+          expect(numAdded, 3);
+          expect(ss.val(), value);
+        });
+        testRef.onChildAdded.listen((Event event) {
+          numAdded++;
+        });
+        testRef.set(value);
       });
     });
 
