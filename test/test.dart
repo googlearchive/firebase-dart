@@ -56,12 +56,12 @@ void main() {
       });
     });
   }
-  
+
   if (CREDENTIALS_EMAIL != null) {
     group('auth-credentials', () {
-      var credentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL, 
+      var credentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL,
         'password':CREDENTIALS_PASSWORD});
-      var badCredentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL, 
+      var badCredentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL,
         'password':CREDENTIALS_WRONG_PASSWORD});
 
       test('auth-credentials', () {
@@ -316,6 +316,8 @@ void main() {
         else waitFuture.then((_) {
           return testRef.update({'key': 3});
         });
+      });
+    });
 
     test('value events triggered last', () {
       schedule(() {
