@@ -59,10 +59,10 @@ void main() {
   
   if (CREDENTIALS_EMAIL != null) {
     group('auth-credentials', () {
-      var credentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL, 
-        'password':CREDENTIALS_PASSWORD});
-      var badCredentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL, 
-        'password':CREDENTIALS_WRONG_PASSWORD});
+      var credentials = {'email':CREDENTIALS_EMAIL,
+        'password':CREDENTIALS_PASSWORD};
+      var badCredentials = {'email':CREDENTIALS_EMAIL,
+        'password':CREDENTIALS_WRONG_PASSWORD};
 
       test('auth-credentials', () {
         schedule(() {
@@ -82,8 +82,8 @@ void main() {
     });
 
     group('getAuth', () {
-      var credentials = new JsObject.jsify({'email':CREDENTIALS_EMAIL,
-          'password':CREDENTIALS_PASSWORD});
+      var credentials = {'email':CREDENTIALS_EMAIL,
+          'password':CREDENTIALS_PASSWORD};
 
       test('getAuth when not authenticated', () {
         var response = f.getAuth();
