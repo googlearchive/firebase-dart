@@ -65,15 +65,17 @@ void main() {
         'password':CREDENTIALS_WRONG_PASSWORD});
 
       test('auth-credentials', () {
-        f.createUser(credentials).then((err) {
-          expect(err, null);
-          f.authWithPassword(credentials).then((authResponse) {
-            expect(authResponse.auth, isNotNull);
-            expect(f.authWithPassword(badCredentials), throwsA((error) {
-              expect(error['code'], 'INVALID_PASSWORD');
-              f.removeUser(credentials).then((err) { expect(err, null); });
-              return true;
-            }));
+        schedule(() {
+          return f.createUser(credentials).then((err) {
+            expect(err, null);
+            f.authWithPassword(credentials).then((authResponse) {
+              expect(authResponse.auth, isNotNull);
+              expect(f.authWithPassword(badCredentials), throwsA((error) {
+                expect(error['code'], 'INVALID_PASSWORD');
+                f.removeUser(credentials).then((err) { expect(err, null); });
+                return true;
+              }));
+            });
           });
         });
       });
@@ -89,9 +91,11 @@ void main() {
       });
 
       test('getAuth when authenticated', () {
-        f.authWithPassword(credentials).then((_) {
-          var response = f.getAuth();
-          expect(response.auth, isNotNull);
+        schedule(() {
+          return f.authWithPassword(credentials).then((_) {
+            var response = f.getAuth();
+            expect(response.auth, isNotNull);
+          });
         });
       });
     });
