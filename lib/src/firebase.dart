@@ -308,6 +308,17 @@ class Firebase extends Query {
   }
 
   /**
+   * Changes the password of an existing user using an email / password combination.
+   */
+  Future changePassword(Map credentials) {
+    var c = new Completer();
+    _fb.callMethod('changePassword', [jsify(credentials), (err) {
+      _resolveFuture(c, err, null);
+    }]);
+    return c.future;
+  }
+
+  /**
    * Removes an existing user account using an email / password combination.
    */
   Future removeUser(Map credentials) {
