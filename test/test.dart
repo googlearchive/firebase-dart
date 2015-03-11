@@ -81,6 +81,56 @@ void main() {
       });
     });
 
+    group('createUser', () {
+      test('createUser returns null on success', () {
+        schedule(() {
+          var credentials = {'email': 'createUserTest@example.com',
+              'password': 'pswd'};
+          return f.createUser(credentials).then((result) {
+            expect(result, null);
+            f.removeUser(credentials);
+          });
+        });
+      });
+
+      test('createUser throws error', () {
+        schedule(() {
+          var credentials = {'email': 'badEmailAddress',
+              'password': 'pswd'};
+          expect(f.createUser(credentials), throwsA((error) {
+            expect(error['code'], 'INVALID_EMAIL');
+            return true;
+          }));
+        });
+      });
+
+    });
+
+    group('removeUser', () {
+      test('removeUser returns null on success', () {
+        var credentials = {'email': 'removeUserTest@example.com',
+            'password': 'pswd'};
+        schedule(() {
+          return f.createUser(credentials).then((result) {
+            f.removeUser(credentials).then((result) {
+              expect(result, null);
+            });
+          });
+        });
+      });
+
+      test('removeUser returns error', () {
+        var credentials = {'email': 'removeUserNotExistsTest@example.com',
+            'password': 'pswd'};
+        schedule(() {
+          expect(f.removeUser(credentials), throwsA((error) {
+            expect(error['code'], 'INVALID_USER');
+            return true;
+          }));
+        });
+      });
+    });
+
     group('getAuth', () {
       var credentials = {'email':CREDENTIALS_EMAIL,
           'password':CREDENTIALS_PASSWORD};
@@ -92,9 +142,16 @@ void main() {
 
       test('getAuth when authenticated', () {
         schedule(() {
-          return f.authWithPassword(credentials).then((_) {
-            var response = f.getAuth();
-            expect(response.auth, isNotNull);
+          var credentials = {
+              'email': 'getAuthUserTest@example.com',
+              'password': 'pswd'
+          };
+          return f.createUser(credentials).then((_) {
+            f.authWithPassword(credentials).then((_) {
+              var response = f.getAuth();
+              expect(response.auth, isNotNull);
+              f.removeUser(credentials);
+            });
           });
         });
       });
