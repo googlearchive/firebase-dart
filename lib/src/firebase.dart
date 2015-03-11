@@ -330,6 +330,18 @@ class Firebase extends Query {
   }
 
   /**
+   * Sends a password-reset email to the owner of the account, containing a
+   * token that may be used to authenticate and change the user's password.
+   */
+  Future resetPassword(Map credentials) {
+    var c = new Completer();
+    _fb.callMethod('resetPassword', [jsify(credentials), (err) {
+      _resolveFuture(c, err, null);
+    }]);
+    return c.future;
+  }
+
+  /**
    * Resolve a future, given an error and result.
    */
   void _resolveFuture(Completer c, err, res) {

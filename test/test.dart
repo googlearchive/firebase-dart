@@ -172,6 +172,33 @@ void main() {
       });
     });
 
+    group('resetPassword', () {
+      test('resetPassword returns null on success', () {
+        var password = 'pswd';
+        var email = 'resetPasswordTest@example.com';
+
+        schedule(() {
+          var credentials = {'email': email, 'password': password};
+          return f.createUser(credentials).then((result) {
+            f.resetPassword({'email': email}).then((result) {
+              expect(result, null);
+              f.removeUser(credentials);
+            });
+          });
+        });
+      });
+
+      test('resetPassword throws error', () {
+        var email = 'resetEmailNotFound@example.com';
+        schedule(() {
+          expect(f.resetPassword({'email': email}), throwsA((error) {
+            expect(error['code'], "INVALID_USER");
+            return true;
+          }));
+        });
+      });
+    });
+
     group('getAuth', () {
       var credentials = {'email':CREDENTIALS_EMAIL,
           'password':CREDENTIALS_PASSWORD};
