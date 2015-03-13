@@ -1,3 +1,7 @@
+## 0.3.1
+
+* Add authWithOAuthPopup() and authWithOAuthRedirect()
+
 ## 0.3.0
 
 * Add createUser(), removeUser() and authWithPassword()
