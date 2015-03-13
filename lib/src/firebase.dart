@@ -391,6 +391,17 @@ class Firebase extends Query {
   }
 
   /**
+   * Updates the email associated with an email / password user account.
+   */
+  Future changeEmail(Map credentials) {
+    var c = new Completer();
+    _fb.callMethod('changeEmail', [jsify(credentials), (err) {
+      _resolveFuture(c, err, null);
+    }]);
+    return c.future;
+  }
+
+  /**
    * Changes the password of an existing user using an email / password combination.
    */
   Future changePassword(Map credentials) {

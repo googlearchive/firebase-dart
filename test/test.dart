@@ -120,6 +120,47 @@ void main() {
 
     });
 
+    group('changeEmail', () {
+      var password = 'pswd';
+
+      test('changeEmail returns null on success', () {
+        var email = 'changeEmailTest@example.com';
+        var newEmail = 'updatedEmailTest@example.com';
+        var changeCredentials = {
+            'oldEmail': email,
+            'newEmail': newEmail,
+            'password': password,
+        };
+        schedule(() {
+          return f.createUser({'email': email, 'password': password}).then((result) {
+            f.changeEmail(changeCredentials).then((result) {
+              expect(result, null);
+              f.removeUser({'email': newEmail, 'password': password});
+            });
+          });
+        });
+      });
+
+      test('changeEmail throws error', () {
+        var email = 'changePasswordErrorTests@example.com';
+        var badCredentials = {
+            'oldEmail': email,
+            'newEmail': 'invalid_email',
+            'password': password,
+        };
+
+        schedule(() {
+          return f.createUser({'email': email, 'password': password}).then((result) {
+            expect(f.changeEmail(badCredentials), throwsA((error) {
+              expect(error['code'], "INVALID_EMAIL");
+              f.removeUser({'email': email, 'password': password});
+              return true;
+            }));
+          });
+        });
+      });
+    });
+
     group('changePassword', () {
       var oldPassword = 'pswd';
       var newPassword = 'updatedPswd';
