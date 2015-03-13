@@ -251,8 +251,8 @@ class Firebase extends Query {
   Future set(value) {
     var c = new Completer();
     value = jsify(value);
-    _fb.callMethod('set', [value, (err, res) {
-      _resolveFuture(c, err, res);
+    _fb.callMethod('set', [value, (err) {
+      _resolveFuture(c, err, null);
     }]);
     return c.future;
   }
@@ -268,8 +268,8 @@ class Firebase extends Query {
   Future update(Map<String, dynamic> value) {
     var c = new Completer();
     var jsValue = jsify(value);
-    _fb.callMethod('update', [jsValue, (err, res) {
-      _resolveFuture(c, err, res);
+    _fb.callMethod('update', [jsValue, (err) {
+      _resolveFuture(c, err, null);
     }]);
     return c.future;
   }
@@ -286,8 +286,8 @@ class Firebase extends Query {
    */
   Future remove() {
     var c = new Completer();
-    _fb.callMethod('remove', [(err, res) {
-      _resolveFuture(c, err, res);
+    _fb.callMethod('remove', [(err) {
+      _resolveFuture(c, err, null);
     }]);
     return c.future;
   }
@@ -317,8 +317,8 @@ class Firebase extends Query {
   Future setWithPriority(value, int priority) {
     var c = new Completer();
     value = jsify(value);
-    _fb.callMethod('setWithPriority', [value, priority, (err, res) {
-      _resolveFuture(c, err, res);
+    _fb.callMethod('setWithPriority', [value, priority, (err) {
+      _resolveFuture(c, err, null);
     }]);
     return c.future;
   }
@@ -338,8 +338,8 @@ class Firebase extends Query {
    */
   Future setPriority(int priority) {
     var c = new Completer();
-    _fb.callMethod('setPriority', [priority, (err, res) {
-      _resolveFuture(c, err, res);
+    _fb.callMethod('setPriority', [priority, (err) {
+      _resolveFuture(c, err, null);
     }]);
     return c.future;
   }
@@ -385,7 +385,7 @@ class Firebase extends Query {
   Future createUser(Map credentials) {
     var c = new Completer();
     _fb.callMethod('createUser', [jsify(credentials), (err, [userData]) {
-      _resolveFuture(c, err, null);
+      _resolveFuture(c, err, userData);
     }]);
     return c.future;
   }
@@ -475,7 +475,7 @@ class Query {
   Stream<Event> _createStream(String type) {
     StreamController<Event> controller;
     void startListen() {
-      _fb.callMethod('on', [type, (snapshot, prevChild) {
+      _fb.callMethod('on', [type, (snapshot, [prevChild]) {
         controller.add(
             new Event(new DataSnapshot.fromJsObject(snapshot), prevChild));
       }]);
@@ -541,7 +541,7 @@ class Query {
 
   /**
    * Create a Query with the specified starting point. The starting point is
-   * specified using a priority and an optinal child name. If no arguments
+   * specified using a priority and an optional child name. If no arguments
    * are provided, the starting point will be the beginning of the data.
    *
    * The starting point is inclusive, so children with exactly the specified

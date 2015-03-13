@@ -80,8 +80,8 @@ void main() {
 
       test('auth-credentials', () {
         schedule(() {
-          return f.createUser(credentials).then((err) {
-            expect(err, null);
+          return f.createUser(credentials).then((res) {
+            expect(res, isNotNull);
             f.authWithPassword(credentials).then((authResponse) {
               expect(authResponse.auth, isNotNull);
               expect(f.authWithPassword(badCredentials), throwsA((error) {
@@ -96,12 +96,12 @@ void main() {
     });
 
     group('createUser', () {
-      test('createUser returns null on success', () {
+      test('createUser returns user data on success', () {
         schedule(() {
           var credentials = {'email': 'createUserTest@example.com',
               'password': 'pswd'};
           return f.createUser(credentials).then((result) {
-            expect(result, null);
+            expect(result['uid'], isNotNull);
             f.removeUser(credentials);
           });
         });
