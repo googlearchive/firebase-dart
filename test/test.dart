@@ -515,13 +515,13 @@ void main() {
       });
 
       schedule(() {
-        return child.startAt().limit(5).once('value').then((snapshot) {
+        return child.startAt().limitToFirst(5).once('value').then((snapshot) {
           var val = snapshot.val() as Map;
           expect(val.values, [1, 2, 3, 4, 5]);
 
           var lastKey = val.keys.last;
 
-          return child.startAt(name: lastKey).limit(2).once('value');
+          return child.startAt(name: lastKey).limitToFirst(2).once('value');
         }).then((snapshot) {
           var val = snapshot.val() as Map;
           expect(val.values, [5, 6]);
@@ -540,6 +540,45 @@ void main() {
         }).then((snapshot) {
           var val = snapshot.val() as Map;
           expect(val.values, [10]);
+        });
+      });
+    });
+
+    test('limitToFirst', () {
+      schedule(() {
+        f.child('limitToFirst-test/one').setWithPriority('one', 1);
+        f.child('limitToFirst-test/two').setWithPriority('two', 2);
+        f.child('limitToFirst-test/three').setWithPriority('three', 3);
+
+        return f.child('limitToFirst-test').limitToFirst(2).once('value').then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, ['one', 'two']);
+        });
+      });
+    });
+
+    test('limitToLast', () {
+      schedule(() {
+        f.child('limitToLast-test/one').setWithPriority('one', 1);
+        f.child('limitToLast-test/two').setWithPriority('two', 2);
+        f.child('limitToLast-test/three').setWithPriority('three', 3);
+
+        return f.child('limitToLast-test').limitToLast(2).once('value').then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, ['two', 'three']);
+        });
+      });
+    });
+
+    test('limit (deprecated)', () {
+      schedule(() {
+        f.child('limit-test/one').setWithPriority('one', 1);
+        f.child('limit-test/two').setWithPriority('two', 2);
+        f.child('limit-test/three').setWithPriority('three', 3);
+
+        return f.child('limit-test').limit(1).once('value').then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, ['three']);
         });
       });
     });

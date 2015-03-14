@@ -547,6 +547,18 @@ class Query {
   }
 
   /**
+   * Generates a new Query object limited to the first certain number of children.
+   */
+  Query limitToFirst(int limit) =>
+    new Query.fromJsObject(_fb.callMethod('limitToFirst', [limit]));
+
+  /**
+   * Generates a new Query object limited to the last certain number of children.
+   */
+  Query limitToLast(int limit) =>
+    new Query.fromJsObject(_fb.callMethod('limitToLast', [limit]));
+
+  /**
    * Generate a Query object limited to the number of specified children. If
    * combined with startAt, the query will include the specified number of
    * children after the starting point. If combined with endAt, the query will
@@ -554,6 +566,7 @@ class Query {
    * combined with startAt() or endAt(), the query will include the last
    * specified number of children.
    */
+  @deprecated
   Query limit(int limit) =>
       new Query.fromJsObject(_fb.callMethod('limit', [limit]));
 
