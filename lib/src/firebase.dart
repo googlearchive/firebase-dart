@@ -547,6 +547,30 @@ class Query {
   }
 
   /**
+   * Generates a new Query object ordered by the specified child key.
+   */
+  Query orderByChild(String key) =>
+    new Query.fromJsObject(_fb.callMethod('orderByChild', [key]));
+
+  /**
+   * Generates a new Query object ordered by key.
+   */
+  Query orderByKey() =>
+    new Query.fromJsObject(_fb.callMethod('orderByKey'));
+
+  /**
+   * Generates a new Query object ordered by child values.
+   */
+  Query orderByValue() =>
+    new Query.fromJsObject(_fb.callMethod('orderByValue'));
+
+  /**
+   * Generates a new Query object ordered by priority.
+   */
+  Query orderByPriority() =>
+    new Query.fromJsObject(_fb.callMethod('orderByPriority'));
+
+  /**
    * Generates a new Query object limited to the first certain number of children.
    */
   Query limitToFirst(int limit) =>

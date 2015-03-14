@@ -494,6 +494,75 @@ void main() {
   });
 
   group('query', () {
+
+    test('orderByChild', () {
+      schedule(() {
+        f.child('order-by-child/one/animal').set('aligator');
+        f.child('order-by-child/two/animal').set('zebra');
+        f.child('order-by-child/three/animal').set('monkey');
+
+        return f.child('order-by-child').orderByChild('animal').once('value').then((snapshot) {
+          var items = [];
+          snapshot.forEach((snapshot) {
+            items.add(snapshot.val());
+          });
+          expect(items, [
+            {'animal': 'aligator'},
+            {'animal': 'monkey'},
+            {'animal': 'zebra'},
+          ]);
+        });
+      });
+    });
+
+    test('orderByKey', () {
+      schedule(() {
+        f.child('order-by-key/zebra').set('three');
+        f.child('order-by-key/elephant').set('one');
+        f.child('order-by-key/monkey').set('two');
+
+        return f.child('order-by-key').orderByKey().once('value').then((snapshot) {
+          var items = [];
+          snapshot.forEach((snapshot) {
+            items.add(snapshot.val());
+          });
+          expect(items, ['one', 'two', 'three']);
+        });
+      });
+    });
+
+    test('orderByValue', () {
+      schedule(() {
+        f.child('order-by-value/football').set(20);
+        f.child('order-by-value/basketball').set(10);
+        f.child('order-by-value/baseball').set(15);
+
+        return f.child('order-by-value').orderByValue().once('value').then((snapshot) {
+          var items = [];
+          snapshot.forEach((snapshot) {
+            items.add(snapshot.val());
+          });
+          expect(items, [10, 15, 20]);
+        });
+      });
+    });
+
+    test('orderByPriority', () {
+      schedule(() {
+        f.child('order-by-priority/football').setWithPriority('twenty', 20);
+        f.child('order-by-priority/basketball').setWithPriority('ten', 10);
+        f.child('order-by-priority/baseball').setWithPriority('fifteen', 15);
+
+        return f.child('order-by-priority').orderByPriority().once('value').then((snapshot) {
+          var items = [];
+          snapshot.forEach((snapshot) {
+            items.add(snapshot.val());
+          });
+          expect(items, ['ten', 'fifteen', 'twenty']);
+        });
+      });
+    });
+
     test('startAt', () {
       var child = f.child('query');
 
