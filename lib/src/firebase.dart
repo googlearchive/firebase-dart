@@ -11,7 +11,7 @@ import 'transaction_result.dart';
 import 'util.dart';
 
 /**
- * A firebase represents a particular location in your Firebase and can be used
+ * A Firebase represents a particular location in your Firebase and can be used
  * for reading or writing data to that Firebase location.
  */
 class Firebase extends Query {
@@ -206,7 +206,7 @@ class Firebase extends Query {
    * Get a Firebase reference for a location at the specified relative path.
    *
    * The relative path can either be a simple child name, (e.g. 'fred') or a
-   * deeper slash seperated path (e.g. 'fred/name/first').
+   * deeper slash separated path (e.g. 'fred/name/first').
    */
   Firebase child(String path) =>
       new Firebase.fromJsObject(_fb.callMethod('child', [path]));
@@ -280,7 +280,7 @@ class Firebase extends Query {
    *
    * The effect of this delete will be visible immediately and the
    * corresponding events (onValue, onChildAdded, etc.) will be triggered.
-   * Synchronization of the delete to the Firebsae servers will also be
+   * Synchronization of the delete to the Firebase servers will also be
    * started, and the Future returned by this method will complete after the
    * synchronization has finished.
    */
@@ -294,7 +294,7 @@ class Firebase extends Query {
 
   /**
    * Push generates a new child location using a unique name and returns a
-   * Frebase reference to it. This is useful when the children of a Firebase
+   * Firebase reference to it. This is useful when the children of a Firebase
    * location represent a list of items.
    *
    * FIXME: How to implement optional argument to push(value)?

@@ -9,8 +9,8 @@ import 'util.dart';
  * The Disconnect class encapsulates all operations to be performed on a
  * Firebase when the client is disconnected. This allows you to write or
  * clear data when your client disconnects from the Firebase servers. These
- * updates occur whether your client disconnectes cleanly or not, so you can
- * rely on them to clean up data efven if a connection is dropped or a client
+ * updates occur whether your client disconnects cleanly or not, so you can
+ * rely on them to clean up data even if a connection is dropped or a client
  * crashes.
  *
  * Note that these functions should be called before any data is written to
