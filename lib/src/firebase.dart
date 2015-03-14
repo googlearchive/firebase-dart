@@ -227,10 +227,17 @@ class Firebase extends Query {
   Firebase root() => new Firebase.fromJsObject(_fb.callMethod('root'));
 
   /**
+   * Returns the last token in a Firebase location.
+   * [key] on the root of a Firebase is `null`.
+   */
+  String get key => _fb.callMethod('key');
+
+  /**
    * The last token in a Firebase location is considered its name.
    *
    * [name] on the root of a Firebase is `null`.
    */
+  @deprecated
   String get name => _fb.callMethod('name');
 
   /**

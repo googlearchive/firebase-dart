@@ -284,13 +284,29 @@ void main() {
   group('non-auth', () {
     test('child', () {
       var child = f.child('trad');
-      expect(child.name, 'trad');
+      expect(child.key, 'trad');
 
       var parent = child.parent();
-      expect(parent.name, _testKey);
+      expect(parent.key, _testKey);
 
       var root = child.root();
-      expect(root.name, isNull);
+      expect(root.key, isNull);
+    });
+
+    test('key returns last item name', () {
+      expect(f.key, _testKey);
+    });
+
+    test('key returns null on root location', () {
+      expect(f.root().key, isNull);
+    });
+
+    test('name returns last item name', () {
+      expect(f.name, _testKey);
+    });
+
+    test('name returns null on root location', () {
+      expect(f.root().name, isNull);
     });
 
     test('set', () {
@@ -331,6 +347,148 @@ void main() {
     test('value', () {
       return f.onValue.first.then((Event e) {
         //TODO actually test the result
+      });
+    });
+  });
+
+  group('data-snapshot', () {
+
+    test('exists returns true when data exists', () {
+      schedule(() {
+        f.child('ds-exists').set({'thing': 'one'});
+        return f.child('ds-exists').once('value').then((snapshot) {
+          expect(snapshot.exists, true);
+        });
+      });
+    });
+
+    test('exists returns false when data doesnt exist', () {
+      return f.child('ds-no-exists').once("value").then((snapshot) {
+        expect(snapshot.exists, false);
+      });
+    });
+
+    test('val() returns dart representation', () {
+      var expected = {'test_data': 'good'};
+      schedule(() {
+        f.child('ds-val').set(expected);
+        return f.child('ds-val').once("value").then((snapshot) {
+          expect(snapshot.val(), expected);
+        });
+      });
+    });
+
+    test('snapshot returns child', () {
+      var expected = {'test_data': 'good'};
+      schedule(() {
+        f.child('ds-child/my-child').set(expected);
+        return f.child('ds-child').once("value").then((snapshot) {
+          expect(snapshot.child('my-child').val(), expected);
+        });
+      });
+    });
+
+    test('snapshot forEach on children', () {
+      schedule(() {
+        f.child('ds-forEach/thing-one').setWithPriority({'thing': 'one'}, 1);
+        f.child('ds-forEach/thing-two').setWithPriority({'thing': 'two'}, 2);
+        f.child('ds-forEach/cat-hat').setWithPriority({'cat': 'hat'}, 3);
+        return f.child('ds-forEach').once("value").then((snapshot) {
+          var items = [];
+          snapshot.forEach((snapshot) {
+            items.add(snapshot.key);
+          });
+          expect(items, ['thing-one', 'thing-two', 'cat-hat']);
+        });
+      });
+    });
+
+    test('hasChild returns true when child exists', () {
+      schedule(() {
+        f.child('ds-hasChild/thing-one').set({'thing': 'one'});
+        return f.child('ds-hasChild').once("value").then((snapshot) {
+          expect(snapshot.hasChild("thing-one"), true);
+        });
+      });
+    });
+
+    test('hasChild returns false when child doesnt exists', () {
+      schedule(() {
+        return f.child('ds-no-hasChild').once("value").then((snapshot) {
+          expect(snapshot.hasChild("thing-one"), false);
+        });
+      });
+    });
+
+    test('hasChildren returns true when has any children', () {
+      schedule(() {
+        f.child('ds-hasChildren/thing-one').set({'thing': 'one'});
+        return f.child('ds-hasChildren').once("value").then((snapshot) {
+          expect(snapshot.hasChildren, true);
+        });
+      });
+    });
+
+    test('hasChildren returns false when has no children', () {
+      schedule(() {
+        return f.child('ds-no-hasChildren').once("value").then((snapshot) {
+          expect(snapshot.hasChildren, false);
+        });
+      });
+    });
+
+    test('key returns the key location', () {
+      schedule(() {
+        return f.child('ds-key').once("value").then((snapshot) {
+          expect(snapshot.key, 'ds-key');
+        });
+      });
+    });
+
+    test('name returns the key location', () {
+      schedule(() {
+        return f.child('ds-name').once("value").then((snapshot) {
+          expect(snapshot.name, 'ds-name');
+        });
+      });
+    });
+
+    test('numChildren returns the number of children', () {
+      schedule(() {
+        f.child('ds-numChildren/one').set("one");
+        f.child('ds-numChildren/two').set("two");
+        f.child('ds-numChildren/three').set("three");
+        return f.child('ds-numChildren').once("value").then((snapshot) {
+          expect(snapshot.numChildren, 3);
+        });
+      });
+    });
+
+    test('ref returns firebase reference for this snapshot', () {
+      Firebase expected = f.child('ds-ref');
+
+      schedule(() {
+        return expected.once('value').then((snapshot) {
+          var ref = snapshot.ref();
+          expect(ref.key, expected.key);
+          expect(ref, new isInstanceOf(Firebase));
+        });
+      });
+    });
+
+    test('getPriority returns priority', () {
+      schedule(() {
+        f.child('ds-priority').setWithPriority("thing", 4);
+        return f.child('ds-priority').once('value').then((snapshot) {
+          expect(snapshot.getPriority(), 4);
+        });
+      });
+    });
+
+    test('exportVal returns full data with priority', () {
+      f.child('ds-exportVal').setWithPriority("thing2", 500);
+      return f.child('ds-exportVal').once('value').then((snapshot) {
+        expect(snapshot.exportVal(), {'.value': 'thing2', '.priority': 500});
       });
     });
   });
@@ -399,7 +557,7 @@ void main() {
         testRef = f.child('onChildAdded');
         subscription = testRef.onChildAdded.listen((event) {
           var ss = event.snapshot;
-          addedKeys.add(ss.name);
+          addedKeys.add(ss.key);
           expect(++eventCount, lessThan(3));
           expect(ss.val(), eventCount);
         });
@@ -431,7 +589,7 @@ void main() {
         testRef = f.child('onChildChanged');
         subscription = testRef.onChildChanged.listen((event) {
           var ss = event.snapshot;
-          expect(ss.name, 'key');
+          expect(ss.key, 'key');
           eventCount++;
           expect(ss.val(), eventCount);
         });
@@ -472,7 +630,7 @@ void main() {
         onChildRemovedSubscription = testRef.onChildRemoved.listen((event) {
           var ss = event.snapshot;
           expect(++childRemovedCount, 1);
-          expect(ss.name, addedKeys[0]);
+          expect(ss.key, addedKeys[0]);
         });
 
         return testRef.child(addedKeys[0]).remove();
@@ -498,7 +656,7 @@ void main() {
         testRef = f.child('onValue');
         onValueSubscription = testRef.onValue.listen((event) {
           var ss = event.snapshot;
-          expect(ss.name, 'onValue');
+          expect(ss.key, 'onValue');
           expect(ss.val(), {'key': ++valueCount});
           expect(valueCount, lessThan(3));
         });
@@ -549,7 +707,7 @@ void main() {
         var ds = value as DataSnapshot;
         expect(ds.hasChildren, false);
         expect(ds.numChildren, 0);
-        expect(ds.name, 'a');
+        expect(ds.key, 'a');
         expect(ds.val(), 'b');
       }));
 

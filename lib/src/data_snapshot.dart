@@ -26,6 +26,12 @@ class DataSnapshot {
   DataSnapshot.fromJsObject(JsObject obj): _ds = obj;
 
   /**
+   * Returns true if this DataSnapshot contains any data.
+   * It is slightly more efficient than using snapshot.val() !== null.
+   */
+  bool get exists => _ds.callMethod('exists');
+
+  /**
    * Get the Dart Primitive, Map or List representation of the DataSnapshot.
    * The value may be null, indicating that the snapshot is empty and contains
    * no data.
@@ -69,8 +75,14 @@ class DataSnapshot {
   bool get hasChildren => _ds.callMethod('hasChildren');
 
   /**
+   * The key of the location that generated this DataSnapshot.
+   */
+  String get key => _ds.callMethod('key');
+
+  /**
    * The name of the location that generated this DataSnapshot.
    */
+  @deprecated
   String get name => _ds.callMethod('name');
 
   /**
