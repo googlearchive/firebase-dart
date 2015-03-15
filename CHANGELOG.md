@@ -8,6 +8,10 @@
 
 * Added changeEmail()
 
+* Added authAnonymously(), authWithOAuthPopup(), authWithOAuthRedirect()
+
+* Added getAuth() and onAuth() listener
+
 * Added orderByChild(), orderByKey(), orderByValue(), orderByPriority()
 
 * Added equalTo(), limitToFirst(), limitToLast()
