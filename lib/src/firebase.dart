@@ -241,6 +241,13 @@ class Firebase extends Query {
   String get name => _fb.callMethod('name');
 
   /**
+   * Gets the absolute URL corresponding to this Firebase reference's location.
+   */
+  String toString() {
+    return _fb.toString();
+  }
+
+  /**
    * Write data to this Firebase location. This will overwrite any data at
    * this location and all child locations.
    *

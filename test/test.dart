@@ -309,6 +309,10 @@ void main() {
       expect(f.root().name, isNull);
     });
 
+    test('toString returns the absolute url to ref location', () {
+      expect(f.toString(), TEST_URL + Uri.encodeComponent(_testKey));
+    });
+
     test('set', () {
       var value = {'number value': 42};
       return f.set(value).then((v) {
