@@ -571,6 +571,14 @@ class Query {
     new Query.fromJsObject(_fb.callMethod('orderByPriority'));
 
   /**
+   * Creates a Query which includes children which match the specified value.
+   */
+  Query equalTo(value, [key]) {
+    var args = key == null ? [value] : [value, key];
+    return new Query.fromJsObject(_fb.callMethod('equalTo', args));
+  }
+
+  /**
    * Generates a new Query object limited to the first certain number of children.
    */
   Query limitToFirst(int limit) =>

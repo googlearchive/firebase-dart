@@ -563,6 +563,34 @@ void main() {
       });
     });
 
+    test('equalTo', () {
+      schedule(() {
+        f.child('equalTo/football').set(20);
+        f.child('equalTo/basketball').set(10);
+        f.child('equalTo/soccer').set(15);
+        f.child('equalTo/baseball').set(15);
+
+        return f.child('equalTo').orderByValue().equalTo(15).once('value').then((snapshot) {
+          var val = snapshot.val();
+          expect(val, {'soccer': 15, 'baseball': 15});
+        });
+      });
+    });
+
+    test('equalTo with Key', () {
+      schedule(() {
+        f.child('equalTo/football').set(20);
+        f.child('equalTo/basketball').set(10);
+        f.child('equalTo/soccer').set(15);
+        f.child('equalTo/baseball').set(15);
+
+        return f.child('equalTo').orderByValue().equalTo(15, 'soccer').once('value').then((snapshot) {
+          var val = snapshot.val();
+          expect(val, {'soccer': 15});
+        });
+      });
+    });
+
     test('startAt', () {
       var child = f.child('query');
 
