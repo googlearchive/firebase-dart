@@ -547,6 +547,22 @@ class Query {
   }
 
   /**
+   * Listens for exactly one event of the specified event type, and then stops
+   * listening.
+   */
+  Future<DataSnapshot> once(String eventType) {
+    var completer = new Completer<DataSnapshot>();
+
+    _fb.callMethod('once', [eventType, (jsSnapshot) {
+      var snapshot = new DataSnapshot.fromJsObject(jsSnapshot);
+      completer.complete(snapshot);
+    }, (error) {
+      completer.completeError(error);
+    }]);
+    return completer.future;
+  }
+
+  /**
    * Generates a new Query object ordered by the specified child key.
    */
   Query orderByChild(String key) =>
@@ -569,6 +585,38 @@ class Query {
    */
   Query orderByPriority() =>
     new Query.fromJsObject(_fb.callMethod('orderByPriority'));
+
+  /**
+   * Create a Query with the specified starting point. The starting point is
+   * specified using a priority and an optional child name. If no arguments
+   * are provided, the starting point will be the beginning of the data.
+   *
+   * The starting point is inclusive, so children with exactly the specified
+   * priority will be included. Though if the optional name is specified, then
+   * the children that have exactly the specified priority must also have a
+   * name greater than or equal to the specified name.
+   *
+   * startAt() can be combined with endAt() or limit() to create further
+   * restrictive queries.
+   */
+  Query startAt({int priority, String name}) =>
+    new Query.fromJsObject(_fb.callMethod('startAt', _removeTrailingNulls([priority, name])));
+
+  /**
+   * Create a Query with the specified ending point. The ending point is
+   * specified using a priority and an optional child name. If no arguments
+   * are provided, the ending point will be the end of the data.
+   *
+   * The ending point is inclusive, so children with exactly the specified
+   * priority will be included. Though if the optional name is specified, then
+   * children that have exactly the specified priority must also have a name
+   * less than or equal to the specified name.
+   *
+   * endAt() can be combined with startAt() or limit() to create further
+   * restrictive queries.
+   */
+  Query endAt({int priority, String name}) =>
+    new Query.fromJsObject(_fb.callMethod('endAt', _removeTrailingNulls([priority, name])));
 
   /**
    * Creates a Query which includes children which match the specified value.
@@ -603,58 +651,10 @@ class Query {
       new Query.fromJsObject(_fb.callMethod('limit', [limit]));
 
   /**
-   * Create a Query with the specified starting point. The starting point is
-   * specified using a priority and an optional child name. If no arguments
-   * are provided, the starting point will be the beginning of the data.
-   *
-   * The starting point is inclusive, so children with exactly the specified
-   * priority will be included. Though if the optional name is specified, then
-   * the children that have exactly the specified priority must also have a
-   * name greater than or equal to the specified name.
-   *
-   * startAt() can be combined with endAt() or limit() to create further
-   * restrictive queries.
-   */
-  Query startAt({int priority, String name}) =>
-      new Query.fromJsObject(_fb.callMethod('startAt', _removeTrailingNulls([priority, name])));
-
-  /**
-   * Create a Query with the specified ending point. The ending point is
-   * specified using a priority and an optional child name. If no arguments
-   * are provided, the ending point will be the end of the data.
-   *
-   * The ending point is inclusive, so children with exactly the specified
-   * priority will be included. Though if the optional name is specified, then
-   * children that have exactly the specified priority must also have a name
-   * less than or equal to the specified name.
-   *
-   * endAt() can be combined with startAt() or limit() to create further
-   * restrictive queries.
-   */
-  Query endAt({int priority, String name}) =>
-      new Query.fromJsObject(_fb.callMethod('endAt', _removeTrailingNulls([priority, name])));
-
-  /**
    * Queries are attached to a location in your Firebase. This method will
    * return a Firebase reference to that location.
    */
   Firebase ref() => new Firebase.fromJsObject(_fb.callMethod('ref'));
-
-  /**
-   * Listens for exactly one event of the specified event type, and then stops
-   * listening.
-   */
-  Future<DataSnapshot> once(String eventType) {
-    var completer = new Completer<DataSnapshot>();
-
-    _fb.callMethod('once', [eventType, (jsSnapshot) {
-      var snapshot = new DataSnapshot.fromJsObject(jsSnapshot);
-      completer.complete(snapshot);
-    }, (error) {
-      completer.completeError(error);
-    }]);
-    return completer.future;
-  }
 }
 
 List _removeTrailingNulls(List args) {
