@@ -4,11 +4,11 @@ import 'package:firebase/firebase.dart';
 import 'package:scheduled_test/scheduled_test.dart';
 import 'package:unittest/html_config.dart';
 
-const TEST_URL = 'https://dart-test.firebaseio-demo.com/test/';
+const TEST_URL = 'https://boiling-fire-3310.firebaseio.com/test/';
 
 // Update TEST_URL to a valid URL and update AUTH_TOKEN to a corresponding
 // authentication token to test authentication.
-const AUTH_TOKEN = null;
+const AUTH_TOKEN = '5KxwqxGbNU0Mrje2NGnSFJZsd3KaTVeUtcVhorMl';
 const INVALID_AUTH_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
 
 // Update CREDENTIALS_EMAIL to an email address to test
