@@ -96,8 +96,10 @@ void main() {
   if (CREDENTIALS_EMAIL != null) {
     group('auth-credentials', () {
       test('auth-credentials - good password', () {
-        var credentials = {'email':CREDENTIALS_EMAIL,
-            'password':CREDENTIALS_PASSWORD};
+        var credentials = {
+          'email': CREDENTIALS_EMAIL,
+          'password': CREDENTIALS_PASSWORD
+        };
         schedule(() {
           return f.createUser(credentials).then((res) {
             expect(res, isNotNull);
@@ -111,24 +113,32 @@ void main() {
               expect(authResponse['password']['email'], CREDENTIALS_EMAIL);
               expect(authResponse['password']['isTemporaryPassword'], false);
 
-              f.removeUser(credentials).then((err) { expect(err, null); });
+              f.removeUser(credentials).then((err) {
+                expect(err, null);
+              });
             });
           });
         });
       });
 
       test('auth-credentials - bad password', () {
-        var credentials = {'email': 'badCredentialTest@example.com',
-            'password': 'RIGHT'};
-        var badCredentials = {'email': 'badCredentialTest@example.com',
-            'password': 'WRONG'};
+        var credentials = {
+          'email': 'badCredentialTest@example.com',
+          'password': 'RIGHT'
+        };
+        var badCredentials = {
+          'email': 'badCredentialTest@example.com',
+          'password': 'WRONG'
+        };
         schedule(() {
           return f.createUser(credentials).then((res) {
             expect(res, isNotNull);
 
             expect(f.authWithPassword(badCredentials), throwsA((error) {
               expect(error['code'], 'INVALID_PASSWORD');
-              f.removeUser(credentials).then((err) { expect(err, null); });
+              f.removeUser(credentials).then((err) {
+                expect(err, null);
+              });
               return true;
             }));
           });
@@ -139,8 +149,10 @@ void main() {
     group('createUser', () {
       test('createUser returns user data on success', () {
         schedule(() {
-          var credentials = {'email': 'createUserTest@example.com',
-              'password': 'pswd'};
+          var credentials = {
+            'email': 'createUserTest@example.com',
+            'password': 'pswd'
+          };
           return f.createUser(credentials).then((result) {
             expect(result['uid'], isNotNull);
             f.removeUser(credentials);
@@ -150,15 +162,13 @@ void main() {
 
       test('createUser throws error', () {
         schedule(() {
-          var credentials = {'email': 'badEmailAddress',
-              'password': 'pswd'};
+          var credentials = {'email': 'badEmailAddress', 'password': 'pswd'};
           expect(f.createUser(credentials), throwsA((error) {
             expect(error['code'], 'INVALID_EMAIL');
             return true;
           }));
         });
       });
-
     });
 
     group('changeEmail', () {
@@ -168,12 +178,14 @@ void main() {
         var email = 'changeEmailTest@example.com';
         var newEmail = 'updatedEmailTest@example.com';
         var changeCredentials = {
-            'oldEmail': email,
-            'newEmail': newEmail,
-            'password': password,
+          'oldEmail': email,
+          'newEmail': newEmail,
+          'password': password,
         };
         schedule(() {
-          return f.createUser({'email': email, 'password': password}).then((result) {
+          return f
+              .createUser({'email': email, 'password': password})
+              .then((result) {
             f.changeEmail(changeCredentials).then((result) {
               expect(result, null);
               f.removeUser({'email': newEmail, 'password': password});
@@ -185,13 +197,15 @@ void main() {
       test('changeEmail throws error', () {
         var email = 'changePasswordErrorTests@example.com';
         var badCredentials = {
-            'oldEmail': email,
-            'newEmail': 'invalid_email',
-            'password': password,
+          'oldEmail': email,
+          'newEmail': 'invalid_email',
+          'password': password,
         };
 
         schedule(() {
-          return f.createUser({'email': email, 'password': password}).then((result) {
+          return f
+              .createUser({'email': email, 'password': password})
+              .then((result) {
             expect(f.changeEmail(badCredentials), throwsA((error) {
               expect(error['code'], "INVALID_EMAIL");
               f.removeUser({'email': email, 'password': password});
@@ -209,12 +223,14 @@ void main() {
       test('changePassword returns null on success', () {
         var email = 'changePasswordTest@example.com';
         var changeCredentials = {
-            'email': email,
-            'oldPassword': oldPassword,
-            'newPassword': newPassword
+          'email': email,
+          'oldPassword': oldPassword,
+          'newPassword': newPassword
         };
         schedule(() {
-          return f.createUser({'email': email, 'password': oldPassword}).then((result) {
+          return f
+              .createUser({'email': email, 'password': oldPassword})
+              .then((result) {
             f.changePassword(changeCredentials).then((result) {
               expect(result, null);
               f.removeUser({'email': email, 'password': newPassword});
@@ -232,7 +248,9 @@ void main() {
         };
 
         schedule(() {
-          return f.createUser({'email': email, 'password': oldPassword}).then((result) {
+          return f
+              .createUser({'email': email, 'password': oldPassword})
+              .then((result) {
             expect(f.changePassword(badCredentials), throwsA((error) {
               expect(error['code'], "INVALID_PASSWORD");
               f.removeUser({'email': email, 'password': oldPassword});
@@ -245,8 +263,10 @@ void main() {
 
     group('removeUser', () {
       test('removeUser returns null on success', () {
-        var credentials = {'email': 'removeUserTest@example.com',
-            'password': 'pswd'};
+        var credentials = {
+          'email': 'removeUserTest@example.com',
+          'password': 'pswd'
+        };
         schedule(() {
           return f.createUser(credentials).then((result) {
             f.removeUser(credentials).then((result) {
@@ -257,8 +277,10 @@ void main() {
       });
 
       test('removeUser returns error', () {
-        var credentials = {'email': 'removeUserNotExistsTest@example.com',
-            'password': 'pswd'};
+        var credentials = {
+          'email': 'removeUserNotExistsTest@example.com',
+          'password': 'pswd'
+        };
         schedule(() {
           expect(f.removeUser(credentials), throwsA((error) {
             expect(error['code'], 'INVALID_USER');
@@ -297,11 +319,12 @@ void main() {
   }
 
   if (OAUTH_PROVIDER != null && OAUTH_TOKEN != null) {
-
     group('authWithOAuthToken', () {
       test('good OAuth token', () {
         schedule(() {
-          return f.authWithOAuthToken(OAUTH_PROVIDER, OAUTH_TOKEN).then((authResponse) {
+          return f
+              .authWithOAuthToken(OAUTH_PROVIDER, OAUTH_TOKEN)
+              .then((authResponse) {
             expect(authResponse['uid'], isNotNull);
             expect(authResponse['expires'], isNotNull);
             expect(authResponse['auth']['uid'], isNotNull);
@@ -315,7 +338,8 @@ void main() {
 
       test('bad OAuth token', () {
         schedule(() {
-          expect(f.authWithOAuthToken(OAUTH_PROVIDER, 'bad-auth-token'), throwsA((error) {
+          expect(f.authWithOAuthToken(OAUTH_PROVIDER, 'bad-auth-token'),
+              throwsA((error) {
             expect(error['code'], 'INVALID_CREDENTIALS');
             return true;
           }));
@@ -421,7 +445,6 @@ void main() {
   });
 
   group('data-snapshot', () {
-
     test('exists returns true when data exists', () {
       schedule(() {
         f.child('ds-exists').set({'thing': 'one'});
@@ -563,14 +586,17 @@ void main() {
   });
 
   group('query', () {
-
     test('orderByChild', () {
       schedule(() {
         f.child('order-by-child/one/animal').set('aligator');
         f.child('order-by-child/two/animal').set('zebra');
         f.child('order-by-child/three/animal').set('monkey');
 
-        return f.child('order-by-child').orderByChild('animal').once('value').then((snapshot) {
+        return f
+            .child('order-by-child')
+            .orderByChild('animal')
+            .once('value')
+            .then((snapshot) {
           var items = [];
           snapshot.forEach((snapshot) {
             items.add(snapshot.val());
@@ -590,7 +616,11 @@ void main() {
         f.child('order-by-key/elephant').set('one');
         f.child('order-by-key/monkey').set('two');
 
-        return f.child('order-by-key').orderByKey().once('value').then((snapshot) {
+        return f
+            .child('order-by-key')
+            .orderByKey()
+            .once('value')
+            .then((snapshot) {
           var items = [];
           snapshot.forEach((snapshot) {
             items.add(snapshot.val());
@@ -606,7 +636,11 @@ void main() {
         f.child('order-by-value/basketball').set(10);
         f.child('order-by-value/baseball').set(15);
 
-        return f.child('order-by-value').orderByValue().once('value').then((snapshot) {
+        return f
+            .child('order-by-value')
+            .orderByValue()
+            .once('value')
+            .then((snapshot) {
           var items = [];
           snapshot.forEach((snapshot) {
             items.add(snapshot.val());
@@ -622,7 +656,11 @@ void main() {
         f.child('order-by-priority/basketball').setWithPriority('ten', 10);
         f.child('order-by-priority/baseball').setWithPriority('fifteen', 15);
 
-        return f.child('order-by-priority').orderByPriority().once('value').then((snapshot) {
+        return f
+            .child('order-by-priority')
+            .orderByPriority()
+            .once('value')
+            .then((snapshot) {
           var items = [];
           snapshot.forEach((snapshot) {
             items.add(snapshot.val());
@@ -639,7 +677,12 @@ void main() {
         f.child('equalTo/soccer').set(15);
         f.child('equalTo/baseball').set(15);
 
-        return f.child('equalTo').orderByValue().equalTo(15).once('value').then((snapshot) {
+        return f
+            .child('equalTo')
+            .orderByValue()
+            .equalTo(15)
+            .once('value')
+            .then((snapshot) {
           var val = snapshot.val();
           expect(val, {'soccer': 15, 'baseball': 15});
         });
@@ -653,7 +696,12 @@ void main() {
         f.child('equalTo/soccer').set(15);
         f.child('equalTo/baseball').set(15);
 
-        return f.child('equalTo').orderByValue().equalTo(15, 'soccer').once('value').then((snapshot) {
+        return f
+            .child('equalTo')
+            .orderByValue()
+            .equalTo(15, 'soccer')
+            .once('value')
+            .then((snapshot) {
           var val = snapshot.val();
           expect(val, {'soccer': 15});
         });
@@ -661,7 +709,6 @@ void main() {
     });
 
     group('startAt', () {
-
       test('startAt starts at beginning when not specified', () {
         var child = f.child('startAt 1');
 
@@ -683,7 +730,8 @@ void main() {
         });
       });
 
-      test('startAt returns items from starting point when ordering by value', () {
+      test('startAt returns items from starting point when ordering by value',
+          () {
         var child = f.child('startAt 2');
         child.push().set(1);
         child.push().set(2);
@@ -691,7 +739,12 @@ void main() {
         child.push().set(4);
 
         schedule(() {
-          return child.startAt(value: 2).orderByValue().limitToFirst(2).once('value').then((snapshot) {
+          return child
+              .startAt(value: 2)
+              .orderByValue()
+              .limitToFirst(2)
+              .once('value')
+              .then((snapshot) {
             var val = snapshot.val() as Map;
             expect(val.values, [2, 3]);
           });
@@ -705,7 +758,12 @@ void main() {
         f.child('startAt/D/thing').set('4');
 
         schedule(() {
-          return f.child('startAt').startAt(value: '3').orderByChild('thing').once('value').then((snapshot) {
+          return f
+              .child('startAt')
+              .startAt(value: '3')
+              .orderByChild('thing')
+              .once('value')
+              .then((snapshot) {
             var val = snapshot.val() as Map;
             expect(val.values, [{'thing': '3'}, {'thing': '4'}]);
           });
@@ -720,7 +778,13 @@ void main() {
         f.child('startAt/key/E').set('5');
 
         schedule(() {
-          return f.child('startAt/key').startAt(value: 'C').orderByKey().limitToFirst(3).once('value').then((snapshot) {
+          return f
+              .child('startAt/key')
+              .startAt(value: 'C')
+              .orderByKey()
+              .limitToFirst(3)
+              .once('value')
+              .then((snapshot) {
             var val = snapshot.val() as Map;
             expect(val.values, ['3', '4', '5']);
           });
@@ -735,7 +799,13 @@ void main() {
         f.child('startAt/priority/E').setWithPriority('one - A', 90);
 
         schedule(() {
-          return f.child('startAt/priority').startAt(value: 100, key: 'C').orderByPriority().limitToFirst(3).once('value').then((snapshot) {
+          return f
+              .child('startAt/priority')
+              .startAt(value: 100, key: 'C')
+              .orderByPriority()
+              .limitToFirst(3)
+              .once('value')
+              .then((snapshot) {
             var val = snapshot.val() as Map;
             expect(val.values, ['three', 'four']);
           });
@@ -744,7 +814,6 @@ void main() {
     });
 
     group('endAt', () {
-
       test('endAt ends at end when not specified', () {
         var child = f.child('endAt 1');
 
@@ -774,7 +843,12 @@ void main() {
         child.push().set(4);
 
         schedule(() {
-          return child.endAt(value: 2).orderByValue().limitToFirst(2).once('value').then((snapshot) {
+          return child
+              .endAt(value: 2)
+              .orderByValue()
+              .limitToFirst(2)
+              .once('value')
+              .then((snapshot) {
             var val = snapshot.val() as Map;
             expect(val.values, [1, 2]);
           });
@@ -788,9 +862,15 @@ void main() {
         f.child('endAt/D/thing').set('4');
 
         schedule(() {
-          return f.child('endAt').endAt(value: '3').orderByChild('thing').once('value').then((snapshot) {
+          return f
+              .child('endAt')
+              .endAt(value: '3')
+              .orderByChild('thing')
+              .once('value')
+              .then((snapshot) {
             var val = snapshot.val() as Map;
-            expect(val.values, [{'thing': '1'}, {'thing': '2'}, {'thing': '3'}]);
+            expect(
+                val.values, [{'thing': '1'}, {'thing': '2'}, {'thing': '3'}]);
           });
         });
       });
@@ -803,7 +883,13 @@ void main() {
         f.child('endAt/key/E').set('5');
 
         schedule(() {
-          return f.child('endAt/key').endAt(value: 'C').orderByKey().limitToFirst(3).once('value').then((snapshot) {
+          return f
+              .child('endAt/key')
+              .endAt(value: 'C')
+              .orderByKey()
+              .limitToFirst(3)
+              .once('value')
+              .then((snapshot) {
             var val = snapshot.val() as Map;
             expect(val.values, ['1', '2', '3']);
           });
@@ -818,7 +904,12 @@ void main() {
         f.child('endAt/priority/E').setWithPriority('one - A', 120);
 
         schedule(() {
-          return f.child('endAt/priority').endAt(value: 100, key: 'C').orderByPriority().once('value').then((snapshot) {
+          return f
+              .child('endAt/priority')
+              .endAt(value: 100, key: 'C')
+              .orderByPriority()
+              .once('value')
+              .then((snapshot) {
             var val = snapshot.val() as Map;
             expect(val.values, ['one', 'two', 'three']);
           });
@@ -832,7 +923,11 @@ void main() {
         f.child('limitToFirst-test/two').setWithPriority('two', 2);
         f.child('limitToFirst-test/three').setWithPriority('three', 3);
 
-        return f.child('limitToFirst-test').limitToFirst(2).once('value').then((snapshot) {
+        return f
+            .child('limitToFirst-test')
+            .limitToFirst(2)
+            .once('value')
+            .then((snapshot) {
           var val = snapshot.val() as Map;
           expect(val.values, ['one', 'two']);
         });
@@ -845,7 +940,11 @@ void main() {
         f.child('limitToLast-test/two').setWithPriority('two', 2);
         f.child('limitToLast-test/three').setWithPriority('three', 3);
 
-        return f.child('limitToLast-test').limitToLast(2).once('value').then((snapshot) {
+        return f
+            .child('limitToLast-test')
+            .limitToLast(2)
+            .once('value')
+            .then((snapshot) {
           var val = snapshot.val() as Map;
           expect(val.values, ['two', 'three']);
         });
@@ -867,7 +966,6 @@ void main() {
   });
 
   group('on & off', () {
-
     List<String> addedKeys = [];
     test('onChildAdded', () {
       Firebase testRef;
@@ -894,8 +992,7 @@ void main() {
         Future waitFuture = subscription.cancel();
         if (waitFuture == null) {
           return testRef.push(value: 3);
-        }
-        else waitFuture.then((_) {
+        } else waitFuture.then((_) {
           return testRef.push(value: 3);
         });
       });
@@ -930,8 +1027,7 @@ void main() {
         Future waitFuture = subscription.cancel();
         if (waitFuture == null) {
           return testRef.set({'key': 3});
-        }
-        else waitFuture.then((_) {
+        } else waitFuture.then((_) {
           return testRef.set({'key': 3});
         });
       });
@@ -961,8 +1057,7 @@ void main() {
         Future waitFuture = onChildRemovedSubscription.cancel();
         if (waitFuture == null) {
           return testRef.child(addedKeys[1]).remove();
-        }
-        else waitFuture.then((_) {
+        } else waitFuture.then((_) {
           return testRef.child(addedKeys[1]).remove();
         });
       });
@@ -992,8 +1087,7 @@ void main() {
         Future waitFuture = onValueSubscription.cancel();
         if (waitFuture == null) {
           return testRef.update({'key': 3});
-        }
-        else waitFuture.then((_) {
+        } else waitFuture.then((_) {
           return testRef.update({'key': 3});
         });
       });
@@ -1002,9 +1096,7 @@ void main() {
     test('value events triggered last', () {
       schedule(() {
         int numAdded = 0;
-        var value = {
-            'a':'b', 'c':'d', 'e':'f'
-        };
+        var value = {'a': 'b', 'c': 'd', 'e': 'f'};
         Firebase testRef = f.child("things");
         testRef.onValue.listen((Event event) {
           var ss = event.snapshot;
@@ -1017,7 +1109,6 @@ void main() {
         testRef.set(value);
       });
     });
-
   });
 
   group('once', () {
@@ -1090,7 +1181,6 @@ void main() {
   });
 
   group('onDisconnect', () {
-
     test('set', () {
       var value = {'onDisconnect set': 1};
       return f.onDisconnect.set(value).then((v) {
@@ -1125,5 +1215,4 @@ void main() {
       });
     });
   });
-
 }
