@@ -428,10 +428,10 @@ class Firebase extends Query {
       {bool applyLocally: true}) {
     var c = new Completer();
     _fb.callMethod('transaction', [
-      (val) {
+      Zone.current.bindUnaryCallback((val) {
         var retValue = update(val);
         return jsify(retValue);
-      },
+      }),
       (err, committed, snapshot) {
         if (err != null) {
           c.completeError(err);
