@@ -1,5 +1,4 @@
 @TestOn("browser")
-
 library firebase.test;
 
 import 'dart:async';
@@ -994,22 +993,31 @@ void main() {
       });
     });
 
-    test('simple value, existing value', () {
+    test('simple value, existing value', () async {
       var testRef = f.child('tx3');
-      return testRef.set(42).then((_) {
-        return testRef.transaction((curVal) {
-          expect(curVal == null || curVal == 42, isTrue);
-          return 43;
-        });
-      }).then((result) {
-        expect(result.committed, isTrue);
-        expect(result.error, isNull);
+      await testRef.set(42);
 
-        var snapshot = result.snapshot;
-        expect(snapshot.hasChildren, false);
-        expect(snapshot.numChildren, 0);
-        expect(snapshot.val(), 43);
+      var retryCount = 0;
+      var result = await testRef.transaction((curVal) {
+        // Not sure why we have to retry at all - hmm...
+        expect(retryCount, lessThanOrEqualTo(1),
+            reason: 'Should not have to retry more than once');
+
+        if (curVal != 42) {
+          retryCount++;
+          return null;
+        }
+
+        return 43;
       });
+
+      expect(result.committed, isTrue);
+      expect(result.error, isNull);
+
+      var snapshot = result.snapshot;
+      expect(snapshot.hasChildren, false);
+      expect(snapshot.numChildren, 0);
+      expect(snapshot.val(), 43);
     });
   });
 
