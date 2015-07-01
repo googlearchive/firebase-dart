@@ -1,8 +1,11 @@
+@TestOn("browser")
+
+library firebase.test;
+
 import 'dart:async';
 
 import 'package:firebase/firebase.dart';
-import 'package:scheduled_test/scheduled_test.dart';
-import 'package:unittest/html_config.dart';
+import 'package:test/test.dart';
 
 const TEST_URL = 'https://boiling-fire-3310.firebaseio.com/test/';
 
@@ -33,9 +36,6 @@ String getTestUrl(int count) => new Uri(
 int _count = 0;
 
 void main() {
-  useHtmlConfiguration();
-  groupSep = ' - ';
-
   Firebase f;
   String testUrl;
 
@@ -43,13 +43,13 @@ void main() {
     _count++;
     testUrl = getTestUrl(_count);
     f = new Firebase(testUrl);
+  });
 
-    currentSchedule.onComplete.schedule(() {
-      if (f != null) {
-        f.unauth();
-        f = null;
-      }
-    });
+  tearDown(() {
+    if (f != null) {
+      f.unauth();
+      f = null;
+    }
   });
 
   if (AUTH_TOKEN != null) {
@@ -61,15 +61,10 @@ void main() {
         }));
       });
 
-      test('good auth token', () {
-        return f.authWithCustomToken(AUTH_TOKEN).then((response) {
-          expect(response['uid'], isNotNull);
-          expect(response['expires'], isNotNull);
-          expect(response['auth']['uid'], isNotNull);
-          expect(response['auth']['provider'], 'custom');
-          expect(response['token'], isNotNull);
-          expect(response['provider'], 'custom');
-        });
+      test('good auth token', () async {
+        // per https://www.firebase.com/docs/web/api/firebase/authwithcustomtoken.html
+        // should just succeed – nothing of interest in the return value
+        await f.authWithCustomToken(AUTH_TOKEN);
       });
     });
   }
@@ -107,22 +102,20 @@ void main() {
           'email': CREDENTIALS_EMAIL,
           'password': CREDENTIALS_PASSWORD
         };
-        schedule(() {
-          return f.createUser(credentials).then((res) {
-            expect(res, isNotNull);
-            return f.authWithPassword(credentials).then((authResponse) {
-              expect(authResponse['uid'], isNotNull);
-              expect(authResponse['expires'], isNotNull);
-              expect(authResponse['auth']['uid'], isNotNull);
-              expect(authResponse['auth']['provider'], 'password');
-              expect(authResponse['token'], isNotNull);
-              expect(authResponse['provider'], 'password');
-              expect(authResponse['password']['email'], CREDENTIALS_EMAIL);
-              expect(authResponse['password']['isTemporaryPassword'], false);
+        return f.createUser(credentials).then((res) {
+          expect(res, isNotNull);
+          return f.authWithPassword(credentials).then((authResponse) {
+            expect(authResponse['uid'], isNotNull);
+            expect(authResponse['expires'], isNotNull);
+            expect(authResponse['auth']['uid'], isNotNull);
+            expect(authResponse['auth']['provider'], 'password');
+            expect(authResponse['token'], isNotNull);
+            expect(authResponse['provider'], 'password');
+            expect(authResponse['password']['email'], CREDENTIALS_EMAIL);
+            expect(authResponse['password']['isTemporaryPassword'], false);
 
-              f.removeUser(credentials).then((err) {
-                expect(err, null);
-              });
+            f.removeUser(credentials).then((err) {
+              expect(err, null);
             });
           });
         });
@@ -137,44 +130,38 @@ void main() {
           'email': 'badCredentialTest@example.com',
           'password': 'WRONG'
         };
-        schedule(() {
-          return f.createUser(credentials).then((res) {
-            expect(res, isNotNull);
+        return f.createUser(credentials).then((res) {
+          expect(res, isNotNull);
 
-            expect(f.authWithPassword(badCredentials), throwsA((error) {
-              expect(error['code'], 'INVALID_PASSWORD');
-              f.removeUser(credentials).then((err) {
-                expect(err, null);
-              });
-              return true;
-            }));
-          });
+          expect(f.authWithPassword(badCredentials), throwsA((error) {
+            expect(error['code'], 'INVALID_PASSWORD');
+            f.removeUser(credentials).then((err) {
+              expect(err, null);
+            });
+            return true;
+          }));
         });
       });
     });
 
     group('createUser', () {
       test('createUser returns user data on success', () {
-        schedule(() {
-          var credentials = {
-            'email': 'createUserTest@example.com',
-            'password': 'pswd'
-          };
-          return f.createUser(credentials).then((result) {
-            expect(result['uid'], isNotNull);
-            f.removeUser(credentials);
-          });
+        var credentials = {
+          'email': 'createUserTest@example.com',
+          'password': 'pswd'
+        };
+        return f.createUser(credentials).then((result) {
+          expect(result['uid'], isNotNull);
+          f.removeUser(credentials);
         });
       });
 
       test('createUser throws error', () {
-        schedule(() {
-          var credentials = {'email': 'badEmailAddress', 'password': 'pswd'};
-          expect(f.createUser(credentials), throwsA((error) {
-            expect(error['code'], 'INVALID_EMAIL');
-            return true;
-          }));
-        });
+        var credentials = {'email': 'badEmailAddress', 'password': 'pswd'};
+        expect(f.createUser(credentials), throwsA((error) {
+          expect(error['code'], 'INVALID_EMAIL');
+          return true;
+        }));
       });
     });
 
@@ -189,14 +176,12 @@ void main() {
           'newEmail': newEmail,
           'password': password,
         };
-        schedule(() {
-          return f
-              .createUser({'email': email, 'password': password})
-              .then((result) {
-            f.changeEmail(changeCredentials).then((result) {
-              expect(result, null);
-              f.removeUser({'email': newEmail, 'password': password});
-            });
+        return f
+            .createUser({'email': email, 'password': password})
+            .then((result) {
+          f.changeEmail(changeCredentials).then((result) {
+            expect(result, null);
+            f.removeUser({'email': newEmail, 'password': password});
           });
         });
       });
@@ -209,16 +194,14 @@ void main() {
           'password': password,
         };
 
-        schedule(() {
-          return f
-              .createUser({'email': email, 'password': password})
-              .then((result) {
-            expect(f.changeEmail(badCredentials), throwsA((error) {
-              expect(error['code'], "INVALID_EMAIL");
-              f.removeUser({'email': email, 'password': password});
-              return true;
-            }));
-          });
+        return f
+            .createUser({'email': email, 'password': password})
+            .then((result) {
+          expect(f.changeEmail(badCredentials), throwsA((error) {
+            expect(error['code'], "INVALID_EMAIL");
+            f.removeUser({'email': email, 'password': password});
+            return true;
+          }));
         });
       });
     });
@@ -234,14 +217,12 @@ void main() {
           'oldPassword': oldPassword,
           'newPassword': newPassword
         };
-        schedule(() {
-          return f
-              .createUser({'email': email, 'password': oldPassword})
-              .then((result) {
-            f.changePassword(changeCredentials).then((result) {
-              expect(result, null);
-              f.removeUser({'email': email, 'password': newPassword});
-            });
+        return f
+            .createUser({'email': email, 'password': oldPassword})
+            .then((result) {
+          f.changePassword(changeCredentials).then((result) {
+            expect(result, null);
+            f.removeUser({'email': email, 'password': newPassword});
           });
         });
       });
@@ -254,16 +235,14 @@ void main() {
           'newPassword': 'updated_password'
         };
 
-        schedule(() {
-          return f
-              .createUser({'email': email, 'password': oldPassword})
-              .then((result) {
-            expect(f.changePassword(badCredentials), throwsA((error) {
-              expect(error['code'], "INVALID_PASSWORD");
-              f.removeUser({'email': email, 'password': oldPassword});
-              return true;
-            }));
-          });
+        return f
+            .createUser({'email': email, 'password': oldPassword})
+            .then((result) {
+          expect(f.changePassword(badCredentials), throwsA((error) {
+            expect(error['code'], "INVALID_PASSWORD");
+            f.removeUser({'email': email, 'password': oldPassword});
+            return true;
+          }));
         });
       });
     });
@@ -274,11 +253,9 @@ void main() {
           'email': 'removeUserTest@example.com',
           'password': 'pswd'
         };
-        schedule(() {
-          return f.createUser(credentials).then((result) {
-            f.removeUser(credentials).then((result) {
-              expect(result, null);
-            });
+        return f.createUser(credentials).then((result) {
+          f.removeUser(credentials).then((result) {
+            expect(result, null);
           });
         });
       });
@@ -288,12 +265,10 @@ void main() {
           'email': 'removeUserNotExistsTest@example.com',
           'password': 'pswd'
         };
-        schedule(() {
-          expect(f.removeUser(credentials), throwsA((error) {
-            expect(error['code'], 'INVALID_USER');
-            return true;
-          }));
-        });
+        expect(f.removeUser(credentials), throwsA((error) {
+          expect(error['code'], 'INVALID_USER');
+          return true;
+        }));
       });
     });
 
@@ -302,25 +277,21 @@ void main() {
         var password = 'pswd';
         var email = 'resetPasswordTest@example.com';
 
-        schedule(() {
-          var credentials = {'email': email, 'password': password};
-          return f.createUser(credentials).then((result) {
-            f.resetPassword({'email': email}).then((result) {
-              expect(result, null);
-              f.removeUser(credentials);
-            });
+        var credentials = {'email': email, 'password': password};
+        return f.createUser(credentials).then((result) {
+          f.resetPassword({'email': email}).then((result) {
+            expect(result, null);
+            f.removeUser(credentials);
           });
         });
       });
 
       test('resetPassword throws error', () {
         var email = 'resetEmailNotFound@example.com';
-        schedule(() {
-          expect(f.resetPassword({'email': email}), throwsA((error) {
-            expect(error['code'], "INVALID_USER");
-            return true;
-          }));
-        });
+        expect(f.resetPassword({'email': email}), throwsA((error) {
+          expect(error['code'], "INVALID_USER");
+          return true;
+        }));
       });
     });
   }
@@ -328,29 +299,25 @@ void main() {
   if (OAUTH_PROVIDER != null && OAUTH_TOKEN != null) {
     group('authWithOAuthToken', () {
       test('good OAuth token', () {
-        schedule(() {
-          return f
-              .authWithOAuthToken(OAUTH_PROVIDER, OAUTH_TOKEN)
-              .then((authResponse) {
-            expect(authResponse['uid'], isNotNull);
-            expect(authResponse['expires'], isNotNull);
-            expect(authResponse['auth']['uid'], isNotNull);
-            expect(authResponse['auth']['provider'], OAUTH_PROVIDER);
-            expect(authResponse['token'], isNotNull);
-            expect(authResponse['provider'], OAUTH_PROVIDER);
-            expect(authResponse[OAUTH_PROVIDER], isNotNull);
-          });
+        return f
+            .authWithOAuthToken(OAUTH_PROVIDER, OAUTH_TOKEN)
+            .then((authResponse) {
+          expect(authResponse['uid'], isNotNull);
+          expect(authResponse['expires'], isNotNull);
+          expect(authResponse['auth']['uid'], isNotNull);
+          expect(authResponse['auth']['provider'], OAUTH_PROVIDER);
+          expect(authResponse['token'], isNotNull);
+          expect(authResponse['provider'], OAUTH_PROVIDER);
+          expect(authResponse[OAUTH_PROVIDER], isNotNull);
         });
       });
 
       test('bad OAuth token', () {
-        schedule(() {
-          expect(f.authWithOAuthToken(OAUTH_PROVIDER, 'bad-auth-token'),
-              throwsA((error) {
-            expect(error['code'], 'INVALID_CREDENTIALS');
-            return true;
-          }));
-        });
+        expect(f.authWithOAuthToken(OAUTH_PROVIDER, 'bad-auth-token'),
+            throwsA((error) {
+          expect(error['code'], 'INVALID_CREDENTIALS');
+          return true;
+        }));
       });
     });
   }
@@ -362,17 +329,15 @@ void main() {
     });
 
     test('getAuth when authenticated', () {
-      schedule(() {
-        return f.authAnonymously().then((_) {
-          var response = f.getAuth();
-          expect(response['uid'], isNotNull);
-          expect(response['expires'], isNotNull);
-          expect(response['auth']['uid'], isNotNull);
-          expect(response['auth']['provider'], 'anonymous');
-          expect(response['token'], isNotNull);
-          expect(response['provider'], 'anonymous');
-          expect(response['anonymous'], {});
-        });
+      return f.authAnonymously().then((_) {
+        var response = f.getAuth();
+        expect(response['uid'], isNotNull);
+        expect(response['expires'], isNotNull);
+        expect(response['auth']['uid'], isNotNull);
+        expect(response['auth']['provider'], 'anonymous');
+        expect(response['token'], isNotNull);
+        expect(response['provider'], 'anonymous');
+        expect(response['anonymous'], {});
       });
     });
   });
@@ -445,11 +410,9 @@ void main() {
 
   group('data-snapshot', () {
     test('exists returns true when data exists', () {
-      schedule(() {
-        f.child('ds-exists').set({'thing': 'one'});
-        return f.child('ds-exists').once('value').then((snapshot) {
-          expect(snapshot.exists, true);
-        });
+      f.child('ds-exists').set({'thing': 'one'});
+      return f.child('ds-exists').once('value').then((snapshot) {
+        expect(snapshot.exists, true);
       });
     });
 
@@ -461,110 +424,88 @@ void main() {
 
     test('val() returns dart representation', () {
       var expected = {'test_data': 'good'};
-      schedule(() {
-        f.child('ds-val').set(expected);
-        return f.child('ds-val').once("value").then((snapshot) {
-          expect(snapshot.val(), expected);
-        });
+      f.child('ds-val').set(expected);
+      return f.child('ds-val').once("value").then((snapshot) {
+        expect(snapshot.val(), expected);
       });
     });
 
     test('snapshot returns child', () {
       var expected = {'test_data': 'good'};
-      schedule(() {
-        f.child('ds-child/my-child').set(expected);
-        return f.child('ds-child').once("value").then((snapshot) {
-          expect(snapshot.child('my-child').val(), expected);
-        });
+      f.child('ds-child/my-child').set(expected);
+      return f.child('ds-child').once("value").then((snapshot) {
+        expect(snapshot.child('my-child').val(), expected);
       });
     });
 
     test('snapshot forEach on children', () {
-      schedule(() {
-        f.child('ds-forEach/thing-one').setWithPriority({'thing': 'one'}, 1);
-        f.child('ds-forEach/thing-two').setWithPriority({'thing': 'two'}, 2);
-        f.child('ds-forEach/cat-hat').setWithPriority({'cat': 'hat'}, 3);
-        return f.child('ds-forEach').once("value").then((snapshot) {
-          var items = [];
-          snapshot.forEach((snapshot) {
-            items.add(snapshot.key);
-          });
-          expect(items, ['thing-one', 'thing-two', 'cat-hat']);
+      f.child('ds-forEach/thing-one').setWithPriority({'thing': 'one'}, 1);
+      f.child('ds-forEach/thing-two').setWithPriority({'thing': 'two'}, 2);
+      f.child('ds-forEach/cat-hat').setWithPriority({'cat': 'hat'}, 3);
+      return f.child('ds-forEach').once("value").then((snapshot) {
+        var items = [];
+        snapshot.forEach((snapshot) {
+          items.add(snapshot.key);
         });
+        expect(items, ['thing-one', 'thing-two', 'cat-hat']);
       });
     });
 
     test('hasChild returns true when child exists', () {
-      schedule(() {
-        f.child('ds-hasChild/thing-one').set({'thing': 'one'});
-        return f.child('ds-hasChild').once("value").then((snapshot) {
-          expect(snapshot.hasChild("thing-one"), true);
-        });
+      f.child('ds-hasChild/thing-one').set({'thing': 'one'});
+      return f.child('ds-hasChild').once("value").then((snapshot) {
+        expect(snapshot.hasChild("thing-one"), true);
       });
     });
 
     test('hasChild returns false when child doesnt exists', () {
-      schedule(() {
-        return f.child('ds-no-hasChild').once("value").then((snapshot) {
-          expect(snapshot.hasChild("thing-one"), false);
-        });
+      return f.child('ds-no-hasChild').once("value").then((snapshot) {
+        expect(snapshot.hasChild("thing-one"), false);
       });
     });
 
     test('hasChildren returns true when has any children', () {
-      schedule(() {
-        f.child('ds-hasChildren/thing-one').set({'thing': 'one'});
-        return f.child('ds-hasChildren').once("value").then((snapshot) {
-          expect(snapshot.hasChildren, true);
-        });
+      f.child('ds-hasChildren/thing-one').set({'thing': 'one'});
+      return f.child('ds-hasChildren').once("value").then((snapshot) {
+        expect(snapshot.hasChildren, true);
       });
     });
 
     test('hasChildren returns false when has no children', () {
-      schedule(() {
-        return f.child('ds-no-hasChildren').once("value").then((snapshot) {
-          expect(snapshot.hasChildren, false);
-        });
+      return f.child('ds-no-hasChildren').once("value").then((snapshot) {
+        expect(snapshot.hasChildren, false);
       });
     });
 
     test('key returns the key location', () {
-      schedule(() {
-        return f.child('ds-key').once("value").then((snapshot) {
-          expect(snapshot.key, 'ds-key');
-        });
+      return f.child('ds-key').once("value").then((snapshot) {
+        expect(snapshot.key, 'ds-key');
       });
     });
 
     test('numChildren returns the number of children', () {
-      schedule(() {
-        f.child('ds-numChildren/one').set("one");
-        f.child('ds-numChildren/two').set("two");
-        f.child('ds-numChildren/three').set("three");
-        return f.child('ds-numChildren').once("value").then((snapshot) {
-          expect(snapshot.numChildren, 3);
-        });
+      f.child('ds-numChildren/one').set("one");
+      f.child('ds-numChildren/two').set("two");
+      f.child('ds-numChildren/three').set("three");
+      return f.child('ds-numChildren').once("value").then((snapshot) {
+        expect(snapshot.numChildren, 3);
       });
     });
 
     test('ref returns firebase reference for this snapshot', () {
       Firebase expected = f.child('ds-ref');
 
-      schedule(() {
-        return expected.once('value').then((snapshot) {
-          var ref = snapshot.ref();
-          expect(ref.key, expected.key);
-          expect(ref, new isInstanceOf<Firebase>());
-        });
+      return expected.once('value').then((snapshot) {
+        var ref = snapshot.ref();
+        expect(ref.key, expected.key);
+        expect(ref, new isInstanceOf<Firebase>());
       });
     });
 
     test('getPriority returns priority', () {
-      schedule(() {
-        f.child('ds-priority').setWithPriority("thing", 4);
-        return f.child('ds-priority').once('value').then((snapshot) {
-          expect(snapshot.getPriority(), 4);
-        });
+      f.child('ds-priority').setWithPriority("thing", 4);
+      return f.child('ds-priority').once('value').then((snapshot) {
+        expect(snapshot.getPriority(), 4);
       });
     });
 
@@ -578,147 +519,131 @@ void main() {
 
   group('query', () {
     test('orderByChild', () {
-      schedule(() {
-        f.child('order-by-child/one/animal').set('aligator');
-        f.child('order-by-child/two/animal').set('zebra');
-        f.child('order-by-child/three/animal').set('monkey');
+      f.child('order-by-child/one/animal').set('aligator');
+      f.child('order-by-child/two/animal').set('zebra');
+      f.child('order-by-child/three/animal').set('monkey');
 
-        return f
-            .child('order-by-child')
-            .orderByChild('animal')
-            .once('value')
-            .then((snapshot) {
-          var items = [];
-          snapshot.forEach((snapshot) {
-            items.add(snapshot.val());
-          });
-          expect(items, [
-            {'animal': 'aligator'},
-            {'animal': 'monkey'},
-            {'animal': 'zebra'},
-          ]);
+      return f
+          .child('order-by-child')
+          .orderByChild('animal')
+          .once('value')
+          .then((snapshot) {
+        var items = [];
+        snapshot.forEach((snapshot) {
+          items.add(snapshot.val());
         });
+        expect(items, [
+          {'animal': 'aligator'},
+          {'animal': 'monkey'},
+          {'animal': 'zebra'},
+        ]);
       });
     });
 
     test('orderByKey', () {
-      schedule(() {
-        f.child('order-by-key/zebra').set('three');
-        f.child('order-by-key/elephant').set('one');
-        f.child('order-by-key/monkey').set('two');
+      f.child('order-by-key/zebra').set('three');
+      f.child('order-by-key/elephant').set('one');
+      f.child('order-by-key/monkey').set('two');
 
-        return f
-            .child('order-by-key')
-            .orderByKey()
-            .once('value')
-            .then((snapshot) {
-          var items = [];
-          snapshot.forEach((snapshot) {
-            items.add(snapshot.val());
-          });
-          expect(items, ['one', 'two', 'three']);
+      return f
+          .child('order-by-key')
+          .orderByKey()
+          .once('value')
+          .then((snapshot) {
+        var items = [];
+        snapshot.forEach((snapshot) {
+          items.add(snapshot.val());
         });
+        expect(items, ['one', 'two', 'three']);
       });
     });
 
     test('orderByValue', () {
-      schedule(() {
-        f.child('order-by-value/football').set(20);
-        f.child('order-by-value/basketball').set(10);
-        f.child('order-by-value/baseball').set(15);
+      f.child('order-by-value/football').set(20);
+      f.child('order-by-value/basketball').set(10);
+      f.child('order-by-value/baseball').set(15);
 
-        return f
-            .child('order-by-value')
-            .orderByValue()
-            .once('value')
-            .then((snapshot) {
-          var items = [];
-          snapshot.forEach((snapshot) {
-            items.add(snapshot.val());
-          });
-          expect(items, [10, 15, 20]);
+      return f
+          .child('order-by-value')
+          .orderByValue()
+          .once('value')
+          .then((snapshot) {
+        var items = [];
+        snapshot.forEach((snapshot) {
+          items.add(snapshot.val());
         });
+        expect(items, [10, 15, 20]);
       });
     });
 
     test('orderByPriority', () {
-      schedule(() {
-        f.child('order-by-priority/football').setWithPriority('twenty', 20);
-        f.child('order-by-priority/basketball').setWithPriority('ten', 10);
-        f.child('order-by-priority/baseball').setWithPriority('fifteen', 15);
+      f.child('order-by-priority/football').setWithPriority('twenty', 20);
+      f.child('order-by-priority/basketball').setWithPriority('ten', 10);
+      f.child('order-by-priority/baseball').setWithPriority('fifteen', 15);
 
-        return f
-            .child('order-by-priority')
-            .orderByPriority()
-            .once('value')
-            .then((snapshot) {
-          var items = [];
-          snapshot.forEach((snapshot) {
-            items.add(snapshot.val());
-          });
-          expect(items, ['ten', 'fifteen', 'twenty']);
+      return f
+          .child('order-by-priority')
+          .orderByPriority()
+          .once('value')
+          .then((snapshot) {
+        var items = [];
+        snapshot.forEach((snapshot) {
+          items.add(snapshot.val());
         });
+        expect(items, ['ten', 'fifteen', 'twenty']);
       });
     });
 
     test('equalTo', () {
-      schedule(() {
-        f.child('equalTo/football').set(20);
-        f.child('equalTo/basketball').set(10);
-        f.child('equalTo/soccer').set(15);
-        f.child('equalTo/baseball').set(15);
+      f.child('equalTo/football').set(20);
+      f.child('equalTo/basketball').set(10);
+      f.child('equalTo/soccer').set(15);
+      f.child('equalTo/baseball').set(15);
 
-        return f
-            .child('equalTo')
-            .orderByValue()
-            .equalTo(15)
-            .once('value')
-            .then((snapshot) {
-          var val = snapshot.val();
-          expect(val, {'soccer': 15, 'baseball': 15});
-        });
+      return f
+          .child('equalTo')
+          .orderByValue()
+          .equalTo(15)
+          .once('value')
+          .then((snapshot) {
+        var val = snapshot.val();
+        expect(val, {'soccer': 15, 'baseball': 15});
       });
     });
 
     test('equalTo with Key', () {
-      schedule(() {
-        f.child('equalTo/football').set(20);
-        f.child('equalTo/basketball').set(10);
-        f.child('equalTo/soccer').set(15);
-        f.child('equalTo/baseball').set(15);
+      f.child('equalTo/football').set(20);
+      f.child('equalTo/basketball').set(10);
+      f.child('equalTo/soccer').set(15);
+      f.child('equalTo/baseball').set(15);
 
-        return f
-            .child('equalTo')
-            .orderByValue()
-            .equalTo(15, 'soccer')
-            .once('value')
-            .then((snapshot) {
-          var val = snapshot.val();
-          expect(val, {'soccer': 15});
-        });
+      return f
+          .child('equalTo')
+          .orderByValue()
+          .equalTo(15, 'soccer')
+          .once('value')
+          .then((snapshot) {
+        var val = snapshot.val();
+        expect(val, {'soccer': 15});
       });
     });
 
     group('startAt', () {
-      test('startAt starts at beginning when not specified', () {
+      test('startAt starts at beginning when not specified', () async {
         var child = f.child('startAt 1');
 
-        schedule(() {
-          var count = 0;
-          return Future.doWhile(() {
-            count++;
-            return child.push().set(count).then((_) {
-              return count < 10;
-            });
+        var count = 0;
+        await Future.doWhile(() {
+          count++;
+          return child.push().set(count).then((_) {
+            return count < 10;
           });
         });
 
-        schedule(() {
-          return child.startAt().once('value').then((snapshot) {
-            var val = snapshot.val();
-            expect(val, hasLength(10));
-          });
-        });
+        var snapshot = await child.startAt().once('value');
+
+        var val = snapshot.val();
+        expect(val, hasLength(10));
       });
 
       test('startAt returns items from starting point when ordering by value',
@@ -729,16 +654,14 @@ void main() {
         child.push().set(3);
         child.push().set(4);
 
-        schedule(() {
-          return child
-              .startAt(value: 2)
-              .orderByValue()
-              .limitToFirst(2)
-              .once('value')
-              .then((snapshot) {
-            var val = snapshot.val() as Map;
-            expect(val.values, [2, 3]);
-          });
+        return child
+            .startAt(value: 2)
+            .orderByValue()
+            .limitToFirst(2)
+            .once('value')
+            .then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, [2, 3]);
         });
       });
 
@@ -748,16 +671,14 @@ void main() {
         f.child('startAt/C/thing').set('3');
         f.child('startAt/D/thing').set('4');
 
-        schedule(() {
-          return f
-              .child('startAt')
-              .startAt(value: '3')
-              .orderByChild('thing')
-              .once('value')
-              .then((snapshot) {
-            var val = snapshot.val() as Map;
-            expect(val.values, [{'thing': '3'}, {'thing': '4'}]);
-          });
+        return f
+            .child('startAt')
+            .startAt(value: '3')
+            .orderByChild('thing')
+            .once('value')
+            .then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, [{'thing': '3'}, {'thing': '4'}]);
         });
       });
 
@@ -768,17 +689,15 @@ void main() {
         f.child('startAt/key/D').set('4');
         f.child('startAt/key/E').set('5');
 
-        schedule(() {
-          return f
-              .child('startAt/key')
-              .startAt(value: 'C')
-              .orderByKey()
-              .limitToFirst(3)
-              .once('value')
-              .then((snapshot) {
-            var val = snapshot.val() as Map;
-            expect(val.values, ['3', '4', '5']);
-          });
+        return f
+            .child('startAt/key')
+            .startAt(value: 'C')
+            .orderByKey()
+            .limitToFirst(3)
+            .once('value')
+            .then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, ['3', '4', '5']);
         });
       });
 
@@ -789,41 +708,34 @@ void main() {
         f.child('startAt/priority/D').setWithPriority('four', 100);
         f.child('startAt/priority/E').setWithPriority('one - A', 90);
 
-        schedule(() {
-          return f
-              .child('startAt/priority')
-              .startAt(value: 100, key: 'C')
-              .orderByPriority()
-              .limitToFirst(3)
-              .once('value')
-              .then((snapshot) {
-            var val = snapshot.val() as Map;
-            expect(val.values, ['three', 'four']);
-          });
+        return f
+            .child('startAt/priority')
+            .startAt(value: 100, key: 'C')
+            .orderByPriority()
+            .limitToFirst(3)
+            .once('value')
+            .then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, ['three', 'four']);
         });
       });
     });
 
     group('endAt', () {
-      test('endAt ends at end when not specified', () {
+      test('endAt ends at end when not specified', () async {
         var child = f.child('endAt 1');
 
-        schedule(() {
-          var count = 0;
-          return Future.doWhile(() {
-            count++;
-            return child.push().set(count).then((_) {
-              return count < 10;
-            });
+        var count = 0;
+        await Future.doWhile(() {
+          count++;
+          return child.push().set(count).then((_) {
+            return count < 10;
           });
         });
 
-        schedule(() {
-          return child.endAt().once('value').then((snapshot) {
-            var val = snapshot.val();
-            expect(val, hasLength(10));
-          });
-        });
+        var snapshot = await child.endAt().once('value');
+        var val = snapshot.val();
+        expect(val, hasLength(10));
       });
 
       test('endAt returns items from end point when ordering by value', () {
@@ -833,16 +745,14 @@ void main() {
         child.push().set(3);
         child.push().set(4);
 
-        schedule(() {
-          return child
-              .endAt(value: 2)
-              .orderByValue()
-              .limitToFirst(2)
-              .once('value')
-              .then((snapshot) {
-            var val = snapshot.val() as Map;
-            expect(val.values, [1, 2]);
-          });
+        return child
+            .endAt(value: 2)
+            .orderByValue()
+            .limitToFirst(2)
+            .once('value')
+            .then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, [1, 2]);
         });
       });
 
@@ -852,17 +762,14 @@ void main() {
         f.child('endAt/C/thing').set('3');
         f.child('endAt/D/thing').set('4');
 
-        schedule(() {
-          return f
-              .child('endAt')
-              .endAt(value: '3')
-              .orderByChild('thing')
-              .once('value')
-              .then((snapshot) {
-            var val = snapshot.val() as Map;
-            expect(
-                val.values, [{'thing': '1'}, {'thing': '2'}, {'thing': '3'}]);
-          });
+        return f
+            .child('endAt')
+            .endAt(value: '3')
+            .orderByChild('thing')
+            .once('value')
+            .then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, [{'thing': '1'}, {'thing': '2'}, {'thing': '3'}]);
         });
       });
 
@@ -873,17 +780,15 @@ void main() {
         f.child('endAt/key/D').set('4');
         f.child('endAt/key/E').set('5');
 
-        schedule(() {
-          return f
-              .child('endAt/key')
-              .endAt(value: 'C')
-              .orderByKey()
-              .limitToFirst(3)
-              .once('value')
-              .then((snapshot) {
-            var val = snapshot.val() as Map;
-            expect(val.values, ['1', '2', '3']);
-          });
+        return f
+            .child('endAt/key')
+            .endAt(value: 'C')
+            .orderByKey()
+            .limitToFirst(3)
+            .once('value')
+            .then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, ['1', '2', '3']);
         });
       });
 
@@ -894,198 +799,148 @@ void main() {
         f.child('endAt/priority/D').setWithPriority('four', 100);
         f.child('endAt/priority/E').setWithPriority('one - A', 120);
 
-        schedule(() {
-          return f
-              .child('endAt/priority')
-              .endAt(value: 100, key: 'C')
-              .orderByPriority()
-              .once('value')
-              .then((snapshot) {
-            var val = snapshot.val() as Map;
-            expect(val.values, ['one', 'two', 'three']);
-          });
+        return f
+            .child('endAt/priority')
+            .endAt(value: 100, key: 'C')
+            .orderByPriority()
+            .once('value')
+            .then((snapshot) {
+          var val = snapshot.val() as Map;
+          expect(val.values, ['one', 'two', 'three']);
         });
       });
     });
 
     test('limitToFirst', () {
-      schedule(() {
-        f.child('limitToFirst-test/one').setWithPriority('one', 1);
-        f.child('limitToFirst-test/two').setWithPriority('two', 2);
-        f.child('limitToFirst-test/three').setWithPriority('three', 3);
+      f.child('limitToFirst-test/one').setWithPriority('one', 1);
+      f.child('limitToFirst-test/two').setWithPriority('two', 2);
+      f.child('limitToFirst-test/three').setWithPriority('three', 3);
 
-        return f
-            .child('limitToFirst-test')
-            .limitToFirst(2)
-            .once('value')
-            .then((snapshot) {
-          var val = snapshot.val() as Map;
-          expect(val.values, ['one', 'two']);
-        });
+      return f
+          .child('limitToFirst-test')
+          .limitToFirst(2)
+          .once('value')
+          .then((snapshot) {
+        var val = snapshot.val() as Map;
+        expect(val.values, ['one', 'two']);
       });
     });
 
     test('limitToLast', () {
-      schedule(() {
-        f.child('limitToLast-test/one').setWithPriority('one', 1);
-        f.child('limitToLast-test/two').setWithPriority('two', 2);
-        f.child('limitToLast-test/three').setWithPriority('three', 3);
+      f.child('limitToLast-test/one').setWithPriority('one', 1);
+      f.child('limitToLast-test/two').setWithPriority('two', 2);
+      f.child('limitToLast-test/three').setWithPriority('three', 3);
 
-        return f
-            .child('limitToLast-test')
-            .limitToLast(2)
-            .once('value')
-            .then((snapshot) {
-          var val = snapshot.val() as Map;
-          expect(val.values, ['two', 'three']);
-        });
+      return f
+          .child('limitToLast-test')
+          .limitToLast(2)
+          .once('value')
+          .then((snapshot) {
+        var val = snapshot.val() as Map;
+        expect(val.values, ['two', 'three']);
       });
     });
   });
 
   group('on & off', () {
     List<String> addedKeys = [];
-    test('onChildAdded', () {
+    test('onChildAdded', () async {
       Firebase testRef;
       StreamSubscription<Event> subscription;
       var eventCount = 0;
 
-      schedule(() {
-        testRef = f.child('onChildAdded');
-        subscription = testRef.onChildAdded.listen((event) {
-          var ss = event.snapshot;
-          addedKeys.add(ss.key);
-          expect(++eventCount, lessThan(3));
-          expect(ss.val(), eventCount);
-        });
-
-        return testRef.push(value: 1);
+      testRef = f.child('onChildAdded');
+      subscription = testRef.onChildAdded.listen((event) {
+        var ss = event.snapshot;
+        addedKeys.add(ss.key);
+        expect(++eventCount, lessThan(3));
+        expect(ss.val(), eventCount);
       });
 
-      schedule(() {
-        return testRef.push(value: 2);
-      });
+      await testRef.push(value: 1);
 
-      schedule(() {
-        Future waitFuture = subscription.cancel();
-        if (waitFuture == null) {
-          return testRef.push(value: 3);
-        } else waitFuture.then((_) {
-          return testRef.push(value: 3);
-        });
-      });
+      await testRef.push(value: 2);
+
+      await subscription.cancel();
+      await testRef.push(value: 3);
     });
 
-    test('onChildChanged', () {
+    test('onChildChanged', () async {
       Firebase testRef;
       StreamSubscription<Event> subscription;
       var eventCount = 0;
 
-      schedule(() {
-        testRef = f.child('onChildChanged');
-        subscription = testRef.onChildChanged.listen((event) {
-          var ss = event.snapshot;
-          expect(ss.key, 'key');
-          eventCount++;
-          expect(ss.val(), eventCount);
-        });
-
-        return testRef.set({'key': 0});
+      testRef = f.child('onChildChanged');
+      subscription = testRef.onChildChanged.listen((event) {
+        var ss = event.snapshot;
+        expect(ss.key, 'key');
+        eventCount++;
+        expect(ss.val(), eventCount);
       });
 
-      schedule(() {
-        return testRef.set({'key': 1});
-      });
+      await testRef.set({'key': 0});
 
-      schedule(() {
-        return testRef.set({'key': 2});
-      });
+      await testRef.set({'key': 1});
 
-      schedule(() {
-        Future waitFuture = subscription.cancel();
-        if (waitFuture == null) {
-          return testRef.set({'key': 3});
-        } else waitFuture.then((_) {
-          return testRef.set({'key': 3});
-        });
-      });
+      await testRef.set({'key': 2});
 
-      schedule(() {
-        expect(eventCount, 2);
-      });
+      await subscription.cancel();
+      await testRef.set({'key': 3});
+
+      expect(eventCount, 2);
     });
 
-    test('onChildRemoved', () {
+    test('onChildRemoved', () async {
       Firebase testRef;
       StreamSubscription<Event> onChildRemovedSubscription;
       int childRemovedCount = 0;
 
-      schedule(() {
-        testRef = f.child('onChildAdded');
-        onChildRemovedSubscription = testRef.onChildRemoved.listen((event) {
-          var ss = event.snapshot;
-          expect(++childRemovedCount, 1);
-          expect(ss.key, addedKeys[0]);
-        });
-
-        return testRef.child(addedKeys[0]).remove();
+      testRef = f.child('onChildAdded');
+      onChildRemovedSubscription = testRef.onChildRemoved.listen((event) {
+        var ss = event.snapshot;
+        expect(++childRemovedCount, 1);
+        expect(ss.key, addedKeys[0]);
       });
 
-      schedule(() {
-        Future waitFuture = onChildRemovedSubscription.cancel();
-        if (waitFuture == null) {
-          return testRef.child(addedKeys[1]).remove();
-        } else waitFuture.then((_) {
-          return testRef.child(addedKeys[1]).remove();
-        });
-      });
+      await testRef.child(addedKeys[0]).remove();
+
+      await onChildRemovedSubscription.cancel();
+      await testRef.child(addedKeys[1]).remove();
     });
 
-    test('onValue', () {
+    test('onValue', () async {
       Firebase testRef;
       StreamSubscription<Event> onValueSubscription;
       int valueCount = 0;
 
-      schedule(() {
-        testRef = f.child('onValue');
-        onValueSubscription = testRef.onValue.listen((event) {
-          var ss = event.snapshot;
-          expect(ss.key, 'onValue');
-          expect(ss.val(), {'key': ++valueCount});
-          expect(valueCount, lessThan(3));
-        });
-        return testRef.set({'key': 1});
+      testRef = f.child('onValue');
+      onValueSubscription = testRef.onValue.listen((event) {
+        var ss = event.snapshot;
+        expect(ss.key, 'onValue');
+        expect(ss.val(), {'key': ++valueCount});
+        expect(valueCount, lessThan(3));
       });
+      await testRef.set({'key': 1});
 
-      schedule(() {
-        return testRef.update({'key': 2});
-      });
+      await testRef.update({'key': 2});
 
-      schedule(() {
-        Future waitFuture = onValueSubscription.cancel();
-        if (waitFuture == null) {
-          return testRef.update({'key': 3});
-        } else waitFuture.then((_) {
-          return testRef.update({'key': 3});
-        });
-      });
+      await onValueSubscription.cancel();
+      await testRef.update({'key': 3});
     });
 
     test('value events triggered last', () {
-      schedule(() {
-        int numAdded = 0;
-        var value = {'a': 'b', 'c': 'd', 'e': 'f'};
-        Firebase testRef = f.child("things");
-        testRef.onValue.listen((Event event) {
-          var ss = event.snapshot;
-          expect(numAdded, 3);
-          expect(ss.val(), value);
-        });
-        testRef.onChildAdded.listen((Event event) {
-          numAdded++;
-        });
-        testRef.set(value);
+      int numAdded = 0;
+      var value = {'a': 'b', 'c': 'd', 'e': 'f'};
+      Firebase testRef = f.child("things");
+      testRef.onValue.listen((Event event) {
+        var ss = event.snapshot;
+        expect(numAdded, 3);
+        expect(ss.val(), value);
       });
+      testRef.onChildAdded.listen((Event event) {
+        numAdded++;
+      });
+      testRef.set(value);
     });
   });
 
