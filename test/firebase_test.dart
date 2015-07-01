@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:js';
 
 import 'package:firebase/firebase.dart';
 import 'package:scheduled_test/scheduled_test.dart';
