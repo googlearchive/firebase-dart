@@ -23,18 +23,26 @@ const OAUTH_PROVIDER = null;
 const OAUTH_TOKEN = null;
 
 final _dateKey = new DateTime.now().toUtc().toIso8601String();
-final _testKey = '$_dateKey'.replaceAll(new RegExp(r'[\.]'), '_');
+final _testKey = '$_dateKey'.replaceAll(new RegExp(r'[\.\:]'), '_');
 
-final _testUrl = TEST_URL + _testKey + '/';
+String getTestUrl(int count) => new Uri(
+    scheme: 'https',
+    host: 'boiling-fire-3310.firebaseio.com',
+    pathSegments: ['test', _testKey, count.toString()]).toString();
+
+int _count = 0;
 
 void main() {
   useHtmlConfiguration();
   groupSep = ' - ';
 
   Firebase f;
+  String testUrl;
 
   setUp(() {
-    f = new Firebase(_testUrl);
+    _count++;
+    testUrl = getTestUrl(_count);
+    f = new Firebase(testUrl);
 
     currentSchedule.onComplete.schedule(() {
       if (f != null) {
@@ -375,14 +383,14 @@ void main() {
       expect(child.key, 'trad');
 
       var parent = child.parent();
-      expect(parent.key, _testKey);
+      expect(parent.key, _count.toString());
 
       var root = child.root();
       expect(root.key, isNull);
     });
 
     test('key returns last item name', () {
-      expect(f.key, _testKey);
+      expect(f.key, _count.toString());
     });
 
     test('key returns null on root location', () {
@@ -390,7 +398,7 @@ void main() {
     });
 
     test('toString returns the absolute url to ref location', () {
-      expect(f.toString(), TEST_URL + Uri.encodeComponent(_testKey));
+      expect(f.toString(), testUrl);
     });
 
     test('set', () {
