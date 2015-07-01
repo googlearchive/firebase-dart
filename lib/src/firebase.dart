@@ -274,14 +274,6 @@ class Firebase extends Query {
   String get key => _fb.callMethod('key');
 
   /**
-   * The last token in a Firebase location is considered its name.
-   *
-   * [name] on the root of a Firebase is `null`.
-   */
-  @deprecated
-  String get name => _fb.callMethod('name');
-
-  /**
    * Gets the absolute URL corresponding to this Firebase reference's location.
    */
   String toString() {

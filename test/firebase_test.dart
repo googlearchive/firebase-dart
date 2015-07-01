@@ -389,14 +389,6 @@ void main() {
       expect(f.root().key, isNull);
     });
 
-    test('name returns last item name', () {
-      expect(f.name, _testKey);
-    });
-
-    test('name returns null on root location', () {
-      expect(f.root().name, isNull);
-    });
-
     test('toString returns the absolute url to ref location', () {
       expect(f.toString(), TEST_URL + Uri.encodeComponent(_testKey));
     });
@@ -536,14 +528,6 @@ void main() {
       });
     });
 
-    test('name returns the key location', () {
-      schedule(() {
-        return f.child('ds-name').once("value").then((snapshot) {
-          expect(snapshot.name, 'ds-name');
-        });
-      });
-    });
-
     test('numChildren returns the number of children', () {
       schedule(() {
         f.child('ds-numChildren/one').set("one");
@@ -562,7 +546,7 @@ void main() {
         return expected.once('value').then((snapshot) {
           var ref = snapshot.ref();
           expect(ref.key, expected.key);
-          expect(ref, new isInstanceOf(Firebase));
+          expect(ref, new isInstanceOf<Firebase>());
         });
       });
     });
@@ -946,19 +930,6 @@ void main() {
             .then((snapshot) {
           var val = snapshot.val() as Map;
           expect(val.values, ['two', 'three']);
-        });
-      });
-    });
-
-    test('limit (deprecated)', () {
-      schedule(() {
-        f.child('limit-test/one').setWithPriority('one', 1);
-        f.child('limit-test/two').setWithPriority('two', 2);
-        f.child('limit-test/three').setWithPriority('three', 3);
-
-        return f.child('limit-test').limit(1).once('value').then((snapshot) {
-          var val = snapshot.val() as Map;
-          expect(val.values, ['three']);
         });
       });
     });

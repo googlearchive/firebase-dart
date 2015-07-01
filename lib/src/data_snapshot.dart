@@ -82,12 +82,6 @@ class DataSnapshot {
   String get key => _ds.callMethod('key');
 
   /**
-   * The name of the location that generated this DataSnapshot.
-   */
-  @deprecated
-  String get name => _ds.callMethod('name');
-
-  /**
    * The number of children for this DataSnapshot. If it has children,
    * you can enumerate them with forEach().
    */
