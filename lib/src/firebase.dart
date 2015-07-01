@@ -566,14 +566,20 @@ class Query {
    */
   Stream<Event> _createStream(String type) {
     StreamController<Event> controller;
+
+    // the first argument is to align with the implementation of
+    // JsFunction.withThis – the first arg is 'this'
+    void addEvent(_, snapshot, [prevChild]) {
+      controller
+          .add(new Event(new DataSnapshot.fromJsObject(snapshot), prevChild));
+    }
+
+    // using this wrapper to avoid a checked-mode warning about the function
+    // not being a JSObject.
+    var jsFunc = new JsFunction.withThis(addEvent);
+
     void startListen() {
-      _fb.callMethod('on', [
-        type,
-        (snapshot, [prevChild]) {
-          controller.add(
-              new Event(new DataSnapshot.fromJsObject(snapshot), prevChild));
-        }
-      ]);
+      _fb.callMethod('on', [type, jsFunc]);
     }
     void stopListen() {
       _fb.callMethod('off', [type]);
