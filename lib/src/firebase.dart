@@ -55,13 +55,7 @@ class Firebase extends Query {
     // <expiration time in seconds since the unix epoch> }.
     _fb.callMethod('auth', [
       token,
-      (err, [result]) {
-        if (err != null) {
-          c.completeError(err);
-        } else {
-          c.complete(decodeAuthData(result));
-        }
-      },
+      _getAuthCallback(c),
       (err) {
         c.completeError(err);
       }
@@ -76,19 +70,7 @@ class Firebase extends Query {
    */
   Future authWithCustomToken(String token) {
     var c = new Completer();
-    _fb.callMethod('authWithCustomToken', [
-      token,
-      (err, [result]) {
-        if (err != null) {
-          c.completeError(err);
-        } else {
-          c.complete(decodeAuthData(result));
-        }
-      },
-      (err) {
-        c.completeError(err);
-      }
-    ]);
+    _fb.callMethod('authWithCustomToken', [token, _getAuthCallback(c)]);
     return c.future;
   }
 
@@ -98,13 +80,7 @@ class Firebase extends Query {
   Future authAnonymously({remember: 'default'}) {
     var c = new Completer();
     _fb.callMethod('authAnonymously', [
-      (err, [result]) {
-        if (err != null) {
-          c.completeError(err);
-        } else {
-          c.complete(decodeAuthData(result));
-        }
-      },
+      _getAuthCallback(c),
       jsify({'remember': remember})
     ]);
     return c.future;
@@ -119,19 +95,8 @@ class Firebase extends Query {
     // failure. On success, the first argument will be null and the second
     // will be an object containing { auth: <auth payload>, expires:
     // <expiration time in seconds since the unix epoch> }.
-    _fb.callMethod('authWithPassword', [
-      jsify(credentials),
-      (err, [result]) {
-        if (err != null) {
-          c.completeError(err);
-        } else {
-          c.complete(decodeAuthData(result));
-        }
-      },
-      (err) {
-        c.completeError(err);
-      }
-    ]);
+    _fb.callMethod(
+        'authWithPassword', [jsify(credentials), _getAuthCallback(c)]);
     return c.future;
   }
 
@@ -143,13 +108,7 @@ class Firebase extends Query {
     var c = new Completer();
     _fb.callMethod('authWithOAuthPopup', [
       provider,
-      (err, [result]) {
-        if (err != null) {
-          c.completeError(err);
-        } else {
-          c.complete(decodeAuthData(result));
-        }
-      },
+      _getAuthCallback(c),
       jsify({'remember': remember, 'scope': scope})
     ]);
     return c.future;
@@ -163,13 +122,7 @@ class Firebase extends Query {
     var c = new Completer();
     _fb.callMethod('authWithOAuthRedirect', [
       provider,
-      (err, [result]) {
-        if (err != null) {
-          c.completeError(err);
-        } else {
-          c.complete(decodeAuthData(result));
-        }
-      },
+      _getAuthCallback(c),
       jsify({'remember': remember, 'scope': scope})
     ]);
     return c.future;
@@ -184,16 +137,20 @@ class Firebase extends Query {
     _fb.callMethod('authWithOAuthToken', [
       provider,
       jsify(credentials),
-      (err, [result]) {
-        if (err != null) {
-          c.completeError(err);
-        } else {
-          c.complete(decodeAuthData(result));
-        }
-      },
+      _getAuthCallback(c),
       jsify({'remember': remember, 'scope': scope})
     ]);
     return c.future;
+  }
+
+  ZoneBinaryCallback _getAuthCallback(Completer c) {
+    return (err, [result]) {
+      if (err != null) {
+        c.completeError(err);
+      } else {
+        c.complete(decodeAuthData(result));
+      }
+    };
   }
 
   /**
