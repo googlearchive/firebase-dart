@@ -3,6 +3,8 @@ library firebase.test.jwt;
 import 'package:firebase/src/jwt.dart';
 import 'package:test/test.dart';
 
+import 'test_shared.dart';
+
 void main() {
   // inputs from http://jwt.io/ with appreciation
   test('create a JWT token', () {
@@ -27,5 +29,18 @@ void main() {
     ];
 
     expect(newToken, encodedSections.join('.'));
+  });
+
+  test('create a Firebase JWT token', () {
+    var token = createFirebaseJwtToken(INVALID_AUTH_TOKEN,
+        issuedAtTime: new DateTime.utc(1981, 6, 5));
+
+    var tokenSections = token.split('.');
+
+    expect(tokenSections, [
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+      'eyJ2IjowLCJpYXQiOjM2MDU0NzIwMCwiZCI6e319',
+      'g3eAUCtVsOq--HknT38L06iTuIWGOL-aI9BIx-PnDqM'
+    ]);
   });
 }
