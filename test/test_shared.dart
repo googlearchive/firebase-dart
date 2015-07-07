@@ -25,6 +25,5 @@ DateTime parseTestKey(String value) {
   return DateTime.parse(value);
 }
 
-
 Uri getTestUrlBase(List<String> segments) =>
     new Uri(scheme: 'https', host: TEST_DOMAIN, pathSegments: segments);
