@@ -10,6 +10,8 @@ class FirebaseClient {
 
   FirebaseClient(this.credential);
 
+  const FirebaseClient.anonymous() : credential = null;
+
   Future<dynamic> get(Uri uri) => send('GET', uri);
 
   Future<dynamic> put(Uri uri, json) => send('PUT', uri, json: json);
@@ -19,7 +21,9 @@ class FirebaseClient {
   Future<dynamic> send(String method, Uri uri, {json}) async {
     var params = new Map.from(uri.queryParameters);
 
-    params['auth'] = credential;
+    if (credential != null) {
+      params['auth'] = credential;
+    }
 
     uri = uri.replace(queryParameters: params);
 

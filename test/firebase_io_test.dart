@@ -7,8 +7,29 @@ import 'test_shared.dart';
 Uri getTestUrl(int count, {DateTime timeKey}) =>
     getTestUrlBase(<String>['test', testKey(timeKey), count.toString() + '.json']);
 
+//TODO: add tests that validate security by having secured and insecure sections
 void main() {
-  test('get andp put with a secret', () async {
+  test('get and put without security', () async {
+    var baseUri = getTestUrl(0);
+
+    var fbClient = new FirebaseClient.anonymous();
+
+    var rootValue = await fbClient.get(baseUri);
+
+    expect(rootValue, isNull);
+
+    var putContent = {"name": "Alan Turing", "birthday": "June 23, 1912"};
+
+    rootValue = await fbClient.put(baseUri, putContent);
+
+    expect(rootValue, putContent);
+
+    rootValue = await fbClient.get(baseUri);
+
+    expect(rootValue, putContent);
+  });
+
+  test('get and put with a secret', () async {
     var baseUri = getTestUrl(0);
 
     var fbClient = new FirebaseClient(AUTH_TOKEN);
