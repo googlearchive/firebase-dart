@@ -6,12 +6,7 @@ import 'dart:async';
 import 'package:firebase/firebase.dart';
 import 'package:test/test.dart';
 
-const TEST_URL = 'https://boiling-fire-3310.firebaseio.com/test/';
-
-// Update TEST_URL to a valid URL and update AUTH_TOKEN to a corresponding
-// authentication token to test authentication.
-const AUTH_TOKEN = '5KxwqxGbNU0Mrje2NGnSFJZsd3KaTVeUtcVhorMl';
-const INVALID_AUTH_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
+import 'test_shared.dart';
 
 // Update CREDENTIALS_EMAIL to an email address to test
 // auth using email/password credentials.
@@ -24,15 +19,10 @@ const CREDENTIALS_WRONG_PASSWORD = 'wrong';
 const OAUTH_PROVIDER = null;
 const OAUTH_TOKEN = null;
 
-final _dateKey = new DateTime.now().toUtc().toIso8601String();
-final _testKey = '$_dateKey'.replaceAll(new RegExp(r'[\.\:]'), '_');
-
-String getTestUrl(int count) => new Uri(
-    scheme: 'https',
-    host: 'boiling-fire-3310.firebaseio.com',
-    pathSegments: ['test', _testKey, count.toString()]).toString();
-
 int _count = 0;
+
+String getTestUrl(int count) =>
+    getTestUrlBase(<String>['test', testKey(), count.toString()]).toString();
 
 void main() {
   Firebase f;
@@ -362,7 +352,8 @@ void main() {
     });
 
     test('toString returns the absolute url to ref location', () {
-      expect(f.toString(), testUrl);
+      // the firebase URI has '@' escaped – so reverse that
+      expect(f.toString().replaceAll('%40', '@'), testUrl);
     });
 
     test('set', () {
