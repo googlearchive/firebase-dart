@@ -8,5 +8,7 @@ description: A Dart wrapper for Firebase.
 homepage: https://github.com/firebase/firebase-dart/
 environment:
   sdk: '>=1.0.0 <2.0.0'
+dependencies:
+  crypto: ^0.9.0
 dev_dependencies:
   test: '>=0.12.0 <0.13.0'
