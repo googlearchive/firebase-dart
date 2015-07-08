@@ -57,6 +57,13 @@ class FirebaseClient {
     }
 
     if (response.statusCode != 200) {
+      if (bodyJson is Map) {
+        var error = bodyJson['error'];
+        if (error != null) {
+          // TODO: wrap this in something helpful?
+          throw error;
+        }
+      }
       throw bodyJson;
     }
 
