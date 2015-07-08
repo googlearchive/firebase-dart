@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
+export 'src/encode.dart';
 export 'src/jwt.dart' show createFirebaseJwtToken;
 
 class FirebaseClient {

@@ -353,8 +353,8 @@ void main() {
     });
 
     test('toString returns the absolute url to ref location', () {
-      // the firebase URI has '@' escaped – so reverse that
-      expect(fbClient.toString().replaceAll('%40', '@'), testUrl);
+      // the firebase URI has ':' escaped – so reverse that
+      expect(fbClient.toString().replaceAll('%3A', ':'), testUrl);
     });
 
     test('set', () {

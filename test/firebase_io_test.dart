@@ -1,5 +1,6 @@
 @TestOn('vm')
 import 'package:firebase/firebase_io.dart';
+import 'package:firebase/src/consts.dart';
 import 'package:test/test.dart';
 
 import 'test_shared.dart';
@@ -101,5 +102,63 @@ void main() {
     }
 
     expect(deleteCount, greaterThanOrEqualTo(1));
+  });
+
+  group('invalid key chars', () {
+    for (var char in invalidFirebaseKeyCharsAndStar) {
+      test('validate encoding for invalid key char "$char"', () async {
+        var baseUri = getTestUrl(count++);
+
+        var fbClient = new FirebaseClient(AUTH_TOKEN);
+
+        var rootValue = await fbClient.get(baseUri);
+
+        expect(rootValue, isNull);
+
+        var unencodedKey = 'key with $char';
+
+        var putContent = {unencodedKey: "Alan Turing"};
+
+        try {
+          await fbClient.put(baseUri, putContent);
+          fail('key with invalid char shoul fail');
+        } catch (e) {
+          // TODO: some verification
+        }
+
+        var encoded = encodeKey(unencodedKey);
+        putContent = {encoded: "Alan Turing"};
+
+        rootValue = await fbClient.put(baseUri, putContent);
+
+        expect(rootValue, putContent);
+      });
+    }
+
+    test('all invalid chars', () async {
+      var baseUri = getTestUrl(count++);
+
+      var encoded = encodeKey(invalidKeyString);
+
+      var fbClient = new FirebaseClient(AUTH_TOKEN);
+
+      var rootValue = await fbClient.get(baseUri);
+
+      expect(rootValue, isNull);
+
+      var putContent = {encoded: "Alan Turing"};
+
+      rootValue = await fbClient.put(baseUri, putContent);
+
+      expect(rootValue, putContent);
+
+      rootValue = await fbClient.get(baseUri);
+
+      expect(rootValue, putContent);
+
+      var decoded = decodeKey(encoded);
+
+      expect(decoded, invalidKeyString);
+    });
   });
 }
