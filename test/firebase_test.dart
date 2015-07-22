@@ -384,6 +384,17 @@ void main() {
       return pushRef.set('HAHA');
     });
 
+    test('push map', () {
+      var pushRef = fbClient.push(value: {'key': 'value'});
+      // wait for push to complete
+      // TODO put in call to push when it supports [onComplete]
+      new Timer(new Duration(seconds: 1), () {
+        pushRef.once('value').then((snapshot) {
+          expect(snapshot.val()['key'], 'value');
+        });
+      });
+    });
+
     test('priorities', () {
       // TODO: actually validate the result
       var testRef = fbClient.child('ZZZ');
