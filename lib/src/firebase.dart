@@ -164,7 +164,7 @@ class Firebase extends Query {
   /**
    * Listens for changes to the client's authentication state..
    */
-  Stream<Event> onAuth([context]) {
+  Stream onAuth([context]) {
     if (_onAuth == null) {
       StreamController controller;
 
@@ -186,7 +186,7 @@ class Firebase extends Query {
       void stopListen() {
         _fb.callMethod('offAuth', [_handleOnAuth, jsify(context)]);
       }
-      controller = new StreamController<Event>.broadcast(
+      controller = new StreamController.broadcast(
           onListen: startListen, onCancel: stopListen, sync: true);
       return controller.stream;
     }
