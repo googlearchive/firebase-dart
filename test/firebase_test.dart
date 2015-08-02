@@ -403,6 +403,12 @@ void main() {
       expect(snapshot.val()['key'], 'value');
     });
 
+    test('push callback', () {
+      var completer = new Completer();
+      fbClient.push(value: 4, onComplete: (error) => completer.complete(error));
+      expect(completer.future, completion(equals(null)));
+    });
+
     test('priorities', () {
       // TODO: actually validate the result
       var testRef = fbClient.child('ZZZ');
