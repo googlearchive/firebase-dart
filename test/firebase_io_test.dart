@@ -1,4 +1,7 @@
 @TestOn('vm')
+
+import 'dart:async';
+
 import 'package:firebase/firebase_io.dart';
 import 'package:firebase/src/consts.dart';
 import 'package:test/test.dart';
@@ -11,25 +14,32 @@ Uri getTestUrl(int count, {DateTime timeKey}) => getTestUrlBase(
 //TODO: add tests that validate security by having secured and insecure sections
 void main() {
   int count = 0;
-  group('get and put', () {
+  group('get, put and post', () {
     test('without security', () async {
       var baseUri = getTestUrl(count++);
-
       var fbClient = new FirebaseClient.anonymous();
 
       var rootValue = await fbClient.get(baseUri);
-
       expect(rootValue, isNull);
 
       var putContent = {"name": "Alan Turing", "birthday": "June 23, 1912"};
-
       rootValue = await fbClient.put(baseUri, putContent);
-
       expect(rootValue, putContent);
 
       rootValue = await fbClient.get(baseUri);
-
       expect(rootValue, putContent);
+
+      var postContent = [
+        {'name': 'Encryption', 'love-level': 10},
+        {'name': 'Computer Science', 'love-level': 7}
+      ];
+      var postUri = Uri.parse('${baseUri.toString().split('.json').first}/interests.json');
+      await Future.forEach(postContent, (interest) async {
+        rootValue = await fbClient.post(postUri, interest);
+
+        expect(rootValue, isMap);
+        expect(rootValue['name'], isNotNull);
+      });
     });
 
     test('with an admin secret', () async {
