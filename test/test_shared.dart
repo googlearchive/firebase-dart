@@ -3,11 +3,11 @@ library firebase.test.shared;
 import 'package:firebase/src/consts.dart';
 import 'package:firebase/src/encode.dart';
 
-const TEST_DOMAIN = 'luminous-fire-4671.firebaseio.com';
+const TEST_DOMAIN = 'boiling-fire-3310.firebaseio.com';
 
 // Update TEST_URL to a valid URL and update AUTH_TOKEN to a corresponding
 // authentication token to test authentication.
-const AUTH_TOKEN = 'i7dfNHOVFPZ1vxNe6LpWku5E0QjlHacVuz1kjPIq';
+const AUTH_TOKEN = '5KxwqxGbNU0Mrje2NGnSFJZsd3KaTVeUtcVhorMl';
 
 const INVALID_AUTH_TOKEN = 'xbKOOdkZDBExtKM3sZw6gWtFpGgqMkMidXCiAFjm';
 
