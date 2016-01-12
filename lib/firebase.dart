@@ -1,6 +1,5 @@
 library firebase;
 
-export 'src/auth_response.dart';
 export 'src/data_snapshot.dart';
 export 'src/disconnect.dart';
 export 'src/encode.dart';

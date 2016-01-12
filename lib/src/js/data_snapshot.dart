@@ -1,5 +1,10 @@
-library firebase.snapshot;
+library firebase.js.snapshot;
 
+import 'dart:convert';
+import 'dart:js';
+
+import '../data_snapshot.dart';
+import '../firebase.dart';
 import 'firebase.dart';
 
 /**
@@ -11,38 +16,59 @@ import 'firebase.dart';
  * can traverse into the snapshot by calling child() to return child
  * snapshots (which you could in turn call val() on).
  */
-abstract class DataSnapshot {
+class JsDataSnapshot implements DataSnapshot {
+  /**
+   * Holds a reference to the JavaScript 'DataSnapshot' object.
+   */
+  final JsObject _ds;
+
+  /**
+   * Construct a new JsDataSnapshot from a JsObject.
+   */
+  JsDataSnapshot.fromJsObject(JsObject obj) : _ds = obj;
+
   /**
    * Returns true if this DataSnapshot contains any data.
    * It is slightly more efficient than using snapshot.val() !== null.
    */
-  bool get exists;
+  bool get exists => _ds.callMethod('exists');
 
   /**
    * Get the Dart Primitive, Map or List representation of the DataSnapshot.
    * The value may be null, indicating that the snapshot is empty and contains
    * no data.
    */
-  dynamic val();
+  dynamic val() {
+    var obj = _ds.callMethod('val');
+    var json = context['JSON'].callMethod('stringify', [obj]);
+    return JSON.decode(json);
+  }
 
   /**
    * Get a DataSnapshot for the location at the specified relative path. The
    * relative path can either be a simple child name or a deeper slash
    * separated path.
    */
-  DataSnapshot child(String path);
+  DataSnapshot child(String path) =>
+      new JsDataSnapshot.fromJsObject(_ds.callMethod('child', [path]));
 
   /**
    * Enumerate through the DataSnapshot's children (in priority order). The
    * provided callback will be called synchronously with a DataSnapshot for
    * each child.
    */
-  void forEach(cb(DataSnapshot snapshot));
+  void forEach(cb(DataSnapshot snapshot)) {
+    _ds.callMethod('forEach', [
+      (obj) {
+        cb(new JsDataSnapshot.fromJsObject(obj));
+      }
+    ]);
+  }
 
   /**
    * Returns true if the specified child exists.
    */
-  bool hasChild(String path);
+  bool hasChild(String path) => _ds.callMethod('hasChild', [path]);
 
   /**
    * `true` if the DataSnapshot has any children.
@@ -50,34 +76,38 @@ abstract class DataSnapshot {
    * If it does, you can enumerate them with forEach. If not, then the
    * snapshot either contains a primitive value or it is empty.
    */
-  bool get hasChildren;
+  bool get hasChildren => _ds.callMethod('hasChildren');
 
   /**
    * The key of the location that generated this DataSnapshot.
    */
-  String get key;
+  String get key => _ds.callMethod('key');
 
   /**
    * The number of children for this DataSnapshot. If it has children,
    * you can enumerate them with forEach().
    */
-  int get numChildren;
+  int get numChildren => _ds.callMethod('numChildren');
 
   /**
    * Get the Firebase reference for the location that generated this
    * DataSnapshot.
    */
-  Firebase ref();
+  Firebase ref() => new JsFirebase.fromJsObject(_ds.callMethod('ref'));
 
   /**
    * Get the priority of the data in this DataSnapshot.
    */
-  dynamic getPriority();
+  dynamic getPriority() => _ds.callMethod('getPriority');
 
   /**
    * Exports the entire contents of the DataSnapshot as a Dart Map. This is
    * similar to val(), except priority information is included, making it
    * suitable for backing up your data.
    */
-  dynamic exportVal();
+  dynamic exportVal() {
+    var obj = _ds.callMethod('exportVal');
+    var json = context['JSON'].callMethod('stringify', [obj]);
+    return JSON.decode(json);
+  }
 }

@@ -1,4 +1,4 @@
-library firebase.auth_response;
+library firebase.js.auth_response;
 
 import 'dart:js';
 import 'dart:convert' show JSON;
