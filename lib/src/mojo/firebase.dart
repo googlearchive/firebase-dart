@@ -1,4 +1,7 @@
-library firebase.firebase;
+library firebase.mojo.firebase;
+
+import 'package:flutter/services.dart';
+import 'package:sky_services/firebase/firebase.mojom.dart' as mojo;
 
 import 'dart:async';
 
@@ -8,6 +11,8 @@ import '../event.dart';
 import '../data_snapshot.dart';
 import '../transaction_result.dart';
 
+import 'data_snapshot.dart';
+
 class FirebaseImpl extends MojoFirebase {
   FirebaseImpl(String url) : super(url);
   static final ServerValue = null;
@@ -15,6 +20,8 @@ class FirebaseImpl extends MojoFirebase {
 
 class MojoFirebase extends MojoQuery implements Firebase {
   MojoFirebase(String url) : super(url);
+
+  MojoFirebase._withProxy(mojo.FirebaseProxy firebase) : super._withProxy(firebase);
 
   Disconnect get onDisconnect => null;
 
@@ -40,11 +47,19 @@ class MojoFirebase extends MojoQuery implements Firebase {
 
   void unauth() => null;
 
-  Firebase child(String path) => null;
+  Firebase child(String path) {
+    mojo.FirebaseProxy proxy = new mojo.FirebaseProxy.unbound();
+    _firebase.ptr.getChild(path, proxy);
+    return new MojoFirebase._withProxy(proxy);
+  }
 
   Firebase parent() => null;
 
-  Firebase root() => null;
+  Firebase root() {
+    mojo.FirebaseProxy proxy = new mojo.FirebaseProxy.unbound();
+    _firebase.ptr.getRoot(proxy);
+    return new MojoFirebase._withProxy(proxy);
+  }
 
   String get key => null;
 
@@ -77,15 +92,15 @@ class MojoFirebase extends MojoQuery implements Firebase {
 }
 
 class MojoQuery implements Query {
+  mojo.FirebaseProxy _firebase;
 
-  /**
-   * Construct a new default Query for a given URL.
-   */
-  MojoQuery(String url);
+  MojoQuery(String url) : _firebase = new mojo.FirebaseProxy.unbound() {
+    shell.connectToService("firebase::Firebase", _firebase);
+    _firebase.ptr.initWithUrl(url);
+  }
 
-  /**
-   * Streams for various data events.
-   */
+  MojoQuery._withProxy(mojo.FirebaseProxy firebase) : _firebase = firebase;
+
   Stream<Event> get onValue => null;
 
   Stream<Event> get onChildAdded => null;
@@ -100,7 +115,12 @@ class MojoQuery implements Query {
    * Listens for exactly one event of the specified event type, and then stops
    * listening.
    */
-  Future<DataSnapshot> once(String eventType) => null;
+  Future<DataSnapshot> once(String eventType) async {
+    mojo.EventType mojoEventType = _stringToMojoEventType(eventType);
+    mojo.DataSnapshot result =
+      (await _firebase.ptr.observeSingleEventOfType(mojoEventType)).snapshot;
+    return new MojoDataSnapshot.fromMojoObject(result);
+  }
 
   /**
    * Generates a new Query object ordered by the specified child key.
@@ -183,4 +203,17 @@ class MojoQuery implements Query {
    * return a Firebase reference to that location.
    */
   Firebase ref() => null;
+}
+
+mojo.EventType _stringToMojoEventType(String eventType) {
+  switch(eventType) {
+    case "value": return mojo.EventType.EventTypeValue;
+    case "child_added": return mojo.EventType.EventTypeChildAdded;
+    case "child_changed": return mojo.EventType.EventTypeChildChanged;
+    case "child_removed": return mojo.EventType.EventTypeChildRemoved;
+    case "child_moved": return mojo.EventType.EventTypeChildMoved;
+    default:
+      assert(false);
+      return null;
+  }
 }
