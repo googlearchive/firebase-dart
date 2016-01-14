@@ -91,8 +91,23 @@ class MojoFirebase extends MojoQuery implements Firebase {
   Future resetPassword(Map credentials) => null;
 }
 
+class _ValueEventListener implements mojo.ValueEventListener {
+  StreamController<Event> controller;
+  _ValueEventListener(this.controller);
+
+  void onCancelled(mojo.Error error) {
+    print("ValueEventListener onCancelled: ${error}");
+  }
+
+  void onDataChange(mojo.DataSnapshot snapshot) {
+    controller
+      .add(new Event(new MojoDataSnapshot.fromMojoObject(snapshot), null));
+  }
+}
+
 class MojoQuery implements Query {
   mojo.FirebaseProxy _firebase;
+  Stream<Event> _onValue;
 
   MojoQuery(String url) : _firebase = new mojo.FirebaseProxy.unbound() {
     shell.connectToService("firebase::Firebase", _firebase);
@@ -101,7 +116,19 @@ class MojoQuery implements Query {
 
   MojoQuery._withProxy(mojo.FirebaseProxy firebase) : _firebase = firebase;
 
-  Stream<Event> get onValue => null;
+  Stream<Event> get onValue {
+    if (_onValue == null) {
+      mojo.ValueEventListenerStub stub = new mojo.ValueEventListenerStub.unbound();
+      StreamController<Event> controller = new StreamController<Event>.broadcast(
+        onListen: () => _firebase.ptr.addValueEventListener(stub),
+        onCancel: () => stub.close(),
+        sync: true
+      );
+      stub.impl = new _ValueEventListener(controller);
+      _onValue = controller.stream;
+    }
+    return _onValue;
+  }
 
   Stream<Event> get onChildAdded => null;
 
