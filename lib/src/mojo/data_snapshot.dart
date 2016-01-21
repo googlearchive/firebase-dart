@@ -1,5 +1,7 @@
 library firebase.js.snapshot;
 
+import 'dart:convert';
+
 import 'package:sky_services/firebase/firebase.mojom.dart' as mojo;
 
 import '../data_snapshot.dart';
@@ -28,7 +30,7 @@ class MojoDataSnapshot implements DataSnapshot {
 
   bool get exists => true;
 
-  dynamic val() => _ds.value;
+  dynamic val() => JSON.decode(_ds.jsonValue)['value'];
 
   DataSnapshot child(String path) => null;
 

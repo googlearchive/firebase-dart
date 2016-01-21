@@ -1,9 +1,9 @@
 library firebase.mojo.firebase;
 
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:sky_services/firebase/firebase.mojom.dart' as mojo;
-
-import 'dart:async';
 
 import '../firebase.dart';
 import '../disconnect.dart';
@@ -65,7 +65,20 @@ class MojoFirebase extends MojoQuery implements Firebase {
 
   String toString() => null;
 
-  Future set(value) => null;
+  Future set(value) async {
+    var c = new Completer();
+    String jsonValue = JSON.encode({ "value": value });
+    _firebase
+      .ptr.setValue(jsonValue, null)
+      .then((mojo.FirebaseSetValueResponseParams response) {
+      if (response.error != null) {
+        c.completeError(response.error);
+      } else {
+        c.complete();
+      }
+    });
+    return c.future;
+  }
 
   Future update(Map<String, dynamic> value) => null;
 
