@@ -1,5 +1,6 @@
 library firebase.mojo.firebase;
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
