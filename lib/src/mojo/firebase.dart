@@ -38,13 +38,7 @@ class MojoFirebase extends MojoQuery implements Firebase {
     Completer c = new Completer();
     _firebase.ptr
       .authWithPassword(credentials["email"], credentials["password"])
-      .then((mojo.FirebaseAuthWithPasswordResponseParams response) {
-      if (response.error != null) {
-        c.completeError(response.error);
-      } else {
-        c.complete(decodeAuthData(response.authData));
-      }
-    });
+      .then(_getAuthCallback(c));
     return c.future;
   }
 
@@ -58,14 +52,18 @@ class MojoFirebase extends MojoQuery implements Firebase {
     Completer c = new Completer();
     _firebase.ptr
       .authWithOAuthToken(provider, credentials)
-      .then((mojo.FirebaseAuthWithOAuthTokenResponseParams response) {
+      .then(_getAuthCallback(c));
+    return c.future;
+  }
+
+  Function _getAuthCallback(Completer c) {
+    return (response) {
       if (response.error != null) {
         c.completeError(response.error);
       } else {
         c.complete(decodeAuthData(response.authData));
       }
-    });
-    return c.future;
+    };
   }
 
   dynamic getAuth() => null;
