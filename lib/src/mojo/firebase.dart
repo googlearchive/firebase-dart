@@ -12,6 +12,7 @@ import '../event.dart';
 import '../data_snapshot.dart';
 import '../transaction_result.dart';
 
+import 'auth_response.dart';
 import 'data_snapshot.dart';
 
 class FirebaseImpl extends MojoFirebase {
@@ -33,14 +34,39 @@ class MojoFirebase extends MojoQuery implements Firebase {
 
   Future authAnonymously({remember: 'default'}) => null;
 
-  Future authWithPassword(Map credentials) => null;
+  Future authWithPassword(Map credentials) {
+    Completer c = new Completer();
+    _firebase.ptr
+      .authWithPassword(credentials["email"], credentials["password"])
+      .then((mojo.FirebaseAuthWithPasswordResponseParams response) {
+      if (response.error != null) {
+        c.completeError(response.error);
+      } else {
+        c.complete(decodeAuthData(response.authData));
+      }
+    });
+    return c.future;
+  }
 
   Future authWithOAuthPopup(provider, {remember: 'default', scope: ''}) => null;
 
   Future authWithOAuthRedirect(provider, {remember: 'default', scope: ''}) => null;
 
-  Future authWithOAuthToken(provider, credentials,
-      {remember: 'default', scope: ''}) => null;
+  Future authWithOAuthToken(String provider, String credentials,
+      {remember: 'default', scope: ''}) {
+    // TODO(jackson): Implement remember and scope
+    Completer c = new Completer();
+    _firebase.ptr
+      .authWithOAuthToken(provider, credentials)
+      .then((mojo.FirebaseAuthWithOAuthTokenResponseParams response) {
+      if (response.error != null) {
+        c.completeError(response.error);
+      } else {
+        c.complete(decodeAuthData(response.authData));
+      }
+    });
+    return c.future;
+  }
 
   dynamic getAuth() => null;
 
