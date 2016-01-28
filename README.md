@@ -7,7 +7,7 @@ This package contains two implementations of the same ```Firebase``` Dart API:
 in Dart classes. You'll need this implementation to build Firebase apps for the web.
 * The ```MojoFirebase``` implementation uses [Mojo](https://github.com/domokit/mojo) to wrap functionality provided by Firebase iOS and Android SDKs. You'll need this implementation to build Firebase apps with [Flutter](http:/flutter.io).
 
-Right now the MojoFirebase implementation is default, but you can change this in lib/firebase.dart. Once [dart-lang/sdk#24581](https://github.com/dart-lang/sdk/issues/24581) is fixed you'll get the right implementation automatically.
+Right now the ```MojoFirebase``` implementation is default, but you can change this in lib/src/firebase.dart. Once [dart-lang/sdk#24581](https://github.com/dart-lang/sdk/issues/24581) is fixed you'll get the right implementation automatically.
 
 #### Installing
 
