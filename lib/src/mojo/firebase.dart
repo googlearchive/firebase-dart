@@ -240,22 +240,73 @@ class MojoFirebase extends MojoQuery implements Firebase {
 }
 
 class _ValueEventListener implements mojo.ValueEventListener {
-  StreamController<Event> controller;
-  _ValueEventListener(this.controller);
+  StreamController<Event> _controller;
+  _ValueEventListener(this._controller);
 
   void onCancelled(mojo.Error error) {
     print("ValueEventListener onCancelled: ${error}");
+    _controller.close();
   }
 
   void onDataChange(mojo.DataSnapshot snapshot) {
-    controller
-      .add(new Event(new MojoDataSnapshot.fromMojoObject(snapshot), null));
+    Event event = new Event(new MojoDataSnapshot.fromMojoObject(snapshot), null);
+    _controller.add(event);
+  }
+}
+
+class _ChildEvent extends Event {
+  _ChildEvent(this.eventType, DataSnapshot snapshot, [ String prevChild ])
+    : super(snapshot, prevChild);
+  final mojo.EventType eventType;
+}
+
+class _ChildEventListener implements mojo.ChildEventListener {
+  final StreamController<_ChildEvent> _controller;
+  _ChildEventListener(this._controller);
+
+  void onCancelled(mojo.Error error) {
+    print("ChildEventListener onCancelled: ${error}");
+    _controller.close();
+  }
+
+  void onChildAdded(mojo.DataSnapshot snapshot, String prevSiblingKey) {
+    _ChildEvent event = new _ChildEvent(
+      mojo.EventType.eventTypeChildAdded,
+      new MojoDataSnapshot.fromMojoObject(snapshot),
+      prevSiblingKey
+    );
+    _controller.add(event);
+  }
+
+  void onChildMoved(mojo.DataSnapshot snapshot, String prevSiblingKey) {
+    _ChildEvent event = new _ChildEvent(
+      mojo.EventType.eventTypeChildMoved,
+      new MojoDataSnapshot.fromMojoObject(snapshot),
+      prevSiblingKey
+    );
+    _controller.add(event);
+  }
+
+  void onChildChanged(mojo.DataSnapshot snapshot, String prevSiblingKey) {
+    _ChildEvent event = new _ChildEvent(
+      mojo.EventType.eventTypeChildChanged,
+      new MojoDataSnapshot.fromMojoObject(snapshot),
+      prevSiblingKey
+    );
+    _controller.add(event);
+  }
+
+  void onChildRemoved(mojo.DataSnapshot snapshot) {
+    _ChildEvent event = new _ChildEvent(
+      mojo.EventType.eventTypeChildRemoved,
+      new MojoDataSnapshot.fromMojoObject(snapshot)
+    );
+    _controller.add(event);
   }
 }
 
 class MojoQuery implements Query {
   mojo.FirebaseProxy _firebase;
-  Stream<Event> _onValue;
 
   MojoQuery(String url) : _firebase = new mojo.FirebaseProxy.unbound() {
     shell.connectToService("firebase::Firebase", _firebase);
@@ -264,34 +315,76 @@ class MojoQuery implements Query {
 
   MojoQuery._withProxy(mojo.FirebaseProxy firebase) : _firebase = firebase;
 
+  Stream<Event> _onValue;
   Stream<Event> get onValue {
     if (_onValue == null) {
-      mojo.ValueEventListenerStub stub = new mojo.ValueEventListenerStub.unbound();
+      mojo.ValueEventListener listener;
+      mojo.ValueEventListenerStub stub;
       StreamController<Event> controller = new StreamController<Event>.broadcast(
-        onListen: () => _firebase.ptr.addValueEventListener(stub),
+        onListen: () {
+          stub = new mojo.ValueEventListenerStub.unbound()..impl = listener;
+          _firebase.ptr.addValueEventListener(stub);
+        },
         onCancel: () => stub.close(),
         sync: true
       );
-      stub.impl = new _ValueEventListener(controller);
+      listener = new _ValueEventListener(controller);
       _onValue = controller.stream;
     }
     return _onValue;
   }
 
-  Stream<Event> get onChildAdded => null;
+  Stream<Event> _onChildEvent;
+  Stream<Event> _on(mojo.EventType eventType) {
+    if (_onChildEvent == null) {
+      mojo.ChildEventListener listener;
+      mojo.ChildEventListenerStub stub;
+      StreamController<Event> controller = new StreamController<Event>.broadcast(
+        onListen: () {
+          stub = new mojo.ChildEventListenerStub.unbound()
+            ..impl = listener;
+          _firebase.ptr.addChildEventListener(stub);
+        },
+        onCancel: () => stub.close(),
+        sync: true
+      );
+      listener = new _ChildEventListener(controller);
+      _onChildEvent = controller.stream;
+    }
+    return _onChildEvent.where((_ChildEvent event) => event.eventType == eventType);
+  }
 
-  Stream<Event> get onChildMoved => null;
-
-  Stream<Event> get onChildChanged => null;
-
-  Stream<Event> get onChildRemoved => null;
+  Stream<Event> get onChildAdded => _on(mojo.EventType.eventTypeChildAdded);
+  Stream<Event> get onChildMoved => _on(mojo.EventType.eventTypeChildMoved);
+  Stream<Event> get onChildChanged => _on(mojo.EventType.eventTypeChildChanged);
+  Stream<Event> get onChildRemoved => _on(mojo.EventType.eventTypeChildRemoved);
 
   /**
    * Listens for exactly one event of the specified event type, and then stops
    * listening.
    */
   Future<DataSnapshot> once(String eventType) async {
-    mojo.EventType mojoEventType = _stringToMojoEventType(eventType);
+    mojo.EventType mojoEventType;
+    switch(eventType) {
+      case "value":
+        mojoEventType = mojo.EventType.eventTypeValue;
+        break;
+      case "child_added":
+        mojoEventType = mojo.EventType.eventTypeChildAdded;
+        break;
+      case "child_changed":
+        mojoEventType = mojo.EventType.eventTypeChildChanged;
+        break;
+      case "child_removed":
+        mojoEventType = mojo.EventType.eventTypeChildRemoved;
+        break;
+      case "child_moved":
+        mojoEventType = mojo.EventType.eventTypeChildMoved;
+        break;
+      default:
+        assert(false);
+        return null;
+    }
     mojo.DataSnapshot result =
       (await _firebase.ptr.observeSingleEventOfType(mojoEventType)).snapshot;
     return new MojoDataSnapshot.fromMojoObject(result);
@@ -378,17 +471,4 @@ class MojoQuery implements Query {
    * return a Firebase reference to that location.
    */
   Firebase ref() => null;
-}
-
-mojo.EventType _stringToMojoEventType(String eventType) {
-  switch(eventType) {
-    case "value": return mojo.EventType.EventTypeValue;
-    case "child_added": return mojo.EventType.EventTypeChildAdded;
-    case "child_changed": return mojo.EventType.EventTypeChildChanged;
-    case "child_removed": return mojo.EventType.EventTypeChildRemoved;
-    case "child_moved": return mojo.EventType.EventTypeChildMoved;
-    default:
-      assert(false);
-      return null;
-  }
 }
