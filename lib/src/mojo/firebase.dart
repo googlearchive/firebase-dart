@@ -261,7 +261,7 @@ class _ChildEvent extends Event {
 }
 
 class _ChildEventListener implements mojo.ChildEventListener {
-  final StreamController<_ChildEvent> _controller;
+  final StreamController<Event> _controller;
   _ChildEventListener(this._controller);
 
   void onCancelled(mojo.Error error) {
