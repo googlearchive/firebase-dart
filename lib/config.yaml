@@ -2,6 +2,6 @@ services:
   - name: firebase::Firebase
     android-class: org.domokit.firebase.FirebaseImpl
 jars:
-  - https://storage.googleapis.com/mojo_infra/flutter/894f2291e68c67c10f7eec4d3b9d3fd6df9569a2/android-arm/firebase/interfaces_java.dex.jar
-  - https://storage.googleapis.com/mojo_infra/flutter/894f2291e68c67c10f7eec4d3b9d3fd6df9569a2/android-arm/firebase/firebase_lib.dex.jar
+  - https://storage.googleapis.com/mojo_infra/flutter/c4cec818c5543348988d4b117aae16e17991183f/android-arm/firebase/interfaces_java.dex.jar
+  - https://storage.googleapis.com/mojo_infra/flutter/c4cec818c5543348988d4b117aae16e17991183f/android-arm/firebase/firebase_lib.dex.jar
   - https://cdn.firebase.com/java/firebase-client-android-2.4.1.jar
