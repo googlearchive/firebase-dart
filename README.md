@@ -22,7 +22,7 @@ Follow the instructions on the [pub page](http://pub.dartlang.org/packages/fireb
 ```
 #### Using Firebase with Flutter
 
-Flutter Firebase supports a subset of the Dart Firebase API. The following methods are currently supported:
+Flutter Firebase supports a subset of the [Dart Firebase API](https://www.dartdocs.org/documentation/firebase/latest/firebase/firebase-library.html). The following methods are currently supported:
 
     abstract class Firebase extends Query {
       Future authWithCustomToken(String token);
