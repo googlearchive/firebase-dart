@@ -1,6 +1,11 @@
-library firebase.disconnect;
+library firebase.js.disconnect;
 
 import 'dart:async';
+import 'dart:js';
+
+import 'util.dart';
+
+import '../disconnect.dart';
 
 /**
  * The Disconnect class encapsulates all operations to be performed on a
@@ -18,21 +23,45 @@ import 'dart:async';
  * operation to occur each time a disconnect occurs, you'll need to
  * re-establish the operations each time.
  */
-abstract class Disconnect {
+class JsDisconnect implements Disconnect {
+  final JsObject _od;
+
+  JsDisconnect(this._od);
 
   /**
    * Ensure the data at this location is set to the specified value when the
    * client is disconnected (due to closing the browser, navigating to a new
    * page, or network issues).
    */
-  Future set(value);
+  Future set(value) {
+    var c = new Completer();
+    value = jsify(value);
+    _od.callMethod('set', [
+      value,
+      (err) {
+        _resolveFuture(c, err, null);
+      }
+    ]);
+    return c.future;
+  }
 
   /**
    * Ensure the data at this location is set to the specified value and
    * priority when the client is disconnected (due to closing the browser,
    * navigating to a new page, or network issues).
    */
-  Future setWithPriority(value, priority);
+  Future setWithPriority(value, priority) {
+    var c = new Completer();
+    value = jsify(value);
+    _od.callMethod('setWithPriority', [
+      value,
+      priority,
+      (err) {
+        _resolveFuture(c, err, null);
+      }
+    ]);
+    return c.future;
+  }
 
   /**
    * Write the enumerated children at this Firebase location when the client is
@@ -45,7 +74,17 @@ abstract class Disconnect {
    * null as a value for a child is equivalent to calling remove() on that
    * child.
    */
-  Future update(value);
+  Future update(value) {
+    var c = new Completer();
+    value = jsify(value);
+    _od.callMethod('update', [
+      value,
+      (err) {
+        _resolveFuture(c, err, null);
+      }
+    ]);
+    return c.future;
+  }
 
   /**
    * Ensure the data at this location is deleted when the client is
@@ -54,7 +93,15 @@ abstract class Disconnect {
    *
    * remove() is equivalent to calling set(null);
    */
-  Future remove();
+  Future remove() {
+    var c = new Completer();
+    _od.callMethod('remove', [
+      (err) {
+        _resolveFuture(c, err, null);
+      }
+    ]);
+    return c.future;
+  }
 
   /**
    * Cancel all previously queued onDisconnect() set or update events for this
@@ -64,5 +111,24 @@ abstract class Disconnect {
    * parent location, the write at this location will be canceled though all
    * other siblings will still be written.
    */
-  Future cancel();
+  Future cancel() {
+    var c = new Completer();
+    _od.callMethod('cancel', [
+      (err) {
+        _resolveFuture(c, err, null);
+      }
+    ]);
+    return c.future;
+  }
+
+  /**
+   * Resolve a future, given an error and result.
+   */
+  void _resolveFuture(Completer c, var err, var res) {
+    if (err != null) {
+      c.completeError(err);
+    } else {
+      c.complete(res);
+    }
+  }
 }
