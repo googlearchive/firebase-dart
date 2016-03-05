@@ -3,11 +3,11 @@
 A Dart wrapper for [Firebase](https://www.firebase.com).
 
 This package contains two implementations of the same ```Firebase``` Dart API:
-* The ```JsFirebase``` implementation uses `dart:js` to wrap functionality provided by `firebase.js`
+* An implementation that uses `dart:js` to wrap functionality provided by `firebase.js`
 in Dart classes. You'll need this implementation to build Firebase apps for the web.
-* The ```MojoFirebase``` implementation uses [Mojo](https://github.com/domokit/mojo) to wrap functionality provided by Firebase iOS and Android SDKs. You'll need this implementation to build Firebase apps with [Flutter](http:/flutter.io).
+* An implementation that uses [Mojo](https://github.com/domokit/mojo) to wrap functionality provided by Firebase iOS and Android SDKs. You'll need this implementation to build Firebase apps with [Flutter](http:/flutter.io).
 
-Right now the ```MojoFirebase``` implementation is default, but you can change this in lib/src/firebase.dart. Once [dart-lang/sdk#24581](https://github.com/dart-lang/sdk/issues/24581) is fixed you'll get the right implementation automatically.
+You'll get the right implementation automatically using [conditional directives](https://github.com/munificent/dep-interface-libraries/blob/master/Proposal.md).
 
 #### Installing
 
@@ -49,7 +49,7 @@ Flutter Firebase supports a subset of the [Dart Firebase API](https://www.dartdo
       Future removeUser(Map credentials);
       Future resetPassword(Map credentials);
     }
-    
+
     abstract class Query {
       Stream<Event> get onValue;
       Stream<Event> get onChildAdded;
@@ -58,7 +58,7 @@ Flutter Firebase supports a subset of the [Dart Firebase API](https://www.dartdo
       Stream<Event> get onChildRemoved;
       Future<DataSnapshot> once(String eventType);
     }
-    
+
     abstract class DataSnapshot {
       dynamic val();
       String get key;
