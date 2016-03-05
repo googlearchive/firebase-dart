@@ -7,10 +7,9 @@ import 'disconnect.dart';
 import 'event.dart';
 import 'transaction_result.dart';
 
-// Once conditional imports work, use dart:ui to determine whether to import
-// the mojo or js implementations
-// import 'js/firebase.dart';
-import 'mojo/firebase.dart';
+import 'firebase_factory.dart'
+  if (dart.library.js) 'js/firebase.dart'
+  if (dart.library.ui) 'mojo/firebase.dart';
 
 /**
  * A Firebase represents a particular location in your Firebase and can be used
@@ -20,7 +19,7 @@ abstract class Firebase extends Query {
   /**
    * Construct a new Firebase reference from a full Firebase URL.
    */
-  factory Firebase(String url) => new FirebaseImpl(url);
+  factory Firebase(String url) => createFirebase(url);
 
   /**
    * Getter for onDisconnect.
@@ -242,7 +241,7 @@ abstract class Firebase extends Query {
    */
   Future resetPassword(Map credentials);
 
-  static get ServerValue => FirebaseImpl.ServerValue;
+  static get ServerValue => serverValue;
 }
 
 abstract class Query {

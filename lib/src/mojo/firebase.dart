@@ -15,10 +15,8 @@ import '../transaction_result.dart';
 import 'auth_response.dart';
 import 'data_snapshot.dart';
 
-class FirebaseImpl extends MojoFirebase {
-  FirebaseImpl(String url) : super(url);
-  static final ServerValue = null;
-}
+Firebase createFirebase(String url) => new MojoFirebase(url);
+final serverValue = null;
 
 class MojoFirebase extends MojoQuery implements Firebase {
   MojoFirebase(String url) : _path = <String>[], super(url);

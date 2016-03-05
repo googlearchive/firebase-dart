@@ -13,10 +13,8 @@ import '../firebase.dart';
 import '../transaction_result.dart';
 import '../disconnect.dart';
 
-class FirebaseImpl extends JsFirebase {
-  FirebaseImpl(String url) : super(url);
-  static final ServerValue = new _ServerValue();
-}
+Firebase createFirebase(String url) => new JsFirebase(url);
+final serverValue = new _ServerValue();
 
 class JsFirebase extends JsQuery implements Firebase {
   Stream<Event> _onAuth;
