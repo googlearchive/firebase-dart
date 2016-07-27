@@ -1068,6 +1068,31 @@ void main() {
             'https://github.com/firebase/firebase-dart/issues/52');
   });
 
+  group('goOffline and goOnline', () {
+    test('events', () {
+      Firebase.goOffline();
+      // value event received synchronously
+      // TODO expectAsync doesn't work in strong mode
+      var callback;
+
+      var sub = fbClient.onValue.listen((event) {
+        callback = 'value';
+        expect(event.snapshot.val(), 'value');
+      });
+
+      fbClient.set('value').then(expectAsync((_) {
+            callback = 'set';
+            expect(_, null);
+          }, count: 1));
+
+      expect(callback, 'value');
+
+      sub.cancel();
+
+      Firebase.goOnline();
+    });
+  });
+
   group('ServerValue', () {
     test('TIMESTAMP', () {
       expect(Firebase.ServerValue.TIMESTAMP['.sv'], 'timestamp');

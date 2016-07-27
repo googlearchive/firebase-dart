@@ -480,6 +480,22 @@ class Firebase extends Query {
   }
 
   /**
+   * Manually disconnects the Firebase client from the server and disables
+   * automatic reconnection.
+   */
+  static void goOffline() {
+    context['Firebase'].callMethod('goOffline');
+  }
+
+  /**
+   * Manually reestablishes a connection to the Firebase server and enables
+   * automatic reconnection.
+   */
+  static void goOnline() {
+    context['Firebase'].callMethod('goOnline');
+  }
+
+  /**
    * Resolve a future, given an error and result.
    */
   void _resolveFuture(Completer c, err, res) {
