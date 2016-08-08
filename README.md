@@ -48,7 +48,7 @@ void main() {
 
 ## Examples
 
-You can find more examples on realtime database, auth and storage in the [example](https://github.com/Janamou/firebase3-dart/example) folder.
+You can find more examples on realtime database, auth and storage in the [example](https://github.com/Janamou/firebase3-dart/tree/master/example) folder.
 
 ## Bugs
 
