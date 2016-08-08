@@ -15,7 +15,7 @@ Install the library from the pub or Github.
 
 ### Include Firebase source
 
-You must include original Firebase JavaScript source into your `.html` file to be able to use the library.
+You must include the original Firebase JavaScript source into your `.html` file to be able to use the library.
 
 ```html
 <script src="https://www.gstatic.com/firebasejs/3.2.1/firebase.js"></script>
