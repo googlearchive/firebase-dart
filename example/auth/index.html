@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auth demo</title>
+    <style type="text/css">
+        #register_form p {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Auth demo</h1>
+    <form id="register_form" style="display: none">
+        <h2>Register</h2>
+        <p></p>
+        <input type="email" placeholder="Your E-mail" id="email">
+        <input type="password" placeholder="Your Password" id="password">
+        <input type="submit" value="Register me">
+    </form>
+    <h2 id="auth_info" style="display: none">
+    </h2>
+    <a href="#" id="logout_btn" style="display: none">Log out</a>
+    <script src="https://www.gstatic.com/firebasejs/3.2.1/firebase.js"></script>
+    <script src="index.dart" type="application/dart"></script>
+    <script src="packages/browser/dart.js"></script>
+</body>
+</html>
