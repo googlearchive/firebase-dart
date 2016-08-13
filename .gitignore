@@ -20,3 +20,4 @@ doc/api/
 *.iml
 *.ipr
 *.iws
+config.json

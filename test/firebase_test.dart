@@ -1,45 +1,86 @@
-import 'package:test/test.dart';
+@TestOn('browser')
+import 'dart:convert';
+
+import 'package:firebase3/app.dart';
 import 'package:firebase3/firebase.dart' as firebase;
+import 'package:http/browser_client.dart' as http;
+import 'package:test/test.dart';
 
 // Update constants with information from your project.
 // See <https://firebase.google.com/docs/web/setup>.
-const API_KEY = "TODO";
-const AUTH_DOMAIN = "TODO";
-const DATABASE_URL = "TODO";
-const STORAGE_BUCKET = "TODO";
 
 void main() {
-  var app = firebase.initializeApp(
-      apiKey: API_KEY,
-      authDomain: AUTH_DOMAIN,
-      databaseURL: DATABASE_URL,
-      storageBucket: STORAGE_BUCKET);
-
   group("App", () {
-    test("Exists", () {
-      expect(app, isNotNull);
-      expect(firebase.app(), isNotNull);
-      expect(firebase.apps.first.name, app.name);
+    String apiKey, authDomain, databaseUrl, storageBucket;
+
+    setUpAll(() async {
+      var client = new http.BrowserClient();
+      Map<String, String> config;
+
+      try {
+        var jsonString = (await client.get('config.json')).body;
+        config = JSON.decode(jsonString) as Map<String, String>;
+      } catch (e) {
+        print("Error getting `config.json`. Make sure it exists.");
+        rethrow;
+      } finally {
+        client.close();
+      }
+
+      apiKey = config['API_KEY'];
+      authDomain = config['AUTH_DOMAIN'];
+      databaseUrl = config['DATABASE_URL'];
+      storageBucket = config['STORAGE_BUCKET'];
     });
 
-    test("Is [DEFAULT]", () {
-      expect(app.name, "[DEFAULT]");
-    });
+    group('instance', () {
+      App app;
 
-    test("Has options", () {
-      expect(app.options, isNotNull);
-      expect(app.options.apiKey, API_KEY);
-      expect(app.options.storageBucket, STORAGE_BUCKET);
-      expect(app.options.authDomain, AUTH_DOMAIN);
-      expect(app.options.databaseURL, DATABASE_URL);
+      setUpAll(() {
+        app = firebase.initializeApp(
+            apiKey: apiKey,
+            authDomain: authDomain,
+            databaseURL: databaseUrl,
+            storageBucket: storageBucket);
+      });
+
+      test("Exists", () {
+        expect(app, isNotNull);
+        expect(firebase.app(), isNotNull);
+        expect(firebase.apps.first.name, app.name);
+      });
+
+      test("Is [DEFAULT]", () {
+        expect(app.name, "[DEFAULT]");
+      });
+
+      test("Has options", () {
+        expect(app.options, isNotNull);
+        expect(app.options.apiKey, apiKey);
+        expect(app.options.storageBucket, storageBucket);
+        expect(app.options.authDomain, authDomain);
+        expect(app.options.databaseURL, databaseUrl);
+      });
+
+      test("Get database", () {
+        expect(app.database(), isNotNull);
+      });
+
+      test("Get Auth", () {
+        expect(app.auth(), isNotNull);
+      });
+
+      test("Get storage", () {
+        expect(app.storage(), isNotNull);
+      });
     });
 
     test("Can be created with name", () {
       var app2 = firebase.initializeApp(
-          apiKey: API_KEY,
-          authDomain: AUTH_DOMAIN,
-          databaseURL: DATABASE_URL,
-          storageBucket: STORAGE_BUCKET,
+          apiKey: apiKey,
+          authDomain: authDomain,
+          databaseURL: databaseUrl,
+          storageBucket: storageBucket,
           name: "MySuperApp");
 
       expect(app2, isNotNull);
@@ -50,10 +91,10 @@ void main() {
 
     test("Can be deleted", () {
       firebase.initializeApp(
-          apiKey: API_KEY,
-          authDomain: AUTH_DOMAIN,
-          databaseURL: DATABASE_URL,
-          storageBucket: STORAGE_BUCKET,
+          apiKey: apiKey,
+          authDomain: authDomain,
+          databaseURL: databaseUrl,
+          storageBucket: storageBucket,
           name: "MyDeletedApp");
 
       expect(firebase.app("MyDeletedApp"), isNotNull);
@@ -65,18 +106,6 @@ void main() {
             firebase.apps.where((app) => app.name == "MyDeletedApp").toList(),
             isEmpty);
       }));
-    });
-
-    test("Get database", () {
-      expect(app.database(), isNotNull);
-    });
-
-    test("Get Auth", () {
-      expect(app.auth(), isNotNull);
-    });
-
-    test("Get storage", () {
-      expect(app.storage(), isNotNull);
     });
   });
 
