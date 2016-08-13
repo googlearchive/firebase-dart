@@ -1,10 +1,11 @@
 @JS('firebase.auth')
 library firebase3.auth_interop;
 
-import 'package:firebase3/src/interop/app_interop.dart';
-import 'package:firebase3/src/interop/firebase_interop.dart';
 import 'package:func/func.dart';
 import 'package:js/js.dart';
+
+import 'app_interop.dart';
+import 'firebase_interop.dart';
 
 @JS('Auth')
 abstract class AuthJsImpl {

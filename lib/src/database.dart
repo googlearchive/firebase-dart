@@ -1,15 +1,13 @@
-library firebase3.database;
-
 import 'dart:async';
 
-import 'package:firebase3/app.dart';
-import 'package:firebase3/firebase.dart';
-import 'package:firebase3/src/interop/database_interop.dart'
-    as database_interop;
-import 'package:firebase3/src/js.dart';
-import 'package:firebase3/src/utils.dart';
 import 'package:func/func.dart';
 import 'package:js/js.dart';
+
+import 'app.dart';
+import 'interop/database_interop.dart' as database_interop;
+import 'js.dart';
+import 'thenable.dart';
+import 'utils.dart';
 
 /// Log debugging information to the console.
 ///

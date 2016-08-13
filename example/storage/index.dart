@@ -1,13 +1,12 @@
 library firebase3.example.storage;
 
 import 'dart:html';
-import 'package:firebase3/firebase.dart' as firebase;
-import 'package:firebase3/storage.dart' as firebase_storage;
+import 'package:firebase3/firebase.dart' as fb;
 
 // Update firebase.initializeApp() with information from your project.
 // See <https://firebase.google.com/docs/web/setup>.
 void main() {
-  firebase.initializeApp(
+  fb.initializeApp(
       apiKey: "TODO",
       authDomain: "TODO",
       databaseURL: "TODO",
@@ -17,12 +16,12 @@ void main() {
 }
 
 class ImageUploadApp {
-  firebase_storage.Storage storage;
-  firebase_storage.StorageReference ref;
+  fb.Storage storage;
+  fb.StorageReference ref;
   HtmlElement uploadForm, uploadImage;
 
   ImageUploadApp() {
-    this.storage = firebase.storage();
+    this.storage = fb.storage();
     this.ref = storage.ref("images");
     this.uploadForm = querySelector("#upload_form");
     this.uploadImage = querySelector("#upload_image");
@@ -31,10 +30,10 @@ class ImageUploadApp {
       e.preventDefault();
       var file = e.target.files[0];
 
-      firebase_storage.UploadTask uploadTask = this
+      fb.UploadTask uploadTask = this
           .ref
           .child(file.name)
-          .put(file, new firebase_storage.UploadMetadata(contentType: file.type));
+          .put(file, new fb.UploadMetadata(contentType: file.type));
       uploadTask
         ..onStateChanged.listen((e) {
           var snapshot = e.snapshot;

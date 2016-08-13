@@ -1,11 +1,11 @@
 @JS('firebase.storage')
 library firebase3.storage_interop;
 
-import 'package:firebase3/src/interop/app_interop.dart';
-import 'package:firebase3/src/interop/firebase_interop.dart';
-import 'package:firebase3/src/task_utils.dart';
 import 'package:func/func.dart';
 import 'package:js/js.dart';
+
+import 'app_interop.dart';
+import 'firebase_interop.dart';
 
 @JS('Storage')
 abstract class StorageJsImpl {
@@ -167,3 +167,8 @@ class CustomMetadataJsImpl {
   external void set string(String s);
   external factory CustomMetadataJsImpl({String string});
 }
+
+/// An event that is triggered on a task.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.storage#.TaskEvent>.
+enum TaskEvent { STATE_CHANGED }

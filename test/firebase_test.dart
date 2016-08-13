@@ -1,8 +1,7 @@
 @TestOn('browser')
 import 'dart:convert';
 
-import 'package:firebase3/app.dart';
-import 'package:firebase3/firebase.dart' as firebase;
+import 'package:firebase3/firebase.dart' as fb;
 import 'package:http/browser_client.dart' as http;
 import 'package:test/test.dart';
 
@@ -34,10 +33,10 @@ void main() {
     });
 
     group('instance', () {
-      App app;
+      fb.App app;
 
       setUpAll(() {
-        app = firebase.initializeApp(
+        app = fb.initializeApp(
             apiKey: apiKey,
             authDomain: authDomain,
             databaseURL: databaseUrl,
@@ -46,8 +45,8 @@ void main() {
 
       test("Exists", () {
         expect(app, isNotNull);
-        expect(firebase.app(), isNotNull);
-        expect(firebase.apps.first.name, app.name);
+        expect(fb.app(), isNotNull);
+        expect(fb.apps.first.name, app.name);
       });
 
       test("Is [DEFAULT]", () {
@@ -76,7 +75,7 @@ void main() {
     });
 
     test("Can be created with name", () {
-      var app2 = firebase.initializeApp(
+      var app2 = fb.initializeApp(
           apiKey: apiKey,
           authDomain: authDomain,
           databaseURL: databaseUrl,
@@ -84,26 +83,25 @@ void main() {
           name: "MySuperApp");
 
       expect(app2, isNotNull);
-      expect(firebase.app("MySuperApp"), isNotNull);
+      expect(fb.app("MySuperApp"), isNotNull);
       expect(app2.name, "MySuperApp");
-      expect(firebase.apps.length, 2); //[DEFAULT] and MySuperApp
+      expect(fb.apps.length, 2); //[DEFAULT] and MySuperApp
     });
 
     test("Can be deleted", () {
-      firebase.initializeApp(
+      fb.initializeApp(
           apiKey: apiKey,
           authDomain: authDomain,
           databaseURL: databaseUrl,
           storageBucket: storageBucket,
           name: "MyDeletedApp");
 
-      expect(firebase.app("MyDeletedApp"), isNotNull);
-      expect(firebase.apps.where((app) => app.name == "MyDeletedApp").toList(),
+      expect(fb.app("MyDeletedApp"), isNotNull);
+      expect(fb.apps.where((app) => app.name == "MyDeletedApp").toList(),
           isNotEmpty);
 
-      firebase.app("MyDeletedApp").delete().then(expectAsync((_) {
-        expect(
-            firebase.apps.where((app) => app.name == "MyDeletedApp").toList(),
+      fb.app("MyDeletedApp").delete().then(expectAsync((_) {
+        expect(fb.apps.where((app) => app.name == "MyDeletedApp").toList(),
             isEmpty);
       }));
     });
@@ -111,7 +109,7 @@ void main() {
 
   group("Firebase", () {
     test("SDK version", () {
-      expect(firebase.SDK_VERSION, startsWith("3."));
+      expect(fb.SDK_VERSION, startsWith("3."));
     });
   });
 }

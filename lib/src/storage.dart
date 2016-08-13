@@ -1,15 +1,18 @@
-library firebase3.storage;
-
 import 'dart:async';
 
-import 'package:firebase3/app.dart';
-import 'package:firebase3/firebase.dart';
-import 'package:firebase3/src/interop/storage_interop.dart' as storage_interop;
-import 'package:firebase3/src/js.dart';
-import 'package:firebase3/src/task_utils.dart';
-import 'package:firebase3/src/utils.dart';
 import 'package:func/func.dart';
 import 'package:js/js.dart';
+
+import 'app.dart';
+import 'interop/storage_interop.dart' as storage_interop;
+import 'js.dart';
+import 'thenable.dart';
+import 'utils.dart';
+
+/// Represents the current state of a running upload.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.storage#.TaskState>.
+enum TaskState { RUNNING, PAUSED, SUCCESS, CANCELED, ERROR }
 
 /// A service for uploading and downloading large objects to/from
 /// Google Cloud Storage.
@@ -226,7 +229,8 @@ class FullMetadata extends UploadMetadata {
           contentEncoding: contentEncoding,
           contentLanguage: contentLanguage,
           contentType: contentType,
-          customMetadata: (customMetadata != null) ? customMetadata.jsObject : null));
+          customMetadata:
+              (customMetadata != null) ? customMetadata.jsObject : null));
 
   FullMetadata.fromJsObject(jsObject) : super.fromJsObject(jsObject);
 }
@@ -255,7 +259,8 @@ class UploadMetadata extends SettableMetadata {
           contentEncoding: contentEncoding,
           contentLanguage: contentLanguage,
           contentType: contentType,
-          customMetadata: (customMetadata != null) ? customMetadata.jsObject : null));
+          customMetadata:
+              (customMetadata != null) ? customMetadata.jsObject : null));
 
   UploadMetadata.fromJsObject(jsObject) : super.fromJsObject(jsObject);
 }
@@ -464,7 +469,8 @@ class SettableMetadata extends JsObjectWrapper {
               contentEncoding: contentEncoding,
               contentLanguage: contentLanguage,
               contentType: contentType,
-              customMetadata: (customMetadata != null) ? customMetadata.jsObject : null));
+              customMetadata:
+                  (customMetadata != null) ? customMetadata.jsObject : null));
 
   SettableMetadata.fromJsObject(jsObject) : super.fromJsObject(jsObject);
 }

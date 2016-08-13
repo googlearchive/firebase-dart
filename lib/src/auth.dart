@@ -1,15 +1,180 @@
-library firebase3.auth;
-
 import 'dart:async';
 
-import 'package:firebase3/app.dart';
-import 'package:firebase3/firebase.dart';
-import 'package:firebase3/src/interop/auth_interop.dart' as auth_interop;
-import 'package:firebase3/src/interop/firebase_interop.dart'
-    as firebase_interop;
-import 'package:firebase3/src/js.dart';
-import 'package:firebase3/src/utils.dart';
 import 'package:js/js.dart';
+
+import 'app.dart';
+import 'interop/auth_interop.dart' as auth_interop;
+import 'interop/firebase_interop.dart' as firebase_interop;
+import 'js.dart';
+import 'utils.dart';
+
+/// User profile information, visible only to the Firebase project's apps.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.UserInfo>.
+class UserInfo extends JsObjectWrapper {
+  String get displayName => jsObject.displayName;
+  void set displayName(String s) {
+    jsObject.displayName = s;
+  }
+
+  String get email => jsObject.email;
+  void set email(String s) {
+    jsObject.email = s;
+  }
+
+  String get photoURL => jsObject.photoURL;
+  void set photoURL(String s) {
+    jsObject.photoURL = s;
+  }
+
+  String get providerId => jsObject.providerId;
+  void set providerId(String s) {
+    jsObject.providerId = s;
+  }
+
+  String get uid => jsObject.uid;
+  void set uid(String s) {
+    jsObject.uid = s;
+  }
+
+  UserInfo.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+}
+
+/// A user account.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.User>.
+class User extends UserInfo {
+  bool get emailVerified => jsObject.emailVerified;
+
+  bool get isAnonymous => jsObject.isAnonymous;
+
+  List<UserInfo> get providerData => (jsObject.providerData as List)
+      .map((data) => new UserInfo.fromJsObject(data))
+      .toList();
+
+  String get refreshToken => jsObject.refreshToken;
+
+  User.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+
+  Future delete() {
+    Completer c = new Completer();
+    var jsPromise = jsObject.delete();
+    jsPromise.then(resolveCallback(c), resolveError(c));
+    return c.future;
+  }
+
+  Future<String> getToken([bool opt_forceRefresh = false]) {
+    Completer<String> c = new Completer<String>();
+    var jsPromise = jsObject.getToken(opt_forceRefresh);
+    jsPromise.then(resolveCallback(c), resolveError(c));
+    return c.future;
+  }
+
+  Future<User> link(AuthCredential credential) {
+    Completer<User> c = new Completer<User>();
+    var jsPromise = jsObject.link(credential.jsObject);
+
+    var resolveCallbackWrap = allowInterop((firebase_interop.UserJsImpl u) {
+      c.complete(new User.fromJsObject(u));
+    });
+
+    jsPromise.then(resolveCallbackWrap, resolveError(c));
+    return c.future;
+  }
+
+  Future<UserCredential> linkWithPopup(AuthProvider provider) {
+    Completer<UserCredential> c = new Completer<UserCredential>();
+    var jsPromise = jsObject.linkWithPopup(provider.jsObject);
+
+    var resolveCallbackWrap =
+        allowInterop((auth_interop.UserCredentialJsImpl u) {
+      c.complete(new UserCredential.fromJsObject(u));
+    });
+
+    jsPromise.then(resolveCallbackWrap, resolveError(c));
+    return c.future;
+  }
+
+  Future linkWithRedirect(AuthProvider provider) {
+    Completer c = new Completer();
+    var jsPromise = jsObject.linkWithRedirect(provider.jsObject);
+    jsPromise.then(resolveCallback(c), resolveError(c));
+    return c.future;
+  }
+
+  Future reauthenticate(AuthCredential credential) {
+    Completer c = new Completer();
+    var jsPromise = jsObject.reauthenticate(credential.jsObject);
+    jsPromise.then(resolveCallback(c), resolveError(c));
+    return c.future;
+  }
+
+  Future reload() {
+    Completer c = new Completer();
+    var jsPromise = jsObject.reload();
+    jsPromise.then(resolveCallback(c), resolveError(c));
+    return c.future;
+  }
+
+  Future sendEmailVerification() {
+    Completer c = new Completer();
+    var jsPromise = jsObject.sendEmailVerification();
+    jsPromise.then(resolveCallback(c), resolveError(c));
+    return c.future;
+  }
+
+  Future<User> unlink(String providerId) {
+    Completer<User> c = new Completer<User>();
+    var jsPromise = jsObject.unlink(providerId);
+
+    var resolveCallbackWrap = allowInterop((firebase_interop.UserJsImpl u) {
+      c.complete(new User.fromJsObject(u));
+    });
+
+    jsPromise.then(resolveCallbackWrap, resolveError(c));
+    return c.future;
+  }
+
+  Future updateEmail(String newEmail) {
+    Completer c = new Completer();
+    var jsPromise = jsObject.updateEmail(newEmail);
+    jsPromise.then(resolveCallback(c), resolveError(c));
+    return c.future;
+  }
+
+  Future updatePassword(String newPassword) {
+    Completer c = new Completer();
+    var jsPromise = jsObject.updatePassword(newPassword);
+    jsPromise.then(resolveCallback(c), resolveError(c));
+    return c.future;
+  }
+
+  Future updateProfile(UserProfile profile) {
+    Completer c = new Completer();
+    var jsPromise = jsObject.updateProfile(profile.jsObject);
+    jsPromise.then(resolveCallback(c), resolveError(c));
+    return c.future;
+  }
+}
+
+/// A structure for [User]'s user profile.
+class UserProfile extends JsObjectWrapper {
+  String get displayName => jsObject.displayName;
+  void set displayName(String s) {
+    jsObject.displayName = s;
+  }
+
+  String get photoURL => jsObject.photoURL;
+  void set photoURL(String s) {
+    jsObject.photoURL = s;
+  }
+
+  factory UserProfile({String displayName, String photoURL}) =>
+      new UserProfile.fromJsObject(new firebase_interop.UserProfileJsImpl(
+          displayName: displayName, photoURL: photoURL));
+
+  UserProfile.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+}
 
 /// The Firebase Auth service class.
 ///

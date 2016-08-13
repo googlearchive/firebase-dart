@@ -1,5 +1,3 @@
-library firebase3.js;
-
 /// Class which is a wrapper for jsObject.
 abstract class JsObjectWrapper {
   var _jsObject;
