@@ -20,4 +20,5 @@ doc/api/
 *.iml
 *.ipr
 *.iws
-config.json
+
+lib/src/assets/config.json

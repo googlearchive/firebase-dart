@@ -2,15 +2,20 @@ library firebase3.example.realtime_database;
 
 import 'dart:html';
 import 'package:firebase3/firebase.dart' as fb;
+import 'package:firebase3/src/assets/assets.dart';
 
 // Update firebase.initializeApp() with information from your project.
 // See <https://firebase.google.com/docs/web/setup>.
-void main() {
-  fb.initializeApp(
-      apiKey: "TODO",
-      authDomain: "TODO",
-      databaseURL: "TODO",
-      storageBucket: "TODO");
+main() async {
+  await config();
+
+  var app = fb.initializeApp(
+      apiKey: apiKey,
+      authDomain: authDomain,
+      databaseURL: databaseUrl,
+      storageBucket: storageBucket);
+
+  await app.auth().signInAnonymously();
 
   new MessagesApp()..showMessages();
 }

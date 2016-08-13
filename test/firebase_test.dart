@@ -1,8 +1,6 @@
 @TestOn('browser')
-import 'dart:convert';
-
 import 'package:firebase3/firebase.dart' as fb;
-import 'package:http/browser_client.dart' as http;
+import 'package:firebase3/src/assets/assets.dart';
 import 'package:test/test.dart';
 
 // Update constants with information from your project.
@@ -10,26 +8,8 @@ import 'package:test/test.dart';
 
 void main() {
   group("App", () {
-    String apiKey, authDomain, databaseUrl, storageBucket;
-
     setUpAll(() async {
-      var client = new http.BrowserClient();
-      Map<String, String> config;
-
-      try {
-        var jsonString = (await client.get('config.json')).body;
-        config = JSON.decode(jsonString) as Map<String, String>;
-      } catch (e) {
-        print("Error getting `config.json`. Make sure it exists.");
-        rethrow;
-      } finally {
-        client.close();
-      }
-
-      apiKey = config['API_KEY'];
-      authDomain = config['AUTH_DOMAIN'];
-      databaseUrl = config['DATABASE_URL'];
-      storageBucket = config['STORAGE_BUCKET'];
+      await config();
     });
 
     group('instance', () {
