@@ -23,20 +23,18 @@ main() async {
 class ImageUploadApp {
   fb.Storage storage;
   fb.StorageReference ref;
-  HtmlElement uploadForm, uploadImage;
+  HtmlElement _uploadImage;
 
   ImageUploadApp() {
-    this.storage = fb.storage();
-    this.ref = storage.ref("images");
-    this.uploadForm = querySelector("#upload_form");
-    this.uploadImage = querySelector("#upload_image");
+    storage = fb.storage();
+    ref = storage.ref("images");
+    _uploadImage = querySelector("#upload_image");
 
-    this.uploadImage.onChange.listen((e) {
+    _uploadImage.onChange.listen((e) {
       e.preventDefault();
       var file = e.target.files[0];
 
-      fb.UploadTask uploadTask = this
-          .ref
+      var uploadTask = ref
           .child(file.name)
           .put(file, new fb.UploadMetadata(contentType: file.type));
       uploadTask
@@ -51,11 +49,6 @@ class ImageUploadApp {
           document.body.append(image);
           querySelector("#message").text = "";
         }).catchError((e) => print(e.code));
-    });
-
-    this.uploadForm.onSubmit.listen((e) {
-      e.preventDefault();
-      this.uploadImage.click();
     });
   }
 }
