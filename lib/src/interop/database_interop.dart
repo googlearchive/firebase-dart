@@ -1,10 +1,10 @@
 @JS('firebase.database')
 library firebase3.database_interop;
 
-import 'package:js/js.dart';
-import 'package:func/func.dart';
 import 'package:firebase3/src/interop/app_interop.dart';
 import 'package:firebase3/src/interop/firebase_interop.dart';
+import 'package:func/func.dart';
+import 'package:js/js.dart';
 
 external void enableLogging([logger, bool persistent]);
 

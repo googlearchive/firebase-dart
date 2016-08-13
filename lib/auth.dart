@@ -1,14 +1,15 @@
 library firebase3.auth;
 
 import 'dart:async';
-import 'package:js/js.dart';
-import 'package:firebase3/src/js.dart';
-import 'package:firebase3/src/interop/firebase_interop.dart'
-    as firebase_interop;
-import 'package:firebase3/src/interop/auth_interop.dart' as auth_interop;
-import 'package:firebase3/src/utils.dart';
+
 import 'package:firebase3/app.dart';
 import 'package:firebase3/firebase.dart';
+import 'package:firebase3/src/interop/auth_interop.dart' as auth_interop;
+import 'package:firebase3/src/interop/firebase_interop.dart'
+    as firebase_interop;
+import 'package:firebase3/src/js.dart';
+import 'package:firebase3/src/utils.dart';
+import 'package:js/js.dart';
 
 /// The Firebase Auth service class.
 ///

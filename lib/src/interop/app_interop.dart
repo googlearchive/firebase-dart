@@ -1,11 +1,11 @@
 @JS('firebase.app')
 library firebase3.app_interop;
 
-import 'package:js/js.dart';
-import 'package:firebase3/src/interop/storage_interop.dart';
-import 'package:firebase3/src/interop/firebase_interop.dart';
 import 'package:firebase3/src/interop/auth_interop.dart';
 import 'package:firebase3/src/interop/database_interop.dart';
+import 'package:firebase3/src/interop/firebase_interop.dart';
+import 'package:firebase3/src/interop/storage_interop.dart';
+import 'package:js/js.dart';
 
 @JS('App')
 abstract class AppJsImpl {

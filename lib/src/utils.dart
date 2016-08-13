@@ -3,8 +3,9 @@ library firebase3.utils;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:js';
-import 'package:js/js.dart';
+
 import 'package:firebase3/src/interop/js_interop.dart' as js;
+import 'package:js/js.dart';
 
 /// Returns Dart representation from JS Object.
 dynamic dartify(jsObject) {

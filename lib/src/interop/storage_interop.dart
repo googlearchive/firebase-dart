@@ -1,11 +1,11 @@
 @JS('firebase.storage')
 library firebase3.storage_interop;
 
-import 'package:js/js.dart';
-import 'package:func/func.dart';
 import 'package:firebase3/src/interop/app_interop.dart';
 import 'package:firebase3/src/interop/firebase_interop.dart';
 import 'package:firebase3/src/task_utils.dart';
+import 'package:func/func.dart';
+import 'package:js/js.dart';
 
 @JS('Storage')
 abstract class StorageJsImpl {

@@ -1,11 +1,12 @@
 library firebase3.app;
 
 import 'dart:async';
+
+import 'package:firebase3/auth.dart';
+import 'package:firebase3/database.dart';
+import 'package:firebase3/firebase.dart';
 import 'package:firebase3/src/js.dart';
 import 'package:firebase3/src/utils.dart';
-import 'package:firebase3/database.dart';
-import 'package:firebase3/auth.dart';
-import 'package:firebase3/firebase.dart';
 import 'package:firebase3/storage.dart';
 
 /// A Firebase App holds the initialization information for a collection

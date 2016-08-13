@@ -5,16 +5,17 @@
 library firebase3.firebase;
 
 import 'dart:async';
-import 'package:firebase3/src/js.dart';
-import 'package:firebase3/src/utils.dart';
-import 'package:firebase3/src/interop/auth_interop.dart' as auth_interop;
-import 'package:firebase3/src/interop/firebase_interop.dart' as firebase;
-import 'package:firebase3/database.dart';
+
 import 'package:firebase3/app.dart';
 import 'package:firebase3/auth.dart';
+import 'package:firebase3/database.dart';
+import 'package:firebase3/src/interop/auth_interop.dart' as auth_interop;
+import 'package:firebase3/src/interop/firebase_interop.dart' as firebase;
+import 'package:firebase3/src/js.dart';
+import 'package:firebase3/src/utils.dart';
 import 'package:firebase3/storage.dart';
-import 'package:js/js.dart';
 import 'package:func/func.dart';
+import 'package:js/js.dart';
 
 /// A (read-only) array of all the initialized Apps.
 ///

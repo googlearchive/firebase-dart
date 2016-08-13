@@ -1,14 +1,15 @@
 library firebase3.storage;
 
 import 'dart:async';
-import 'package:func/func.dart';
-import 'package:js/js.dart';
-import 'package:firebase3/src/js.dart';
-import 'package:firebase3/src/utils.dart';
-import 'package:firebase3/src/interop/storage_interop.dart' as storage_interop;
-import 'package:firebase3/src/task_utils.dart';
+
 import 'package:firebase3/app.dart';
 import 'package:firebase3/firebase.dart';
+import 'package:firebase3/src/interop/storage_interop.dart' as storage_interop;
+import 'package:firebase3/src/js.dart';
+import 'package:firebase3/src/task_utils.dart';
+import 'package:firebase3/src/utils.dart';
+import 'package:func/func.dart';
+import 'package:js/js.dart';
 
 /// A service for uploading and downloading large objects to/from
 /// Google Cloud Storage.
