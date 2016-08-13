@@ -1,12 +1,10 @@
 import 'dart:async';
 
-import 'package:func/func.dart';
 import 'package:js/js.dart';
 
 import 'app.dart';
 import 'interop/storage_interop.dart' as storage_interop;
 import 'js.dart';
-import 'thenable.dart';
 import 'utils.dart';
 
 /// Represents the current state of a running upload.
@@ -274,8 +272,20 @@ class UploadTaskEvent {
 /// Represents the process of uploading an object. Allows you to monitor and manage the upload.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.UploadTask>.
-class UploadTask extends JsObjectWrapper
-    implements Thenable<UploadTaskSnapshot> {
+class UploadTask extends JsObjectWrapper {
+  Completer<UploadTaskSnapshot> _completer;
+
+  Future<UploadTaskSnapshot> get future {
+    if (_completer == null) {
+      _completer = new Completer<UploadTaskSnapshot>();
+      jsObject.then(allowInterop((val) {
+        var databaseReference = new UploadTaskSnapshot.fromJsObject(val);
+        _completer.complete(databaseReference);
+      }), allowInterop((e) => _completer.completeError(e)));
+    }
+    return _completer.future;
+  }
+
   UploadTaskSnapshot _snapshot;
   UploadTaskSnapshot get snapshot {
     if (_snapshot != null) {
@@ -320,26 +330,6 @@ class UploadTask extends JsObjectWrapper
   bool pause() => jsObject.pause();
 
   bool resume() => jsObject.resume();
-
-  Future<UploadTaskSnapshot> then(Func1<UploadTaskSnapshot, dynamic> onValue) {
-    Completer<UploadTaskSnapshot> c = new Completer<UploadTaskSnapshot>();
-    jsObject.then(allowInterop((val) {
-      var uploadtaskSnapshot = new UploadTaskSnapshot.fromJsObject(val);
-      onValue(uploadtaskSnapshot);
-      c.complete(uploadtaskSnapshot);
-    }), allowInterop((e) => c.completeError(e)));
-    return c.future;
-  }
-
-  // Don't know why but I can't use the JS$catch method :-(
-  Future catchError(Func1<Error, dynamic> onError) {
-    Completer c = new Completer();
-    jsObject.then(null, allowInterop((e) {
-      onError(e);
-      c.complete(e);
-    }));
-    return c.future;
-  }
 }
 
 /// Holds data about the current state of the upload task.

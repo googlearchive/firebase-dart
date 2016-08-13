@@ -6,7 +6,6 @@ import 'package:js/js.dart';
 import 'app.dart';
 import 'interop/database_interop.dart' as database_interop;
 import 'js.dart';
-import 'thenable.dart';
 import 'utils.dart';
 
 /// Log debugging information to the console.
@@ -383,27 +382,20 @@ class OnDisconnect extends JsObjectWrapper {
 }
 
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.ThenableReference>.
-class ThenableReference extends DatabaseReference
-    implements Thenable<DatabaseReference> {
+class ThenableReference extends DatabaseReference {
+  Completer<DatabaseReference> _completer;
+
   ThenableReference.fromJsObject(jsObject) : super.fromJsObject(jsObject);
 
-  Future<DatabaseReference> then(Func1<DatabaseReference, dynamic> onValue) {
-    Completer<DatabaseReference> c = new Completer<DatabaseReference>();
-    jsObject.then(allowInterop((val) {
-      var databaseReference = new DatabaseReference.fromJsObject(val);
-      onValue(databaseReference);
-      c.complete(databaseReference);
-    }), allowInterop((e) => c.completeError(e)));
-    return c.future;
-  }
-
-  Future catchError(Func1<Error, dynamic> onError) {
-    Completer c = new Completer();
-    jsObject.JS$catch(allowInterop((e) {
-      onError(e);
-      c.complete(e);
-    }));
-    return c.future;
+  Future<DatabaseReference> get future {
+    if (_completer == null) {
+      _completer = new Completer<DatabaseReference>();
+      jsObject.then(allowInterop((val) {
+        var databaseReference = new DatabaseReference.fromJsObject(val);
+        _completer.complete(databaseReference);
+      }), allowInterop((e) => _completer.completeError(e)));
+    }
+    return _completer.future;
   }
 }
 

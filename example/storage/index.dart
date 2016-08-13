@@ -30,25 +30,28 @@ class ImageUploadApp {
     ref = storage.ref("images");
     _uploadImage = querySelector("#upload_image");
 
-    _uploadImage.onChange.listen((e) {
+    _uploadImage.onChange.listen((e) async {
       e.preventDefault();
       var file = e.target.files[0];
 
       var uploadTask = ref
           .child(file.name)
           .put(file, new fb.UploadMetadata(contentType: file.type));
-      uploadTask
-        ..onStateChanged.listen((e) {
-          var snapshot = e.snapshot;
-          querySelector("#message").text =
-              "Transfered ${snapshot.bytesTransferred}/${snapshot.totalBytes}...";
-        })
-        ..then((snapshot) {
-          var filePath = snapshot.downloadURL;
-          var image = new ImageElement(src: filePath);
-          document.body.append(image);
-          querySelector("#message").text = "";
-        }).catchError((e) => print(e.code));
+      uploadTask.onStateChanged.listen((e) {
+        var snapshot = e.snapshot;
+        querySelector("#message").text =
+            "Transfered ${snapshot.bytesTransferred}/${snapshot.totalBytes}...";
+      });
+
+      try {
+        var snapshot = await uploadTask.future;
+        var filePath = snapshot.downloadURL;
+        var image = new ImageElement(src: filePath);
+        document.body.append(image);
+        querySelector("#message").text = "";
+      } catch (e) {
+        print(e.code);
+      }
     });
   }
 }

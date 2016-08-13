@@ -34,14 +34,16 @@ class MessagesApp {
     this.newMessage = querySelector("#new_message");
 
     this.newMessageForm = querySelector("#new_message_form");
-    this.newMessageForm.onSubmit.listen((e) {
+    this.newMessageForm.onSubmit.listen((e) async {
       e.preventDefault();
       var map = {"text": newMessage.value};
-      this
-          .ref
-          .push(map)
-          .then((_) => newMessage.value = "")
-          .catchError((e) => print("Error while writing to db, $e"));
+
+      try {
+        await ref.push(map).future;
+        newMessage.value = "";
+      } catch (e) {
+        print("Error while writing to db, $e");
+      }
     });
   }
 
