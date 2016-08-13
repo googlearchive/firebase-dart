@@ -4,7 +4,9 @@ library firebase3.js;
 abstract class JsObjectWrapper {
   var _jsObject;
   get jsObject => this._jsObject;
-  void set jsObject(o) => this._jsObject = o;
+  void set jsObject(o) {
+    this._jsObject = o;
+  }
 
   JsObjectWrapper.fromJsObject(this._jsObject);
 }
