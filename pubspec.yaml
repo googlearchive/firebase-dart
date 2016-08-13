@@ -5,7 +5,7 @@ author: Jana Moudra <jana.moudra@gmail.com>
 homepage: https://github.com/Janamou/firebase3-dart
 
 environment:
-  sdk: '>=1.0.0 <2.0.0'
+  sdk: '>=1.17.0 <2.0.0'
 
 dependencies:
   js: ">=0.6.0 <0.7.0"
