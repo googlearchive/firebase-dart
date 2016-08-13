@@ -88,7 +88,7 @@ void main() {
       expect(fb.apps.length, 2); //[DEFAULT] and MySuperApp
     });
 
-    test("Can be deleted", () {
+    test("Can be deleted", () async {
       fb.initializeApp(
           apiKey: apiKey,
           authDomain: authDomain,
@@ -100,10 +100,9 @@ void main() {
       expect(fb.apps.where((app) => app.name == "MyDeletedApp").toList(),
           isNotEmpty);
 
-      fb.app("MyDeletedApp").delete().then(expectAsync((_) {
-        expect(fb.apps.where((app) => app.name == "MyDeletedApp").toList(),
-            isEmpty);
-      }));
+      await fb.app("MyDeletedApp").delete();
+      expect(
+          fb.apps.where((app) => app.name == "MyDeletedApp").toList(), isEmpty);
     });
   });
 
