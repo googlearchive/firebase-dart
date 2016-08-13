@@ -79,7 +79,7 @@ class GoogleAuthProviderJsImpl extends AuthProviderJsImpl {
       [String idToken, String accessToken]);
 }
 
-@JS('GoogleAuthProvider')
+@JS('TwitterAuthProvider')
 class TwitterAuthProviderJsImpl extends AuthProviderJsImpl {
   external TwitterAuthProviderJsImpl();
   external static String get PROVIDER_ID;
