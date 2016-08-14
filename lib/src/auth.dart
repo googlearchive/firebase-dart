@@ -63,13 +63,12 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   Future<String> getToken([bool opt_forceRefresh = false]) =>
       handleThenable(jsObject.getToken(opt_forceRefresh));
 
-  Future<User> link(AuthCredential credential) =>
-      handleThenable(jsObject.link(credential.jsObject),
-          mapper: (u) => new User.fromJsObject(u));
+  Future<User> link(AuthCredential credential) => handleThenableWithMapper(
+      jsObject.link(credential.jsObject), (u) => new User.fromJsObject(u));
 
   Future<UserCredential> linkWithPopup(AuthProvider provider) =>
-      handleThenable(jsObject.linkWithPopup(provider.jsObject),
-          mapper: (u) => new UserCredential.fromJsObject(u));
+      handleThenableWithMapper(jsObject.linkWithPopup(provider.jsObject),
+          (u) => new UserCredential.fromJsObject(u));
 
   Future linkWithRedirect(AuthProvider provider) =>
       handleThenable(jsObject.linkWithRedirect(provider.jsObject));
@@ -82,9 +81,9 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   Future sendEmailVerification() =>
       handleThenable(jsObject.sendEmailVerification());
 
-  Future<User> unlink(String providerId) =>
-      handleThenable(jsObject.unlink(providerId),
-          mapper: (firebase_interop.UserJsImpl u) => new User.fromJsObject(u));
+  Future<User> unlink(String providerId) => handleThenableWithMapper(
+      jsObject.unlink(providerId),
+      (firebase_interop.UserJsImpl u) => new User.fromJsObject(u));
 
   Future updateEmail(String newEmail) =>
       handleThenable(jsObject.updateEmail(newEmail));
@@ -177,45 +176,45 @@ class Auth extends JsObjectWrapper<auth_interop.AuthJsImpl> {
       handleThenable(jsObject.applyActionCode(code));
 
   Future<ActionCodeInfo> checkActionCode(String code) =>
-      handleThenable(jsObject.checkActionCode(code),
-          mapper: (val) => new ActionCodeInfo.fromJsObject(val));
+      handleThenableWithMapper(jsObject.checkActionCode(code),
+          (val) => new ActionCodeInfo.fromJsObject(val));
 
   Future confirmPasswordReset(String code, String newPassword) =>
       handleThenable(jsObject.confirmPasswordReset(code, newPassword));
 
   Future<User> createUserWithEmailAndPassword(String email, String password) =>
-      handleThenable(jsObject.createUserWithEmailAndPassword(email, password),
-          mapper: (u) => new User.fromJsObject(u));
+      handleThenableWithMapper(
+          jsObject.createUserWithEmailAndPassword(email, password),
+          (u) => new User.fromJsObject(u));
 
   Future<List<String>> fetchProvidersForEmail(String email) =>
       handleThenable(jsObject.fetchProvidersForEmail(email));
 
-  Future<UserCredential> getRedirectResult() =>
-      handleThenable(jsObject.getRedirectResult(),
-          mapper: (u) => new UserCredential.fromJsObject(u));
+  Future<UserCredential> getRedirectResult() => handleThenableWithMapper(
+      jsObject.getRedirectResult(), (u) => new UserCredential.fromJsObject(u));
 
   Future sendPasswordResetEmail(String email) =>
       handleThenable(jsObject.sendPasswordResetEmail(email));
 
-  Future<User> signInAnonymously() =>
-      handleThenable(jsObject.signInAnonymously(),
-          mapper: (u) => new User.fromJsObject(u));
+  Future<User> signInAnonymously() => handleThenableWithMapper(
+      jsObject.signInAnonymously(), (u) => new User.fromJsObject(u));
 
   Future<User> signInWithCredential(AuthCredential credential) =>
-      handleThenable(jsObject.signInWithCredential(credential.jsObject),
-          mapper: (u) => new User.fromJsObject(u));
+      handleThenableWithMapper(
+          jsObject.signInWithCredential(credential.jsObject),
+          (u) => new User.fromJsObject(u));
 
-  Future<User> signInWithCustomToken(String token) =>
-      handleThenable(jsObject.signInWithCustomToken(token),
-          mapper: (u) => new User.fromJsObject(u));
+  Future<User> signInWithCustomToken(String token) => handleThenableWithMapper(
+      jsObject.signInWithCustomToken(token), (u) => new User.fromJsObject(u));
 
   Future<User> signInWithEmailAndPassword(String email, String password) =>
-      handleThenable(jsObject.signInWithEmailAndPassword(email, password),
-          mapper: (u) => new User.fromJsObject(u));
+      handleThenableWithMapper(
+          jsObject.signInWithEmailAndPassword(email, password),
+          (u) => new User.fromJsObject(u));
 
   Future<UserCredential> signInWithPopup(AuthProvider provider) =>
-      handleThenable(jsObject.signInWithPopup(provider.jsObject),
-          mapper: (u) => new UserCredential.fromJsObject(u));
+      handleThenableWithMapper(jsObject.signInWithPopup(provider.jsObject),
+          (u) => new UserCredential.fromJsObject(u));
 
   Future signInWithRedirect(AuthProvider provider) =>
       handleThenable(jsObject.signInWithRedirect(provider.jsObject));

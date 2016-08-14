@@ -102,8 +102,8 @@ class StorageReference
 
   Future<String> getDownloadURL() => handleThenable(jsObject.getDownloadURL());
 
-  Future<FullMetadata> getMetadata() => handleThenable(jsObject.getMetadata(),
-      mapper: (m) => new FullMetadata.fromJsObject(m));
+  Future<FullMetadata> getMetadata() => handleThenableWithMapper(
+      jsObject.getMetadata(), (m) => new FullMetadata.fromJsObject(m));
 
   UploadTask put(blob, [UploadMetadata metadata]) {
     if (metadata != null) {
@@ -115,8 +115,8 @@ class StorageReference
   String toString() => jsObject.toString();
 
   Future<FullMetadata> updateMetadata(SettableMetadata metadata) =>
-      handleThenable(jsObject.updateMetadata(metadata.jsObject),
-          mapper: (m) => new FullMetadata.fromJsObject(m));
+      handleThenableWithMapper(jsObject.updateMetadata(metadata.jsObject),
+          (m) => new FullMetadata.fromJsObject(m));
 }
 
 /// The full set of object metadata, including read-only properties.
@@ -254,8 +254,8 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   Future<UploadTaskSnapshot> get future {
     if (_completer == null) {
       _completer = new Completer<UploadTaskSnapshot>();
-      handleThenable(jsObject,
-          mapper: (val) => new UploadTaskSnapshot.fromJsObject(val),
+      handleThenableWithMapper(
+          jsObject, (val) => new UploadTaskSnapshot.fromJsObject(val),
           completer: _completer);
     }
     return _completer.future;
