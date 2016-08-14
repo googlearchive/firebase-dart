@@ -13,9 +13,11 @@ import 'utils.dart';
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.app>.
 class App extends JsObjectWrapper<AppJsImpl> {
+  /// Name of the app.
   String get name => jsObject.name;
 
   FirebaseOptions _options;
+  /// Options used during [firebase.initializeApp()].
   FirebaseOptions get options {
     if (_options != null) {
       _options.jsObject = jsObject.options;
@@ -25,14 +27,19 @@ class App extends JsObjectWrapper<AppJsImpl> {
     return _options;
   }
 
+  /// Creates a new App from [jsObject].
   App.fromJsObject(AppJsImpl jsObject) : super.fromJsObject(jsObject);
 
+  /// Returns [Auth] service.
   Auth auth() => new Auth.fromJsObject(jsObject.auth());
 
+  /// Returns [Database] service.
   Database database() => new Database.fromJsObject(jsObject.database());
 
+  /// Deletes the app and frees resources of all App's services.
   Future delete() => handleJsPromise(jsObject.delete());
 
+  /// Returns [Storage] service.
   Storage storage() => new Storage.fromJsObject(jsObject.storage());
 }
 
