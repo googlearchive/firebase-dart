@@ -17,6 +17,7 @@ class App extends JsObjectWrapper<AppJsImpl> {
   String get name => jsObject.name;
 
   FirebaseOptions _options;
+
   /// Options used during [firebase.initializeApp()].
   FirebaseOptions get options {
     if (_options != null) {
@@ -37,7 +38,7 @@ class App extends JsObjectWrapper<AppJsImpl> {
   Database database() => new Database.fromJsObject(jsObject.database());
 
   /// Deletes the app and frees resources of all App's services.
-  Future delete() => handleJsPromise(jsObject.delete());
+  Future delete() => handleThenable(jsObject.delete());
 
   /// Returns [Storage] service.
   Storage storage() => new Storage.fromJsObject(jsObject.storage());

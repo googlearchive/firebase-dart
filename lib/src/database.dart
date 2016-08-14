@@ -399,7 +399,7 @@ class ThenableReference
   Future<DatabaseReference> get future {
     if (_completer == null) {
       _completer = new Completer<DatabaseReference>();
-      handleJsPromise(jsObject,
+      handleThenable(jsObject,
           mapper: (val) => new DatabaseReference.fromJsObject(val),
           completer: _completer);
     }
