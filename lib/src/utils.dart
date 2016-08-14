@@ -23,7 +23,7 @@ dynamic jsify(Object dartObject) {
   return dartObject;
 }
 
-Future handleJsPromise(PromiseJsImpl jsPromise,
+Future handleThenable(ThenableJsImpl thenable,
     {Func1 mapper, Completer completer}) {
   completer ??= new Completer();
 
@@ -36,7 +36,7 @@ Future handleJsPromise(PromiseJsImpl jsPromise,
           completer.complete(mappedValue);
         });
 
-  jsPromise.then(thenHandler, resolveError(completer));
+  thenable.then(thenHandler, resolveError(completer));
   return completer.future;
 }
 

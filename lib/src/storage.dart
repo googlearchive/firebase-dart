@@ -98,11 +98,11 @@ class StorageReference
   StorageReference child(String path) =>
       new StorageReference.fromJsObject(jsObject.child(path));
 
-  Future delete() => handleJsPromise(jsObject.delete());
+  Future delete() => handleThenable(jsObject.delete());
 
-  Future<String> getDownloadURL() => handleJsPromise(jsObject.getDownloadURL());
+  Future<String> getDownloadURL() => handleThenable(jsObject.getDownloadURL());
 
-  Future<FullMetadata> getMetadata() => handleJsPromise(jsObject.getMetadata(),
+  Future<FullMetadata> getMetadata() => handleThenable(jsObject.getMetadata(),
       mapper: (m) => new FullMetadata.fromJsObject(m));
 
   UploadTask put(blob, [UploadMetadata metadata]) {
@@ -115,7 +115,7 @@ class StorageReference
   String toString() => jsObject.toString();
 
   Future<FullMetadata> updateMetadata(SettableMetadata metadata) =>
-      handleJsPromise(jsObject.updateMetadata(metadata.jsObject),
+      handleThenable(jsObject.updateMetadata(metadata.jsObject),
           mapper: (m) => new FullMetadata.fromJsObject(m));
 }
 
@@ -254,7 +254,7 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   Future<UploadTaskSnapshot> get future {
     if (_completer == null) {
       _completer = new Completer<UploadTaskSnapshot>();
-      handleJsPromise(jsObject,
+      handleThenable(jsObject,
           mapper: (val) => new UploadTaskSnapshot.fromJsObject(val),
           completer: _completer);
     }
