@@ -50,7 +50,8 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   bool get isAnonymous => jsObject.isAnonymous;
 
   List<UserInfo> get providerData => jsObject.providerData
-      .map((data) => new UserInfo.fromJsObject(data))
+      .map((data) =>
+          new UserInfo<firebase_interop.UserInfoJsImpl>.fromJsObject(data))
       .toList();
 
   String get refreshToken => jsObject.refreshToken;
