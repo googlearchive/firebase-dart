@@ -30,12 +30,7 @@ class App extends JsObjectWrapper {
 
   Database database() => new Database.fromJsObject(jsObject.database());
 
-  Future delete() {
-    Completer c = new Completer();
-    var jsPromise = jsObject.delete();
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future delete() => handleJsPromise(jsObject.delete());
 
   Storage storage() => new Storage.fromJsObject(jsObject.storage());
 }

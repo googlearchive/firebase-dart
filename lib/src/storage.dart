@@ -95,32 +95,12 @@ class StorageReference extends JsObjectWrapper {
   StorageReference child(String path) =>
       new StorageReference.fromJsObject(jsObject.child(path));
 
-  Future delete() {
-    Completer c = new Completer();
-    var jsPromise = jsObject.delete();
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future delete() => handleJsPromise(jsObject.delete());
 
-  Future<String> getDownloadURL() {
-    Completer<String> c = new Completer<String>();
-    var jsPromise = jsObject.getDownloadURL();
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future<String> getDownloadURL() => handleJsPromise(jsObject.getDownloadURL());
 
-  Future<FullMetadata> getMetadata() {
-    Completer<FullMetadata> c = new Completer<FullMetadata>();
-    var jsPromise = jsObject.getMetadata();
-
-    var resolveCallbackWrap =
-        allowInterop((storage_interop.FullMetadataJsImpl m) {
-      c.complete(new FullMetadata.fromJsObject(m));
-    });
-
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
+  Future<FullMetadata> getMetadata() => handleJsPromise(jsObject.getMetadata(),
+      mapper: (m) => new FullMetadata.fromJsObject(m));
 
   UploadTask put(blob, [UploadMetadata metadata]) {
     if (metadata != null) {
@@ -131,18 +111,9 @@ class StorageReference extends JsObjectWrapper {
 
   String toString() => jsObject.toString();
 
-  Future<FullMetadata> updateMetadata(SettableMetadata metadata) {
-    Completer<FullMetadata> c = new Completer<FullMetadata>();
-    var jsPromise = jsObject.updateMetadata(metadata.jsObject);
-
-    var resolveCallbackWrap =
-        allowInterop((storage_interop.FullMetadataJsImpl m) {
-      c.complete(new FullMetadata.fromJsObject(m));
-    });
-
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
+  Future<FullMetadata> updateMetadata(SettableMetadata metadata) =>
+      handleJsPromise(jsObject.updateMetadata(metadata.jsObject),
+          mapper: (m) => new FullMetadata.fromJsObject(m));
 }
 
 /// The full set of object metadata, including read-only properties.
@@ -278,10 +249,9 @@ class UploadTask extends JsObjectWrapper {
   Future<UploadTaskSnapshot> get future {
     if (_completer == null) {
       _completer = new Completer<UploadTaskSnapshot>();
-      jsObject.then(allowInterop((val) {
-        var databaseReference = new UploadTaskSnapshot.fromJsObject(val);
-        _completer.complete(databaseReference);
-      }), allowInterop((e) => _completer.completeError(e)));
+      handleJsPromise(jsObject,
+          mapper: (val) => new UploadTaskSnapshot.fromJsObject(val),
+          completer: _completer);
     }
     return _completer.future;
   }

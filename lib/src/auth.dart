@@ -56,105 +56,42 @@ class User extends UserInfo {
 
   User.fromJsObject(jsObject) : super.fromJsObject(jsObject);
 
-  Future delete() {
-    Completer c = new Completer();
-    var jsPromise = jsObject.delete();
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future delete() => handleJsPromise(jsObject.delete());
 
-  Future<String> getToken([bool opt_forceRefresh = false]) {
-    Completer<String> c = new Completer<String>();
-    var jsPromise = jsObject.getToken(opt_forceRefresh);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future<String> getToken([bool opt_forceRefresh = false]) =>
+      handleJsPromise(jsObject.getToken(opt_forceRefresh));
 
-  Future<User> link(AuthCredential credential) {
-    Completer<User> c = new Completer<User>();
-    var jsPromise = jsObject.link(credential.jsObject);
+  Future<User> link(AuthCredential credential) =>
+      handleJsPromise(jsObject.link(credential.jsObject),
+          mapper: (u) => new User.fromJsObject(u));
 
-    var resolveCallbackWrap = allowInterop((firebase_interop.UserJsImpl u) {
-      c.complete(new User.fromJsObject(u));
-    });
+  Future<UserCredential> linkWithPopup(AuthProvider provider) =>
+      handleJsPromise(jsObject.linkWithPopup(provider.jsObject),
+          mapper: (u) => new UserCredential.fromJsObject(u));
 
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
+  Future linkWithRedirect(AuthProvider provider) =>
+      handleJsPromise(jsObject.linkWithRedirect(provider.jsObject));
 
-  Future<UserCredential> linkWithPopup(AuthProvider provider) {
-    Completer<UserCredential> c = new Completer<UserCredential>();
-    var jsPromise = jsObject.linkWithPopup(provider.jsObject);
+  Future reauthenticate(AuthCredential credential) =>
+      handleJsPromise(jsObject.reauthenticate(credential.jsObject));
 
-    var resolveCallbackWrap =
-        allowInterop((auth_interop.UserCredentialJsImpl u) {
-      c.complete(new UserCredential.fromJsObject(u));
-    });
+  Future reload() => handleJsPromise(jsObject.reload());
 
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
+  Future sendEmailVerification() =>
+      handleJsPromise(jsObject.sendEmailVerification());
 
-  Future linkWithRedirect(AuthProvider provider) {
-    Completer c = new Completer();
-    var jsPromise = jsObject.linkWithRedirect(provider.jsObject);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future<User> unlink(String providerId) =>
+      handleJsPromise(jsObject.unlink(providerId),
+          mapper: (firebase_interop.UserJsImpl u) => new User.fromJsObject(u));
 
-  Future reauthenticate(AuthCredential credential) {
-    Completer c = new Completer();
-    var jsPromise = jsObject.reauthenticate(credential.jsObject);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future updateEmail(String newEmail) =>
+      handleJsPromise(jsObject.updateEmail(newEmail));
 
-  Future reload() {
-    Completer c = new Completer();
-    var jsPromise = jsObject.reload();
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future updatePassword(String newPassword) =>
+      handleJsPromise(jsObject.updatePassword(newPassword));
 
-  Future sendEmailVerification() {
-    Completer c = new Completer();
-    var jsPromise = jsObject.sendEmailVerification();
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
-
-  Future<User> unlink(String providerId) {
-    Completer<User> c = new Completer<User>();
-    var jsPromise = jsObject.unlink(providerId);
-
-    var resolveCallbackWrap = allowInterop((firebase_interop.UserJsImpl u) {
-      c.complete(new User.fromJsObject(u));
-    });
-
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
-
-  Future updateEmail(String newEmail) {
-    Completer c = new Completer();
-    var jsPromise = jsObject.updateEmail(newEmail);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
-
-  Future updatePassword(String newPassword) {
-    Completer c = new Completer();
-    var jsPromise = jsObject.updatePassword(newPassword);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
-
-  Future updateProfile(UserProfile profile) {
-    Completer c = new Completer();
-    var jsPromise = jsObject.updateProfile(profile.jsObject);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future updateProfile(UserProfile profile) =>
+      handleJsPromise(jsObject.updateProfile(profile.jsObject));
 }
 
 /// A structure for [User]'s user profile.
@@ -232,153 +169,57 @@ class Auth extends JsObjectWrapper {
 
   Auth.fromJsObject(jsObject) : super.fromJsObject(jsObject);
 
-  Future applyActionCode(String code) {
-    Completer c = new Completer();
-    var jsPromise = jsObject.applyActionCode(code);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future applyActionCode(String code) =>
+      handleJsPromise(jsObject.applyActionCode(code));
 
-  Future<ActionCodeInfo> checkActionCode(String code) {
-    Completer<ActionCodeInfo> c = new Completer<ActionCodeInfo>();
-    var jsPromise = jsObject.checkActionCode(code);
+  Future<ActionCodeInfo> checkActionCode(String code) =>
+      handleJsPromise(jsObject.checkActionCode(code),
+          mapper: (val) => new ActionCodeInfo.fromJsObject(val));
 
-    var resolveCallbackWrap =
-        allowInterop((auth_interop.ActionCodeInfoJsImpl a) {
-      c.complete(new ActionCodeInfo.fromJsObject(a));
-    });
+  Future confirmPasswordReset(String code, String newPassword) =>
+      handleJsPromise(jsObject.confirmPasswordReset(code, newPassword));
 
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
+  Future<User> createUserWithEmailAndPassword(String email, String password) =>
+      handleJsPromise(jsObject.createUserWithEmailAndPassword(email, password),
+          mapper: (u) => new User.fromJsObject(u));
 
-  Future confirmPasswordReset(String code, String newPassword) {
-    Completer c = new Completer();
-    var jsPromise = jsObject.confirmPasswordReset(code, newPassword);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future<List<String>> fetchProvidersForEmail(String email) =>
+      handleJsPromise(jsObject.fetchProvidersForEmail(email));
 
-  Future<User> createUserWithEmailAndPassword(String email, String password) {
-    Completer<User> c = new Completer<User>();
-    var jsPromise = jsObject.createUserWithEmailAndPassword(email, password);
+  Future<UserCredential> getRedirectResult() =>
+      handleJsPromise(jsObject.getRedirectResult(),
+          mapper: (u) => new UserCredential.fromJsObject(u));
 
-    var resolveCallbackWrap = allowInterop((firebase_interop.UserJsImpl u) {
-      c.complete(new User.fromJsObject(u));
-    });
+  Future sendPasswordResetEmail(String email) =>
+      handleJsPromise(jsObject.sendPasswordResetEmail(email));
 
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
+  Future<User> signInAnonymously() =>
+      handleJsPromise(jsObject.signInAnonymously(),
+          mapper: (u) => new User.fromJsObject(u));
 
-  Future<List<String>> fetchProvidersForEmail(String email) {
-    Completer<List<String>> c = new Completer<List<String>>();
-    var jsPromise = jsObject.fetchProvidersForEmail(email);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future<User> signInWithCredential(AuthCredential credential) =>
+      handleJsPromise(jsObject.signInWithCredential(credential.jsObject),
+          mapper: (u) => new User.fromJsObject(u));
 
-  Future<UserCredential> getRedirectResult() {
-    Completer<UserCredential> c = new Completer<UserCredential>();
-    var jsPromise = jsObject.getRedirectResult();
+  Future<User> signInWithCustomToken(String token) =>
+      handleJsPromise(jsObject.signInWithCustomToken(token),
+          mapper: (u) => new User.fromJsObject(u));
 
-    var resolveCallbackWrap =
-        allowInterop((auth_interop.UserCredentialJsImpl u) {
-      c.complete(new UserCredential.fromJsObject(u));
-    });
+  Future<User> signInWithEmailAndPassword(String email, String password) =>
+      handleJsPromise(jsObject.signInWithEmailAndPassword(email, password),
+          mapper: (u) => new User.fromJsObject(u));
 
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
+  Future<UserCredential> signInWithPopup(AuthProvider provider) =>
+      handleJsPromise(jsObject.signInWithPopup(provider.jsObject),
+          mapper: (u) => new UserCredential.fromJsObject(u));
 
-  Future sendPasswordResetEmail(String email) {
-    Completer c = new Completer();
-    var jsPromise = jsObject.sendPasswordResetEmail(email);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future signInWithRedirect(AuthProvider provider) =>
+      handleJsPromise(jsObject.signInWithRedirect(provider.jsObject));
 
-  Future<User> signInAnonymously() {
-    Completer<User> c = new Completer<User>();
-    var jsPromise = jsObject.signInAnonymously();
+  Future signOut() => handleJsPromise(jsObject.signOut());
 
-    var resolveCallbackWrap = allowInterop((firebase_interop.UserJsImpl u) {
-      c.complete(new User.fromJsObject(u));
-    });
-
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
-
-  Future<User> signInWithCredential(AuthCredential credential) {
-    Completer<User> c = new Completer<User>();
-    var jsPromise = jsObject.signInWithCredential(credential.jsObject);
-
-    var resolveCallbackWrap = allowInterop((firebase_interop.UserJsImpl u) {
-      c.complete(new User.fromJsObject(u));
-    });
-
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
-
-  Future<User> signInWithCustomToken(String token) {
-    Completer<User> c = new Completer<User>();
-    var jsPromise = jsObject.signInWithCustomToken(token);
-
-    var resolveCallbackWrap = allowInterop((firebase_interop.UserJsImpl u) {
-      c.complete(new User.fromJsObject(u));
-    });
-
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
-
-  Future<User> signInWithEmailAndPassword(String email, String password) {
-    Completer<User> c = new Completer<User>();
-    var jsPromise = jsObject.signInWithEmailAndPassword(email, password);
-
-    var resolveCallbackWrap = allowInterop((firebase_interop.UserJsImpl u) {
-      c.complete(new User.fromJsObject(u));
-    });
-
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
-
-  Future<UserCredential> signInWithPopup(AuthProvider provider) {
-    Completer<UserCredential> c = new Completer<UserCredential>();
-    var jsPromise = jsObject.signInWithPopup(provider.jsObject);
-
-    var resolveCallbackWrap =
-        allowInterop((auth_interop.UserCredentialJsImpl u) {
-      c.complete(new UserCredential.fromJsObject(u));
-    });
-
-    jsPromise.then(resolveCallbackWrap, resolveError(c));
-    return c.future;
-  }
-
-  Future signInWithRedirect(AuthProvider provider) {
-    Completer c = new Completer();
-    var jsPromise = jsObject.signInWithRedirect(provider.jsObject);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
-
-  Future signOut() {
-    Completer c = new Completer();
-    var jsPromise = jsObject.signOut();
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
-
-  Future<String> verifyPasswordResetCode(String code) {
-    Completer<String> c = new Completer<String>();
-    var jsPromise = jsObject.verifyPasswordResetCode(code);
-    jsPromise.then(resolveCallback(c), resolveError(c));
-    return c.future;
-  }
+  Future<String> verifyPasswordResetCode(String code) =>
+      handleJsPromise(jsObject.verifyPasswordResetCode(code));
 }
 
 /// Event propagated in Stream controllers when auth state changes.

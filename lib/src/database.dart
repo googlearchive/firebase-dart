@@ -390,10 +390,9 @@ class ThenableReference extends DatabaseReference {
   Future<DatabaseReference> get future {
     if (_completer == null) {
       _completer = new Completer<DatabaseReference>();
-      jsObject.then(allowInterop((val) {
-        var databaseReference = new DatabaseReference.fromJsObject(val);
-        _completer.complete(databaseReference);
-      }), allowInterop((e) => _completer.completeError(e)));
+      handleJsPromise(jsObject,
+          mapper: (val) => new DatabaseReference.fromJsObject(val),
+          completer: _completer);
     }
     return _completer.future;
   }
