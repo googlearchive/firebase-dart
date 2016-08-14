@@ -1,12 +1,13 @@
 @JS('firebase')
 library firebase3.firebase_interop;
 
-import 'package:js/js.dart';
 import 'package:func/func.dart';
-import 'package:firebase3/src/interop/app_interop.dart';
-import 'package:firebase3/src/interop/database_interop.dart';
-import 'package:firebase3/src/interop/auth_interop.dart';
-import 'package:firebase3/src/interop/storage_interop.dart';
+import 'package:js/js.dart';
+
+import 'app_interop.dart';
+import 'auth_interop.dart';
+import 'database_interop.dart';
+import 'storage_interop.dart';
 
 external List<AppJsImpl> get apps;
 external String get SDK_VERSION;

@@ -1,49 +1,55 @@
 library firebase3.example.realtime_database;
 
 import 'dart:html';
-import 'package:firebase3/firebase.dart' as firebase;
-import 'package:firebase3/database.dart';
+import 'package:firebase3/firebase.dart' as fb;
+import 'package:firebase3/src/assets/assets.dart';
 
 // Update firebase.initializeApp() with information from your project.
 // See <https://firebase.google.com/docs/web/setup>.
-void main() {
-  firebase.initializeApp(
-      apiKey: "TODO",
-      authDomain: "TODO",
-      databaseURL: "TODO",
-      storageBucket: "TODO");
+main() async {
+  await config();
+
+  var app = fb.initializeApp(
+      apiKey: apiKey,
+      authDomain: authDomain,
+      databaseURL: databaseUrl,
+      storageBucket: storageBucket);
+
+  await app.auth().signInAnonymously();
 
   new MessagesApp()..showMessages();
 }
 
 class MessagesApp {
-  Database database;
-  DatabaseReference ref;
+  fb.Database database;
+  fb.DatabaseReference ref;
   UListElement messages;
   InputElement newMessage;
   FormElement newMessageForm;
 
   MessagesApp() {
-    this.database = firebase.database();
+    this.database = fb.database();
     this.ref = database.ref("messages");
     this.messages = querySelector("#messages");
     this.newMessage = querySelector("#new_message");
 
     this.newMessageForm = querySelector("#new_message_form");
-    this.newMessageForm.onSubmit.listen((e) {
+    this.newMessageForm.onSubmit.listen((e) async {
       e.preventDefault();
       var map = {"text": newMessage.value};
-      this
-          .ref
-          .push(map)
-          .then((_) => newMessage.value = "")
-          .catchError((e) => print("Error while writing to db, $e"));
+
+      try {
+        await ref.push(map).future;
+        newMessage.value = "";
+      } catch (e) {
+        print("Error while writing to db, $e");
+      }
     });
   }
 
   void showMessages() {
     this.ref.onChildAdded.listen((e) {
-      DataSnapshot datasnapshot = e.snapshot;
+      fb.DataSnapshot datasnapshot = e.snapshot;
 
       var spanElement = new SpanElement()..text = datasnapshot.val()["text"];
 
@@ -70,7 +76,7 @@ class MessagesApp {
     });
 
     this.ref.onChildChanged.listen((e) {
-      DataSnapshot datasnapshot = e.snapshot;
+      fb.DataSnapshot datasnapshot = e.snapshot;
       var element = querySelector("#${datasnapshot.key} span");
 
       if (element != null) {
@@ -79,7 +85,7 @@ class MessagesApp {
     });
 
     this.ref.onChildRemoved.listen((e) {
-      DataSnapshot datasnapshot = e.snapshot;
+      fb.DataSnapshot datasnapshot = e.snapshot;
 
       var element = querySelector("#${datasnapshot.key}");
 
@@ -89,7 +95,7 @@ class MessagesApp {
     });
   }
 
-  void _deleteItem(DataSnapshot datasnapshot) {
+  void _deleteItem(fb.DataSnapshot datasnapshot) {
     this
         .ref
         .child(datasnapshot.key)
@@ -97,7 +103,7 @@ class MessagesApp {
         .catchError((e) => print("Error while deleting item, $e"));
   }
 
-  void _uppercaseItem(DataSnapshot datasnapshot) {
+  void _uppercaseItem(fb.DataSnapshot datasnapshot) {
     var value = datasnapshot.val();
     var valueUppercase = value["text"].toString().toUpperCase();
     value["text"] = valueUppercase;

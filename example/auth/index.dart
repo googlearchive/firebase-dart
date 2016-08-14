@@ -1,24 +1,25 @@
 library firebase3.example.auth;
 
 import 'dart:html';
-import 'package:firebase3/firebase.dart' as firebase;
-import 'package:firebase3/auth.dart';
-import 'package:firebase3/firebase.dart';
+import 'package:firebase3/firebase.dart' as fb;
+import 'package:firebase3/src/assets/assets.dart';
 
 // Update firebase.initializeApp() with information from your project.
 // See <https://firebase.google.com/docs/web/setup>.
-void main() {
-  firebase.initializeApp(
-      apiKey: "TODO",
-      authDomain: "TODO",
-      databaseURL: "TODO",
-      storageBucket: "TODO");
+main() async {
+  await config();
+
+  fb.initializeApp(
+      apiKey: apiKey,
+      authDomain: authDomain,
+      databaseURL: databaseUrl,
+      storageBucket: storageBucket);
 
   new AuthApp();
 }
 
 class AuthApp {
-  Auth auth;
+  fb.Auth auth;
   FormElement registerForm;
   InputElement email, password;
   AnchorElement logout;
@@ -26,7 +27,7 @@ class AuthApp {
   ParagraphElement error;
 
   AuthApp() {
-    this.auth = firebase.auth();
+    this.auth = fb.auth();
     this.email = querySelector("#email");
     this.password = querySelector("#password");
     this.authInfo = querySelector("#auth_info");
@@ -61,12 +62,12 @@ class AuthApp {
 
     // When auth state changes
     auth.onAuthStateChanged.listen((e) {
-      User u = e.user;
+      fb.User u = e.user;
       _setLayout(u);
     });
   }
 
-  void _setLayout(User user) {
+  void _setLayout(fb.User user) {
     if (user != null) {
       this.registerForm.style.display = "none";
       this.logout.style.display = "block";
