@@ -109,7 +109,7 @@ abstract class UploadTaskJsImpl implements ThenableJsImpl {
   external UploadTaskSnapshotJsImpl get snapshot;
   external void set snapshot(UploadTaskSnapshotJsImpl t);
   external bool cancel();
-  external Function on(TaskEvent event,
+  external Function on(String event,
       [nextOrObserver, Func1 error, Func0 complete]);
   external bool pause();
   external bool resume();
@@ -171,4 +171,6 @@ class CustomMetadataJsImpl {
 /// An event that is triggered on a task.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage#.TaskEvent>.
-enum TaskEvent { STATE_CHANGED }
+abstract class TaskEvent {
+  static const STATE_CHANGED = 'state_changed';
+}
