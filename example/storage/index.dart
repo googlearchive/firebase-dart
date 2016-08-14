@@ -32,7 +32,7 @@ class ImageUploadApp {
 
     _uploadImage.onChange.listen((e) async {
       e.preventDefault();
-      var file = e.target.files[0];
+      var file = (e.target as FileUploadInputElement).files[0];
 
       var uploadTask = ref
           .child(file.name)

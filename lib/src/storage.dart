@@ -16,7 +16,7 @@ enum TaskState { RUNNING, PAUSED, SUCCESS, CANCELED, ERROR }
 /// Google Cloud Storage.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.Storage>
-class Storage extends JsObjectWrapper {
+class Storage extends JsObjectWrapper<storage_interop.StorageJsImpl> {
   App _app;
   App get app {
     if (_app != null) {
@@ -31,7 +31,8 @@ class Storage extends JsObjectWrapper {
 
   int get maxUploadRetryTime => jsObject.maxUploadRetryTime;
 
-  Storage.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  Storage.fromJsObject(storage_interop.StorageJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   StorageReference ref([String path]) =>
       new StorageReference.fromJsObject(jsObject.ref(path));
@@ -49,7 +50,8 @@ class Storage extends JsObjectWrapper {
 /// can upload, download, and delete objects, as well as get/set object metadata.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.Reference>
-class StorageReference extends JsObjectWrapper {
+class StorageReference
+    extends JsObjectWrapper<storage_interop.ReferenceJsImpl> {
   String get bucket => jsObject.bucket;
 
   String get fullPath => jsObject.fullPath;
@@ -90,7 +92,8 @@ class StorageReference extends JsObjectWrapper {
     return _storage;
   }
 
-  StorageReference.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  StorageReference.fromJsObject(storage_interop.ReferenceJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   StorageReference child(String path) =>
       new StorageReference.fromJsObject(jsObject.child(path));
@@ -119,7 +122,7 @@ class StorageReference extends JsObjectWrapper {
 /// The full set of object metadata, including read-only properties.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.FullMetadata>
-class FullMetadata extends UploadMetadata {
+class FullMetadata extends UploadMetadata<storage_interop.FullMetadataJsImpl> {
   String get bucket => jsObject.bucket;
   void set bucket(String s) {
     jsObject.bucket = s;
@@ -207,7 +210,8 @@ class FullMetadata extends UploadMetadata {
 /// Object metadata that can be set at upload.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.UploadMetadata>.
-class UploadMetadata extends SettableMetadata {
+class UploadMetadata<T extends storage_interop.UploadMetadataJsImpl>
+    extends SettableMetadata<T> {
   String get md5Hash => jsObject.md5Hash;
   void set md5Hash(String s) {
     jsObject.md5Hash = s;
@@ -221,17 +225,18 @@ class UploadMetadata extends SettableMetadata {
           String contentLanguage,
           String contentType,
           CustomMetadata customMetadata}) =>
-      new UploadMetadata.fromJsObject(new storage_interop.UploadMetadataJsImpl(
-          md5Hash: md5Hash,
-          cacheControl: cacheControl,
-          contentDisposition: contentDisposition,
-          contentEncoding: contentEncoding,
-          contentLanguage: contentLanguage,
-          contentType: contentType,
-          customMetadata:
-              (customMetadata != null) ? customMetadata.jsObject : null));
+      new UploadMetadata<T>.fromJsObject(
+          new storage_interop.UploadMetadataJsImpl(
+              md5Hash: md5Hash,
+              cacheControl: cacheControl,
+              contentDisposition: contentDisposition,
+              contentEncoding: contentEncoding,
+              contentLanguage: contentLanguage,
+              contentType: contentType,
+              customMetadata:
+                  (customMetadata != null) ? customMetadata.jsObject : null));
 
-  UploadMetadata.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  UploadMetadata.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
 /// Event propagated in Stream controllers when path changes.
@@ -243,7 +248,7 @@ class UploadTaskEvent {
 /// Represents the process of uploading an object. Allows you to monitor and manage the upload.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.UploadTask>.
-class UploadTask extends JsObjectWrapper {
+class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   Completer<UploadTaskSnapshot> _completer;
 
   Future<UploadTaskSnapshot> get future {
@@ -266,7 +271,8 @@ class UploadTask extends JsObjectWrapper {
     return _snapshot;
   }
 
-  UploadTask.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  UploadTask.fromJsObject(storage_interop.UploadTaskJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   bool cancel() => jsObject.cancel();
 
@@ -283,7 +289,8 @@ class UploadTask extends JsObjectWrapper {
       });
 
       void startListen() {
-        _onStateChangedUnsubscribe = jsObject.on("state_changed", callbackWrap);
+        _onStateChangedUnsubscribe =
+            jsObject.on(storage_interop.TaskEvent.STATE_CHANGED, callbackWrap);
       }
 
       void stopListen() {
@@ -305,7 +312,8 @@ class UploadTask extends JsObjectWrapper {
 /// Holds data about the current state of the upload task.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.UploadTaskSnapshot>.
-class UploadTaskSnapshot extends JsObjectWrapper {
+class UploadTaskSnapshot
+    extends JsObjectWrapper<storage_interop.UploadTaskSnapshotJsImpl> {
   int get bytesTransferred => jsObject.bytesTransferred;
 
   String get downloadURL => jsObject.downloadURL;
@@ -363,13 +371,16 @@ class UploadTaskSnapshot extends JsObjectWrapper {
 
   int get totalBytes => jsObject.totalBytes;
 
-  UploadTaskSnapshot.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  UploadTaskSnapshot.fromJsObject(
+      storage_interop.UploadTaskSnapshotJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 }
 
 /// Object metadata that can be set at any time.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.SettableMetadata>.
-class SettableMetadata extends JsObjectWrapper {
+class SettableMetadata<T extends storage_interop.SettableMetadataJsImpl>
+    extends JsObjectWrapper<T> {
   String get cacheControl => jsObject.cacheControl;
   void set cacheControl(String s) {
     jsObject.cacheControl = s;
@@ -422,7 +433,7 @@ class SettableMetadata extends JsObjectWrapper {
           String contentLanguage,
           String contentType,
           CustomMetadata customMetadata}) =>
-      new SettableMetadata.fromJsObject(
+      new SettableMetadata<T>.fromJsObject(
           new storage_interop.SettableMetadataJsImpl(
               cacheControl: cacheControl,
               contentDisposition: contentDisposition,
@@ -432,11 +443,12 @@ class SettableMetadata extends JsObjectWrapper {
               customMetadata:
                   (customMetadata != null) ? customMetadata.jsObject : null));
 
-  SettableMetadata.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  SettableMetadata.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
 /// A structure for custom metadata used in [SettableMetadata.customMetadata].
-class CustomMetadata extends JsObjectWrapper {
+class CustomMetadata
+    extends JsObjectWrapper<storage_interop.CustomMetadataJsImpl> {
   String get string => jsObject.string;
   void set string(String s) {
     jsObject.string = s;
@@ -445,5 +457,6 @@ class CustomMetadata extends JsObjectWrapper {
   factory CustomMetadata({String string}) => new CustomMetadata.fromJsObject(
       new storage_interop.CustomMetadataJsImpl(string: string));
 
-  CustomMetadata.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  CustomMetadata.fromJsObject(storage_interop.CustomMetadataJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 }

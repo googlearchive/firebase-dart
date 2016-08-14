@@ -11,7 +11,8 @@ import 'utils.dart';
 /// User profile information, visible only to the Firebase project's apps.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.UserInfo>.
-class UserInfo extends JsObjectWrapper {
+class UserInfo<T extends firebase_interop.UserInfoJsImpl>
+    extends JsObjectWrapper<T> {
   String get displayName => jsObject.displayName;
   void set displayName(String s) {
     jsObject.displayName = s;
@@ -37,24 +38,25 @@ class UserInfo extends JsObjectWrapper {
     jsObject.uid = s;
   }
 
-  UserInfo.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  UserInfo.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
 /// A user account.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.User>.
-class User extends UserInfo {
+class User extends UserInfo<firebase_interop.UserJsImpl> {
   bool get emailVerified => jsObject.emailVerified;
 
   bool get isAnonymous => jsObject.isAnonymous;
 
-  List<UserInfo> get providerData => (jsObject.providerData as List)
+  List<UserInfo> get providerData => jsObject.providerData
       .map((data) => new UserInfo.fromJsObject(data))
       .toList();
 
   String get refreshToken => jsObject.refreshToken;
 
-  User.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  User.fromJsObject(firebase_interop.UserJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   Future delete() => handleJsPromise(jsObject.delete());
 
@@ -95,7 +97,7 @@ class User extends UserInfo {
 }
 
 /// A structure for [User]'s user profile.
-class UserProfile extends JsObjectWrapper {
+class UserProfile extends JsObjectWrapper<firebase_interop.UserProfileJsImpl> {
   String get displayName => jsObject.displayName;
   void set displayName(String s) {
     jsObject.displayName = s;
@@ -110,13 +112,14 @@ class UserProfile extends JsObjectWrapper {
       new UserProfile.fromJsObject(new firebase_interop.UserProfileJsImpl(
           displayName: displayName, photoURL: photoURL));
 
-  UserProfile.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  UserProfile.fromJsObject(firebase_interop.UserProfileJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 }
 
 /// The Firebase Auth service class.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.Auth>.
-class Auth extends JsObjectWrapper {
+class Auth extends JsObjectWrapper<auth_interop.AuthJsImpl> {
   App _app;
   App get app {
     if (_app != null) {
@@ -167,7 +170,8 @@ class Auth extends JsObjectWrapper {
     return _onAuthStateChanged;
   }
 
-  Auth.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  Auth.fromJsObject(auth_interop.AuthJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   Future applyActionCode(String code) =>
       handleJsPromise(jsObject.applyActionCode(code));
@@ -233,34 +237,39 @@ class AuthEvent {
 /// requirements.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.AuthCredential>.
-class AuthCredential extends JsObjectWrapper {
+class AuthCredential
+    extends JsObjectWrapper<auth_interop.AuthCredentialJsImpl> {
   String get provider => jsObject.provider;
   void set provider(String s) {
     jsObject.provider = s;
   }
 
-  AuthCredential.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  AuthCredential.fromJsObject(auth_interop.AuthCredentialJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 }
 
 /// Represents an auth provider.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.AuthProvider>.
-class AuthProvider extends JsObjectWrapper {
+abstract class AuthProvider<T extends auth_interop.AuthProviderJsImpl>
+    extends JsObjectWrapper<T> {
   String get providerId => jsObject.providerId;
   void set providerId(String s) {
     jsObject.providerId = s;
   }
 
-  AuthProvider.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  AuthProvider.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
 /// Email and password auth provider implementation.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.EmailAuthProvider>.
-class EmailAuthProvider extends AuthProvider {
+class EmailAuthProvider
+    extends AuthProvider<auth_interop.EmailAuthProviderJsImpl> {
   static String PROVIDER_ID = auth_interop.EmailAuthProviderJsImpl.PROVIDER_ID;
 
-  EmailAuthProvider.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  EmailAuthProvider.fromJsObject(auth_interop.EmailAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   factory EmailAuthProvider() => new EmailAuthProvider.fromJsObject(
       new auth_interop.EmailAuthProviderJsImpl());
@@ -272,11 +281,14 @@ class EmailAuthProvider extends AuthProvider {
 /// Facebook auth provider.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.FacebookAuthProvider>.
-class FacebookAuthProvider extends AuthProvider {
+class FacebookAuthProvider
+    extends AuthProvider<auth_interop.FacebookAuthProviderJsImpl> {
   static String PROVIDER_ID =
       auth_interop.FacebookAuthProviderJsImpl.PROVIDER_ID;
 
-  FacebookAuthProvider.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  FacebookAuthProvider.fromJsObject(
+      auth_interop.FacebookAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   factory FacebookAuthProvider() => new FacebookAuthProvider.fromJsObject(
       new auth_interop.FacebookAuthProviderJsImpl());
@@ -290,10 +302,13 @@ class FacebookAuthProvider extends AuthProvider {
 /// Github auth provider.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.GithubAuthProvider>.
-class GithubAuthProvider extends AuthProvider {
+class GithubAuthProvider
+    extends AuthProvider<auth_interop.GithubAuthProviderJsImpl> {
   static String PROVIDER_ID = auth_interop.GithubAuthProviderJsImpl.PROVIDER_ID;
 
-  GithubAuthProvider.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  GithubAuthProvider.fromJsObject(
+      auth_interop.GithubAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   factory GithubAuthProvider() => new GithubAuthProvider.fromJsObject(
       new auth_interop.GithubAuthProviderJsImpl());
@@ -307,10 +322,13 @@ class GithubAuthProvider extends AuthProvider {
 /// Google auth provider.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.GoogleAuthProvider>.
-class GoogleAuthProvider extends AuthProvider {
+class GoogleAuthProvider
+    extends AuthProvider<auth_interop.GoogleAuthProviderJsImpl> {
   static String PROVIDER_ID = auth_interop.GoogleAuthProviderJsImpl.PROVIDER_ID;
 
-  GoogleAuthProvider.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  GoogleAuthProvider.fromJsObject(
+      auth_interop.GoogleAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   factory GoogleAuthProvider() => new GoogleAuthProvider.fromJsObject(
       new auth_interop.GoogleAuthProviderJsImpl());
@@ -325,11 +343,14 @@ class GoogleAuthProvider extends AuthProvider {
 /// Twitter auth provider.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.TwitterAuthProvider>.
-class TwitterAuthProvider extends AuthProvider {
+class TwitterAuthProvider
+    extends AuthProvider<auth_interop.TwitterAuthProviderJsImpl> {
   static String PROVIDER_ID =
       auth_interop.TwitterAuthProviderJsImpl.PROVIDER_ID;
 
-  TwitterAuthProvider.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  TwitterAuthProvider.fromJsObject(
+      auth_interop.TwitterAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   factory TwitterAuthProvider() => new TwitterAuthProvider.fromJsObject(
       new auth_interop.TwitterAuthProviderJsImpl());
@@ -341,7 +362,8 @@ class TwitterAuthProvider extends AuthProvider {
 /// A response from [Auth.checkActionCode].
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.ActionCodeInfo>.
-class ActionCodeInfo extends JsObjectWrapper {
+class ActionCodeInfo
+    extends JsObjectWrapper<auth_interop.ActionCodeInfoJsImpl> {
   ActionCodeEmail _data;
   ActionCodeEmail get data {
     if (_data != null) {
@@ -357,13 +379,14 @@ class ActionCodeInfo extends JsObjectWrapper {
     jsObject.data = a.jsObject;
   }
 
-  ActionCodeInfo.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  ActionCodeInfo.fromJsObject(auth_interop.ActionCodeInfoJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 }
 
 /// An authentication error.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.Error>.
-class AuthError extends JsObjectWrapper {
+class AuthError extends JsObjectWrapper<auth_interop.ErrorJsImpl> {
   String get code => jsObject.code;
   void set code(String s) {
     jsObject.code = s;
@@ -374,24 +397,28 @@ class AuthError extends JsObjectWrapper {
     jsObject.message = s;
   }
 
-  AuthError.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  AuthError.fromJsObject(auth_interop.ErrorJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 }
 
 /// A structure containing data for [ActionCodeInfo].
-class ActionCodeEmail extends JsObjectWrapper {
+class ActionCodeEmail
+    extends JsObjectWrapper<auth_interop.ActionCodeEmailJsImpl> {
   String get email => jsObject.email;
   void set email(String s) {
     jsObject.email = s;
   }
 
-  ActionCodeEmail.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  ActionCodeEmail.fromJsObject(auth_interop.ActionCodeEmailJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   factory ActionCodeEmail({String email}) => new ActionCodeEmail.fromJsObject(
       new auth_interop.ActionCodeEmailJsImpl(email: email));
 }
 
 /// A structure containing [User] and [AuthCredential].
-class UserCredential extends JsObjectWrapper {
+class UserCredential
+    extends JsObjectWrapper<auth_interop.UserCredentialJsImpl> {
   User _user;
   User get user {
     if (jsObject.user != null) {
@@ -430,7 +457,8 @@ class UserCredential extends JsObjectWrapper {
     jsObject.credential = c.jsObject;
   }
 
-  UserCredential.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  UserCredential.fromJsObject(auth_interop.UserCredentialJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   factory UserCredential({User user, AuthCredential credential}) =>
       new UserCredential.fromJsObject(new auth_interop.UserCredentialJsImpl(

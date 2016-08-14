@@ -26,7 +26,7 @@ abstract class ServerValue {
 /// The Firebase Database service class.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database>.
-class Database extends JsObjectWrapper {
+class Database extends JsObjectWrapper<database_interop.DatabaseJsImpl> {
   App _app;
   App get app {
     if (_app != null) {
@@ -37,7 +37,8 @@ class Database extends JsObjectWrapper {
     return _app;
   }
 
-  Database.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  Database.fromJsObject(database_interop.DatabaseJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   void goOffline() => jsObject.goOffline();
 
@@ -54,7 +55,8 @@ class Database extends JsObjectWrapper {
 /// can be used for reading or writing data to that database location.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.Reference>.
-class DatabaseReference extends Query {
+class DatabaseReference<T extends database_interop.ReferenceJsImpl>
+    extends Query<T> {
   String get key => jsObject.key;
 
   DatabaseReference _parent;
@@ -81,7 +83,7 @@ class DatabaseReference extends Query {
     return _root;
   }
 
-  DatabaseReference.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  DatabaseReference.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 
   DatabaseReference child(String path) =>
       new DatabaseReference.fromJsObject(jsObject.child(path));
@@ -172,7 +174,7 @@ class QueryEvent {
 /// methods defined here.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.Query>.
-class Query extends JsObjectWrapper {
+class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   DatabaseReference _ref;
   DatabaseReference get ref {
     if (_ref != null) {
@@ -223,7 +225,7 @@ class Query extends JsObjectWrapper {
     return _onChildMoved;
   }
 
-  Query.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  Query.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 
   Query endAt(value, [String key]) =>
       new Query.fromJsObject(jsObject.endAt(value, key));
@@ -289,7 +291,8 @@ class Query extends JsObjectWrapper {
 /// A DataSnapshot contains data from a database location.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.DataSnapshot>.
-class DataSnapshot extends JsObjectWrapper {
+class DataSnapshot
+    extends JsObjectWrapper<database_interop.DataSnapshotJsImpl> {
   String get key => jsObject.key;
 
   DatabaseReference _ref;
@@ -302,7 +305,8 @@ class DataSnapshot extends JsObjectWrapper {
     return _ref;
   }
 
-  DataSnapshot.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  DataSnapshot.fromJsObject(database_interop.DataSnapshotJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   DataSnapshot child(String path) =>
       new DataSnapshot.fromJsObject(jsObject.child(path));
@@ -337,8 +341,10 @@ class DataSnapshot extends JsObjectWrapper {
 /// if a connection is dropped or a client crashes.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.OnDisconnect>.
-class OnDisconnect extends JsObjectWrapper {
-  OnDisconnect.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+class OnDisconnect
+    extends JsObjectWrapper<database_interop.OnDisconnectJsImpl> {
+  OnDisconnect.fromJsObject(database_interop.OnDisconnectJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   Future cancel() {
     Completer c = new Completer();
@@ -382,10 +388,13 @@ class OnDisconnect extends JsObjectWrapper {
 }
 
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.ThenableReference>.
-class ThenableReference extends DatabaseReference {
+class ThenableReference
+    extends DatabaseReference<database_interop.ThenableReferenceJsImpl> {
   Completer<DatabaseReference> _completer;
 
-  ThenableReference.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  ThenableReference.fromJsObject(
+      database_interop.ThenableReferenceJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   Future<DatabaseReference> get future {
     if (_completer == null) {
@@ -399,7 +408,7 @@ class ThenableReference extends DatabaseReference {
 }
 
 /// A structure used in [DatabaseReference.transaction].
-class Transaction extends JsObjectWrapper {
+class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
   bool get committed => jsObject.committed;
   void set committed(bool c) {
     jsObject.committed = c;
@@ -424,7 +433,8 @@ class Transaction extends JsObjectWrapper {
     jsObject.snapshot = s.jsObject;
   }
 
-  Transaction.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  Transaction.fromJsObject(database_interop.TransactionJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   factory Transaction({bool committed, DataSnapshot snapshot}) =>
       new Transaction.fromJsObject(new database_interop.TransactionJsImpl(

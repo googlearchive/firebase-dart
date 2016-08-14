@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'auth.dart';
 import 'database.dart';
+import 'interop/app_interop.dart';
 import 'interop/firebase_interop.dart' as firebase;
 import 'js.dart';
 import 'storage.dart';
@@ -11,7 +12,7 @@ import 'utils.dart';
 /// of services.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.app>.
-class App extends JsObjectWrapper {
+class App extends JsObjectWrapper<AppJsImpl> {
   String get name => jsObject.name;
 
   FirebaseOptions _options;
@@ -24,7 +25,7 @@ class App extends JsObjectWrapper {
     return _options;
   }
 
-  App.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  App.fromJsObject(AppJsImpl jsObject) : super.fromJsObject(jsObject);
 
   Auth auth() => new Auth.fromJsObject(jsObject.auth());
 
@@ -39,7 +40,7 @@ class App extends JsObjectWrapper {
 /// In addition to a message string, it contains a string-valued code.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.FirebaseError>.
-class FirebaseError extends JsObjectWrapper {
+class FirebaseError extends JsObjectWrapper<firebase.FirebaseErrorJsImpl> {
   String get code => jsObject.code;
   void set code(String s) {
     jsObject.code = s;
@@ -60,11 +61,12 @@ class FirebaseError extends JsObjectWrapper {
     jsObject.stack = s;
   }
 
-  FirebaseError.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  FirebaseError.fromJsObject(firebase.FirebaseErrorJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 }
 
 /// A structure for options provided to Firebase.
-class FirebaseOptions extends JsObjectWrapper {
+class FirebaseOptions extends JsObjectWrapper<firebase.FirebaseOptionsJsImpl> {
   String get apiKey => jsObject.apiKey;
   void set apiKey(String s) {
     jsObject.apiKey = s;
@@ -96,5 +98,6 @@ class FirebaseOptions extends JsObjectWrapper {
           databaseURL: databaseURL,
           storageBucket: storageBucket));
 
-  FirebaseOptions.fromJsObject(jsObject) : super.fromJsObject(jsObject);
+  FirebaseOptions.fromJsObject(firebase.FirebaseOptionsJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 }

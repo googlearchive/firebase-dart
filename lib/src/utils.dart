@@ -9,13 +9,13 @@ import 'interop/js_interop.dart' as js;
 import 'interop/firebase_interop.dart';
 
 /// Returns Dart representation from JS Object.
-dynamic dartify(jsObject) {
+dynamic dartify(Object jsObject) {
   String json = js.stringify(jsObject);
   return JSON.decode(json);
 }
 
 /// Returns JS implementation from Dart Object.
-dynamic jsify(dartObject) {
+dynamic jsify(Object dartObject) {
   if (dartObject is Map || dartObject is Iterable) {
     String json = JSON.encode(dartObject);
     return js.parse(json);
