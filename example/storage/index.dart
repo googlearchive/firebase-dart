@@ -23,12 +23,13 @@ main() async {
 class ImageUploadApp {
   fb.Storage storage;
   fb.StorageReference ref;
-  HtmlElement _uploadImage;
+  InputElement _uploadImage;
 
   ImageUploadApp() {
     storage = fb.storage();
     ref = storage.ref("images");
     _uploadImage = querySelector("#upload_image");
+    _uploadImage.disabled = false;
 
     _uploadImage.onChange.listen((e) async {
       e.preventDefault();
