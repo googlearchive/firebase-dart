@@ -160,8 +160,8 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
 
 /// Event propagated in Stream controllers when path changes.
 class QueryEvent {
-  DataSnapshot snapshot;
-  String prevChildKey;
+  final DataSnapshot snapshot;
+  final String prevChildKey;
   QueryEvent(this.snapshot, [this.prevChildKey]);
 }
 
