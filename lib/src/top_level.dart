@@ -17,7 +17,7 @@ List<App> get apps =>
 
 const String _DEFAULT_APP_NAME = "[DEFAULT]";
 
-/// Create (and intialize) a Firebase App.
+/// Create (and initialize) a Firebase App.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase#.initializeApp>.
 App initializeApp(
