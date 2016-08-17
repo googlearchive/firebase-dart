@@ -248,7 +248,7 @@ abstract class _UploadMetadataBase<
 
 /// Event propagated in Stream controllers when path changes.
 class UploadTaskEvent {
-  UploadTaskSnapshot snapshot;
+  final UploadTaskSnapshot snapshot;
   UploadTaskEvent(this.snapshot);
 }
 
