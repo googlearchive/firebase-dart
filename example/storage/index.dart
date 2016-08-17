@@ -51,7 +51,7 @@ class ImageUploadApp {
         document.body.append(image);
         querySelector("#message").text = "";
       } catch (e) {
-        print(e.code);
+        print(e);
       }
     });
   }

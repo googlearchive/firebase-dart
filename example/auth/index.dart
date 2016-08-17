@@ -43,16 +43,7 @@ class AuthApp {
       e.preventDefault();
       var emailValue = email.value.trim();
       var passwordvalue = password.value.trim();
-
-      if (emailValue != "" && passwordvalue != "") {
-        auth
-            .createUserWithEmailAndPassword(emailValue, passwordvalue)
-            .catchError((e) {
-          error.text = e.toString();
-        });
-      } else {
-        error.text = "Please fill correct e-mail and password.";
-      }
+      _registerUser(emailValue, passwordvalue);
     });
 
     // After opening
@@ -65,6 +56,18 @@ class AuthApp {
       fb.User u = e.user;
       _setLayout(u);
     });
+  }
+
+  _registerUser(String email, String password) async {
+    if (email.isNotEmpty && password.isNotEmpty) {
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+      } catch (e) {
+        error.text = e.toString();
+      }
+    } else {
+      error.text = "Please fill correct e-mail and password.";
+    }
   }
 
   void _setLayout(fb.User user) {

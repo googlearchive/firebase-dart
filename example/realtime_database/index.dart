@@ -17,7 +17,7 @@ main() async {
 
   await app.auth().signInAnonymously();
 
-  new MessagesApp()..showMessages();
+  new MessagesApp().showMessages();
 }
 
 class MessagesApp {
@@ -25,6 +25,7 @@ class MessagesApp {
   fb.DatabaseReference ref;
   UListElement messages;
   InputElement newMessage;
+  InputElement submit;
   FormElement newMessageForm;
 
   MessagesApp() {
@@ -34,18 +35,22 @@ class MessagesApp {
     this.newMessage = querySelector("#new_message");
     newMessage.disabled = false;
 
-    (querySelector('#submit') as InputElement).disabled = false;
+    this.submit = querySelector('#submit');
+    submit.disabled = false;
 
     this.newMessageForm = querySelector("#new_message_form");
     this.newMessageForm.onSubmit.listen((e) async {
       e.preventDefault();
-      var map = {"text": newMessage.value};
 
-      try {
-        await ref.push(map).future;
-        newMessage.value = "";
-      } catch (e) {
-        print("Error while writing to db, $e");
+      if (newMessage.value.trim().isNotEmpty) {
+        var map = {"text": newMessage.value};
+
+        try {
+          await ref.push(map).future;
+          newMessage.value = "";
+        } catch (e) {
+          print("Error while writing to db, $e");
+        }
       }
     });
   }
@@ -98,22 +103,23 @@ class MessagesApp {
     });
   }
 
-  void _deleteItem(fb.DataSnapshot datasnapshot) {
-    this
-        .ref
-        .child(datasnapshot.key)
-        .remove()
-        .catchError((e) => print("Error while deleting item, $e"));
+  _deleteItem(fb.DataSnapshot datasnapshot) async {
+    try {
+      await this.ref.child(datasnapshot.key).remove();
+    } catch (e) {
+      print("Error while deleting item, $e");
+    }
   }
 
-  void _uppercaseItem(fb.DataSnapshot datasnapshot) {
+  _uppercaseItem(fb.DataSnapshot datasnapshot) async {
     var value = datasnapshot.val();
     var valueUppercase = value["text"].toString().toUpperCase();
     value["text"] = valueUppercase;
-    this
-        .ref
-        .child(datasnapshot.key)
-        .update(value)
-        .catchError((e) => print("Error while updating item, $e"));
+
+    try {
+      await this.ref.child(datasnapshot.key).update(value);
+    } catch (e) {
+      print("Error while updating item, $e");
+    }
   }
 }
