@@ -32,6 +32,9 @@ class MessagesApp {
     this.ref = database.ref("messages");
     this.messages = querySelector("#messages");
     this.newMessage = querySelector("#new_message");
+    newMessage.disabled = false;
+
+    (querySelector('#submit') as InputElement).disabled = false;
 
     this.newMessageForm = querySelector("#new_message_form");
     this.newMessageForm.onSubmit.listen((e) async {

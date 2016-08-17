@@ -102,8 +102,8 @@ class StorageReference
 
   Future<String> getDownloadURL() => handleThenable(jsObject.getDownloadURL());
 
-  Future<FullMetadata> getMetadata() => handleThenable(jsObject.getMetadata(),
-      mapper: (m) => new FullMetadata.fromJsObject(m));
+  Future<FullMetadata> getMetadata() => handleThenableWithMapper(
+      jsObject.getMetadata(), (m) => new FullMetadata.fromJsObject(m));
 
   UploadTask put(blob, [UploadMetadata metadata]) {
     if (metadata != null) {
@@ -115,14 +115,15 @@ class StorageReference
   String toString() => jsObject.toString();
 
   Future<FullMetadata> updateMetadata(SettableMetadata metadata) =>
-      handleThenable(jsObject.updateMetadata(metadata.jsObject),
-          mapper: (m) => new FullMetadata.fromJsObject(m));
+      handleThenableWithMapper(jsObject.updateMetadata(metadata.jsObject),
+          (m) => new FullMetadata.fromJsObject(m));
 }
 
 /// The full set of object metadata, including read-only properties.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.FullMetadata>
-class FullMetadata extends UploadMetadata<storage_interop.FullMetadataJsImpl> {
+class FullMetadata
+    extends _UploadMetadataBase<storage_interop.FullMetadataJsImpl> {
   String get bucket => jsObject.bucket;
   void set bucket(String s) {
     jsObject.bucket = s;
@@ -210,13 +211,8 @@ class FullMetadata extends UploadMetadata<storage_interop.FullMetadataJsImpl> {
 /// Object metadata that can be set at upload.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.UploadMetadata>.
-class UploadMetadata<T extends storage_interop.UploadMetadataJsImpl>
-    extends SettableMetadata<T> {
-  String get md5Hash => jsObject.md5Hash;
-  void set md5Hash(String s) {
-    jsObject.md5Hash = s;
-  }
-
+class UploadMetadata
+    extends _UploadMetadataBase<storage_interop.UploadMetadataJsImpl> {
   factory UploadMetadata(
           {String md5Hash,
           String cacheControl,
@@ -225,18 +221,29 @@ class UploadMetadata<T extends storage_interop.UploadMetadataJsImpl>
           String contentLanguage,
           String contentType,
           CustomMetadata customMetadata}) =>
-      new UploadMetadata<T>.fromJsObject(
-          new storage_interop.UploadMetadataJsImpl(
-              md5Hash: md5Hash,
-              cacheControl: cacheControl,
-              contentDisposition: contentDisposition,
-              contentEncoding: contentEncoding,
-              contentLanguage: contentLanguage,
-              contentType: contentType,
-              customMetadata:
-                  (customMetadata != null) ? customMetadata.jsObject : null));
+      new UploadMetadata.fromJsObject(new storage_interop.UploadMetadataJsImpl(
+          md5Hash: md5Hash,
+          cacheControl: cacheControl,
+          contentDisposition: contentDisposition,
+          contentEncoding: contentEncoding,
+          contentLanguage: contentLanguage,
+          contentType: contentType,
+          customMetadata:
+              (customMetadata != null) ? customMetadata.jsObject : null));
 
-  UploadMetadata.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
+  UploadMetadata.fromJsObject(storage_interop.UploadMetadataJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+}
+
+abstract class _UploadMetadataBase<
+        T extends storage_interop.UploadMetadataJsImpl>
+    extends _SettableMetadataBase<T> {
+  String get md5Hash => jsObject.md5Hash;
+  void set md5Hash(String s) {
+    jsObject.md5Hash = s;
+  }
+
+  _UploadMetadataBase.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
 /// Event propagated in Stream controllers when path changes.
@@ -254,8 +261,8 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   Future<UploadTaskSnapshot> get future {
     if (_completer == null) {
       _completer = new Completer<UploadTaskSnapshot>();
-      handleThenable(jsObject,
-          mapper: (val) => new UploadTaskSnapshot.fromJsObject(val),
+      handleThenableWithMapper(
+          jsObject, (val) => new UploadTaskSnapshot.fromJsObject(val),
           completer: _completer);
     }
     return _completer.future;
@@ -379,7 +386,31 @@ class UploadTaskSnapshot
 /// Object metadata that can be set at any time.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.SettableMetadata>.
-class SettableMetadata<T extends storage_interop.SettableMetadataJsImpl>
+class SettableMetadata
+    extends _SettableMetadataBase<storage_interop.SettableMetadataJsImpl> {
+  factory SettableMetadata(
+          {String cacheControl,
+          String contentDisposition,
+          String contentEncoding,
+          String contentLanguage,
+          String contentType,
+          CustomMetadata customMetadata}) =>
+      new SettableMetadata.fromJsObject(
+          new storage_interop.SettableMetadataJsImpl(
+              cacheControl: cacheControl,
+              contentDisposition: contentDisposition,
+              contentEncoding: contentEncoding,
+              contentLanguage: contentLanguage,
+              contentType: contentType,
+              customMetadata:
+                  (customMetadata != null) ? customMetadata.jsObject : null));
+
+  SettableMetadata.fromJsObject(storage_interop.SettableMetadataJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+}
+
+abstract class _SettableMetadataBase<
+        T extends storage_interop.SettableMetadataJsImpl>
     extends JsObjectWrapper<T> {
   String get cacheControl => jsObject.cacheControl;
   void set cacheControl(String s) {
@@ -426,24 +457,7 @@ class SettableMetadata<T extends storage_interop.SettableMetadataJsImpl>
     jsObject.customMetadata = s.jsObject;
   }
 
-  factory SettableMetadata(
-          {String cacheControl,
-          String contentDisposition,
-          String contentEncoding,
-          String contentLanguage,
-          String contentType,
-          CustomMetadata customMetadata}) =>
-      new SettableMetadata<T>.fromJsObject(
-          new storage_interop.SettableMetadataJsImpl(
-              cacheControl: cacheControl,
-              contentDisposition: contentDisposition,
-              contentEncoding: contentEncoding,
-              contentLanguage: contentLanguage,
-              contentType: contentType,
-              customMetadata:
-                  (customMetadata != null) ? customMetadata.jsObject : null));
-
-  SettableMetadata.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
+  _SettableMetadataBase.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
 /// A structure for custom metadata used in [SettableMetadata.customMetadata].

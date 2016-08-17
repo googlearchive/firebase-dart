@@ -160,8 +160,8 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
 
 /// Event propagated in Stream controllers when path changes.
 class QueryEvent {
-  DataSnapshot snapshot;
-  String prevChildKey;
+  final DataSnapshot snapshot;
+  final String prevChildKey;
   QueryEvent(this.snapshot, [this.prevChildKey]);
 }
 
@@ -399,8 +399,8 @@ class ThenableReference
   Future<DatabaseReference> get future {
     if (_completer == null) {
       _completer = new Completer<DatabaseReference>();
-      handleThenable(jsObject,
-          mapper: (val) => new DatabaseReference.fromJsObject(val),
+      handleThenableWithMapper(
+          jsObject, (val) => new DatabaseReference.fromJsObject(val),
           completer: _completer);
     }
     return _completer.future;

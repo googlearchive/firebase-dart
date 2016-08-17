@@ -23,20 +23,24 @@ dynamic jsify(Object dartObject) {
   return dartObject;
 }
 
-Future handleThenable(ThenableJsImpl thenable,
-    {Func1 mapper, Completer completer}) {
-  completer ??= new Completer();
+Future/*<T>*/ handleThenable/*<T>*/(ThenableJsImpl thenable) {
+  var completer = new Completer/*<T>*/();
 
-  VoidFunc1 thenHandler = mapper == null
-      ? allowInterop(([value]) {
-          completer.complete(value);
-        })
-      : allowInterop((val) {
-          var mappedValue = mapper(val);
-          completer.complete(mappedValue);
-        });
+  thenable.then(allowInterop(([value]) {
+    completer.complete(value);
+  }), resolveError(completer));
+  return completer.future;
+}
 
-  thenable.then(thenHandler, resolveError(completer));
+Future/*<T>*/ handleThenableWithMapper/*<T>*/(
+    ThenableJsImpl thenable, Func1 mapper,
+    {Completer/*<T>*/ completer}) {
+  completer ??= new Completer/*<T>*/();
+
+  thenable.then(allowInterop((val) {
+    var mappedValue = mapper(val);
+    completer.complete(mappedValue);
+  }), resolveError(completer));
   return completer.future;
 }
 
