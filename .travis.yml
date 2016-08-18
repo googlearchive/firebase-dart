@@ -1,0 +1,15 @@
+language: dart
+sudo: false
+dart:
+  - stable
+  - dev
+  - 1.18.1
+cache:
+  directories:
+    - $HOME/.pub-cache
+addons:  
+  firefox: latest
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+script: ./tool/travis.sh

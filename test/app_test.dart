@@ -90,5 +90,11 @@ void main() {
     test("SDK version", () {
       expect(fb.SDK_VERSION, startsWith("3."));
     });
+
+    group('ServerValue', () {
+      test('TIMESTAMP', () {
+        expect(fb.ServerValue.TIMESTAMP, isNotNull);
+      });
+    });
   });
 }
