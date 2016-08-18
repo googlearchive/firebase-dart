@@ -8,6 +8,8 @@ import 'js.dart';
 import 'storage.dart';
 import 'utils.dart';
 
+export 'interop/firebase_interop.dart' show FirebaseError;
+
 /// A Firebase App holds the initialization information for a collection
 /// of services.
 ///
@@ -41,35 +43,6 @@ class App extends JsObjectWrapper<AppJsImpl> {
 
   /// Returns [Storage] service.
   Storage storage() => new Storage.fromJsObject(jsObject.storage());
-}
-
-/// FirebaseError is a subclass of the standard Error object.
-/// In addition to a message string, it contains a string-valued code.
-///
-/// See: <https://firebase.google.com/docs/reference/js/firebase.FirebaseError>.
-class FirebaseError extends JsObjectWrapper<firebase.FirebaseErrorJsImpl> {
-  String get code => jsObject.code;
-  void set code(String s) {
-    jsObject.code = s;
-  }
-
-  String get message => jsObject.message;
-  void set message(String s) {
-    jsObject.message = s;
-  }
-
-  String get name => jsObject.name;
-  void set name(String s) {
-    jsObject.name = s;
-  }
-
-  String get stack => jsObject.stack;
-  void set stack(String s) {
-    jsObject.stack = s;
-  }
-
-  FirebaseError.fromJsObject(firebase.FirebaseErrorJsImpl jsObject)
-      : super.fromJsObject(jsObject);
 }
 
 /// A structure for options provided to Firebase.

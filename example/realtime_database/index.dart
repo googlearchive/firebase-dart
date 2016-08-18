@@ -1,6 +1,7 @@
 library firebase3.example.realtime_database;
 
 import 'dart:html';
+
 import 'package:firebase3/firebase.dart' as fb;
 import 'package:firebase3/src/assets/assets.dart';
 
