@@ -8,6 +8,7 @@ import 'package:firebase3/src/assets/assets.dart';
 // Update firebase.initializeApp() with information from your project.
 // See <https://firebase.google.com/docs/web/setup>.
 main() async {
+  //Use for firebase3 package development only
   await config();
 
   var app = fb.initializeApp(
