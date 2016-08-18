@@ -8,20 +8,13 @@ import 'interop/database_interop.dart' as database_interop;
 import 'js.dart';
 import 'utils.dart';
 
+export 'interop/database_interop.dart' show ServerValue;
+
 /// Log debugging information to the console.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database#.enableLogging>.
 void enableLogging([logger, bool persistent = false]) =>
     database_interop.enableLogging(jsify(logger), persistent);
-
-/// A placeholder value for auto-populating the current timestamp
-/// (time since the Unix epoch, in milliseconds) as determined
-/// by the Firebase servers.
-///
-/// See: <https://firebase.google.com/docs/reference/js/firebase.database#.ServerValue>.
-abstract class ServerValue {
-  static int get TIMESTAMP => database_interop.ServerValueJsImpl.TIMESTAMP;
-}
 
 /// The Firebase Database service class.
 ///
