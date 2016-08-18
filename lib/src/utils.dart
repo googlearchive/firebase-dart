@@ -5,8 +5,8 @@ import 'dart:js';
 import 'package:func/func.dart';
 import 'package:js/js.dart';
 
-import 'interop/js_interop.dart' as js;
 import 'interop/firebase_interop.dart';
+import 'interop/js_interop.dart' as js;
 
 /// Returns Dart representation from JS Object.
 dynamic dartify(Object jsObject) {
