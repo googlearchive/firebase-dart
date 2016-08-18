@@ -41,7 +41,7 @@ class UserInfo<T extends firebase_interop.UserInfoJsImpl>
   UserInfo.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
-/// A user account.
+/// User account.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.User>.
 class User extends UserInfo<firebase_interop.UserJsImpl> {

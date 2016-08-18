@@ -17,7 +17,6 @@ class App extends JsObjectWrapper<AppJsImpl> {
   String get name => jsObject.name;
 
   FirebaseOptions _options;
-
   /// Options used during [firebase.initializeApp()].
   FirebaseOptions get options {
     if (_options != null) {
