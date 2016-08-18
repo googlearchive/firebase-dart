@@ -27,7 +27,6 @@ You must include the original Firebase JavaScript source into your `.html` file 
 
 ```dart
 import 'package:firebase3/firebase.dart' as firebase;
-import 'package:firebase3/database.dart';
 
 void main() {
   firebase.initializeApp(
@@ -47,6 +46,7 @@ void main() {
   ...
 }
 ```
+You can also call `await config();` to load Firebase configuration from your `src/assets/config.json` file. See [examples](https://github.com/Janamou/firebase3-dart/tree/master/example).
 
 ## Examples
 
