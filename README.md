@@ -1,5 +1,7 @@
 # Dart wrapper library for the new Firebase
 
+[![Build Status](https://travis-ci.org/Janamou/firebase3-dart.svg?branch=master)](https://travis-ci.org/Janamou/firebase3-dart)
+
 This is an unofficial Dart wrapper library for the new [Firebase](https://firebase.google.com). 
 
 You can find more information on how to use Firebase on [Getting started](https://firebase.google.com/docs/web/setup) page.
