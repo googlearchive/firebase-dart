@@ -19,26 +19,26 @@ main() async {
 }
 
 class AuthApp {
-  fb.Auth auth;
-  FormElement registerForm;
-  InputElement email, password;
-  AnchorElement logout;
-  HeadingElement authInfo;
-  ParagraphElement error;
+  final fb.Auth auth;
+  final FormElement registerForm;
+  final InputElement email, password;
+  final AnchorElement logout;
+  final HeadingElement authInfo;
+  final ParagraphElement error;
 
-  AuthApp() {
-    this.auth = fb.auth();
-    this.email = querySelector("#email");
-    this.password = querySelector("#password");
-    this.authInfo = querySelector("#auth_info");
-    this.error = querySelector("#register_form p");
-    this.logout = querySelector("#logout_btn");
-    this.logout.onClick.listen((e) {
+  AuthApp()
+      : this.auth = fb.auth(),
+        this.email = querySelector("#email"),
+        this.password = querySelector("#password"),
+        this.authInfo = querySelector("#auth_info"),
+        this.error = querySelector("#register_form p"),
+        this.logout = querySelector("#logout_btn"),
+        this.registerForm = querySelector("#register_form") {
+    logout.onClick.listen((e) {
       e.preventDefault();
       auth.signOut();
     });
 
-    this.registerForm = querySelector("#register_form");
     this.registerForm.onSubmit.listen((e) {
       e.preventDefault();
       var emailValue = email.value.trim();
@@ -72,18 +72,18 @@ class AuthApp {
 
   void _setLayout(fb.User user) {
     if (user != null) {
-      this.registerForm.style.display = "none";
-      this.logout.style.display = "block";
-      this.email.value = "";
-      this.password.value = "";
-      this.error.text = "";
-      this.authInfo.style.display = "block";
-      this.authInfo.text = user.email;
+      registerForm.style.display = "none";
+      logout.style.display = "block";
+      email.value = "";
+      password.value = "";
+      error.text = "";
+      authInfo.style.display = "block";
+      authInfo.text = user.email;
     } else {
-      this.registerForm.style.display = "block";
-      this.authInfo.style.display = "none";
-      this.logout.style.display = "none";
-      this.authInfo.children.clear();
+      registerForm.style.display = "block";
+      authInfo.style.display = "none";
+      logout.style.display = "none";
+      authInfo.children.clear();
     }
   }
 }
