@@ -9,9 +9,14 @@ import 'firebase_interop.dart';
 
 external void enableLogging([logger, bool persistent]);
 
-@JS('ServerValue')
-abstract class ServerValueJsImpl {
-  external static int get TIMESTAMP;
+/// A placeholder value for auto-populating the current timestamp
+/// (time since the Unix epoch, in milliseconds) as determined
+/// by the Firebase servers.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.database#.ServerValue>.
+@JS()
+abstract class ServerValue {
+  external static Object get TIMESTAMP;
 }
 
 @JS('Database')

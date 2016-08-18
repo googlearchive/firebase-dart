@@ -4,10 +4,7 @@ import 'database.dart';
 import 'interop/firebase_interop.dart' as firebase;
 import 'storage.dart';
 
-/// The current SDK version.
-///
-/// See: <https://firebase.google.com/docs/reference/js/firebase#.SDK_VERSION>.
-String get SDK_VERSION => firebase.SDK_VERSION;
+export 'interop/firebase_interop.dart' show SDK_VERSION;
 
 /// A (read-only) array of all the initialized Apps.
 ///
