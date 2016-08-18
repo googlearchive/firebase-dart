@@ -75,8 +75,12 @@ abstract class ThenableJsImpl<T> {
   external ThenableJsImpl then([Func1 onResolve, Func1 onReject]);
 }
 
-@JS('FirebaseError')
-abstract class FirebaseErrorJsImpl {
+/// FirebaseError is a subclass of the standard Error object.
+/// In addition to a message string, it contains a string-valued code.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.FirebaseError>.
+@JS()
+abstract class FirebaseError {
   external String get code;
   external void set code(String s);
   external String get message;
