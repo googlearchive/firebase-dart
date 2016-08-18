@@ -2,7 +2,7 @@
 /// services are accessed.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase>.
-library firebase;
+library firebase3;
 
 export 'src/app.dart';
 export 'src/auth.dart';
