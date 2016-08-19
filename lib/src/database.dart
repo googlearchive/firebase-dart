@@ -220,11 +220,11 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
 
   Query.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 
-  Query endAt(value, [String key]) =>
-      new Query.fromJsObject(jsObject.endAt(value, key));
+  Query endAt(value, [String key]) => new Query.fromJsObject(
+      key == null ? jsObject.endAt(value) : jsObject.endAt(value, key));
 
-  Query equalTo(value, [String key]) =>
-      new Query.fromJsObject(jsObject.equalTo(value, key));
+  Query equalTo(value, [String key]) => new Query.fromJsObject(
+      key == null ? jsObject.equalTo(value) : jsObject.equalTo(value, key));
 
   Query limitToFirst(int limit) =>
       new Query.fromJsObject(jsObject.limitToFirst(limit));
@@ -275,8 +275,8 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
 
   Query orderByValue() => new Query.fromJsObject(jsObject.orderByValue());
 
-  Query startAt(value, [String key]) =>
-      new Query.fromJsObject(jsObject.startAt(value, key));
+  Query startAt(value, [String key]) => new Query.fromJsObject(
+      key == null ? jsObject.startAt(value) : jsObject.startAt(value, key));
 
   String toString() => jsObject.toString();
 }
