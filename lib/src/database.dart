@@ -383,20 +383,18 @@ class OnDisconnect
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.ThenableReference>.
 class ThenableReference
     extends DatabaseReference<database_interop.ThenableReferenceJsImpl> {
-  Completer<DatabaseReference> _completer;
+  Future<DatabaseReference> _future;
 
   ThenableReference.fromJsObject(
       database_interop.ThenableReferenceJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
   Future<DatabaseReference> get future {
-    if (_completer == null) {
-      _completer = new Completer<DatabaseReference>();
-      handleThenableWithMapper(
-          jsObject, (val) => new DatabaseReference.fromJsObject(val),
-          completer: _completer);
+    if (_future == null) {
+      _future = handleThenableWithMapper(
+          jsObject, (val) => new DatabaseReference.fromJsObject(val));
     }
-    return _completer.future;
+    return _future;
   }
 }
 
