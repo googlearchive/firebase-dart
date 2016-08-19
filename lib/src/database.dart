@@ -87,37 +87,15 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   ThenableReference push([value]) =>
       new ThenableReference.fromJsObject(jsObject.push(jsify(value)));
 
-  Future remove() {
-    Completer c = new Completer();
-    jsObject.remove(allowInterop((e, _) {
-      resolveFuture(c, e);
-    }));
-    return c.future;
-  }
+  Future remove() => handleThenable(jsObject.remove());
 
-  Future set(value) {
-    Completer c = new Completer();
-    jsObject.set(jsify(value), allowInterop((e, _) {
-      resolveFuture(c, e);
-    }));
-    return c.future;
-  }
+  Future set(value) => handleThenable(jsObject.set(jsify(value)));
 
-  Future setPriority(priority) {
-    Completer c = new Completer();
-    jsObject.setPriority(priority, allowInterop((e, _) {
-      resolveFuture(c, e);
-    }));
-    return c.future;
-  }
+  Future setPriority(priority) =>
+      handleThenable(jsObject.setPriority(priority));
 
-  Future setWithPriority(newVal, newPriority) {
-    Completer c = new Completer();
-    jsObject.setWithPriority(jsify(newVal), newPriority, allowInterop((e, _) {
-      resolveFuture(c, e);
-    }));
-    return c.future;
-  }
+  Future setWithPriority(newVal, newPriority) =>
+      handleThenable(jsObject.setWithPriority(jsify(newVal), newPriority));
 
   Future<Transaction> transaction(Func1 transactionUpdate,
       [bool applyLocally = true]) {
@@ -142,13 +120,7 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
     return c.future;
   }
 
-  Future update(values) {
-    Completer c = new Completer();
-    jsObject.update(jsify(values), allowInterop((e, _) {
-      resolveFuture(c, e);
-    }));
-    return c.future;
-  }
+  Future update(values) => handleThenable(jsObject.update(jsify(values)));
 }
 
 /// Event propagated in Stream controllers when path changes.
@@ -339,45 +311,16 @@ class OnDisconnect
   OnDisconnect.fromJsObject(database_interop.OnDisconnectJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  Future cancel() {
-    Completer c = new Completer();
-    jsObject.cancel(allowInterop((e, _) {
-      resolveFuture(c, e);
-    }));
-    return c.future;
-  }
+  Future cancel() => handleThenable(jsObject.cancel());
 
-  Future remove() {
-    Completer c = new Completer();
-    jsObject.remove(allowInterop((e, _) {
-      resolveFuture(c, e);
-    }));
-    return c.future;
-  }
+  Future remove() => handleThenable(jsObject.remove());
 
-  Future set(value) {
-    Completer c = new Completer();
-    jsObject.set(jsify(value), allowInterop((e, _) {
-      resolveFuture(c, e);
-    }));
-    return c.future;
-  }
+  Future set(value) => handleThenable(jsObject.set(jsify(value)));
 
-  Future setWithPriority(value, priority) {
-    Completer c = new Completer();
-    jsObject.setWithPriority(jsify(value), priority, allowInterop((e, _) {
-      resolveFuture(c, e);
-    }));
-    return c.future;
-  }
+  Future setWithPriority(value, priority) =>
+      handleThenable(jsObject.setWithPriority(jsify(value), priority));
 
-  Future update(values) {
-    Completer c = new Completer();
-    jsObject.update(jsify(values), allowInterop((e, _) {
-      resolveFuture(c, e);
-    }));
-    return c.future;
-  }
+  Future update(values) => handleThenable(jsObject.update(jsify(values)));
 }
 
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.ThenableReference>.

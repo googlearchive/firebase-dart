@@ -44,11 +44,3 @@ Future/*<T>*/ handleThenableWithMapper/*<T>*/(
 }
 
 VoidFunc1 resolveError(Completer c) => allowInterop(c.completeError);
-
-void resolveFuture(Completer c, error, [value]) {
-  if (error != null) {
-    c.completeError(error);
-  } else {
-    c.complete(value);
-  }
-}
