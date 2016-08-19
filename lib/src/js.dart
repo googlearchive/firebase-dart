@@ -1,10 +1,6 @@
 /// Class which is a wrapper for jsObject.
 abstract class JsObjectWrapper<T> {
-  T _jsObject;
-  T get jsObject => this._jsObject;
-  void set jsObject(T o) {
-    this._jsObject = o;
-  }
+  T jsObject;
 
-  JsObjectWrapper.fromJsObject(this._jsObject);
+  JsObjectWrapper.fromJsObject(this.jsObject);
 }
