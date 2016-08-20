@@ -7,6 +7,8 @@ import 'interop/storage_interop.dart' as storage_interop;
 import 'js.dart';
 import 'utils.dart';
 
+export 'interop/storage_interop.dart' show StringFormat;
+
 /// Represents the current state of a running upload.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage#.TaskState>.
@@ -106,10 +108,25 @@ class StorageReference
       jsObject.getMetadata(), (m) => new FullMetadata.fromJsObject(m));
 
   UploadTask put(blob, [UploadMetadata metadata]) {
+    storage_interop.UploadTaskJsImpl taskImpl;
     if (metadata != null) {
-      return new UploadTask.fromJsObject(jsObject.put(blob, metadata.jsObject));
+      taskImpl = jsObject.put(blob, metadata.jsObject);
+    } else {
+      taskImpl = jsObject.put(blob);
     }
-    return new UploadTask.fromJsObject(jsObject.put(blob));
+    return new UploadTask.fromJsObject(taskImpl);
+  }
+
+  UploadTask putString(String data, [String format, UploadMetadata metadata]) {
+    storage_interop.UploadTaskJsImpl taskImpl;
+    if (metadata != null) {
+      taskImpl = jsObject.putString(data, format, metadata.jsObject);
+    } else if (format != null) {
+      taskImpl = jsObject.putString(data, format);
+    } else {
+      taskImpl = jsObject.putString(data);
+    }
+    return new UploadTask.fromJsObject(taskImpl);
   }
 
   String toString() => jsObject.toString();

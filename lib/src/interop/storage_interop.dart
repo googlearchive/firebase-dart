@@ -40,6 +40,8 @@ abstract class ReferenceJsImpl {
   external PromiseJsImpl<String> getDownloadURL();
   external PromiseJsImpl<FullMetadataJsImpl> getMetadata();
   external UploadTaskJsImpl put(blob, [UploadMetadataJsImpl metadata]);
+  external UploadTaskJsImpl putString(String value,
+      [String format, UploadMetadataJsImpl metadata]);
   external String toString();
   external PromiseJsImpl<FullMetadataJsImpl> updateMetadata(
       SettableMetadataJsImpl metadata);
@@ -69,7 +71,6 @@ class FullMetadataJsImpl extends UploadMetadataJsImpl {
       dynamic customMetadata});
 }
 
-//@JS('UploadMetadata')
 @JS()
 @anonymous
 class UploadMetadataJsImpl extends SettableMetadataJsImpl {
@@ -117,7 +118,6 @@ abstract class UploadTaskSnapshotJsImpl {
   external void set totalBytes(int b);
 }
 
-//@JS('SettableMetadata')
 @JS()
 @anonymous
 class SettableMetadataJsImpl {
@@ -140,6 +140,23 @@ class SettableMetadataJsImpl {
       String contentLanguage,
       String contentType,
       dynamic customMetadata});
+}
+
+/// An enumeration of the possible string formats for upload.
+@JS()
+class StringFormat {
+  external static String get RAW;
+  external static String get BASE64;
+  external static String get BASE64URL;
+  external static String get DATA_URL;
+}
+
+@JS()
+@anonymous
+class CustomMetadataJsImpl {
+  external String get string;
+  external void set string(String s);
+  external factory CustomMetadataJsImpl({String string});
 }
 
 /// An event that is triggered on a task.
