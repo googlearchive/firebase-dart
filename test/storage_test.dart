@@ -28,12 +28,14 @@ void main() {
   });
 
   group('Reference', () {
-    test('put, getDownloadURL', () async {
+    test('put, getDownloadURL, custom metadata', () async {
       var storage = app.storage();
 
       var fileName = 'storage_test.json';
       var ref = storage.ref(fileName);
-      var metadata = new UploadMetadata(contentType: r'application/json');
+      var metadata = new UploadMetadata(
+          contentType: r'application/json',
+          customMetadata: {'full_file_name': 'storage_test.json'});
       var bytes = new JsonUtf8Encoder().convert([1, 2, 3]);
 
       var upload = ref.put(bytes, metadata);
@@ -52,6 +54,8 @@ void main() {
       expect(md.timeCreated, md.updated);
       expect(md.downloadURLs.single, contains(fileName));
       expect(md.downloadURLs.single, contains(storageBucket));
+      expect(md.customMetadata, isNotNull);
+      expect(md.customMetadata['full_file_name'], 'storage_test.json');
 
       var downloadUrl = await ref.getDownloadURL();
 
