@@ -44,7 +44,7 @@ abstract class UserJsImpl extends UserInfoJsImpl {
   external PromiseJsImpl<UserJsImpl> unlink(String providerId);
   external PromiseJsImpl updateEmail(String newEmail);
   external PromiseJsImpl updatePassword(String newPassword);
-  external PromiseJsImpl updateProfile(UserProfileJsImpl profile);
+  external PromiseJsImpl updateProfile(UserProfile profile);
 }
 
 @JS('UserInfo')
@@ -91,15 +91,16 @@ abstract class FirebaseError {
   external void set stack(String s);
 }
 
+/// A structure for [User]'s user profile.
 @JS()
 @anonymous
-class UserProfileJsImpl {
+class UserProfile {
   external String get displayName;
   external void set displayName(String s);
   external String get photoURL;
   external void set photoURL(String s);
 
-  external factory UserProfileJsImpl({String displayName, String photoURL});
+  external factory UserProfile({String displayName, String photoURL});
 }
 
 /// A structure for options provided to Firebase.

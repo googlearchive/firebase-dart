@@ -18,6 +18,7 @@ export 'interop/auth_interop.dart'
         GithubAuthProvider,
         GoogleAuthProvider,
         TwitterAuthProvider;
+export 'interop/firebase_interop.dart' show UserProfile;
 
 /// User profile information, visible only to the Firebase project's apps.
 ///
@@ -103,28 +104,8 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   Future updatePassword(String newPassword) =>
       handleThenable(jsObject.updatePassword(newPassword));
 
-  Future updateProfile(UserProfile profile) =>
-      handleThenable(jsObject.updateProfile(profile.jsObject));
-}
-
-/// A structure for [User]'s user profile.
-class UserProfile extends JsObjectWrapper<firebase_interop.UserProfileJsImpl> {
-  String get displayName => jsObject.displayName;
-  void set displayName(String s) {
-    jsObject.displayName = s;
-  }
-
-  String get photoURL => jsObject.photoURL;
-  void set photoURL(String s) {
-    jsObject.photoURL = s;
-  }
-
-  factory UserProfile({String displayName, String photoURL}) =>
-      new UserProfile.fromJsObject(new firebase_interop.UserProfileJsImpl(
-          displayName: displayName, photoURL: photoURL));
-
-  UserProfile.fromJsObject(firebase_interop.UserProfileJsImpl jsObject)
-      : super.fromJsObject(jsObject);
+  Future updateProfile(firebase_interop.UserProfile profile) =>
+      handleThenable(jsObject.updateProfile(profile));
 }
 
 /// The Firebase Auth service class.

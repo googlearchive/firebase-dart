@@ -3,6 +3,9 @@ import 'package:firebase3/firebase.dart';
 import 'package:firebase3/src/assets/assets.dart';
 import 'package:test/test.dart';
 
+_printException(e) => print(
+    [e.name, e.code, e.message, e.stack].where((s) => s != null).join('\n'));
+
 void main() {
   App app;
 
@@ -107,9 +110,7 @@ void main() {
       try {
         user = await authValue.signInAnonymously();
       } on FirebaseError catch (e) {
-        print([e.name, e.code, e.message, e.stack]
-            .where((s) => s != null)
-            .join('\n'));
+        _printException(e);
         rethrow;
       }
     });
@@ -132,6 +133,74 @@ void main() {
         expect(e.code, 'auth/app-deleted');
       } catch (e) {
         fail('Should have been a FirebaseError');
+      }
+    });
+  });
+
+  group('user', () {
+    Auth authValue;
+    User user;
+
+    setUp(() {
+      authValue = auth();
+      expect(authValue.currentUser, isNull);
+    });
+
+    tearDown(() async {
+      if (user != null) {
+        await user.delete();
+        user = null;
+      }
+    });
+
+    test('create user with email and password', () async {
+      try {
+        user = await authValue.createUserWithEmailAndPassword(
+            "some_user@example.com", "janicka");
+        expect(user, isNotNull);
+        expect(user.email, "some_user@example.com");
+      } on FirebaseError catch (e) {
+        _printException(e);
+        rethrow;
+      }
+    });
+  });
+
+  group('registered user', () {
+    Auth authValue;
+    User user;
+
+    setUp(() async {
+      authValue = auth();
+
+      try {
+        user = await authValue.createUserWithEmailAndPassword(
+            "other_user@example.com", "hesloheslo");
+        expect(authValue.currentUser, isNotNull);
+      } on FirebaseError catch (e) {
+        _printException(e);
+        rethrow;
+      }
+    });
+
+    tearDown(() async {
+      if (user != null) {
+        await user.delete();
+        user = null;
+      }
+    });
+
+    test('update profile', () async {
+      try {
+        expect(user, isNotNull);
+        expect(user.displayName, isNull);
+
+        var profile = new UserProfile(displayName: "Other User");
+        await user.updateProfile(profile);
+        expect(user.displayName, "Other User");
+      } on FirebaseError catch (e) {
+        _printException(e);
+        rethrow;
       }
     });
   });
