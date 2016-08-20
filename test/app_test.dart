@@ -3,9 +3,6 @@ import 'package:firebase3/firebase.dart' as fb;
 import 'package:firebase3/src/assets/assets.dart';
 import 'package:test/test.dart';
 
-// Update constants with information from your project.
-// See <https://firebase.google.com/docs/web/setup>.
-
 void main() {
   group("App", () {
     setUpAll(() async {
