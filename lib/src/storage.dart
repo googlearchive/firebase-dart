@@ -127,49 +127,22 @@ class StorageReference
 class FullMetadata
     extends _UploadMetadataBase<FullMetadataJsImpl> {
   String get bucket => jsObject.bucket;
-  void set bucket(String s) {
-    jsObject.bucket = s;
-  }
 
   List<String> get downloadURLs => new List.from(jsObject.downloadURLs);
-  void set downloadURLs(List<String> l) {
-    jsObject.downloadURLs = l;
-  }
 
   String get fullPath => jsObject.fullPath;
-  void set fullPath(String s) {
-    jsObject.fullPath = s;
-  }
 
   String get generation => jsObject.generation;
-  void set generation(String s) {
-    jsObject.generation = s;
-  }
 
   String get metageneration => jsObject.metageneration;
-  void set metageneration(String s) {
-    jsObject.metageneration = s;
-  }
 
   String get name => jsObject.name;
-  void set name(String s) {
-    jsObject.name = s;
-  }
 
   int get size => jsObject.size;
-  void set size(int s) {
-    jsObject.size = s;
-  }
 
   String get timeCreated => jsObject.timeCreated;
-  void set timeCreated(String s) {
-    jsObject.timeCreated = s;
-  }
 
   String get updated => jsObject.updated;
-  void set updated(String s) {
-    jsObject.updated = s;
-  }
 
   factory FullMetadata(
           {String bucket,
@@ -189,15 +162,6 @@ class FullMetadata
           String contentType,
           CustomMetadata customMetadata}) =>
       new FullMetadata.fromJsObject(new FullMetadataJsImpl(
-          bucket: bucket,
-          downloadURLs: downloadURLs,
-          fullPath: fullPath,
-          generation: generation,
-          metageneration: metageneration,
-          name: name,
-          size: size,
-          timeCreated: timeCreated,
-          updated: updated,
           md5Hash: md5Hash,
           cacheControl: cacheControl,
           contentDisposition: contentDisposition,

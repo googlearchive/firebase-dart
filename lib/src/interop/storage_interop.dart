@@ -48,37 +48,19 @@ abstract class ReferenceJsImpl {
 //@JS('FullMetadata')
 @JS()
 @anonymous
-abstract class FullMetadataJsImpl extends UploadMetadataJsImpl {
+class FullMetadataJsImpl extends UploadMetadataJsImpl {
   external String get bucket;
-  external void set bucket(String s);
   external List<String> get downloadURLs;
-  external void set downloadURLs(List<String> l);
   external String get fullPath;
-  external void set fullPath(String s);
   external String get generation;
-  external void set generation(String s);
   external String get metageneration;
-  external void set metageneration(String s);
   external String get name;
-  external void set name(String s);
   external int get size;
-  external void set size(int s);
   external String get timeCreated;
-  external void set timeCreated(String s);
   external String get updated;
-  external void set updated(String s);
 
   external factory FullMetadataJsImpl(
-      {String bucket,
-      List<String> downloadURLs,
-      String fullPath,
-      String generation,
-      String metageneration,
-      String name,
-      int size,
-      String timeCreated,
-      String updated,
-      String md5Hash,
+      {String md5Hash,
       String cacheControl,
       String contentDisposition,
       String contentEncoding,
@@ -90,7 +72,7 @@ abstract class FullMetadataJsImpl extends UploadMetadataJsImpl {
 //@JS('UploadMetadata')
 @JS()
 @anonymous
-abstract class UploadMetadataJsImpl extends SettableMetadataJsImpl {
+class UploadMetadataJsImpl extends SettableMetadataJsImpl {
   external String get md5Hash;
   external void set md5Hash(String s);
 
@@ -138,7 +120,7 @@ abstract class UploadTaskSnapshotJsImpl {
 //@JS('SettableMetadata')
 @JS()
 @anonymous
-abstract class SettableMetadataJsImpl {
+class SettableMetadataJsImpl {
   external String get cacheControl;
   external void set cacheControl(String s);
   external String get contentDisposition;
