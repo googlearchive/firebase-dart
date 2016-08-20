@@ -66,7 +66,7 @@ class FullMetadataJsImpl extends UploadMetadataJsImpl {
       String contentEncoding,
       String contentLanguage,
       String contentType,
-      CustomMetadata customMetadata});
+      dynamic customMetadata});
 }
 
 //@JS('UploadMetadata')
@@ -83,7 +83,7 @@ class UploadMetadataJsImpl extends SettableMetadataJsImpl {
       String contentEncoding,
       String contentLanguage,
       String contentType,
-      CustomMetadata customMetadata});
+      dynamic customMetadata});
 }
 
 @JS('UploadTask')
@@ -131,24 +131,15 @@ class SettableMetadataJsImpl {
   external void set contentLanguage(String s);
   external String get contentType;
   external void set contentType(String s);
-  external CustomMetadata get customMetadata;
-  external void set customMetadata(CustomMetadata s);
+  external dynamic get customMetadata;
+  external void set customMetadata(dynamic s);
   external factory SettableMetadataJsImpl(
       {String cacheControl,
       String contentDisposition,
       String contentEncoding,
       String contentLanguage,
       String contentType,
-      CustomMetadata customMetadata});
-}
-
-/// A structure for custom metadata used in [SettableMetadata.customMetadata].
-@JS()
-@anonymous
-class CustomMetadata {
-  external String get string;
-  external void set string(String s);
-  external factory CustomMetadata({String string});
+      dynamic customMetadata});
 }
 
 /// An event that is triggered on a task.

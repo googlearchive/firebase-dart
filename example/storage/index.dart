@@ -37,9 +37,11 @@ class ImageUploadApp {
       e.preventDefault();
       var file = (e.target as FileUploadInputElement).files[0];
 
-      var uploadTask = ref
-          .child(file.name)
-          .put(file, new fb.UploadMetadata(contentType: file.type));
+      var customMetadata = {"location": "Prague", "owner": "You"};
+      var uploadTask = ref.child(file.name).put(
+          file,
+          new fb.UploadMetadata(
+              contentType: file.type, customMetadata: customMetadata));
       uploadTask.onStateChanged.listen((e) {
         var snapshot = e.snapshot;
         querySelector("#message").text =
@@ -49,9 +51,10 @@ class ImageUploadApp {
       try {
         var snapshot = await uploadTask.future;
         var filePath = snapshot.downloadURL;
+        var metadata = snapshot.metadata.customMetadata;
         var image = new ImageElement(src: filePath);
         document.body.append(image);
-        querySelector("#message").text = "";
+        querySelector("#message").text = "Metadata: ${metadata.toString()}";
       } catch (e) {
         print(e);
       }

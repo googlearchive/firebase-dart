@@ -1,3 +1,6 @@
+## 0.2.1
+- *BREAKING* `CustomMetadata` is now a Map.
+
 ## 0.2.0
 
 - *BREAKING* Exposing only one top-level library: `firebase.dart`.

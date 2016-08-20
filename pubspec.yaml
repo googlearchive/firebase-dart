@@ -1,6 +1,6 @@
 name: firebase3
 description: Dart wrapper library for the new Firebase.
-version: 0.2.0-dev
+version: 0.2.1-dev
 author: Jana Moudra <jana.moudra@gmail.com>
 homepage: https://github.com/Janamou/firebase3-dart
 
