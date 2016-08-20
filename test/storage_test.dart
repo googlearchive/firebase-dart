@@ -35,7 +35,7 @@ void main() {
       var ref = storage.ref(fileName);
       var metadata = new UploadMetadata(
           contentType: r'application/json',
-          customMetadata: {'full_file_name': 'storage_test.json'});
+          customMetadata: {'the answer': '42'});
       var bytes = new JsonUtf8Encoder().convert([1, 2, 3]);
 
       var upload = ref.put(bytes, metadata);
@@ -55,7 +55,7 @@ void main() {
       expect(md.downloadURLs.single, contains(fileName));
       expect(md.downloadURLs.single, contains(storageBucket));
       expect(md.customMetadata, isNotNull);
-      expect(md.customMetadata['full_file_name'], 'storage_test.json');
+      expect(md.customMetadata['the answer'], '42');
 
       var downloadUrl = await ref.getDownloadURL();
 

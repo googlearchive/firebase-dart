@@ -201,7 +201,7 @@ class UploadMetadata
           String contentEncoding,
           String contentLanguage,
           String contentType,
-          Map customMetadata}) =>
+          Map<String, String> customMetadata}) =>
       new UploadMetadata.fromJsObject(new storage_interop.UploadMetadataJsImpl(
           md5Hash: md5Hash,
           cacheControl: cacheControl,
@@ -416,8 +416,9 @@ abstract class _SettableMetadataBase<
     jsObject.contentType = s;
   }
 
-  Map get customMetadata => dartify(jsObject.customMetadata);
-  void set customMetadata(Map m) {
+  Map<String, String> get customMetadata =>
+      dartify(jsObject.customMetadata) as Map<String, String>;
+  void set customMetadata(Map<String, String> m) {
     jsObject.customMetadata = jsify(m);
   }
 
