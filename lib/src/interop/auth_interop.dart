@@ -116,8 +116,11 @@ abstract class ActionCodeInfo {
   external ActionCodeEmail get data;
 }
 
+/// An authentication error.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.Error>.
 @JS('Error')
-abstract class ErrorJsImpl {
+abstract class AuthError {
   external String get code;
   external void set code(String s);
   external String get message;

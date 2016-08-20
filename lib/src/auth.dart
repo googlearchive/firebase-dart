@@ -221,23 +221,6 @@ class AuthEvent {
   AuthEvent(this.user);
 }
 
-/// An authentication error.
-///
-/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.Error>.
-class AuthError extends JsObjectWrapper<ErrorJsImpl> {
-  String get code => jsObject.code;
-  void set code(String s) {
-    jsObject.code = s;
-  }
-
-  String get message => jsObject.message;
-  void set message(String s) {
-    jsObject.message = s;
-  }
-
-  AuthError.fromJsObject(ErrorJsImpl jsObject) : super.fromJsObject(jsObject);
-}
-
 /// A structure containing [User] and [AuthCredential].
 class UserCredential extends JsObjectWrapper<UserCredentialJsImpl> {
   User _user;
