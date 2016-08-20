@@ -11,7 +11,7 @@ import 'storage_interop.dart';
 @JS('App')
 abstract class AppJsImpl {
   external String get name;
-  external FirebaseOptionsJsImpl get options;
+  external FirebaseOptions get options;
   external AuthJsImpl auth();
   external DatabaseJsImpl database();
   external PromiseJsImpl delete();

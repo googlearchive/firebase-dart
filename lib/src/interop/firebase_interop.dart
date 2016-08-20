@@ -16,7 +16,7 @@ external List<AppJsImpl> get apps;
 /// See: <https://firebase.google.com/docs/reference/js/firebase#.SDK_VERSION>.
 external String get SDK_VERSION;
 
-external AppJsImpl initializeApp(FirebaseOptionsJsImpl options, [String name]);
+external AppJsImpl initializeApp(FirebaseOptions options, [String name]);
 external AppJsImpl app([String name]);
 external AuthJsImpl auth([AppJsImpl app]);
 external DatabaseJsImpl database([AppJsImpl app]);
@@ -102,9 +102,10 @@ class UserProfileJsImpl {
   external factory UserProfileJsImpl({String displayName, String photoURL});
 }
 
+/// A structure for options provided to Firebase.
 @JS()
 @anonymous
-class FirebaseOptionsJsImpl {
+class FirebaseOptions {
   external String get apiKey;
   external void set apiKey(String s);
   external String get authDomain;
@@ -114,7 +115,7 @@ class FirebaseOptionsJsImpl {
   external String get storageBucket;
   external void set storageBucket(String s);
 
-  external factory FirebaseOptionsJsImpl(
+  external factory FirebaseOptions(
       {String apiKey,
       String authDomain,
       String databaseURL,

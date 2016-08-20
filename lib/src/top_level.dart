@@ -28,7 +28,7 @@ App initializeApp(
   }
 
   return new App.fromJsObject(firebase.initializeApp(
-      new firebase.FirebaseOptionsJsImpl(
+      new firebase.FirebaseOptions(
           apiKey: apiKey,
           authDomain: authDomain,
           databaseURL: databaseURL,
