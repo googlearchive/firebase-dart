@@ -344,7 +344,7 @@ class UploadTaskSnapshot
       case "error":
         return TaskState.ERROR;
       default:
-        return null;
+        throw 'Unknown state "${jsObject.state}" please file a bug.';
     }
   }
 
