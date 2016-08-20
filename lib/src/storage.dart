@@ -230,12 +230,6 @@ abstract class _UploadMetadataBase<
   _UploadMetadataBase.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
-/// Event propagated in Stream controllers when path changes.
-class UploadTaskEvent {
-  final UploadTaskSnapshot snapshot;
-  UploadTaskEvent(this.snapshot);
-}
-
 /// Represents the process of uploading an object. Allows you to monitor and manage the upload.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.UploadTask>.
@@ -266,15 +260,14 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   bool cancel() => jsObject.cancel();
 
   var _onStateChangedUnsubscribe;
-  Stream<UploadTaskEvent> _onStateChanged;
-  Stream<UploadTaskEvent> get onStateChanged {
+  Stream<UploadTaskSnapshot> _onStateChanged;
+  Stream<UploadTaskSnapshot> get onStateChanged {
     if (_onStateChanged == null) {
-      StreamController<UploadTaskEvent> streamController;
+      StreamController<UploadTaskSnapshot> streamController;
 
       var callbackWrap =
           allowInterop((storage_interop.UploadTaskSnapshotJsImpl data) {
-        streamController.add(
-            new UploadTaskEvent(new UploadTaskSnapshot.fromJsObject(data)));
+        streamController.add(new UploadTaskSnapshot.fromJsObject(data));
       });
 
       void startListen() {
@@ -286,7 +279,7 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
         _onStateChangedUnsubscribe();
       }
 
-      streamController = new StreamController<UploadTaskEvent>.broadcast(
+      streamController = new StreamController<UploadTaskSnapshot>.broadcast(
           onListen: startListen, onCancel: stopListen, sync: true);
       _onStateChanged = streamController.stream;
     }
