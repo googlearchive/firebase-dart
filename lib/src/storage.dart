@@ -256,16 +256,14 @@ class UploadTaskEvent {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.UploadTask>.
 class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
-  Completer<UploadTaskSnapshot> _completer;
+  Future<UploadTaskSnapshot> _future;
 
   Future<UploadTaskSnapshot> get future {
-    if (_completer == null) {
-      _completer = new Completer<UploadTaskSnapshot>();
-      handleThenableWithMapper(
-          jsObject, (val) => new UploadTaskSnapshot.fromJsObject(val),
-          completer: _completer);
+    if (_future == null) {
+      _future = handleThenableWithMapper(
+          jsObject, (val) => new UploadTaskSnapshot.fromJsObject(val));
     }
-    return _completer.future;
+    return _future;
   }
 
   UploadTaskSnapshot _snapshot;

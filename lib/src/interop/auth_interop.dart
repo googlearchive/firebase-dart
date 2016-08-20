@@ -14,7 +14,7 @@ abstract class AuthJsImpl {
   external UserJsImpl get currentUser;
   external void set currentUser(UserJsImpl u);
   external PromiseJsImpl applyActionCode(String code);
-  external PromiseJsImpl<ActionCodeInfoJsImpl> checkActionCode(String code);
+  external PromiseJsImpl<ActionCodeInfo> checkActionCode(String code);
   external PromiseJsImpl confirmPasswordReset(String code, String newPassword);
   external PromiseJsImpl<UserJsImpl> createUserWithEmailAndPassword(
       String email, String password);
@@ -108,10 +108,12 @@ class TwitterAuthProvider extends AuthProvider {
   external static AuthCredential credential(String token, String secret);
 }
 
-@JS('ActionCodeInfo')
-abstract class ActionCodeInfoJsImpl {
-  external ActionCodeEmailJsImpl get data;
-  external void set data(ActionCodeEmailJsImpl a);
+/// A response from [Auth.checkActionCode].
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.ActionCodeInfo>.
+@JS()
+abstract class ActionCodeInfo {
+  external ActionCodeEmail get data;
 }
 
 @JS('Error')
@@ -124,11 +126,8 @@ abstract class ErrorJsImpl {
 
 @JS()
 @anonymous
-class ActionCodeEmailJsImpl {
+class ActionCodeEmail {
   external String get email;
-  external void set email(String s);
-
-  external factory ActionCodeEmailJsImpl({String email});
 }
 
 @JS()

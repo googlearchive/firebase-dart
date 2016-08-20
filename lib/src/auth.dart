@@ -10,6 +10,8 @@ import 'utils.dart';
 
 export 'interop/auth_interop.dart'
     show
+        ActionCodeInfo,
+        ActionCodeEmail,
         AuthCredential,
         EmailAuthProvider,
         FacebookAuthProvider,
@@ -185,8 +187,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
       handleThenable(jsObject.applyActionCode(code));
 
   Future<ActionCodeInfo> checkActionCode(String code) =>
-      handleThenableWithMapper(jsObject.checkActionCode(code),
-          (val) => new ActionCodeInfo.fromJsObject(val));
+      handleThenable(jsObject.checkActionCode(code));
 
   Future confirmPasswordReset(String code, String newPassword) =>
       handleThenable(jsObject.confirmPasswordReset(code, newPassword));
@@ -239,29 +240,6 @@ class AuthEvent {
   AuthEvent(this.user);
 }
 
-/// A response from [Auth.checkActionCode].
-///
-/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.ActionCodeInfo>.
-class ActionCodeInfo extends JsObjectWrapper<ActionCodeInfoJsImpl> {
-  ActionCodeEmail _data;
-  ActionCodeEmail get data {
-    if (_data != null) {
-      _data.jsObject = jsObject.data;
-    } else {
-      _data = new ActionCodeEmail.fromJsObject(jsObject.data);
-    }
-    return _data;
-  }
-
-  void set data(ActionCodeEmail a) {
-    _data = a;
-    jsObject.data = a.jsObject;
-  }
-
-  ActionCodeInfo.fromJsObject(ActionCodeInfoJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-}
-
 /// An authentication error.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.Error>.
@@ -277,20 +255,6 @@ class AuthError extends JsObjectWrapper<ErrorJsImpl> {
   }
 
   AuthError.fromJsObject(ErrorJsImpl jsObject) : super.fromJsObject(jsObject);
-}
-
-/// A structure containing data for [ActionCodeInfo].
-class ActionCodeEmail extends JsObjectWrapper<ActionCodeEmailJsImpl> {
-  String get email => jsObject.email;
-  void set email(String s) {
-    jsObject.email = s;
-  }
-
-  ActionCodeEmail.fromJsObject(ActionCodeEmailJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-
-  factory ActionCodeEmail({String email}) =>
-      new ActionCodeEmail.fromJsObject(new ActionCodeEmailJsImpl(email: email));
 }
 
 /// A structure containing [User] and [AuthCredential].
