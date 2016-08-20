@@ -102,7 +102,10 @@ class StorageReference
 
   Future delete() => handleThenable(jsObject.delete());
 
-  Future<String> getDownloadURL() => handleThenable(jsObject.getDownloadURL());
+  Future<Uri> getDownloadURL() async {
+    var uriString = await handleThenable(jsObject.getDownloadURL());
+    return Uri.parse(uriString);
+  }
 
   Future<FullMetadata> getMetadata() => handleThenableWithMapper(
       jsObject.getMetadata(), (m) => new FullMetadata.fromJsObject(m));
@@ -143,7 +146,7 @@ class FullMetadata
     extends _UploadMetadataBase<storage_interop.FullMetadataJsImpl> {
   String get bucket => jsObject.bucket;
 
-  List<String> get downloadURLs => new List.from(jsObject.downloadURLs);
+  List<Uri> get downloadURLs => jsObject.downloadURLs.map(Uri.parse).toList();
 
   String get fullPath => jsObject.fullPath;
 
@@ -155,9 +158,9 @@ class FullMetadata
 
   int get size => jsObject.size;
 
-  String get timeCreated => jsObject.timeCreated;
+  DateTime get timeCreated => DateTime.parse(jsObject.timeCreated);
 
-  String get updated => jsObject.updated;
+  DateTime get updated => DateTime.parse(jsObject.updated);
 
   factory FullMetadata(
           {String bucket,
@@ -302,7 +305,7 @@ class UploadTaskSnapshot
     extends JsObjectWrapper<storage_interop.UploadTaskSnapshotJsImpl> {
   int get bytesTransferred => jsObject.bytesTransferred;
 
-  String get downloadURL => jsObject.downloadURL;
+  Uri get downloadURL => Uri.parse(jsObject.downloadURL);
 
   FullMetadata _metadata;
   FullMetadata get metadata {
