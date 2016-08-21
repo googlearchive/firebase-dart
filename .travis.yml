@@ -2,8 +2,6 @@ language: dart
 sudo: false
 dart:
   - stable
-  - dev
-  - 1.18.1
 cache:
   directories:
     - $HOME/.pub-cache
