@@ -3,7 +3,10 @@ import 'dart:convert';
 
 import 'package:firebase3/firebase.dart';
 import 'package:firebase3/src/assets/assets.dart';
+import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
+
+import 'test_util.dart';
 
 void main() {
   App app;
@@ -28,39 +31,79 @@ void main() {
   });
 
   group('Reference', () {
-    test('put, getDownloadURL, custom metadata', () async {
+    final pathPrefix = validDatePath();
+    final fileName = 'storage_test.json';
+    final filePath = p.join(pathPrefix, fileName);
+
+    StorageReference ref;
+
+    setUp(() async {
       var storage = app.storage();
 
-      var fileName = 'storage_test.json';
-      var ref = storage.ref(fileName);
+      ref = storage.ref(filePath);
       var metadata = new UploadMetadata(
           contentType: r'application/json',
-          customMetadata: {'full_file_name': 'storage_test.json'});
+          customMetadata: {'the answer': '42'});
       var bytes = new JsonUtf8Encoder().convert([1, 2, 3]);
 
       var upload = ref.put(bytes, metadata);
       var snapShot = await upload.future;
 
       expect(snapShot.bytesTransferred, 7);
-      expect(snapShot.downloadURL, contains(fileName));
+      expect(snapShot.downloadURL.pathSegments.last, contains(fileName));
       expect(snapShot.state, TaskState.SUCCESS);
 
       var md = snapShot.metadata;
       expect(md.bucket, storageBucket);
       expect(md.name, fileName);
-      expect(md.fullPath, fileName);
+      expect(md.fullPath, filePath);
       expect(md.size, 7);
       expect(md.contentType, 'application/json');
       expect(md.timeCreated, md.updated);
-      expect(md.downloadURLs.single, contains(fileName));
-      expect(md.downloadURLs.single, contains(storageBucket));
+      expect(md.downloadURLs.single.pathSegments.last, contains(fileName));
       expect(md.customMetadata, isNotNull);
-      expect(md.customMetadata['full_file_name'], 'storage_test.json');
+      expect(md.customMetadata['the answer'], '42');
+    });
 
+    tearDown(() async {
+      await ref.delete();
+      ref = null;
+    });
+
+    test('getDownloadURL', () async {
       var downloadUrl = await ref.getDownloadURL();
 
-      expect(downloadUrl, contains(storageBucket));
-      expect(downloadUrl, md.downloadURLs.single);
+      expect(downloadUrl.toString(), contains(storageBucket));
+      expect(downloadUrl.pathSegments.last, contains(filePath));
+    });
+
+    test('getMetadata', () async {
+      var md = await ref.getMetadata();
+
+      expect(md.bucket, storageBucket);
+      expect(md.name, fileName);
+      expect(md.fullPath, filePath);
+      expect(md.size, 7);
+      expect(md.contentType, 'application/json');
+      expect(md.timeCreated, md.updated);
+      expect(md.downloadURLs.single.pathSegments.last, contains(fileName));
+      expect(md.customMetadata, isNotNull);
+      expect(md.customMetadata['the answer'], '42');
+    });
+
+    test('updateMetadata', () async {
+      var newMetadata = new SettableMetadata(contentType: 'text/plain');
+
+      var md = await ref.updateMetadata(newMetadata);
+
+      expect(md.bucket, storageBucket);
+      expect(md.name, fileName);
+      expect(md.fullPath, filePath);
+      expect(md.size, 7);
+      expect(md.contentType, 'text/plain');
+      expect(md.updated.isAfter(md.timeCreated), isTrue);
+      expect(md.downloadURLs.single.pathSegments.last, contains(fileName));
+      expect(md.customMetadata, isNull);
     });
   });
 }

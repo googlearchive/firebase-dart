@@ -11,7 +11,7 @@ import 'interop/js_interop.dart' as js;
 /// Returns Dart representation from JS Object.
 dynamic dartify(Object jsObject) {
   String json = js.stringify(jsObject);
-  return JSON.decode(json);
+  return json == null ? null : JSON.decode(json);
 }
 
 /// Returns JS implementation from Dart Object.

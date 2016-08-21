@@ -1,5 +1,6 @@
 ## 0.2.1
 - *BREAKING* `CustomMetadata` is now a Map.
+- *BREAKING* Storage APIs now expose `Uri` and `DateTime` instead of `String` where appropriate.
 
 ## 0.2.0
 
