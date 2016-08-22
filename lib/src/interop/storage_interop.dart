@@ -103,19 +103,12 @@ abstract class UploadTaskJsImpl implements ThenableJsImpl {
 @JS('UploadTaskSnapshot')
 abstract class UploadTaskSnapshotJsImpl {
   external int get bytesTransferred;
-  external void set bytesTransferred(int b);
   external String get downloadURL;
-  external void set downloadURL(String s);
   external FullMetadataJsImpl get metadata;
-  external void set metadata(FullMetadataJsImpl m);
   external ReferenceJsImpl get ref;
-  external void set ref(ReferenceJsImpl r);
   external String get state;
-  external void set state(String s);
   external UploadTaskJsImpl get task;
-  external void set task(UploadTaskJsImpl t);
   external int get totalBytes;
-  external void set totalBytes(int b);
 }
 
 @JS()
@@ -151,17 +144,10 @@ class StringFormat {
   external static String get DATA_URL;
 }
 
-@JS()
-@anonymous
-class CustomMetadataJsImpl {
-  external String get string;
-  external void set string(String s);
-  external factory CustomMetadataJsImpl({String string});
-}
-
 /// An event that is triggered on a task.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage#.TaskEvent>.
+@JS()
 abstract class TaskEvent {
-  static const STATE_CHANGED = 'state_changed';
+  external static get STATE_CHANGED;
 }

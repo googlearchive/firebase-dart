@@ -230,12 +230,6 @@ abstract class _UploadMetadataBase<
   _UploadMetadataBase.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
-/// Event propagated in Stream controllers when path changes.
-class UploadTaskEvent {
-  final UploadTaskSnapshot snapshot;
-  UploadTaskEvent(this.snapshot);
-}
-
 /// Represents the process of uploading an object. Allows you to monitor and manage the upload.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage.UploadTask>.
@@ -266,31 +260,33 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   bool cancel() => jsObject.cancel();
 
   var _onStateChangedUnsubscribe;
-  Stream<UploadTaskEvent> _onStateChanged;
-  Stream<UploadTaskEvent> get onStateChanged {
-    if (_onStateChanged == null) {
-      StreamController<UploadTaskEvent> streamController;
-
-      var callbackWrap =
+  StreamController<UploadTaskSnapshot> _changeController;
+  Stream<UploadTaskSnapshot> get onStateChanged {
+    if (_changeController == null) {
+      var nextWrapper =
           allowInterop((storage_interop.UploadTaskSnapshotJsImpl data) {
-        streamController.add(
-            new UploadTaskEvent(new UploadTaskSnapshot.fromJsObject(data)));
+        _changeController.add(new UploadTaskSnapshot.fromJsObject(data));
       });
 
+      var errorWrapper = allowInterop((e) => _changeController.addError(e));
+      var onCompletion = allowInterop(() => _changeController.close());
+
       void startListen() {
-        _onStateChangedUnsubscribe =
-            jsObject.on(storage_interop.TaskEvent.STATE_CHANGED, callbackWrap);
+        _onStateChangedUnsubscribe = jsObject.on(
+            storage_interop.TaskEvent.STATE_CHANGED,
+            nextWrapper,
+            errorWrapper,
+            onCompletion);
       }
 
       void stopListen() {
         _onStateChangedUnsubscribe();
       }
 
-      streamController = new StreamController<UploadTaskEvent>.broadcast(
+      _changeController = new StreamController<UploadTaskSnapshot>.broadcast(
           onListen: startListen, onCancel: stopListen, sync: true);
-      _onStateChanged = streamController.stream;
     }
-    return _onStateChanged;
+    return _changeController.stream;
   }
 
   bool pause() => jsObject.pause();

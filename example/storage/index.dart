@@ -43,9 +43,8 @@ class ImageUploadApp {
           new fb.UploadMetadata(
               contentType: file.type, customMetadata: customMetadata));
       uploadTask.onStateChanged.listen((e) {
-        var snapshot = e.snapshot;
         querySelector("#message").text =
-            "Transfered ${snapshot.bytesTransferred}/${snapshot.totalBytes}...";
+            "Transfered ${e.bytesTransferred}/${e.totalBytes}...";
       });
 
       try {
