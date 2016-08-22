@@ -260,30 +260,33 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   bool cancel() => jsObject.cancel();
 
   var _onStateChangedUnsubscribe;
-  Stream<UploadTaskSnapshot> _onStateChanged;
+  StreamController<UploadTaskSnapshot> _changeController;
   Stream<UploadTaskSnapshot> get onStateChanged {
-    if (_onStateChanged == null) {
-      StreamController<UploadTaskSnapshot> streamController;
-
-      var callbackWrap =
+    if (_changeController == null) {
+      var nextWrapper =
           allowInterop((storage_interop.UploadTaskSnapshotJsImpl data) {
-        streamController.add(new UploadTaskSnapshot.fromJsObject(data));
+        _changeController.add(new UploadTaskSnapshot.fromJsObject(data));
       });
 
+      var errorWrapper = allowInterop((e) => _changeController.addError(e));
+      var onCompletion = allowInterop(() => _changeController.close());
+
       void startListen() {
-        _onStateChangedUnsubscribe =
-            jsObject.on(storage_interop.TaskEvent.STATE_CHANGED, callbackWrap);
+        _onStateChangedUnsubscribe = jsObject.on(
+            storage_interop.TaskEvent.STATE_CHANGED,
+            nextWrapper,
+            errorWrapper,
+            onCompletion);
       }
 
       void stopListen() {
         _onStateChangedUnsubscribe();
       }
 
-      streamController = new StreamController<UploadTaskSnapshot>.broadcast(
+      _changeController = new StreamController<UploadTaskSnapshot>.broadcast(
           onListen: startListen, onCancel: stopListen, sync: true);
-      _onStateChanged = streamController.stream;
     }
-    return _onStateChanged;
+    return _changeController.stream;
   }
 
   bool pause() => jsObject.pause();
