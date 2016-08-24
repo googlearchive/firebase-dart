@@ -2,9 +2,7 @@
 import 'package:firebase3/firebase.dart';
 import 'package:firebase3/src/assets/assets.dart';
 import 'package:test/test.dart';
-
-_printException(e) => print(
-    [e.name, e.code, e.message, e.stack].where((s) => s != null).join('\n'));
+import 'test_util.dart';
 
 void main() {
   App app;
@@ -110,7 +108,7 @@ void main() {
       try {
         user = await authValue.signInAnonymously();
       } on FirebaseError catch (e) {
-        _printException(e);
+        printException(e);
         rethrow;
       }
     });
@@ -160,7 +158,7 @@ void main() {
         expect(user, isNotNull);
         expect(user.email, "some_user@example.com");
       } on FirebaseError catch (e) {
-        _printException(e);
+        printException(e);
         rethrow;
       }
     });
@@ -178,7 +176,7 @@ void main() {
             "other_user@example.com", "hesloheslo");
         expect(authValue.currentUser, isNotNull);
       } on FirebaseError catch (e) {
-        _printException(e);
+        printException(e);
         rethrow;
       }
     });
@@ -199,7 +197,7 @@ void main() {
         await user.updateProfile(profile);
         expect(user.displayName, "Other User");
       } on FirebaseError catch (e) {
-        _printException(e);
+        printException(e);
         rethrow;
       }
     });
