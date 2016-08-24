@@ -5,7 +5,7 @@
 - *BREAKING* `CustomMetadata` is now a Map.
 - *BREAKING* Storage APIs now expose `Uri` and `DateTime` instead of `String` where appropriate.
 - *BREAKING* Storage `onStateChanged` returns `Stream<UploadTaskSnapshot>`.
-- Updated examples
+- Updates and fixes in examples
 - Fixes in the lib
 
 ## 0.1.0
