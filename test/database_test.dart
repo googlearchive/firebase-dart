@@ -46,7 +46,7 @@ void main() {
       String key;
 
       setUp(() {
-        ref = database.ref("notes");
+        ref = database.ref("messages");
         key = ref.push({"text": "hello"}).key;
         expect(key, isNotNull);
       });
@@ -54,14 +54,19 @@ void main() {
       tearDown(() async {
         await ref.remove();
         ref = null;
+        key = null;
       });
 
-      test("child", () {
+      test("child and once on value", () async {
         var childRef = ref.child(key);
-        expect(childRef, isNotNull);
+        var event = await childRef.once("value");
+        expect(event.snapshot.key, key);
+        expect(event.snapshot.val()["text"], "hello");
 
-        var childChildRef = childRef.child("text");
-        expect(childChildRef, isNotNull);
+        childRef = childRef.child("text");
+        event = await childRef.once("value");
+        expect(event.snapshot.key, "text");
+        expect(event.snapshot.val(), "hello");
       });
 
       test("key", () {
@@ -72,12 +77,37 @@ void main() {
       test("parent", () {
         var childRef = ref.child("text");
         expect(childRef, isNotNull);
-        expect(childRef.parent.toString(), "${databaseUrl}/notes");
+        expect(childRef.parent.toString(), "${databaseUrl}/messages");
       });
 
       test("root", () {
         var childRef = ref.child("text");
         expect(childRef.root.toString(), contains(databaseUrl));
+      });
+
+      test("empty push and set", () async {
+        var newRef = ref.push();
+        expect(newRef.key, isNotNull);
+        await newRef.set({"text": "ahoj"});
+
+        var event = await newRef.once("value");
+        expect(event.snapshot.val()["text"], "ahoj");
+      });
+
+      test("endAt", () async {
+        var ref = database.ref("flowers");
+        await ref.remove();
+        ref.push("rose");
+        ref.push("tulip");
+        ref.push("chicory");
+        ref.push("sunflower");
+
+        var event = await ref.orderByValue().endAt("rose").once("value");
+        var filteredFlowers = event.snapshot.val();
+
+        expect(filteredFlowers.length, 2);
+        expect(filteredFlowers.values.contains("chicory"), isTrue);
+        expect(filteredFlowers.values.contains("sunflower"), isFalse);
       });
     });
   });
