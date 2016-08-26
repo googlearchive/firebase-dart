@@ -76,7 +76,6 @@ void main() {
 
       test("parent", () {
         var childRef = ref.child("text");
-        expect(childRef, isNotNull);
         expect(childRef.parent.toString(), "${databaseUrl}/messages");
       });
 
@@ -95,8 +94,7 @@ void main() {
       });
 
       test("endAt", () async {
-        var ref = database.ref("flowers");
-        await ref.remove();
+        ref = database.ref("flowers");
         ref.push("rose");
         ref.push("tulip");
         ref.push("chicory");
@@ -108,6 +106,34 @@ void main() {
         expect(filteredFlowers.length, 2);
         expect(filteredFlowers.values.contains("chicory"), isTrue);
         expect(filteredFlowers.values.contains("sunflower"), isFalse);
+      });
+
+      test("startAt", () async {
+        ref = database.ref("flowers");
+        ref.push("rose");
+        ref.push("tulip");
+        ref.push("chicory");
+        ref.push("sunflower");
+
+        var event = await ref.orderByValue().startAt("rose").once("value");
+        var filteredFlowers = event.snapshot.val();
+
+        expect(filteredFlowers.length, 3);
+        expect(filteredFlowers.values.contains("sunflower"), isTrue);
+        expect(filteredFlowers.values.contains("chicory"), isFalse);
+      });
+
+      test("equalTo", () async {
+        ref = database.ref("flowers");
+        ref.push("rose");
+        ref.push("tulip");
+
+        var event = await ref.orderByValue().equalTo("rose").once("value");
+        var flower = event.snapshot.val();
+
+        expect(flower, isNotNull);
+        expect(flower.length, 1);
+        expect(flower.values.first, "rose");
       });
     });
   });
