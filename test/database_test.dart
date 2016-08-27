@@ -101,11 +101,14 @@ void main() {
         ref.push("sunflower");
 
         var event = await ref.orderByValue().endAt("rose").once("value");
-        var filteredFlowers = event.snapshot.val();
+        var flowers = [];
+        event.snapshot.forEach((snapshot) {
+          flowers.add(snapshot.val());
+        });
 
-        expect(filteredFlowers.length, 2);
-        expect(filteredFlowers.values.contains("chicory"), isTrue);
-        expect(filteredFlowers.values.contains("sunflower"), isFalse);
+        expect(flowers.length, 2);
+        expect(flowers.contains("chicory"), isTrue);
+        expect(flowers.contains("sunflower"), isFalse);
       });
 
       test("startAt", () async {
@@ -116,11 +119,14 @@ void main() {
         ref.push("sunflower");
 
         var event = await ref.orderByValue().startAt("rose").once("value");
-        var filteredFlowers = event.snapshot.val();
+        var flowers = [];
+        event.snapshot.forEach((snapshot) {
+          flowers.add(snapshot.val());
+        });
 
-        expect(filteredFlowers.length, 3);
-        expect(filteredFlowers.values.contains("sunflower"), isTrue);
-        expect(filteredFlowers.values.contains("chicory"), isFalse);
+        expect(flowers.length, 3);
+        expect(flowers.contains("sunflower"), isTrue);
+        expect(flowers.contains("chicory"), isFalse);
       });
 
       test("equalTo", () async {
@@ -129,11 +135,87 @@ void main() {
         ref.push("tulip");
 
         var event = await ref.orderByValue().equalTo("rose").once("value");
-        var flower = event.snapshot.val();
+        var flowers = [];
+        event.snapshot.forEach((snapshot) {
+          flowers.add(snapshot.val());
+        });
 
-        expect(flower, isNotNull);
-        expect(flower.length, 1);
-        expect(flower.values.first, "rose");
+        expect(flowers, isNotNull);
+        expect(flowers.length, 1);
+        expect(flowers.first, "rose");
+      });
+
+      test("limitToFirst", () async {
+        ref = database.ref("flowers");
+        ref.push("rose");
+        ref.push("tulip");
+        ref.push("chicory");
+        ref.push("sunflower");
+
+        var event = await ref.orderByValue().limitToFirst(2).once("value");
+        var flowers = [];
+        event.snapshot.forEach((snapshot) {
+          flowers.add(snapshot.val());
+        });
+
+        expect(flowers, isNotEmpty);
+        expect(flowers.length, 2);
+        expect(flowers, contains("chicory"));
+        expect(flowers, contains("rose"));
+      });
+
+      test("limitToLast", () async {
+        ref = database.ref("flowers");
+        ref.push("rose");
+        ref.push("tulip");
+        ref.push("chicory");
+        ref.push("sunflower");
+
+        var event = await ref.orderByValue().limitToLast(1).once("value");
+        var flowers = [];
+        event.snapshot.forEach((snapshot) {
+          flowers.add(snapshot.val());
+        });
+
+        expect(flowers, isNotEmpty);
+        expect(flowers.length, 1);
+        expect(flowers, contains("tulip"));
+      });
+
+      test("orderByKey", () async {
+        ref = database.ref("flowers");
+        ref.child("one").set("rose");
+        ref.child("two").set("tulip");
+        ref.child("three").set("chicory");
+        ref.child("four").set("sunflower");
+
+        var event = await ref.orderByKey().once("value");
+        var flowers = [];
+        event.snapshot.forEach((snapshot) {
+          flowers.add(snapshot.key);
+        });
+
+        expect(flowers, isNotEmpty);
+        expect(flowers.length, 4);
+        expect(flowers, ["four", "one", "three", "two"]);
+      });
+
+      test("orderByValue", () async {
+        ref = database.ref("flowers");
+        ref.push("rose");
+        ref.push("tulip");
+        ref.push("chicory");
+        ref.push("sunflower");
+
+        var event = await ref.orderByValue().once("value");
+        var flowers = [];
+        event.snapshot.forEach((snapshot) {
+          flowers.add(snapshot.val());
+        });
+
+        expect(flowers, isNotEmpty);
+        expect(flowers.length, 4);
+        expect(flowers, ["chicory", "rose", "sunflower", "tulip"]);
       });
     });
   });

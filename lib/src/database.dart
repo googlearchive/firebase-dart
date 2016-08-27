@@ -282,9 +282,7 @@ class DataSnapshot
 
   bool forEach(Func1<DataSnapshot, dynamic> action) {
     var actionWrap = allowInterop((database_interop.DataSnapshotJsImpl data) {
-      if (action != null) {
-        action(new DataSnapshot.fromJsObject(data));
-      }
+      action(new DataSnapshot.fromJsObject(data));
     });
     return jsObject.forEach(actionWrap);
   }
