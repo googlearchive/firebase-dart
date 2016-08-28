@@ -72,9 +72,9 @@ Auth tests and some examples need to have **Auth providers** correctly set. The 
 * E-mail/password
 * Anonymous
 
-### Database tests
+### Database tests and example
 
-Database tests need to have **public rules** to be able to read and write to database. Update your rules in Firebase console, `Database/Rules` section to:
+Database tests and example need to have **public rules** to be able to read and write to database. Update your rules in Firebase console, `Database/Rules` section to:
 
 ```
 {
@@ -87,9 +87,9 @@ Database tests need to have **public rules** to be able to read and write to dat
 
 > Warning: At the moment, anybody can read and write to your database. You *usually* don't want to have this in your production apps. You can find more information on how to setup correct database rules in the official [Firebase documentation](https://firebase.google.com/docs/database/security/). 
 
-### Storage tests
+### Storage tests and example
 
-Storage tests need to have **public rules** to be able to read and write to storage. Update your rules in Firebase console, `Storage/Rules` section to:
+Storage tests and example need to have **public rules** to be able to read and write to storage. Update your rules in Firebase console, `Storage/Rules` section to:
 
 ```
 service firebase.storage {
