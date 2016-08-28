@@ -7,7 +7,7 @@ This is an unofficial Dart wrapper library for the new [Firebase](https://fireba
 You can find more information on how to use Firebase on [Getting started](https://firebase.google.com/docs/web/setup) page.
 
 Don't forget to setup correct **rules** for your [realtime database](https://firebase.google.com/docs/database/security/) and/or [storage](https://firebase.google.com/docs/storage/security/) in Firebase console. 
-Auth has to be also set in the Firebase console if you want to use it. See next section in this document.
+Auth has to be also set in the Firebase console if you want to use it. For more info, see [next section](https://github.com/Janamou/firebase3-dart#before-tests-and-examples-are-run) in this document.
 
 ## Usage
 
@@ -53,11 +53,11 @@ You can find more examples on realtime database, auth and storage in the [exampl
 
 ## Before tests and examples are run
 
-You need to ensure couple of things before tests and examples in this library are run.
+You need to ensure a couple of things before tests and examples in this library are run.
 
 ### All tests and examples
 
-Create `config.json` file (see `config.json.sample`) in `lib/src/assets` with configuration for your Firebase project.
+Create `config.json` file (see `config.json.sample`) in `lib/src/assets` folder with configuration for your Firebase project.
 
 > Warning: Use `config.json` for this package [development and testing only](https://github.com/Janamou/firebase3-dart/tree/master/lib/src/assets).
 
@@ -67,7 +67,7 @@ No special action needed here.
 
 ### Auth tests and example
 
-Auth tests and example need to have **Auth providers** correctly set. The following providers need to be enabled in Firebase console, `Auth/Sign-in method` section:
+Auth tests and some examples need to have **Auth providers** correctly set. The following providers need to be enabled in Firebase console, `Auth/Sign-in method` section:
 
 * E-mail/password
 * Anonymous
@@ -85,7 +85,7 @@ Database tests need to have **public rules** to be able to read and write to dat
 }
 ```
 
-> Warning: At the moment anybody can read and write to your database. You *usually* don't want to have this in your production apps. You can find more information on how to setup correct database rules in the official [Firebase documentation](https://firebase.google.com/docs/database/security/). 
+> Warning: At the moment, anybody can read and write to your database. You *usually* don't want to have this in your production apps. You can find more information on how to setup correct database rules in the official [Firebase documentation](https://firebase.google.com/docs/database/security/). 
 
 ### Storage tests
 
@@ -101,7 +101,7 @@ service firebase.storage {
 }
 ```
 
-> Warning: At the moment anybody can read and write to your storage. You *usually* don't want to have this in your production apps. You can find more information on how to setup correct storage rules in the official [Firebase documentation](https://firebase.google.com/docs/storage/security/). 
+> Warning: At the moment, anybody can read and write to your storage. You *usually* don't want to have this in your production apps. You can find more information on how to setup correct storage rules in the official [Firebase documentation](https://firebase.google.com/docs/storage/security/). 
 
 
 ## Bugs
