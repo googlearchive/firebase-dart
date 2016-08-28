@@ -17,8 +17,6 @@ main() async {
       databaseURL: databaseUrl,
       storageBucket: storageBucket);
 
-  app.auth().signInAnonymously();
-
   new ImageUploadApp();
 }
 
