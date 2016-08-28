@@ -10,17 +10,20 @@ import 'utils.dart';
 
 export 'interop/database_interop.dart' show ServerValue;
 
-/// Log debugging information to the console.
+/// Logs debugging information to the console.
+/// If [persistent], it remembers the logging state between page refreshes.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database#.enableLogging>.
 void enableLogging([logger, bool persistent = false]) =>
     database_interop.enableLogging(jsify(logger), persistent);
 
-/// The Firebase Database service class.
+/// Firebase realtime database service class.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database>.
 class Database extends JsObjectWrapper<database_interop.DatabaseJsImpl> {
   App _app;
+
+  /// App for this instance of database service.
   App get app {
     if (_app != null) {
       _app.jsObject = jsObject.app;
@@ -30,29 +33,40 @@ class Database extends JsObjectWrapper<database_interop.DatabaseJsImpl> {
     return _app;
   }
 
+  /// Creates a new Database from [jsObject].
   Database.fromJsObject(database_interop.DatabaseJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
+  /// Disconnects from the server, all database operations will be
+  /// completed offline.
   void goOffline() => jsObject.goOffline();
 
+  /// Connects to the server and synchronizes the offline database
+  /// state with the server state.
   void goOnline() => jsObject.goOnline();
 
+  /// Returns a [DatabaseReference] to the root or provided [path].
   DatabaseReference ref([String path]) =>
       new DatabaseReference.fromJsObject(jsObject.ref(path));
 
+  /// Returns a [DatabaseReference] from provided [url].
+  /// Url must be in the same domain as the current database.
   DatabaseReference refFromURL(String url) =>
       new DatabaseReference.fromJsObject(jsObject.refFromURL(url));
 }
 
-/// A Reference represents a specific location in your database and
+/// A DatabaseReference represents a specific location in database and
 /// can be used for reading or writing data to that database location.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.Reference>.
 class DatabaseReference<T extends database_interop.ReferenceJsImpl>
     extends Query<T> {
+  /// The last part of the current path. [null] in case of root DatabaseReference.
   String get key => jsObject.key;
 
   DatabaseReference _parent;
+
+  /// The parent location of a DatabaseReference.
   DatabaseReference get parent {
     if (jsObject.parent != null) {
       if (_parent != null) {
@@ -67,6 +81,8 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   }
 
   DatabaseReference _root;
+
+  /// The root location of a DatabaseReference.
   DatabaseReference get root {
     if (_root != null) {
       _root.jsObject = jsObject.root;
@@ -76,27 +92,66 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
     return _root;
   }
 
+  /// Creates a new DatabaseReference from [jsObject].
   DatabaseReference.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 
+  /// Returns child DatabaseReference from provided relative [path].
   DatabaseReference child(String path) =>
       new DatabaseReference.fromJsObject(jsObject.child(path));
 
+  /// Returns [OnDisconnect] object.
   OnDisconnect onDisconnect() =>
       new OnDisconnect.fromJsObject(jsObject.onDisconnect());
 
+  /// Pushes provided [value] to the actual location.
+  /// If the [value] is not provided, no data is written to the database
+  /// but the [ThenableReference] is still returned and can be used for later
+  /// operation.
+  ///
+  ///     DatabaseReference ref = fb.database().ref("messages");
+  ///     ThenableReference childRef = ref.push();
+  ///     childRef.set({"text": "Hello"});
+  ///
+  /// This method returns [ThenableReference], [DatabaseReference]
+  /// with [Future] property.
   ThenableReference push([value]) =>
       new ThenableReference.fromJsObject(jsObject.push(jsify(value)));
 
+  /// Removes data from actual database location.
   Future remove() => handleThenable(jsObject.remove());
 
+  /// Sets data at actual database location to provided [value].
+  /// Overwrites any existing data at actual location and all child locations.
   Future set(value) => handleThenable(jsObject.set(jsify(value)));
 
+  /// Sets a priority for data at actual database location.
   Future setPriority(priority) =>
       handleThenable(jsObject.setPriority(priority));
 
+  /// Sets data [newVal] at actual database location with provided priority
+  /// [newPriority].
+  ///
+  /// Like [set()] but also specifies the priority.
   Future setWithPriority(newVal, newPriority) =>
       handleThenable(jsObject.setWithPriority(jsify(newVal), newPriority));
 
+  /// Atomically updates data at actual database location.
+  ///
+  /// This method is used to update the existing value to a new value,
+  /// ensuring there are no conflicts with other clients writing to the same
+  /// location at the same time.
+  ///
+  /// The provided [transactionUpdate] function is used to update
+  /// the current value into a new value.
+  ///
+  ///     DatabaseReference ref = fb.database().ref("numbers");
+  ///     ref.set(2);
+  ///     ref.transaction((currentValue) => currentValue * 2);
+  ///
+  ///     var event = await ref.once("value");
+  ///     print(event.snapshot.val()); //prints 4
+  ///
+  /// Set [applyLocally] to [false] to not see intermediate states.
   Future<Transaction> transaction(Func1 transactionUpdate,
       [bool applyLocally = true]) {
     Completer<Transaction> c = new Completer<Transaction>();
@@ -120,6 +175,7 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
     return c.future;
   }
 
+  /// Updates data with [values] at actual database location.
   Future update(values) => handleThenable(jsObject.update(jsify(values)));
 }
 
