@@ -4,6 +4,8 @@ import 'package:firebase3/src/assets/assets.dart';
 import 'package:test/test.dart';
 import 'package:firebase3/firebase.dart';
 
+import 'test_util.dart';
+
 void main() {
   App app;
 
@@ -46,7 +48,7 @@ void main() {
       String key;
 
       setUp(() {
-        ref = database.ref("messages");
+        ref = database.ref(validDatePath());
         key = ref.push({"text": "hello"}).key;
         expect(key, isNotNull);
       });
@@ -85,7 +87,7 @@ void main() {
 
       test("parent", () {
         var childRef = ref.child("text");
-        expect(childRef.parent.toString(), "${databaseUrl}/messages");
+        expect(childRef.parent.toString(), ref.toString());
       });
 
       test("root", () {
@@ -103,13 +105,13 @@ void main() {
       });
 
       test("endAt", () async {
-        ref = database.ref("flowers");
-        ref.push("rose");
-        ref.push("tulip");
-        ref.push("chicory");
-        ref.push("sunflower");
+        var childRef = ref.child("flowers");
+        childRef.push("rose");
+        childRef.push("tulip");
+        childRef.push("chicory");
+        childRef.push("sunflower");
 
-        var event = await ref.orderByValue().endAt("rose").once("value");
+        var event = await childRef.orderByValue().endAt("rose").once("value");
         var flowers = [];
         event.snapshot.forEach((snapshot) {
           flowers.add(snapshot.val());
@@ -121,13 +123,13 @@ void main() {
       });
 
       test("startAt", () async {
-        ref = database.ref("flowers");
-        ref.push("rose");
-        ref.push("tulip");
-        ref.push("chicory");
-        ref.push("sunflower");
+        var childRef = ref.child("flowers");
+        childRef.push("rose");
+        childRef.push("tulip");
+        childRef.push("chicory");
+        childRef.push("sunflower");
 
-        var event = await ref.orderByValue().startAt("rose").once("value");
+        var event = await childRef.orderByValue().startAt("rose").once("value");
         var flowers = [];
         event.snapshot.forEach((snapshot) {
           flowers.add(snapshot.val());
@@ -139,11 +141,11 @@ void main() {
       });
 
       test("equalTo", () async {
-        ref = database.ref("flowers");
-        ref.push("rose");
-        ref.push("tulip");
+        var childRef = ref.child("flowers");
+        childRef.push("rose");
+        childRef.push("tulip");
 
-        var event = await ref.orderByValue().equalTo("rose").once("value");
+        var event = await childRef.orderByValue().equalTo("rose").once("value");
         var flowers = [];
         event.snapshot.forEach((snapshot) {
           flowers.add(snapshot.val());
@@ -155,13 +157,13 @@ void main() {
       });
 
       test("limitToFirst", () async {
-        ref = database.ref("flowers");
-        ref.push("rose");
-        ref.push("tulip");
-        ref.push("chicory");
-        ref.push("sunflower");
+        var childRef = ref.child("flowers");
+        childRef.push("rose");
+        childRef.push("tulip");
+        childRef.push("chicory");
+        childRef.push("sunflower");
 
-        var event = await ref.orderByValue().limitToFirst(2).once("value");
+        var event = await childRef.orderByValue().limitToFirst(2).once("value");
         var flowers = [];
         event.snapshot.forEach((snapshot) {
           flowers.add(snapshot.val());
@@ -174,13 +176,13 @@ void main() {
       });
 
       test("limitToLast", () async {
-        ref = database.ref("flowers");
-        ref.push("rose");
-        ref.push("tulip");
-        ref.push("chicory");
-        ref.push("sunflower");
+        var childRef = ref.child("flowers");
+        childRef.push("rose");
+        childRef.push("tulip");
+        childRef.push("chicory");
+        childRef.push("sunflower");
 
-        var event = await ref.orderByValue().limitToLast(1).once("value");
+        var event = await childRef.orderByValue().limitToLast(1).once("value");
         var flowers = [];
         event.snapshot.forEach((snapshot) {
           flowers.add(snapshot.val());
@@ -192,13 +194,13 @@ void main() {
       });
 
       test("orderByKey", () async {
-        ref = database.ref("flowers");
-        ref.child("one").set("rose");
-        ref.child("two").set("tulip");
-        ref.child("three").set("chicory");
-        ref.child("four").set("sunflower");
+        var childRef = ref.child("flowers");
+        childRef.child("one").set("rose");
+        childRef.child("two").set("tulip");
+        childRef.child("three").set("chicory");
+        childRef.child("four").set("sunflower");
 
-        var event = await ref.orderByKey().once("value");
+        var event = await childRef.orderByKey().once("value");
         var flowers = [];
         event.snapshot.forEach((snapshot) {
           flowers.add(snapshot.key);
@@ -210,13 +212,13 @@ void main() {
       });
 
       test("orderByValue", () async {
-        ref = database.ref("flowers");
-        ref.push("rose");
-        ref.push("tulip");
-        ref.push("chicory");
-        ref.push("sunflower");
+        var childRef = ref.child("flowers");
+        childRef.push("rose");
+        childRef.push("tulip");
+        childRef.push("chicory");
+        childRef.push("sunflower");
 
-        var event = await ref.orderByValue().once("value");
+        var event = await childRef.orderByValue().once("value");
         var flowers = [];
         event.snapshot.forEach((snapshot) {
           flowers.add(snapshot.val());
