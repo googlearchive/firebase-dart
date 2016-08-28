@@ -7,7 +7,7 @@ This is an unofficial Dart wrapper library for the new [Firebase](https://fireba
 You can find more information on how to use Firebase on [Getting started](https://firebase.google.com/docs/web/setup) page.
 
 Don't forget to setup correct **rules** for your [realtime database](https://firebase.google.com/docs/database/security/) and/or [storage](https://firebase.google.com/docs/storage/security/) in Firebase console. 
-Auth has to be also set in the Firebase console if you want to use it.
+Auth has to be also set in the Firebase console if you want to use it. See next section in this document.
 
 ## Usage
 
@@ -50,6 +50,59 @@ void main() {
 ## Examples
 
 You can find more examples on realtime database, auth and storage in the [example](https://github.com/Janamou/firebase3-dart/tree/master/example) folder.
+
+## Before tests and examples are run
+
+You need to ensure couple of things before tests and examples in this library are run.
+
+### All tests and examples
+
+Create `config.json` file (see `config.json.sample`) in `lib/src/assets` with configuration for your Firebase project.
+
+> Warning: Use `config.json` for this package [development and testing only](https://github.com/Janamou/firebase3-dart/tree/master/lib/src/assets).
+
+### App tests
+
+No special action needed here.
+
+### Auth tests and example
+
+Auth tests and example need to have **Auth providers** correctly set. The following providers need to be enabled in Firebase console, `Auth/Sign-in method` section:
+
+* E-mail/password
+* Anonymous
+
+### Database tests
+
+Database tests need to have **public rules** to be able to read and write to database. Update your rules in Firebase console, `Database/Rules` section to:
+
+```
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+```
+
+> Warning: At the moment anybody can read and write to your database. You *usually* don't want to have this in your production apps. You can find more information on how to setup correct database rules in the official [Firebase documentation](https://firebase.google.com/docs/database/security/). 
+
+### Storage tests
+
+Storage tests need to have **public rules** to be able to read and write to storage. Update your rules in Firebase console, `Storage/Rules` section to:
+
+```
+service firebase.storage {
+  match /b/YOUR_STORAGE_BUCKET_URL/o {
+    match /{allPaths=**} {
+      allow read, write;
+    }
+  }
+}
+```
+
+> Warning: At the moment anybody can read and write to your storage. You *usually* don't want to have this in your production apps. You can find more information on how to setup correct storage rules in the official [Firebase documentation](https://firebase.google.com/docs/storage/security/). 
+
 
 ## Bugs
 
