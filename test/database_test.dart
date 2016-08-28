@@ -57,6 +57,15 @@ void main() {
         key = null;
       });
 
+      test('remove', () async {
+        var eventFuture = ref.onValue.first;
+
+        await ref.remove();
+        var event = await eventFuture;
+
+        expect(event.snapshot.val(), isNull);
+      });
+
       test("child and once on value", () async {
         var childRef = ref.child(key);
         var event = await childRef.once("value");
