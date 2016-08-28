@@ -96,11 +96,11 @@ void main() {
       });
 
       test("empty push and set", () async {
-        var newRef = ref.push();
-        expect(newRef.key, isNotNull);
-        await newRef.set({"text": "ahoj"});
+        var childRef = ref.push();
+        expect(childRef.key, isNotNull);
+        await childRef.set({"text": "ahoj"});
 
-        var event = await newRef.once("value");
+        var event = await childRef.once("value");
         expect(event.snapshot.val()["text"], "ahoj");
       });
 
