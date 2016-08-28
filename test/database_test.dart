@@ -98,10 +98,25 @@ void main() {
       test("empty push and set", () async {
         var childRef = ref.push();
         expect(childRef.key, isNotNull);
-        await childRef.set({"text": "ahoj"});
+        childRef.set({"text": "ahoj"});
 
         var event = await childRef.once("value");
         expect(event.snapshot.val()["text"], "ahoj");
+      });
+
+      test('transaction', () async {
+        var childRef = ref.child("todos");
+        childRef.set("Cooking");
+
+        await childRef
+            .transaction((currentValue) {
+          return "${currentValue} delicious dinner!";
+        });
+
+        var event = await childRef.once("value");
+        var val = event.snapshot.val();
+        expect(val, isNot("Cooking"));
+        expect(val, "Cooking delicious dinner!");
       });
 
       test("onValue", () async {
