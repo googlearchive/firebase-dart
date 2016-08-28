@@ -17,8 +17,6 @@ main() async {
       databaseURL: databaseUrl,
       storageBucket: storageBucket);
 
-  await app.auth().signInAnonymously();
-
   new MessagesApp().showMessages();
 }
 
