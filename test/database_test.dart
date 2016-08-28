@@ -104,6 +104,43 @@ void main() {
         expect(event.snapshot.val()["text"], "ahoj");
       });
 
+      test("onValue", () async {
+        var childRef = ref.child("todos");
+        childRef.set(["Programming", "Cooking", "Walking with dog"]);
+
+        var subscription = childRef.onValue.listen(expectAsync((event) {
+          var snapshot = event.snapshot;
+          var todos = event.snapshot.val();
+          expect(todos, isNotNull);
+          expect(todos.length, 3);
+          expect(todos, contains("Programming"));
+        }, count: 1));
+
+        await subscription.cancel();
+      });
+
+      test("onChildAdded", () async {
+        var childRef = ref.child("todos");
+
+        var todos = [];
+        var eventsCount = 0;
+        var subscription = childRef.onChildAdded.listen(expectAsync((event) {
+          var snapshot = event.snapshot;
+          todos.add(snapshot.val());
+          eventsCount++;
+          expect(eventsCount, isNonZero);
+          expect(eventsCount, lessThan(4));
+          expect(snapshot.val(),
+              anyOf("Programming", "Cooking", "Walking with dog"));
+        }, count: 3));
+
+        childRef.push("Programming");
+        childRef.push("Cooking");
+        childRef.push("Walking with dog");
+
+        await subscription.cancel();
+      });
+
       test("endAt", () async {
         var childRef = ref.child("flowers");
         childRef.push("rose");
@@ -227,6 +264,42 @@ void main() {
         expect(flowers, isNotEmpty);
         expect(flowers.length, 4);
         expect(flowers, ["chicory", "rose", "sunflower", "tulip"]);
+      });
+
+      test("orderByChild", () async {
+        var childRef = ref.child("people");
+        childRef.push({"name": "Alex", "age": 27});
+        childRef.push({"name": "Andrew", "age": 43});
+        childRef.push({"name": "James", "age": 12});
+
+        var event = await childRef.orderByChild("age").once("value");
+        var people = [];
+        event.snapshot.forEach((snapshot) {
+          people.add(snapshot.val());
+        });
+
+        expect(people, isNotEmpty);
+        expect(people.first["name"], "James");
+        expect(people.last["name"], "Andrew");
+      });
+
+      test("orderByPriority", () async {
+        var childRef = ref.child("people");
+        childRef.child("one").setWithPriority({"name": "Alex", "age": 27}, 10);
+        childRef.child("two").setWithPriority({"name": "Andrew", "age": 43}, 5);
+        childRef
+            .child("three")
+            .setWithPriority({"name": "James", "age": 12}, 700);
+
+        var event = await childRef.orderByPriority().once("value");
+        var people = [];
+        event.snapshot.forEach((snapshot) {
+          people.add(snapshot.val());
+        });
+
+        expect(people, isNotEmpty);
+        expect(people.first["name"], "Andrew");
+        expect(people.last["name"], "James");
       });
     });
   });
