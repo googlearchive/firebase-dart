@@ -154,6 +154,57 @@ void main() {
         await subscription.cancel();
       });
 
+      test("onChildRemoved", () async {
+        var childRef = ref.child("todos");
+        var childKey = childRef.push("Programming").key;
+        childRef.push("Cooking");
+        childRef.push("Walking with dog");
+
+        var subscription = childRef.onChildRemoved.listen(expectAsync((event) {
+          var snapshot = event.snapshot;
+          expect(snapshot.val(), "Programming");
+          expect(snapshot.val(), isNot("Cooking"));
+        }, count: 1));
+
+        childRef.child(childKey).remove();
+        await subscription.cancel();
+      });
+
+      test("onChildChanged", () async {
+        var childRef = ref.child("todos");
+        var childKey = childRef.push("Programming").key;
+        childRef.push("Cooking");
+        childRef.push("Walking with dog");
+
+        var subscription = childRef.onChildChanged.listen(expectAsync((event) {
+          var snapshot = event.snapshot;
+          expect(snapshot.val(), "Programming a Firebase lib");
+          expect(snapshot.val(), isNot("Programming"));
+          expect(snapshot.val(), isNot("Cooking"));
+        }, count: 1));
+
+        childRef.child(childKey).set("Programming a Firebase lib");
+        await subscription.cancel();
+      });
+
+      test("onChildMoved", () async {
+        var childRef = ref.child("todos");
+        var childPushRef = childRef.push("Programming");
+        childPushRef.setPriority(5);
+        childRef.push("Cooking").setPriority(10);
+        childRef.push("Walking with dog").setPriority(15);
+
+        var subscription =
+            childRef.orderByPriority().onChildMoved.listen(expectAsync((event) {
+                  var snapshot = event.snapshot;
+                  expect(snapshot.val(), "Programming");
+                  expect(snapshot.val(), isNot("Cooking"));
+                }, count: 1));
+
+        childPushRef.setPriority(100);
+        await subscription.cancel();
+      });
+
       test("endAt", () async {
         var childRef = ref.child("flowers");
         childRef.push("rose");
