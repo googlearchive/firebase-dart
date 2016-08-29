@@ -122,7 +122,6 @@ void main() {
         childRef.set(["Programming", "Cooking", "Walking with dog"]);
 
         var subscription = childRef.onValue.listen(expectAsync((event) {
-          var snapshot = event.snapshot;
           var todos = event.snapshot.val();
           expect(todos, isNotNull);
           expect(todos.length, 3);
@@ -138,12 +137,12 @@ void main() {
         var todos = [];
         var eventsCount = 0;
         var subscription = childRef.onChildAdded.listen(expectAsync((event) {
-          var snapshot = event.snapshot;
-          todos.add(snapshot.val());
+          var val = event.snapshot.val();
+          todos.add(val);
           eventsCount++;
           expect(eventsCount, isNonZero);
           expect(eventsCount, lessThan(4));
-          expect(snapshot.val(),
+          expect(val,
               anyOf("Programming", "Cooking", "Walking with dog"));
         }, count: 3));
 
@@ -161,9 +160,9 @@ void main() {
         childRef.push("Walking with dog");
 
         var subscription = childRef.onChildRemoved.listen(expectAsync((event) {
-          var snapshot = event.snapshot;
-          expect(snapshot.val(), "Programming");
-          expect(snapshot.val(), isNot("Cooking"));
+          var val = event.snapshot.val();
+          expect(val, "Programming");
+          expect(val, isNot("Cooking"));
         }, count: 1));
 
         childRef.child(childKey).remove();
@@ -177,10 +176,10 @@ void main() {
         childRef.push("Walking with dog");
 
         var subscription = childRef.onChildChanged.listen(expectAsync((event) {
-          var snapshot = event.snapshot;
-          expect(snapshot.val(), "Programming a Firebase lib");
-          expect(snapshot.val(), isNot("Programming"));
-          expect(snapshot.val(), isNot("Cooking"));
+          var val = event.snapshot.val();
+          expect(val, "Programming a Firebase lib");
+          expect(val, isNot("Programming"));
+          expect(val, isNot("Cooking"));
         }, count: 1));
 
         childRef.child(childKey).set("Programming a Firebase lib");
@@ -196,9 +195,9 @@ void main() {
 
         var subscription =
             childRef.orderByPriority().onChildMoved.listen(expectAsync((event) {
-                  var snapshot = event.snapshot;
-                  expect(snapshot.val(), "Programming");
-                  expect(snapshot.val(), isNot("Cooking"));
+                  var val = event.snapshot.val();
+                  expect(val, "Programming");
+                  expect(val, isNot("Cooking"));
                 }, count: 1));
 
         childPushRef.setPriority(100);
