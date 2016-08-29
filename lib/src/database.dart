@@ -108,7 +108,7 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   /// but the [ThenableReference] is still returned and can be used for later
   /// operation.
   ///
-  ///     DatabaseReference ref = fb.database().ref("messages");
+  ///     DatabaseReference ref = firebase.database().ref("messages");
   ///     ThenableReference childRef = ref.push();
   ///     childRef.set({"text": "Hello"});
   ///
@@ -144,7 +144,7 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   /// The provided [transactionUpdate] function is used to update
   /// the current value into a new value.
   ///
-  ///     DatabaseReference ref = fb.database().ref("numbers");
+  ///     DatabaseReference ref = firebase.database().ref("numbers");
   ///     ref.set(2);
   ///     ref.transaction((currentValue) => currentValue * 2);
   ///
@@ -179,24 +179,40 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   Future update(values) => handleThenable(jsObject.update(jsify(values)));
 }
 
-/// Event propagated in Stream controllers when path changes.
+/// Event fired when data changes at location.
+///
+/// Example:
+///
+///     Database database = firebase.database();
+///     database.ref("messages").onValue.listen((QueryEvent e) {
+///       DataSnapshot datasnapshot = e.snapshot;
+///       //...
+///     });
 class QueryEvent {
+  /// Immutable copy of the data at a database location.
   final DataSnapshot snapshot;
+
+  /// String containing the key of the previous child.
   final String prevChildKey;
+
+  /// Creates a new QueryEvent with [snapshot] and optional [prevChildKey].
   QueryEvent(this.snapshot, [this.prevChildKey]);
 }
 
 /// A Query sorts and filters the data at a database location so only
 /// a subset of the child data is included. This can be used to order
-/// a collection of data by some attribute (e.g. height of dinosaurs)
-/// as well as to restrict a large list of items (e.g. chat messages)
-/// down to a number suitable for synchronizing to the client.
+/// a collection of data by some attribute as well as to restrict
+/// a large list of items down to a number suitable for synchronizing
+/// to the client.
+///
 /// Queries are created by chaining together one or more of the filter
-/// methods defined here.
+/// methods defined in this class.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.Query>.
 class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   DatabaseReference _ref;
+
+  /// DatabaseReference to the Query's location.
   DatabaseReference get ref {
     if (_ref != null) {
       _ref.jsObject = jsObject.ref;
@@ -207,6 +223,9 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   }
 
   Stream<QueryEvent> _onValue;
+
+  /// Stream for a value event. Event is triggered once with the initial
+  /// data stored at location, and then again each time the data changes.
   Stream<QueryEvent> get onValue {
     if (_onValue == null) {
       _onValue = _createStream("value");
@@ -215,6 +234,9 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   }
 
   Stream<QueryEvent> _onChildAdded;
+
+  /// Stream for a child_added event. Event is triggered once for each
+  /// initial child at location, and then again every time a new child is added.
   Stream<QueryEvent> get onChildAdded {
     if (_onChildAdded == null) {
       _onChildAdded = _createStream("child_added");
@@ -223,6 +245,9 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   }
 
   Stream<QueryEvent> _onChildRemoved;
+
+  /// Stream for a child_removed event. Event is triggered once every time
+  /// a child is removed.
   Stream<QueryEvent> get onChildRemoved {
     if (_onChildRemoved == null) {
       _onChildRemoved = _createStream("child_removed");
@@ -231,6 +256,10 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   }
 
   Stream<QueryEvent> _onChildChanged;
+
+  /// Stream for a child_changed event. Event is triggered when the data
+  /// stored in a child (or any of its descendants) changes.
+  /// Single child_changed event may represent multiple changes to the child.
   Stream<QueryEvent> get onChildChanged {
     if (_onChildChanged == null) {
       _onChildChanged = _createStream("child_changed");
@@ -239,6 +268,9 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   }
 
   Stream<QueryEvent> _onChildMoved;
+
+  /// Stream for a child_moved event. Event is triggered when a child's priority
+  /// changes such that its position relative to its siblings changes.
   Stream<QueryEvent> get onChildMoved {
     if (_onChildMoved == null) {
       _onChildMoved = _createStream("child_moved");
@@ -246,17 +278,27 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
     return _onChildMoved;
   }
 
+  /// Creates a new Query from [jsObject].
   Query.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 
+  /// Returns a Query with the ending point [value]. The ending point
+  /// is inclusive.
+  /// The optional [key] can be used to further limit the range of the query.
   Query endAt(value, [String key]) => new Query.fromJsObject(
       key == null ? jsObject.endAt(value) : jsObject.endAt(value, key));
 
+  /// Returns a Query which includes children which match the specified [value].
+  /// The optional [key] can be used to further limit the range of the query.
   Query equalTo(value, [String key]) => new Query.fromJsObject(
       key == null ? jsObject.equalTo(value) : jsObject.equalTo(value, key));
 
+  /// Returns a new Query limited to the first specific number of children
+  /// provided by [limit].
   Query limitToFirst(int limit) =>
       new Query.fromJsObject(jsObject.limitToFirst(limit));
 
+  /// Returns a new Query limited to the last specific number of children
+  /// provided by [limit].
   Query limitToLast(int limit) =>
       new Query.fromJsObject(jsObject.limitToLast(limit));
 
@@ -282,6 +324,7 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
     return streamController.stream;
   }
 
+  /// Listens for exactly one [eventType] and then stops listening.
   Future<QueryEvent> once(String eventType) {
     Completer<QueryEvent> c = new Completer<QueryEvent>();
 
@@ -294,18 +337,26 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
     return c.future;
   }
 
+  /// Returns a new Query ordered by the specified child [path].
   Query orderByChild(String path) =>
       new Query.fromJsObject(jsObject.orderByChild(path));
 
+  /// Returns a new Query ordered by key.
   Query orderByKey() => new Query.fromJsObject(jsObject.orderByKey());
 
+  /// Returns a new Query ordered by priority.
   Query orderByPriority() => new Query.fromJsObject(jsObject.orderByPriority());
 
+  /// Returns a new Query ordered by child values.
   Query orderByValue() => new Query.fromJsObject(jsObject.orderByValue());
 
+  /// Returns a Query with the starting point [value]. The starting point
+  /// is inclusive.
+  /// The optional [key] can be used to further limit the range of the query.
   Query startAt(value, [String key]) => new Query.fromJsObject(
       key == null ? jsObject.startAt(value) : jsObject.startAt(value, key));
 
+  /// Returns a String representation of Query object.
   String toString() => jsObject.toString();
 }
 
@@ -314,9 +365,12 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.DataSnapshot>.
 class DataSnapshot
     extends JsObjectWrapper<database_interop.DataSnapshotJsImpl> {
+  /// The last part of the path at location for this DataSnapshot.
   String get key => jsObject.key;
 
   DatabaseReference _ref;
+
+  /// The DatabaseReference for the location that generated this DataSnapshot.
   DatabaseReference get ref {
     if (_ref != null) {
       _ref.jsObject = jsObject.ref;
@@ -326,12 +380,15 @@ class DataSnapshot
     return _ref;
   }
 
+  /// Creates a new DataSnapshot from [jsObject].
   DataSnapshot.fromJsObject(database_interop.DataSnapshotJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
+  /// Returns DataSnapshot for the location at the specified relative [path].
   DataSnapshot child(String path) =>
       new DataSnapshot.fromJsObject(jsObject.child(path));
 
+  /// Returns [true] if this DataSnapshot contains any data.
   bool exists() => jsObject.exists();
 
   dynamic exportVal() => dartify(jsObject.exportVal());
