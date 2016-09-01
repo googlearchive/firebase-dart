@@ -25,31 +25,37 @@ export 'interop/firebase_interop.dart' show UserProfile;
 /// See: <https://firebase.google.com/docs/reference/js/firebase.UserInfo>.
 class UserInfo<T extends firebase_interop.UserInfoJsImpl>
     extends JsObjectWrapper<T> {
+  /// User's display name.
   String get displayName => jsObject.displayName;
   void set displayName(String s) {
     jsObject.displayName = s;
   }
 
+  /// User's e-mail address.
   String get email => jsObject.email;
   void set email(String s) {
     jsObject.email = s;
   }
 
+  /// User's profile picture URL.
   String get photoURL => jsObject.photoURL;
   void set photoURL(String s) {
     jsObject.photoURL = s;
   }
 
+  /// User's authentication provider ID.
   String get providerId => jsObject.providerId;
   void set providerId(String s) {
     jsObject.providerId = s;
   }
 
+  /// User's unique ID.
   String get uid => jsObject.uid;
   void set uid(String s) {
     jsObject.uid = s;
   }
 
+  /// Creates a new UserInfo from [jsObject].
   UserInfo.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
@@ -57,28 +63,40 @@ class UserInfo<T extends firebase_interop.UserInfoJsImpl>
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.User>.
 class User extends UserInfo<firebase_interop.UserJsImpl> {
+  /// If the user's email address has been already verified.
   bool get emailVerified => jsObject.emailVerified;
 
+  /// If the user is anonymous.
   bool get isAnonymous => jsObject.isAnonymous;
 
+  /// List of additional provider-specific information about the user.
   List<UserInfo> get providerData => jsObject.providerData
       .map((data) =>
           new UserInfo<firebase_interop.UserInfoJsImpl>.fromJsObject(data))
       .toList();
 
+  /// Refresh token for the user account.
   String get refreshToken => jsObject.refreshToken;
 
+  /// Creates a new User from [jsObject].
   User.fromJsObject(firebase_interop.UserJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
+  /// Deletes and signs out the user.
   Future delete() => handleThenable(jsObject.delete());
 
+  /// Returns a JWT token used to identify the user to a Firebase service.
+  /// It forces refresh regardless of token expiration if [opt_forceRefresh]
+  /// parameter is [true].
   Future<String> getToken([bool opt_forceRefresh = false]) =>
       handleThenable(jsObject.getToken(opt_forceRefresh));
 
+  /// Links the user account with the given [credential].
   Future<User> link(AuthCredential credential) => handleThenableWithMapper(
       jsObject.link(credential), (u) => new User.fromJsObject(u));
 
+  /// Links the authenticated [provider] to the user account using
+  /// a pop-up based OAuth flow.
   Future<UserCredential> linkWithPopup(AuthProvider provider) =>
       handleThenableWithMapper(jsObject.linkWithPopup(provider),
           (u) => new UserCredential.fromJsObject(u));
