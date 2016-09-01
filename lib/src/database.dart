@@ -113,7 +113,7 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   ///     childRef.set({"text": "Hello"});
   ///
   /// This method returns [ThenableReference], [DatabaseReference]
-  /// with [Future] property.
+  /// with a [Future] property.
   ThenableReference push([value]) =>
       new ThenableReference.fromJsObject(jsObject.push(jsify(value)));
 
@@ -391,8 +391,11 @@ class DataSnapshot
   /// Returns [true] if this DataSnapshot contains any data.
   bool exists() => jsObject.exists();
 
+  /// Exports the contents of the DataSnapshot as a Dart object.
   dynamic exportVal() => dartify(jsObject.exportVal());
 
+  /// Enumerates the top-level children of the DataSnapshot in their query-order.
+  /// [action] is called for each child DataSnapshot.
   bool forEach(Func1<DataSnapshot, dynamic> action) {
     var actionWrap = allowInterop((database_interop.DataSnapshotJsImpl data) {
       action(new DataSnapshot.fromJsObject(data));
@@ -400,21 +403,24 @@ class DataSnapshot
     return jsObject.forEach(actionWrap);
   }
 
+  /// Returns priority for data in this DataSnapshot.
   dynamic getPriority() => jsObject.getPriority();
 
+  /// Returns [true] if the specified child [path] has data.
   bool hasChild(String path) => jsObject.hasChild(path);
 
+  /// Returns [true] if this DataSnapshot has any children.
   bool hasChildren() => jsObject.hasChildren();
 
+  /// Returns the number of child properties for this DataSnapshot.
   int numChildren() => jsObject.numChildren();
 
+  /// Returns Dart value from a DataSnapshot.
   dynamic val() => dartify(jsObject.val());
 }
 
 /// The OnDisconnect class allows you to write or clear data when your client
-/// disconnects from the database server. These updates occur whether your client
-/// disconnects cleanly or not, so you can rely on them to clean up data even
-/// if a connection is dropped or a client crashes.
+/// disconnects from the database server.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.OnDisconnect>.
 class OnDisconnect
@@ -422,27 +428,41 @@ class OnDisconnect
   OnDisconnect.fromJsObject(database_interop.OnDisconnectJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
+  /// Cancels all previously queued onDisconnect() events for actual location
+  /// and all children.
   Future cancel() => handleThenable(jsObject.cancel());
 
+  /// Ensures the data for actual location is deleted when the client
+  /// is disconnected.
   Future remove() => handleThenable(jsObject.remove());
 
+  /// Ensures the data for actual location is set to the specified [value]
+  /// when the client is disconnected.
   Future set(value) => handleThenable(jsObject.set(jsify(value)));
 
+  /// Ensures the data for actual location is set to the specified [value]
+  /// and [priority] when the client is disconnected.
   Future setWithPriority(value, priority) =>
       handleThenable(jsObject.setWithPriority(jsify(value), priority));
 
+  /// Writes multiple [values] at actual location when the client is disconnected.
   Future update(values) => handleThenable(jsObject.update(jsify(values)));
 }
 
+/// The ThenableReference class represents [DatabaseReference] with a
+/// [Future] property.
+///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.ThenableReference>.
 class ThenableReference
     extends DatabaseReference<database_interop.ThenableReferenceJsImpl> {
   Future<DatabaseReference> _future;
 
+  /// Creates a new ThenableReference from [jsObject].
   ThenableReference.fromJsObject(
       database_interop.ThenableReferenceJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
+  /// A Future property.
   Future<DatabaseReference> get future {
     if (_future == null) {
       _future = handleThenableWithMapper(
@@ -454,12 +474,17 @@ class ThenableReference
 
 /// A structure used in [DatabaseReference.transaction].
 class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
+  /// If transaction was committed.
   bool get committed => jsObject.committed;
+
+  /// Sets committed to [c].
   void set committed(bool c) {
     jsObject.committed = c;
   }
 
   DataSnapshot _snapshot;
+
+  /// Returns DataSnapshot.
   DataSnapshot get snapshot {
     if (jsObject.snapshot != null) {
       if (_snapshot != null) {
@@ -473,14 +498,17 @@ class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
     return _snapshot;
   }
 
+  /// Sets DataSnapshot to [s].
   void set snapshot(DataSnapshot s) {
     _snapshot = s;
     jsObject.snapshot = s.jsObject;
   }
 
+  /// Creates a new Transaction from [jsObject].
   Transaction.fromJsObject(database_interop.TransactionJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
+  /// Creates a new Transaction with [committed] and [snapshot] properties.
   factory Transaction({bool committed, DataSnapshot snapshot}) =>
       new Transaction.fromJsObject(new database_interop.TransactionJsImpl(
           committed: committed, snapshot: snapshot.jsObject));
