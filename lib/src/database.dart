@@ -104,6 +104,9 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
       new OnDisconnect.fromJsObject(jsObject.onDisconnect());
 
   /// Pushes provided [value] to the actual location.
+  ///
+  /// The [value] must be a Dart [Map], [Iterable] or primitive type.
+  ///
   /// If the [value] is not provided, no data is written to the database
   /// but the [ThenableReference] is still returned and can be used for later
   /// operation.
@@ -122,6 +125,8 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
 
   /// Sets data at actual database location to provided [value].
   /// Overwrites any existing data at actual location and all child locations.
+  ///
+  /// The [value] must be a Dart [Map], [Iterable] or primitive type.
   Future set(value) => handleThenable(jsObject.set(jsify(value)));
 
   /// Sets a priority for data at actual database location.
@@ -151,6 +156,9 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   ///     var event = await ref.once("value");
   ///     print(event.snapshot.val()); //prints 4
   ///
+  /// The returned value from [transactionUpdate] function must be
+  /// a Dart [Map], [Iterable] or primitive type.
+  ///
   /// Set [applyLocally] to [false] to not see intermediate states.
   Future<Transaction> transaction(Func1 transactionUpdate,
       [bool applyLocally = true]) {
@@ -176,6 +184,8 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   }
 
   /// Updates data with [values] at actual database location.
+  ///
+  /// The [values] must be a Dart [Map], [Iterable] or primitive type.
   Future update(values) => handleThenable(jsObject.update(jsify(values)));
 }
 
