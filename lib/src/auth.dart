@@ -101,27 +101,44 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
       handleThenableWithMapper(jsObject.linkWithPopup(provider),
           (u) => new UserCredential.fromJsObject(u));
 
+  /// Links the authenticated [provider] to the user account using
+  /// a full-page redirect flow.
   Future linkWithRedirect(AuthProvider provider) =>
       handleThenable(jsObject.linkWithRedirect(provider));
 
+  /// Re-authenticates a user using a fresh [credential]. Should be used
+  /// before operations such as [updatePassword()] that require tokens
+  /// from recent sign-in attempts.
   Future reauthenticate(AuthCredential credential) =>
       handleThenable(jsObject.reauthenticate(credential));
 
+  /// If signed in, it refreshes the current user.
   Future reload() => handleThenable(jsObject.reload());
 
+  /// Sends an e-mail verification to a user.
   Future sendEmailVerification() =>
       handleThenable(jsObject.sendEmailVerification());
 
+  /// Unlinks a provider with [providerId] from a user account.
   Future<User> unlink(String providerId) => handleThenableWithMapper(
       jsObject.unlink(providerId),
       (firebase_interop.UserJsImpl u) => new User.fromJsObject(u));
 
+  /// Updates the user's e-mail address to [newEmail].
   Future updateEmail(String newEmail) =>
       handleThenable(jsObject.updateEmail(newEmail));
 
+  /// Updates the user's password to [newPassword].
+  /// Requires the user to have recently signed in. If not, ask the user
+  /// to authenticate again and then use [reauthenticate()].
   Future updatePassword(String newPassword) =>
       handleThenable(jsObject.updatePassword(newPassword));
 
+  /// Updates a user's [profile] data.
+  /// UserProfile has a displayName and photoURL.
+  ///
+  ///     UserProfile profile = new UserProfile(displayName: "Smart user");
+  ///     await user.updateProfile(profile);
   Future updateProfile(firebase_interop.UserProfile profile) =>
       handleThenable(jsObject.updateProfile(profile));
 }
@@ -131,6 +148,8 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.Auth>.
 class Auth extends JsObjectWrapper<AuthJsImpl> {
   App _app;
+
+  /// App for this instance of auth service.
   App get app {
     if (_app != null) {
       _app.jsObject = jsObject.app;
@@ -141,6 +160,8 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   }
 
   User _currentUser;
+
+  /// Currently signed-in user.
   User get currentUser {
     if (jsObject.currentUser != null) {
       if (_currentUser != null) {
