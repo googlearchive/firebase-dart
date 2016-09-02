@@ -113,6 +113,13 @@ void main() {
       }
     });
 
+    tearDown(() async {
+      if (user != null) {
+        await user.delete();
+        user = null;
+      }
+    });
+
     test('properties', () {
       expect(user.isAnonymous, isTrue);
       expect(user.emailVerified, isFalse);
@@ -132,6 +139,7 @@ void main() {
       } catch (e) {
         fail('Should have been a FirebaseError');
       }
+      user = null;
     });
   });
 

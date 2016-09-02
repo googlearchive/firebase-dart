@@ -23,9 +23,7 @@ App initializeApp(
     String databaseURL,
     String storageBucket,
     String name}) {
-  if (name == null) {
-    name = _DEFAULT_APP_NAME;
-  }
+  name ??= _DEFAULT_APP_NAME;
 
   return new App.fromJsObject(firebase.initializeApp(
       new firebase.FirebaseOptions(

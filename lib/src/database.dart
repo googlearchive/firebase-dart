@@ -226,57 +226,36 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
 
   /// Stream for a value event. Event is triggered once with the initial
   /// data stored at location, and then again each time the data changes.
-  Stream<QueryEvent> get onValue {
-    if (_onValue == null) {
-      _onValue = _createStream("value");
-    }
-    return _onValue;
-  }
+  Stream<QueryEvent> get onValue => _onValue ??= _createStream("value");
 
   Stream<QueryEvent> _onChildAdded;
 
   /// Stream for a child_added event. Event is triggered once for each
   /// initial child at location, and then again every time a new child is added.
-  Stream<QueryEvent> get onChildAdded {
-    if (_onChildAdded == null) {
-      _onChildAdded = _createStream("child_added");
-    }
-    return _onChildAdded;
-  }
+  Stream<QueryEvent> get onChildAdded =>
+      _onChildAdded ??= _createStream("child_added");
 
   Stream<QueryEvent> _onChildRemoved;
 
   /// Stream for a child_removed event. Event is triggered once every time
   /// a child is removed.
-  Stream<QueryEvent> get onChildRemoved {
-    if (_onChildRemoved == null) {
-      _onChildRemoved = _createStream("child_removed");
-    }
-    return _onChildRemoved;
-  }
+  Stream<QueryEvent> get onChildRemoved =>
+      _onChildRemoved ??= _createStream("child_removed");
 
   Stream<QueryEvent> _onChildChanged;
 
   /// Stream for a child_changed event. Event is triggered when the data
   /// stored in a child (or any of its descendants) changes.
   /// Single child_changed event may represent multiple changes to the child.
-  Stream<QueryEvent> get onChildChanged {
-    if (_onChildChanged == null) {
-      _onChildChanged = _createStream("child_changed");
-    }
-    return _onChildChanged;
-  }
+  Stream<QueryEvent> get onChildChanged =>
+      _onChildChanged ??= _createStream("child_changed");
 
   Stream<QueryEvent> _onChildMoved;
 
   /// Stream for a child_moved event. Event is triggered when a child's priority
   /// changes such that its position relative to its siblings changes.
-  Stream<QueryEvent> get onChildMoved {
-    if (_onChildMoved == null) {
-      _onChildMoved = _createStream("child_moved");
-    }
-    return _onChildMoved;
-  }
+  Stream<QueryEvent> get onChildMoved =>
+      _onChildMoved ??= _createStream("child_moved");
 
   /// Creates a new Query from [jsObject].
   Query.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
@@ -463,13 +442,8 @@ class ThenableReference
       : super.fromJsObject(jsObject);
 
   /// A Future property.
-  Future<DatabaseReference> get future {
-    if (_future == null) {
-      _future = handleThenableWithMapper(
-          jsObject, (val) => new DatabaseReference.fromJsObject(val));
-    }
-    return _future;
-  }
+  Future<DatabaseReference> get future => _future ??= handleThenableWithMapper(
+      jsObject, (val) => new DatabaseReference.fromJsObject(val));
 }
 
 /// A structure used in [DatabaseReference.transaction].
