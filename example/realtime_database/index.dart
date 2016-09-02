@@ -11,7 +11,7 @@ main() async {
   //Use for firebase3 package development only
   await config();
 
-  var app = fb.initializeApp(
+  fb.initializeApp(
       apiKey: apiKey,
       authDomain: authDomain,
       databaseURL: databaseUrl,

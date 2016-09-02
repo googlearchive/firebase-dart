@@ -142,8 +142,7 @@ void main() {
           eventsCount++;
           expect(eventsCount, isNonZero);
           expect(eventsCount, lessThan(4));
-          expect(val,
-              anyOf("Programming", "Cooking", "Walking with dog"));
+          expect(val, anyOf("Programming", "Cooking", "Walking with dog"));
         }, count: 3));
 
         childRef.push("Programming");
