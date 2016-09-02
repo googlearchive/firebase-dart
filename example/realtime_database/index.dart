@@ -21,24 +21,22 @@ main() async {
 }
 
 class MessagesApp {
-  fb.Database database;
-  fb.DatabaseReference ref;
-  UListElement messages;
-  InputElement newMessage;
-  InputElement submit;
-  FormElement newMessageForm;
+  final fb.DatabaseReference ref;
+  final UListElement messages;
+  final InputElement newMessage;
+  final InputElement submit;
+  final FormElement newMessageForm;
 
-  MessagesApp() {
-    this.database = fb.database();
-    this.ref = database.ref("messages");
-    this.messages = querySelector("#messages");
-    this.newMessage = querySelector("#new_message");
+  MessagesApp()
+      : ref = fb.database().ref("pkg_firebase3/examples/database"),
+        messages = querySelector("#messages"),
+        newMessage = querySelector("#new_message"),
+        submit = querySelector('#submit'),
+        newMessageForm = querySelector("#new_message_form") {
     newMessage.disabled = false;
 
-    this.submit = querySelector('#submit');
     submit.disabled = false;
 
-    this.newMessageForm = querySelector("#new_message_form");
     this.newMessageForm.onSubmit.listen((e) async {
       e.preventDefault();
 
