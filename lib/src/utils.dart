@@ -10,22 +10,17 @@ import 'interop/js_interop.dart' as js;
 
 /// Returns Dart representation from JS Object.
 dynamic dartify(Object jsObject) {
-  if (jsObject == null ||
-      jsObject is num ||
-      jsObject is bool ||
-      jsObject is String) {
+  if (_isBasicType(jsObject)) {
     return jsObject;
   }
+
   var json = js.stringify(jsObject);
   return JSON.decode(json);
 }
 
 /// Returns JS implementation from Dart Object.
 dynamic jsify(Object dartObject) {
-  if (dartObject == null ||
-      dartObject is num ||
-      dartObject is bool ||
-      dartObject is String) {
+  if (_isBasicType(dartObject)) {
     return dartObject;
   }
 
@@ -36,6 +31,18 @@ dynamic jsify(Object dartObject) {
     throw new ArgumentError('only basic JS types are supported');
   }
   return js.parse(json);
+}
+
+/// Returns [true] if the [value] is a very basic built-in type - e.g.
+/// [null], [num], [bool] or [String]. It returns [false] in the other case.
+bool _isBasicType(value) {
+  if (value == null ||
+      value is num ||
+      value is bool ||
+      value is String) {
+    return true;
+  }
+  return false;
 }
 
 _noCustomEncodable(value) => throw "Object with toJson shouldn't work either";
