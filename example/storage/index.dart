@@ -19,14 +19,12 @@ main() async {
 }
 
 class ImageUploadApp {
-  fb.Storage storage;
-  fb.StorageReference ref;
-  InputElement _uploadImage;
+  final fb.StorageReference ref;
+  final InputElement _uploadImage;
 
-  ImageUploadApp() {
-    storage = fb.storage();
-    ref = storage.ref("images");
-    _uploadImage = querySelector("#upload_image");
+  ImageUploadApp()
+      : ref = fb.storage().ref("pkg_firebase3/examples/storage"),
+        _uploadImage = querySelector("#upload_image") {
     _uploadImage.disabled = false;
 
     _uploadImage.onChange.listen((e) async {
