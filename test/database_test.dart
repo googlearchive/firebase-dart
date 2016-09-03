@@ -367,6 +367,43 @@ void main() {
         expect(people.first["name"], "Andrew");
         expect(people.last["name"], "James");
       });
+
+      test("set with priority", () async {
+        var childRef = ref.child("people");
+        childRef.child("one").setWithPriority({"name": "Alex", "age": 27}, 1.0);
+        childRef
+            .child("two")
+            .setWithPriority({"name": "Andrew", "age": 43}, "A");
+        childRef
+            .child("three")
+            .setWithPriority({"name": "James", "age": 12}, null);
+
+        var event = await childRef.once("value");
+        var priorities = [];
+        event.snapshot.forEach((snapshot) {
+          priorities.add(snapshot.getPriority());
+        });
+
+        expect(priorities, isNotEmpty);
+        expect(priorities.contains(1.0), isTrue);
+        expect(priorities.contains("A"), isTrue);
+        expect(priorities.contains(null), isTrue);
+      });
+
+      test("set with wrong priority type", () {
+        var childRef = ref.child("people");
+
+        expect(
+            () => childRef
+                .child("one")
+                .setWithPriority({"name": "Alex", "age": 27}, {"priority": 10}),
+            throwsArgumentError);
+        expect(
+            () => childRef
+                .child("two")
+                .setWithPriority({"name": "Andrew", "age": 43}, true),
+            throwsArgumentError);
+      });
     });
   });
 }

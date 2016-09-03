@@ -131,9 +131,9 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
 
   /// Sets a priority for data at actual database location.
   ///
-  /// The [priority] must be a [String], [num] or [null].
+  /// The [priority] must be a [String], [num] or [null], or the error is thrown.
   Future setPriority(priority) =>
-      handleThenable(jsObject.setPriority(priority));
+      handleThenable(jsObject.setPriority(_validatePriority(priority)));
 
   /// Sets data [newVal] at actual database location with provided priority
   /// [newPriority].
@@ -141,9 +141,10 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   /// Like [set()] but also specifies the priority.
   ///
   /// The [newVal] must be a Dart basic type or the error is thrown.
-  /// The [newPriority] must be a [String], [num] or [null].
-  Future setWithPriority(newVal, newPriority) =>
-      handleThenable(jsObject.setWithPriority(jsify(newVal), newPriority));
+  /// The [newPriority] must be a [String], [num] or [null], or the error
+  /// is thrown.
+  Future setWithPriority(newVal, newPriority) => handleThenable(
+      jsObject.setWithPriority(jsify(newVal), _validatePriority(newPriority)));
 
   /// Atomically updates data at actual database location.
   ///
@@ -446,9 +447,9 @@ class OnDisconnect
   /// and [priority] when the client is disconnected.
   ///
   /// The [value] must be a Dart basic type or the error is thrown.
-  /// The [priority] must be a [String], [num] or [null].
+  /// The [priority] must be a [String], [num] or [null], or the error is thrown.
   Future setWithPriority(value, priority) =>
-      handleThenable(jsObject.setWithPriority(jsify(value), priority));
+      handleThenable(jsObject.setWithPriority(jsify(value), _validatePriority(priority)));
 
   /// Writes multiple [values] at actual location when the client is disconnected.
   ///
@@ -514,4 +515,12 @@ class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
   factory Transaction({bool committed, DataSnapshot snapshot}) =>
       new Transaction.fromJsObject(new database_interop.TransactionJsImpl(
           committed: committed, snapshot: snapshot.jsObject));
+}
+
+/// Validates priority value. The [value] must be a [String], [num] or [null].
+dynamic _validatePriority(value) {
+  if (value == null || value is num || value is String) {
+    return value;
+  }
+  throw new ArgumentError("Priority must be a [String], [num] or [null]");
 }

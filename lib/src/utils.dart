@@ -28,7 +28,7 @@ dynamic jsify(Object dartObject) {
   try {
     json = JSON.encode(dartObject, toEncodable: _noCustomEncodable);
   } on JsonUnsupportedObjectError {
-    throw new ArgumentError('only basic JS types are supported');
+    throw new ArgumentError("Only basic JS types are supported");
   }
   return js.parse(json);
 }
