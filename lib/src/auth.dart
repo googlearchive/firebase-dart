@@ -176,29 +176,29 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   }
 
   var _onAuthUnsubscribe;
-  Stream<AuthEvent> _onAuthStateChanged;
+  StreamController<AuthEvent> _changeController;
   Stream<AuthEvent> get onAuthStateChanged {
-    if (_onAuthStateChanged == null) {
-      StreamController<AuthEvent> streamController;
-
-      var callbackWrap = allowInterop((firebase_interop.UserJsImpl user) {
-        streamController.add(
+    if (_changeController == null) {
+      var nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
+        _changeController.add(
             new AuthEvent((user != null) ? new User.fromJsObject(user) : null));
       });
 
+      var errorWrapper = allowInterop((e) => _changeController.addError(e));
+
       void startListen() {
-        _onAuthUnsubscribe = jsObject.onAuthStateChanged(callbackWrap);
+        _onAuthUnsubscribe =
+            jsObject.onAuthStateChanged(nextWrapper, errorWrapper);
       }
 
       void stopListen() {
         _onAuthUnsubscribe();
       }
 
-      streamController = new StreamController<AuthEvent>.broadcast(
+      _changeController = new StreamController<AuthEvent>.broadcast(
           onListen: startListen, onCancel: stopListen, sync: true);
-      _onAuthStateChanged = streamController.stream;
     }
-    return _onAuthStateChanged;
+    return _changeController.stream;
   }
 
   Auth.fromJsObject(AuthJsImpl jsObject) : super.fromJsObject(jsObject);
