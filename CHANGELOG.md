@@ -1,3 +1,10 @@
+## 0.2.1
+
+- Input params validation for methods which work with JS types.
+- Fixes in the lib.
+- More documentation and tests.
+- Readme update with information on how to run tests and examples.
+
 ## 0.2.0
 
 - *BREAKING* Exposing only one top-level library: `firebase.dart`.
