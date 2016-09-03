@@ -133,7 +133,7 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   ///
   /// The [priority] must be a [String], [num] or [null], or the error is thrown.
   Future setPriority(priority) =>
-      handleThenable(jsObject.setPriority(_validatePriority(priority)));
+      handleThenable(jsObject.setPriority(priority));
 
   /// Sets data [newVal] at actual database location with provided priority
   /// [newPriority].
@@ -143,8 +143,8 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   /// The [newVal] must be a Dart basic type or the error is thrown.
   /// The [newPriority] must be a [String], [num] or [null], or the error
   /// is thrown.
-  Future setWithPriority(newVal, newPriority) => handleThenable(
-      jsObject.setWithPriority(jsify(newVal), _validatePriority(newPriority)));
+  Future setWithPriority(newVal, newPriority) =>
+      handleThenable(jsObject.setWithPriority(jsify(newVal), newPriority));
 
   /// Atomically updates data at actual database location.
   ///
@@ -279,14 +279,16 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   /// Returns a Query with the ending point [value]. The ending point
   /// is inclusive.
   ///
-  /// The [value] must be a [num], [String], [bool], or [null].
+  /// The [value] must be a [num], [String], [bool], or [null], or the error
+  /// is thrown.
   /// The optional [key] can be used to further limit the range of the query.
   Query endAt(value, [String key]) => new Query.fromJsObject(
       key == null ? jsObject.endAt(value) : jsObject.endAt(value, key));
 
   /// Returns a Query which includes children which match the specified [value].
   ///
-  /// The [value] must be a [num], [String], [bool], or [null].
+  /// The [value] must be a [num], [String], [bool], or [null], or the error
+  /// is thrown.
   /// The optional [key] can be used to further limit the range of the query.
   Query equalTo(value, [String key]) => new Query.fromJsObject(
       key == null ? jsObject.equalTo(value) : jsObject.equalTo(value, key));
@@ -352,7 +354,8 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   /// Returns a Query with the starting point [value]. The starting point
   /// is inclusive.
   ///
-  /// The [value] must be a [num], [String], [bool], or [null].
+  /// The [value] must be a [num], [String], [bool], or [null], or the error
+  /// is thrown.
   /// The optional [key] can be used to further limit the range of the query.
   Query startAt(value, [String key]) => new Query.fromJsObject(
       key == null ? jsObject.startAt(value) : jsObject.startAt(value, key));
@@ -449,7 +452,7 @@ class OnDisconnect
   /// The [value] must be a Dart basic type or the error is thrown.
   /// The [priority] must be a [String], [num] or [null], or the error is thrown.
   Future setWithPriority(value, priority) =>
-      handleThenable(jsObject.setWithPriority(jsify(value), _validatePriority(priority)));
+      handleThenable(jsObject.setWithPriority(jsify(value), priority));
 
   /// Writes multiple [values] at actual location when the client is disconnected.
   ///
@@ -515,12 +518,4 @@ class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
   factory Transaction({bool committed, DataSnapshot snapshot}) =>
       new Transaction.fromJsObject(new database_interop.TransactionJsImpl(
           committed: committed, snapshot: snapshot.jsObject));
-}
-
-/// Validates priority value. The [value] must be a [String], [num] or [null].
-dynamic _validatePriority(value) {
-  if (value == null || value is num || value is String) {
-    return value;
-  }
-  throw new ArgumentError("Priority must be a [String], [num] or [null]");
 }

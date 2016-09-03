@@ -225,6 +225,13 @@ void main() {
         expect(flowers.contains("sunflower"), isFalse);
       });
 
+      test("endAt with wrong parameter", () {
+        var childRef = ref.child("flowers");
+        childRef.push({"name": "rose"});
+
+        expect(() => childRef.orderByValue().endAt({"name": "rose"}), throws);
+      });
+
       test("startAt", () async {
         var childRef = ref.child("flowers");
         childRef.push("rose");
@@ -243,6 +250,14 @@ void main() {
         expect(flowers.contains("chicory"), isFalse);
       });
 
+      test("startAt with wrong parameter", () {
+        var childRef = ref.child("flowers");
+        childRef.push({"name": "chicory"});
+
+        expect(
+            () => childRef.orderByValue().startAt({"name": "chicory"}), throws);
+      });
+
       test("equalTo", () async {
         var childRef = ref.child("flowers");
         childRef.push("rose");
@@ -257,6 +272,14 @@ void main() {
         expect(flowers, isNotNull);
         expect(flowers.length, 1);
         expect(flowers.first, "rose");
+      });
+
+      test("equalTo with wrong parameter", () async {
+        var childRef = ref.child("flowers");
+        childRef.push({"name": "sunflower"});
+
+        expect(
+            () => childRef.orderByValue().equalTo({"name": "sunflower"}), throws);
       });
 
       test("limitToFirst", () async {
@@ -397,12 +420,12 @@ void main() {
             () => childRef
                 .child("one")
                 .setWithPriority({"name": "Alex", "age": 27}, {"priority": 10}),
-            throwsArgumentError);
+            throws);
         expect(
             () => childRef
                 .child("two")
                 .setWithPriority({"name": "Andrew", "age": 43}, true),
-            throwsArgumentError);
+            throws);
       });
     });
   });
