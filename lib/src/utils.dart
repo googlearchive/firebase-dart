@@ -10,18 +10,35 @@ import 'interop/js_interop.dart' as js;
 
 /// Returns Dart representation from JS Object.
 dynamic dartify(Object jsObject) {
-  String json = js.stringify(jsObject);
-  return json == null ? null : JSON.decode(json);
+  if (jsObject == null ||
+      jsObject is num ||
+      jsObject is bool ||
+      jsObject is String) {
+    return jsObject;
+  }
+  var json = js.stringify(jsObject);
+  return JSON.decode(json);
 }
 
 /// Returns JS implementation from Dart Object.
 dynamic jsify(Object dartObject) {
-  if (dartObject is Map || dartObject is Iterable) {
-    String json = JSON.encode(dartObject);
-    return js.parse(json);
+  if (dartObject == null ||
+      dartObject is num ||
+      dartObject is bool ||
+      dartObject is String) {
+    return dartObject;
   }
-  return dartObject;
+
+  Object json;
+  try {
+    json = JSON.encode(dartObject, toEncodable: _noCustomEncodable);
+  } on JsonUnsupportedObjectError {
+    throw new ArgumentError('only basic JS types are supported');
+  }
+  return js.parse(json);
 }
+
+_noCustomEncodable(value) => throw "Object with toJson shouldn't work either";
 
 Future/*<T>*/ handleThenable/*<T>*/(ThenableJsImpl thenable) {
   var completer = new Completer/*<T>*/();
