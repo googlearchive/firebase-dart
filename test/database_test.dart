@@ -59,7 +59,7 @@ void main() {
         key = null;
       });
 
-      test('remove', () async {
+      test("remove", () async {
         var eventFuture = ref.onValue.first;
 
         await ref.remove();
@@ -104,7 +104,11 @@ void main() {
         expect(event.snapshot.val()["text"], "ahoj");
       });
 
-      test('transaction', () async {
+      test("wrong value push", () {
+        expect(() => ref.push(new _TestClass()), throwsArgumentError);
+      });
+
+      test("transaction", () async {
         var childRef = ref.child("todos");
         childRef.set("Cooking");
 
@@ -366,3 +370,5 @@ void main() {
     });
   });
 }
+
+class _TestClass {}
