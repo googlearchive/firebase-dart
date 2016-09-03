@@ -105,7 +105,7 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
 
   /// Pushes provided [value] to the actual location.
   ///
-  /// The [value] must be a Dart [Map], [Iterable] or primitive type.
+  /// The [value] must be a Dart basic type or the error is thrown.
   ///
   /// If the [value] is not provided, no data is written to the database
   /// but the [ThenableReference] is still returned and can be used for later
@@ -126,10 +126,12 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   /// Sets data at actual database location to provided [value].
   /// Overwrites any existing data at actual location and all child locations.
   ///
-  /// The [value] must be a Dart [Map], [Iterable] or primitive type.
+  /// The [value] must be a Dart basic type or the error is thrown.
   Future set(value) => handleThenable(jsObject.set(jsify(value)));
 
   /// Sets a priority for data at actual database location.
+  ///
+  /// The [priority] must be a [String], [num] or [null].
   Future setPriority(priority) =>
       handleThenable(jsObject.setPriority(priority));
 
@@ -137,6 +139,9 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   /// [newPriority].
   ///
   /// Like [set()] but also specifies the priority.
+  ///
+  /// The [newVal] must be a Dart basic type or the error is thrown.
+  /// The [newPriority] must be a [String], [num] or [null].
   Future setWithPriority(newVal, newPriority) =>
       handleThenable(jsObject.setWithPriority(jsify(newVal), newPriority));
 
@@ -156,8 +161,8 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   ///     var event = await ref.once("value");
   ///     print(event.snapshot.val()); //prints 4
   ///
-  /// The returned value from [transactionUpdate] function must be
-  /// a Dart [Map], [Iterable] or primitive type.
+  /// The returned value from [transactionUpdate] function must be a Dart basic
+  /// type or the error is thrown.
   ///
   /// Set [applyLocally] to [false] to not see intermediate states.
   Future<Transaction> transaction(Func1 transactionUpdate,
@@ -185,7 +190,7 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
 
   /// Updates data with [values] at actual database location.
   ///
-  /// The [values] must be a Dart [Map], [Iterable] or primitive type.
+  /// The [values] must be a Dart basic type or the error is thrown.
   Future update(values) => handleThenable(jsObject.update(jsify(values)));
 }
 
@@ -272,11 +277,15 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
 
   /// Returns a Query with the ending point [value]. The ending point
   /// is inclusive.
+  ///
+  /// The [value] must be a [num], [String], [bool], or [null].
   /// The optional [key] can be used to further limit the range of the query.
   Query endAt(value, [String key]) => new Query.fromJsObject(
       key == null ? jsObject.endAt(value) : jsObject.endAt(value, key));
 
   /// Returns a Query which includes children which match the specified [value].
+  ///
+  /// The [value] must be a [num], [String], [bool], or [null].
   /// The optional [key] can be used to further limit the range of the query.
   Query equalTo(value, [String key]) => new Query.fromJsObject(
       key == null ? jsObject.equalTo(value) : jsObject.equalTo(value, key));
@@ -341,6 +350,8 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
 
   /// Returns a Query with the starting point [value]. The starting point
   /// is inclusive.
+  ///
+  /// The [value] must be a [num], [String], [bool], or [null].
   /// The optional [key] can be used to further limit the range of the query.
   Query startAt(value, [String key]) => new Query.fromJsObject(
       key == null ? jsObject.startAt(value) : jsObject.startAt(value, key));
@@ -427,14 +438,21 @@ class OnDisconnect
 
   /// Ensures the data for actual location is set to the specified [value]
   /// when the client is disconnected.
+  ///
+  /// The [value] must be a Dart basic type or the error is thrown.
   Future set(value) => handleThenable(jsObject.set(jsify(value)));
 
   /// Ensures the data for actual location is set to the specified [value]
   /// and [priority] when the client is disconnected.
+  ///
+  /// The [value] must be a Dart basic type or the error is thrown.
+  /// The [priority] must be a [String], [num] or [null].
   Future setWithPriority(value, priority) =>
       handleThenable(jsObject.setWithPriority(jsify(value), priority));
 
   /// Writes multiple [values] at actual location when the client is disconnected.
+  ///
+  /// The [values] must be a Dart basic type or the error is thrown.
   Future update(values) => handleThenable(jsObject.update(jsify(values)));
 }
 
