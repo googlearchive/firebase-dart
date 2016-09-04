@@ -68,6 +68,7 @@ abstract class QueryJsImpl {
   external QueryJsImpl orderByPriority();
   external QueryJsImpl orderByValue();
   external QueryJsImpl startAt(value, [String key]);
+  @override
   external String toString();
 }
 
@@ -100,7 +101,9 @@ abstract class OnDisconnectJsImpl {
 @JS('ThenableReference')
 abstract class ThenableReferenceJsImpl extends ReferenceJsImpl
     implements ThenableJsImpl {
+  @override
   external ThenableJsImpl JS$catch([Func1 onReject]);
+  @override
   external ThenableJsImpl then([Func1 onResolve, Func1 onReject]);
 }
 

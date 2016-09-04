@@ -42,6 +42,7 @@ abstract class ReferenceJsImpl {
   external UploadTaskJsImpl put(blob, [UploadMetadataJsImpl metadata]);
   external UploadTaskJsImpl putString(String value,
       [String format, UploadMetadataJsImpl metadata]);
+  @override
   external String toString();
   external PromiseJsImpl<FullMetadataJsImpl> updateMetadata(
       SettableMetadataJsImpl metadata);
@@ -96,7 +97,9 @@ abstract class UploadTaskJsImpl implements ThenableJsImpl {
       [nextOrObserver, Func1 error, Func0 complete]);
   external bool pause();
   external bool resume();
+  @override
   external ThenableJsImpl JS$catch([Func1 onReject]);
+  @override
   external ThenableJsImpl then([Func1 onResolve, Func1 onReject]);
 }
 

@@ -113,7 +113,7 @@ void main() {
         childRef.set("Cooking");
 
         await childRef
-            .transaction((currentValue) => "${currentValue} delicious dinner!");
+            .transaction((currentValue) => "$currentValue delicious dinner!");
 
         var event = await childRef.once("value");
         var val = event.snapshot.val();

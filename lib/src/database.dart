@@ -361,6 +361,7 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
       key == null ? jsObject.startAt(value) : jsObject.startAt(value, key));
 
   /// Returns a String representation of Query object.
+  @override
   String toString() => jsObject.toString();
 }
 
@@ -510,12 +511,12 @@ class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
     jsObject.snapshot = s.jsObject;
   }
 
-  /// Creates a new Transaction from [jsObject].
-  Transaction.fromJsObject(database_interop.TransactionJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-
   /// Creates a new Transaction with [committed] and [snapshot] properties.
   factory Transaction({bool committed, DataSnapshot snapshot}) =>
       new Transaction.fromJsObject(new database_interop.TransactionJsImpl(
           committed: committed, snapshot: snapshot.jsObject));
+
+  /// Creates a new Transaction from [jsObject].
+  Transaction.fromJsObject(database_interop.TransactionJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 }
