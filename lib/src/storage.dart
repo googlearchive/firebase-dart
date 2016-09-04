@@ -132,6 +132,7 @@ class StorageReference
     return new UploadTask.fromJsObject(taskImpl);
   }
 
+  @override
   String toString() => jsObject.toString();
 
   Future<FullMetadata> updateMetadata(SettableMetadata metadata) =>
@@ -340,7 +341,7 @@ class UploadTaskSnapshot
       case "error":
         return TaskState.ERROR;
       default:
-        throw 'Unknown state "${jsObject.state}" please file a bug.';
+        throw new UnsupportedError('Unknown state "${jsObject.state}" please file a bug.');
     }
   }
 

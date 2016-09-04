@@ -86,10 +86,10 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   Future delete() => handleThenable(jsObject.delete());
 
   /// Returns a JWT token used to identify the user to a Firebase service.
-  /// It forces refresh regardless of token expiration if [opt_forceRefresh]
+  /// It forces refresh regardless of token expiration if [forceRefresh]
   /// parameter is [true].
-  Future<String> getToken([bool opt_forceRefresh = false]) =>
-      handleThenable(jsObject.getToken(opt_forceRefresh));
+  Future<String> getToken([bool forceRefresh = false]) =>
+      handleThenable(jsObject.getToken(forceRefresh));
 
   /// Links the user account with the given [credential].
   Future<User> link(AuthCredential credential) => handleThenableWithMapper(
@@ -287,10 +287,10 @@ class UserCredential extends JsObjectWrapper<UserCredentialJsImpl> {
     jsObject.credential = c;
   }
 
-  UserCredential.fromJsObject(UserCredentialJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-
   factory UserCredential({User user, AuthCredential credential}) =>
       new UserCredential.fromJsObject(new UserCredentialJsImpl(
           user: user.jsObject, credential: credential));
+
+  UserCredential.fromJsObject(UserCredentialJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 }

@@ -12,7 +12,7 @@ export 'interop/firebase_interop.dart' show SDK_VERSION;
 List<App> get apps =>
     firebase.apps.map((jsApp) => new App.fromJsObject(jsApp)).toList();
 
-const String _DEFAULT_APP_NAME = "[DEFAULT]";
+const String _defaultAppName = "[DEFAULT]";
 
 /// Create (and initialize) a Firebase App.
 ///
@@ -23,7 +23,7 @@ App initializeApp(
     String databaseURL,
     String storageBucket,
     String name}) {
-  name ??= _DEFAULT_APP_NAME;
+  name ??= _defaultAppName;
 
   return new App.fromJsObject(firebase.initializeApp(
       new firebase.FirebaseOptions(
