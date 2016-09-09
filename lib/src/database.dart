@@ -476,7 +476,9 @@ class ThenableReference
 
   /// A Future property.
   Future<DatabaseReference> get future => _future ??= handleThenableWithMapper(
-      jsObject, (val) => new DatabaseReference.fromJsObject(val));
+      jsObject,
+      (database_interop.ReferenceJsImpl val) =>
+          new DatabaseReference.fromJsObject(val));
 }
 
 /// A structure used in [DatabaseReference.transaction].
