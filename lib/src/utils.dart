@@ -42,7 +42,8 @@ bool _isBasicType(value) {
   return false;
 }
 
-_noCustomEncodable(value) => throw new UnsupportedError("Object with toJson shouldn't work either");
+_noCustomEncodable(value) =>
+    throw new UnsupportedError("Object with toJson shouldn't work either");
 
 Future/*<T>*/ handleThenable/*<T>*/(ThenableJsImpl thenable) {
   var completer = new Completer/*<T>*/();

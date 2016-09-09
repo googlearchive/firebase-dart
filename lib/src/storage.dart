@@ -341,7 +341,8 @@ class UploadTaskSnapshot
       case "error":
         return TaskState.ERROR;
       default:
-        throw new UnsupportedError('Unknown state "${jsObject.state}" please file a bug.');
+        throw new UnsupportedError(
+            'Unknown state "${jsObject.state}" please file a bug.');
     }
   }
 

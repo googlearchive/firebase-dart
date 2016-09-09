@@ -28,7 +28,8 @@ Future config() async {
     var response =
         await client.get('packages/firebase3/src/assets/config.json');
     if (response.statusCode > 399) {
-      throw new StateError("Problem with server: ${response.statusCode} ${response.body}");
+      throw new StateError(
+          "Problem with server: ${response.statusCode} ${response.body}");
     }
 
     var jsonString = response.body;
