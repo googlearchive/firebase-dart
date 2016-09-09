@@ -278,8 +278,8 @@ void main() {
         var childRef = ref.child("flowers");
         childRef.push({"name": "sunflower"});
 
-        expect(
-            () => childRef.orderByValue().equalTo({"name": "sunflower"}), throws);
+        expect(() => childRef.orderByValue().equalTo({"name": "sunflower"}),
+            throws);
       });
 
       test("limitToFirst", () async {
