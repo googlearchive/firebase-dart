@@ -22,3 +22,4 @@ doc/api/
 *.iws
 
 lib/src/assets/config.json
+lib/src/assets/service_account.json
