@@ -282,6 +282,24 @@ void main() {
             throws);
       });
 
+      test("isEqual", () async {
+        var childRef = ref.child("flowers");
+        childRef.push("rose");
+        childRef.push("tulip");
+        childRef.push("chicory");
+        childRef.push("sunflower");
+
+        expect(ref.isEqual(childRef), isFalse);
+        expect(ref.child("flowers").isEqual(childRef), isTrue);
+        expect(childRef.parent.isEqual(ref), isTrue);
+
+        var childQuery = childRef.limitToFirst(2);
+        expect(childRef.limitToFirst(2).isEqual(childQuery), isTrue);
+        expect(childRef.limitToLast(2).isEqual(childQuery), isFalse);
+        expect(childRef.orderByValue().limitToFirst(2).isEqual(childQuery),
+            isFalse);
+      });
+
       test("limitToFirst", () async {
         var childRef = ref.child("flowers");
         childRef.push("rose");

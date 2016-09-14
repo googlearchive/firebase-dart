@@ -293,6 +293,16 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   Query equalTo(value, [String key]) => new Query.fromJsObject(
       key == null ? jsObject.equalTo(value) : jsObject.equalTo(value, key));
 
+  /// Returns [true] if the current and [other] queries are equal - they
+  /// represent the exactly same location, have the same query parameters,
+  /// and are from the same instance of [App].
+  /// Equivalent queries share the same sort order, limits, starting
+  /// and ending points.
+  ///
+  /// Two [DatabaseReference] objects are equivalent if they represent the same
+  /// location and are from the same instance of [App].
+  bool isEqual(Query other) => jsObject.isEqual(other.jsObject);
+
   /// Returns a new Query limited to the first specific number of children
   /// provided by [limit].
   Query limitToFirst(int limit) =>

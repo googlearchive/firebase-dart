@@ -56,6 +56,7 @@ abstract class QueryJsImpl {
   external void set ref(ReferenceJsImpl r);
   external QueryJsImpl endAt(value, [String key]);
   external QueryJsImpl equalTo(value, [String key]);
+  external bool isEqual(QueryJsImpl other);
   external QueryJsImpl limitToFirst(int limit);
   external QueryJsImpl limitToLast(int limit);
   external void off([String eventType, Func2Opt1 callback, context]);
