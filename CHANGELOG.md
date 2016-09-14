@@ -1,3 +1,7 @@
+## 0.2.2
+
+- Update to Firebase 3.4.0
+
 ## 0.2.1
 
 - Input params validation for methods which work with JS types.
