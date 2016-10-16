@@ -503,7 +503,7 @@ class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
 
   DataSnapshot _snapshot;
 
-  /// Returns DataSnapshot.
+  /// Returns the DataSnapshot.
   DataSnapshot get snapshot {
     if (jsObject.snapshot != null) {
       if (_snapshot != null) {
@@ -517,7 +517,7 @@ class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
     return _snapshot;
   }
 
-  /// Sets DataSnapshot to [s].
+  /// Sets the DataSnapshot to [s].
   void set snapshot(DataSnapshot s) {
     _snapshot = s;
     jsObject.snapshot = s.jsObject;
