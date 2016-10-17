@@ -1,6 +1,7 @@
 ## 0.2.2
 
 - Update to Firebase 3.4.0.
+- Added `isEqual()` method for `Query` class.
 - More docs.
 
 ## 0.2.1
