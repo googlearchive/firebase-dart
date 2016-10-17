@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Update to Firebase 3.5.0.
+
 ## 0.2.2
 
 - Update to Firebase 3.4.0.
