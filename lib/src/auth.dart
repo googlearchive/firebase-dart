@@ -9,10 +9,7 @@ import 'js.dart';
 import 'utils.dart';
 
 export 'interop/auth_interop.dart'
-    show
-        ActionCodeInfo,
-        ActionCodeEmail,
-        AuthCredential;
+    show ActionCodeInfo, ActionCodeEmail, AuthCredential;
 export 'interop/firebase_interop.dart' show UserProfile;
 
 /// User profile information, visible only to the Firebase project's apps.
@@ -295,13 +292,13 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
 /// Represents an auth provider.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.AuthProvider>.
-abstract class AuthProvider<T extends AuthProviderJsImpl> extends JsObjectWrapper<T> {
+abstract class AuthProvider<T extends AuthProviderJsImpl>
+    extends JsObjectWrapper<T> {
   /// Provider id.
   String get providerId => jsObject.providerId;
 
   /// Creates a new AuthProvider from a [jsObject].
-  AuthProvider.fromJsObject(T jsObject)
-      : super.fromJsObject(jsObject);
+  AuthProvider.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
 /// E-mail and password auth provider implementation.
