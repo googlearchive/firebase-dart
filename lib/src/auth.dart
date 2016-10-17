@@ -14,9 +14,6 @@ export 'interop/auth_interop.dart'
         ActionCodeEmail,
         AuthCredential,
         EmailAuthProvider,
-        FacebookAuthProvider,
-        GithubAuthProvider,
-        GoogleAuthProvider,
         TwitterAuthProvider;
 export 'interop/firebase_interop.dart' show UserProfile;
 
@@ -297,10 +294,115 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
       handleThenable(jsObject.verifyPasswordResetCode(code));
 }
 
+/// Facebook auth provider.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.FacebookAuthProvider>.
+class FacebookAuthProvider extends JsObjectWrapper<FacebookAuthProviderJsImpl> {
+  static String PROVIDER_ID = FacebookAuthProviderJsImpl.PROVIDER_ID;
+
+  /// Provider id.
+  String get providerId => jsObject.providerId;
+
+  /// Creates a new FacebookAuthProvider from a [jsObject].
+  FacebookAuthProvider.fromJsObject(FacebookAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+
+  /// Creates a new FacebookAuthProvider.
+  factory FacebookAuthProvider() =>
+      new FacebookAuthProvider.fromJsObject(new FacebookAuthProviderJsImpl());
+
+  void addScope(String scope) => jsObject.addScope(scope);
+
+  /// Sets the OAuth custom parameters to pass in a Facebook OAuth request
+  /// for popup and redirect sign-in operations.
+  /// Valid parameters include 'auth_type', 'display' and 'locale'.
+  /// For a detailed list, check the Facebook documentation.
+  /// Reserved required OAuth 2.0 parameters such as 'client_id',
+  /// 'redirect_uri', 'scope', 'response_type' and 'state' are not allowed
+  /// and ignored.
+  void setCustomParameters(Map<String, dynamic> customOAuthParameters) =>
+      jsObject.setCustomParameters(jsify(customOAuthParameters));
+
+  /// Creates a credential for Facebook.
+  static AuthCredential credential(String token) =>
+      FacebookAuthProviderJsImpl.credential(token);
+}
+
+/// Github auth provider.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.GithubAuthProvider>.
+class GithubAuthProvider extends JsObjectWrapper<GithubAuthProviderJsImpl> {
+  static String PROVIDER_ID = GithubAuthProviderJsImpl.PROVIDER_ID;
+
+  /// Provider id.
+  String get providerId => jsObject.providerId;
+
+  /// Creates a new GithubAuthProvider from a [jsObject].
+  GithubAuthProvider.fromJsObject(GithubAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+
+  /// Creates a new GithubAuthProvider.
+  factory GithubAuthProvider() =>
+      new GithubAuthProvider.fromJsObject(new GithubAuthProviderJsImpl());
+
+  void addScope(String scope) => jsObject.addScope(scope);
+
+  /// Sets the OAuth custom parameters to pass in a GitHub OAuth request
+  /// for popup and redirect sign-in operations.
+  /// Valid parameters include 'allow_signup'.
+  /// For a detailed list, check the GitHub documentation.
+  /// Reserved required OAuth 2.0 parameters such as 'client_id',
+  /// 'redirect_uri', 'scope', 'response_type' and 'state'
+  /// are not allowed and ignored.
+  void setCustomParameters(Map<String, dynamic> customOAuthParameters) =>
+      jsObject.setCustomParameters(jsify(customOAuthParameters));
+
+  /// Creates a credential for Github.
+  static AuthCredential credential(String token) =>
+      GithubAuthProviderJsImpl.credential(token);
+}
+
+/// Google auth provider.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.GoogleAuthProvider>.
+class GoogleAuthProvider extends JsObjectWrapper<GoogleAuthProviderJsImpl> {
+  static String PROVIDER_ID = GoogleAuthProviderJsImpl.PROVIDER_ID;
+
+  /// Provider id.
+  String get providerId => jsObject.providerId;
+
+  /// Creates a new GoogleAuthProvider from a [jsObject].
+  GoogleAuthProvider.fromJsObject(GoogleAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+
+  /// Creates a new GoogleAuthProvider.
+  factory GoogleAuthProvider() =>
+      new GoogleAuthProvider.fromJsObject(new GoogleAuthProviderJsImpl());
+
+  void addScope(String scope) => jsObject.addScope(scope);
+
+  /// Sets the OAuth custom parameters to pass in a Google OAuth request
+  /// for popup and redirect sign-in operations.
+  /// Valid parameters include 'hd', 'hl', 'include_granted_scopes',
+  /// 'login_hint' and 'prompt'.
+  /// For a detailed list, check the Google documentation.
+  /// Reserved required OAuth 2.0 parameters such as 'client_id',
+  /// 'redirect_uri', 'scope', 'response_type' and 'state'
+  /// are not allowed and ignored.
+  void setCustomParameters(Map<String, dynamic> customOAuthParameters) =>
+      jsObject.setCustomParameters(jsify(customOAuthParameters));
+
+  /// Creates a credential for Google.
+  /// At least one of [idToken] and [accessToken] is required.
+  static AuthCredential credential([String idToken, String accessToken]) =>
+      GoogleAuthProviderJsImpl.credential(idToken, accessToken);
+}
+
 /// Event propagated in Stream controllers when an auth state changes.
 class AuthEvent {
   /// The user.
   final User user;
+
   /// Creates a new AuthEvent with user.
   AuthEvent(this.user);
 }
@@ -308,6 +410,7 @@ class AuthEvent {
 /// A structure containing [User] and [AuthCredential].
 class UserCredential extends JsObjectWrapper<UserCredentialJsImpl> {
   User _user;
+
   /// Returns the user.
   User get user {
     if (jsObject.user != null) {
