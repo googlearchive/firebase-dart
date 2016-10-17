@@ -14,7 +14,8 @@ List<App> get apps =>
 
 const String _defaultAppName = "[DEFAULT]";
 
-/// Create (and initialize) a Firebase App.
+/// Creates (and initializes) a Firebase App with API key, auth domain,
+/// database URL and storage bucket.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase#.initializeApp>.
 App initializeApp(
@@ -36,7 +37,7 @@ App initializeApp(
 
 App _app;
 
-/// Retrieve an instance of a FirebaseApp.
+/// Retrieves an instance of an [App].
 ///
 /// With no arguments, this returns the default App. With a single
 /// string argument, it returns the named App.
@@ -58,7 +59,7 @@ App app([String name]) {
 
 Auth _auth;
 
-/// Gets the Auth object for the default App or a given App.
+/// Gets the [Auth] object for the default App or a given App.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth>.
 Auth auth([App app]) {
@@ -74,9 +75,9 @@ Auth auth([App app]) {
 
 Database _database;
 
-/// Access the Database service for the default App (or a given app).
+/// Accesses the [Database] service for the default App or a given app.
 ///
-/// Firebase [Database] is also a namespace that can be used to access
+/// The database is also a namespace that can be used to access
 /// global constants and methods associated with the database service.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database>.
@@ -94,7 +95,8 @@ Database database([App app]) {
 
 Storage _storage;
 
-/// The namespace for all Firebase Storage functionality.
+/// The namespace for all the [Storage] functionality.
+///
 /// The returned service is initialized with a particular app which contains
 /// the project's storage location, or uses the default app if none is provided.
 ///

@@ -33,7 +33,7 @@ class Database extends JsObjectWrapper<database_interop.DatabaseJsImpl> {
     return _app;
   }
 
-  /// Creates a new Database from [jsObject].
+  /// Creates a new Database from a [jsObject].
   Database.fromJsObject(database_interop.DatabaseJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
@@ -61,7 +61,8 @@ class Database extends JsObjectWrapper<database_interop.DatabaseJsImpl> {
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.Reference>.
 class DatabaseReference<T extends database_interop.ReferenceJsImpl>
     extends Query<T> {
-  /// The last part of the current path. [null] in case of root DatabaseReference.
+  /// The last part of the current path.
+  /// It is [null] in case of root DatabaseReference.
   String get key => jsObject.key;
 
   DatabaseReference _parent;
@@ -92,7 +93,7 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
     return _root;
   }
 
-  /// Creates a new DatabaseReference from [jsObject].
+  /// Creates a new DatabaseReference from a [jsObject].
   DatabaseReference.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 
   /// Returns child DatabaseReference from provided relative [path].
@@ -273,7 +274,7 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   Stream<QueryEvent> get onChildMoved =>
       _onChildMoved ??= _createStream("child_moved");
 
-  /// Creates a new Query from [jsObject].
+  /// Creates a new Query from a [jsObject].
   Query.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 
   /// Returns a Query with the ending point [value]. The ending point
@@ -395,7 +396,7 @@ class DataSnapshot
     return _ref;
   }
 
-  /// Creates a new DataSnapshot from [jsObject].
+  /// Creates a new DataSnapshot from a [jsObject].
   DataSnapshot.fromJsObject(database_interop.DataSnapshotJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
@@ -479,7 +480,7 @@ class ThenableReference
     extends DatabaseReference<database_interop.ThenableReferenceJsImpl> {
   Future<DatabaseReference> _future;
 
-  /// Creates a new ThenableReference from [jsObject].
+  /// Creates a new ThenableReference from a [jsObject].
   ThenableReference.fromJsObject(
       database_interop.ThenableReferenceJsImpl jsObject)
       : super.fromJsObject(jsObject);
@@ -523,12 +524,13 @@ class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
     jsObject.snapshot = s.jsObject;
   }
 
-  /// Creates a new Transaction with [committed] and [snapshot] properties.
+  /// Creates a new Transaction with optional [committed] and [snapshot]
+  /// properties.
   factory Transaction({bool committed, DataSnapshot snapshot}) =>
       new Transaction.fromJsObject(new database_interop.TransactionJsImpl(
           committed: committed, snapshot: snapshot.jsObject));
 
-  /// Creates a new Transaction from [jsObject].
+  /// Creates a new Transaction from a [jsObject].
   Transaction.fromJsObject(database_interop.TransactionJsImpl jsObject)
       : super.fromJsObject(jsObject);
 }

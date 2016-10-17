@@ -21,7 +21,7 @@ class App extends JsObjectWrapper<AppJsImpl> {
   /// Options used during [firebase.initializeApp()].
   FirebaseOptions get options => jsObject.options;
 
-  /// Creates a new App from [jsObject].
+  /// Creates a new App from a [jsObject].
   App.fromJsObject(AppJsImpl jsObject) : super.fromJsObject(jsObject);
 
   /// Returns [Auth] service.

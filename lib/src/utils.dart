@@ -18,7 +18,7 @@ dynamic dartify(Object jsObject) {
   return JSON.decode(json);
 }
 
-/// Returns JS implementation from Dart Object.
+/// Returns the JS implementation from Dart Object.
 dynamic jsify(Object dartObject) {
   if (_isBasicType(dartObject)) {
     return dartObject;
@@ -33,8 +33,8 @@ dynamic jsify(Object dartObject) {
   return js.parse(json);
 }
 
-/// Returns [true] if the [value] is a very basic built-in type - e.g.
-/// [null], [num], [bool] or [String]. It returns [false] in the other case.
+/// Returns [:true:] if the [value] is a very basic built-in type - e.g.
+/// [null], [num], [bool] or [String]. It returns [:false:] in the other case.
 bool _isBasicType(value) {
   if (value == null || value is num || value is bool || value is String) {
     return true;
@@ -45,6 +45,7 @@ bool _isBasicType(value) {
 _noCustomEncodable(value) =>
     throw new UnsupportedError("Object with toJson shouldn't work either");
 
+/// Handles the [thenable] object.
 Future/*<T>*/ handleThenable/*<T>*/(ThenableJsImpl thenable) {
   var completer = new Completer/*<T>*/();
 
@@ -54,6 +55,7 @@ Future/*<T>*/ handleThenable/*<T>*/(ThenableJsImpl thenable) {
   return completer.future;
 }
 
+/// Handles the [thenable] object with provided [mapper] function.
 Future/*<T>*/ handleThenableWithMapper/*<T>*/(
     ThenableJsImpl thenable, Func1/*<dynamic,T>*/ mapper) {
   var completer = new Completer/*<T>*/();
@@ -65,4 +67,5 @@ Future/*<T>*/ handleThenableWithMapper/*<T>*/(
   return completer.future;
 }
 
+/// Resolves error.
 VoidFunc1 resolveError(Completer c) => allowInterop(c.completeError);

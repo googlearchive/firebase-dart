@@ -55,7 +55,7 @@ class UserInfo<T extends firebase_interop.UserInfoJsImpl>
     jsObject.uid = s;
   }
 
-  /// Creates a new UserInfo from [jsObject].
+  /// Creates a new UserInfo from a [jsObject].
   UserInfo.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 }
 
@@ -78,7 +78,7 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   /// Refresh token for the user account.
   String get refreshToken => jsObject.refreshToken;
 
-  /// Creates a new User from [jsObject].
+  /// Creates a new User from a [jsObject].
   User.fromJsObject(firebase_interop.UserJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
@@ -204,7 +204,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
     return _changeController.stream;
   }
 
-  /// Creates a new Auth from [jsObject].
+  /// Creates a new Auth from a [jsObject].
   Auth.fromJsObject(AuthJsImpl jsObject) : super.fromJsObject(jsObject);
 
   /// Applies a verification [code] sent to the user by e-mail or by other
@@ -341,7 +341,7 @@ class UserCredential extends JsObjectWrapper<UserCredentialJsImpl> {
       new UserCredential.fromJsObject(new UserCredentialJsImpl(
           user: user.jsObject, credential: credential));
 
-  /// Creates a new UserCredential from [jsObject].
+  /// Creates a new UserCredential from a [jsObject].
   UserCredential.fromJsObject(UserCredentialJsImpl jsObject)
       : super.fromJsObject(jsObject);
 }
