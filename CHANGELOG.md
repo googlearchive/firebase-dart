@@ -1,7 +1,7 @@
 ## 0.3.0
 
 - Update to Firebase 3.5.0.
-- Support for custom OAuth parameters with `GoogleAuthProvider.setCustomParameters()`, `FacebookAuthProvider.setCustomParameters()`, and `GithubAuthProvider.setCustomParameters()` methods.
+- Support for custom OAuth parameters with `GoogleAuthProvider.setCustomParameters()`, `FacebookAuthProvider.setCustomParameters()`, `GithubAuthProvider.setCustomParameters()` and `TwitterAuthProvider.setCustomParameters()` methods.
 
 ## 0.2.2
 

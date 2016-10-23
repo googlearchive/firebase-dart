@@ -12,9 +12,7 @@ export 'interop/auth_interop.dart'
     show
         ActionCodeInfo,
         ActionCodeEmail,
-        AuthCredential,
-        EmailAuthProvider,
-        TwitterAuthProvider;
+        AuthCredential;
 export 'interop/firebase_interop.dart' show UserProfile;
 
 /// User profile information, visible only to the Firebase project's apps.
@@ -96,13 +94,13 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   /// a pop-up based OAuth flow.
   /// It returns the [UserCredential] information if linking is successful.
   Future<UserCredential> linkWithPopup(AuthProvider provider) =>
-      handleThenableWithMapper(jsObject.linkWithPopup(provider),
+      handleThenableWithMapper(jsObject.linkWithPopup(provider.jsObject),
           (u) => new UserCredential.fromJsObject(u));
 
   /// Links the authenticated [provider] to the user account using
   /// a full-page redirect flow.
   Future linkWithRedirect(AuthProvider provider) =>
-      handleThenable(jsObject.linkWithRedirect(provider));
+      handleThenable(jsObject.linkWithRedirect(provider.jsObject));
 
   /// Re-authenticates a user using a fresh [credential]. Should be used
   /// before operations such as [updatePassword()] that require tokens
@@ -277,12 +275,12 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// given [provider].
   /// Returns [UserCredential] if successful, or an error object if unsuccessful.
   Future<UserCredential> signInWithPopup(AuthProvider provider) =>
-      handleThenableWithMapper(jsObject.signInWithPopup(provider),
+      handleThenableWithMapper(jsObject.signInWithPopup(provider.jsObject),
           (u) => new UserCredential.fromJsObject(u));
 
   /// Signs in using a full-page redirect flow with the given [provider].
   Future signInWithRedirect(AuthProvider provider) =>
-      handleThenable(jsObject.signInWithRedirect(provider));
+      handleThenable(jsObject.signInWithRedirect(provider.jsObject));
 
   /// Signs out the current user.
   Future signOut() => handleThenable(jsObject.signOut());
@@ -294,14 +292,42 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
       handleThenable(jsObject.verifyPasswordResetCode(code));
 }
 
+/// Represents an auth provider.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.AuthProvider>.
+abstract class AuthProvider<T extends AuthProviderJsImpl> extends JsObjectWrapper<T> {
+  /// Provider id.
+  String get providerId => jsObject.providerId;
+
+  /// Creates a new AuthProvider from a [jsObject].
+  AuthProvider.fromJsObject(T jsObject)
+      : super.fromJsObject(jsObject);
+}
+
+/// E-mail and password auth provider implementation.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.EmailAuthProvider>.
+class EmailAuthProvider extends AuthProvider<EmailAuthProviderJsImpl> {
+  static String PROVIDER_ID = EmailAuthProviderJsImpl.PROVIDER_ID;
+
+  /// Creates a new EmailAuthProvider from a [jsObject].
+  EmailAuthProvider.fromJsObject(EmailAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+
+  /// Creates a new EmailAuthProvider.
+  factory EmailAuthProvider() =>
+      new EmailAuthProvider.fromJsObject(new EmailAuthProviderJsImpl());
+
+  /// Creates a credential for e-mail.
+  static AuthCredential credential(String email, String password) =>
+      EmailAuthProviderJsImpl.credential(email, password);
+}
+
 /// Facebook auth provider.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.FacebookAuthProvider>.
-class FacebookAuthProvider extends JsObjectWrapper<FacebookAuthProviderJsImpl> {
+class FacebookAuthProvider extends AuthProvider<FacebookAuthProviderJsImpl> {
   static String PROVIDER_ID = FacebookAuthProviderJsImpl.PROVIDER_ID;
-
-  /// Provider id.
-  String get providerId => jsObject.providerId;
 
   /// Creates a new FacebookAuthProvider from a [jsObject].
   FacebookAuthProvider.fromJsObject(FacebookAuthProviderJsImpl jsObject)
@@ -331,11 +357,8 @@ class FacebookAuthProvider extends JsObjectWrapper<FacebookAuthProviderJsImpl> {
 /// Github auth provider.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.GithubAuthProvider>.
-class GithubAuthProvider extends JsObjectWrapper<GithubAuthProviderJsImpl> {
+class GithubAuthProvider extends AuthProvider<GithubAuthProviderJsImpl> {
   static String PROVIDER_ID = GithubAuthProviderJsImpl.PROVIDER_ID;
-
-  /// Provider id.
-  String get providerId => jsObject.providerId;
 
   /// Creates a new GithubAuthProvider from a [jsObject].
   GithubAuthProvider.fromJsObject(GithubAuthProviderJsImpl jsObject)
@@ -365,11 +388,8 @@ class GithubAuthProvider extends JsObjectWrapper<GithubAuthProviderJsImpl> {
 /// Google auth provider.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.GoogleAuthProvider>.
-class GoogleAuthProvider extends JsObjectWrapper<GoogleAuthProviderJsImpl> {
+class GoogleAuthProvider extends AuthProvider<GoogleAuthProviderJsImpl> {
   static String PROVIDER_ID = GoogleAuthProviderJsImpl.PROVIDER_ID;
-
-  /// Provider id.
-  String get providerId => jsObject.providerId;
 
   /// Creates a new GoogleAuthProvider from a [jsObject].
   GoogleAuthProvider.fromJsObject(GoogleAuthProviderJsImpl jsObject)
@@ -396,6 +416,33 @@ class GoogleAuthProvider extends JsObjectWrapper<GoogleAuthProviderJsImpl> {
   /// At least one of [idToken] and [accessToken] is required.
   static AuthCredential credential([String idToken, String accessToken]) =>
       GoogleAuthProviderJsImpl.credential(idToken, accessToken);
+}
+
+/// Twitter auth provider.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.TwitterAuthProvider>.
+class TwitterAuthProvider extends AuthProvider<TwitterAuthProviderJsImpl> {
+  static String PROVIDER_ID = TwitterAuthProviderJsImpl.PROVIDER_ID;
+
+  /// Creates a new TwitterAuthProvider from a [jsObject].
+  TwitterAuthProvider.fromJsObject(TwitterAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+
+  /// Creates a new TwitterAuthProvider.
+  factory TwitterAuthProvider() =>
+      new TwitterAuthProvider.fromJsObject(new TwitterAuthProviderJsImpl());
+
+  /// Sets the OAuth custom parameters to pass in a Twitter OAuth request
+  /// for popup and redirect sign-in operations.
+  /// Valid parameters include 'lang'. Reserved required OAuth 1.0 parameters
+  /// such as 'oauth_consumer_key', 'oauth_token', 'oauth_signature', etc
+  /// are not allowed and will be ignored.
+  void setCustomParameters(Map<String, dynamic> customOAuthParameters) =>
+      jsObject.setCustomParameters(jsify(customOAuthParameters));
+
+  /// Creates a credential for Twitter.
+  static AuthCredential credential(String token, String secret) =>
+      TwitterAuthProviderJsImpl.credential(token, secret);
 }
 
 /// Event propagated in Stream controllers when an auth state changes.

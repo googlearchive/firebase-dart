@@ -30,8 +30,8 @@ abstract class AuthJsImpl {
   external PromiseJsImpl<UserJsImpl> signInWithEmailAndPassword(
       String email, String password);
   external PromiseJsImpl<UserCredentialJsImpl> signInWithPopup(
-      AuthProvider provider);
-  external PromiseJsImpl signInWithRedirect(AuthProvider provider);
+      AuthProviderJsImpl provider);
+  external PromiseJsImpl signInWithRedirect(AuthProviderJsImpl provider);
   external PromiseJsImpl signOut();
   external PromiseJsImpl<String> verifyPasswordResetCode(String code);
 }
@@ -46,26 +46,20 @@ abstract class AuthCredential {
   external String get provider;
 }
 
-/// Represents an auth provider.
-///
-/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.AuthProvider>.
-@JS()
-abstract class AuthProvider {
+@JS('AuthProvider')
+abstract class AuthProviderJsImpl {
   external String get providerId;
 }
 
-/// Email and password auth provider implementation.
-///
-/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.EmailAuthProvider>.
-@JS()
-class EmailAuthProvider extends AuthProvider {
-  external factory EmailAuthProvider();
+@JS('EmailAuthProvider')
+class EmailAuthProviderJsImpl extends AuthProviderJsImpl {
+  external factory EmailAuthProviderJsImpl();
   external static String get PROVIDER_ID;
   external static AuthCredential credential(String email, String password);
 }
 
 @JS('FacebookAuthProvider')
-class FacebookAuthProviderJsImpl extends AuthProvider {
+class FacebookAuthProviderJsImpl extends AuthProviderJsImpl {
   external factory FacebookAuthProviderJsImpl();
   external static String get PROVIDER_ID;
   external void addScope(String scope);
@@ -74,7 +68,7 @@ class FacebookAuthProviderJsImpl extends AuthProvider {
 }
 
 @JS('GithubAuthProvider')
-class GithubAuthProviderJsImpl extends AuthProvider {
+class GithubAuthProviderJsImpl extends AuthProviderJsImpl {
   external factory GithubAuthProviderJsImpl();
   external static String get PROVIDER_ID;
   external void addScope(String scope);
@@ -83,7 +77,7 @@ class GithubAuthProviderJsImpl extends AuthProvider {
 }
 
 @JS('GoogleAuthProvider')
-class GoogleAuthProviderJsImpl extends AuthProvider {
+class GoogleAuthProviderJsImpl extends AuthProviderJsImpl {
   external factory GoogleAuthProviderJsImpl();
   external static String get PROVIDER_ID;
   external void addScope(String scope);
@@ -92,13 +86,11 @@ class GoogleAuthProviderJsImpl extends AuthProvider {
       [String idToken, String accessToken]);
 }
 
-/// Twitter auth provider.
-///
-/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.TwitterAuthProvider>.
-@JS()
-class TwitterAuthProvider extends AuthProvider {
-  external factory TwitterAuthProvider();
+@JS('TwitterAuthProvider')
+class TwitterAuthProviderJsImpl extends AuthProviderJsImpl {
+  external factory TwitterAuthProviderJsImpl();
   external static String get PROVIDER_ID;
+  external void setCustomParameters(customOAuthParameters);
   external static AuthCredential credential(String token, String secret);
 }
 
