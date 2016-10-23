@@ -44,6 +44,8 @@ abstract class AuthJsImpl {
 @JS()
 abstract class AuthCredential {
   external String get provider;
+  external String get accessToken;
+  external String get secret;
 }
 
 @JS('AuthProvider')
