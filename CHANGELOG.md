@@ -2,6 +2,7 @@
 
 - Update to Firebase 3.5.0.
 - Support for custom OAuth parameters with `GoogleAuthProvider.setCustomParameters()`, `FacebookAuthProvider.setCustomParameters()`, `GithubAuthProvider.setCustomParameters()` and `TwitterAuthProvider.setCustomParameters()` methods.
+- `AuthCredential` now has the `accessToken` and `secret` (Twitter only) properties.
 
 ## 0.2.2
 
