@@ -51,6 +51,10 @@ void main() {
 
 You can find more examples on realtime database, auth and storage in the [example](https://github.com/Janamou/firebase3-dart/tree/master/example) folder.
 
+## Dart Dev Summit 2016 demo app
+
+Demo app which uses [Google login, realtime database and storage](https://github.com/Janamou/firebase-demo).
+
 ## Before tests and examples are run
 
 You need to ensure a couple of things before tests and examples in this library are run.
