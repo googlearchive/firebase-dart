@@ -307,13 +307,13 @@ abstract class AuthProvider<T extends AuthProviderJsImpl>
 class EmailAuthProvider extends AuthProvider<EmailAuthProviderJsImpl> {
   static String PROVIDER_ID = EmailAuthProviderJsImpl.PROVIDER_ID;
 
-  /// Creates a new EmailAuthProvider from a [jsObject].
-  EmailAuthProvider.fromJsObject(EmailAuthProviderJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-
   /// Creates a new EmailAuthProvider.
   factory EmailAuthProvider() =>
       new EmailAuthProvider.fromJsObject(new EmailAuthProviderJsImpl());
+
+  /// Creates a new EmailAuthProvider from a [jsObject].
+  EmailAuthProvider.fromJsObject(EmailAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   /// Creates a credential for e-mail.
   static AuthCredential credential(String email, String password) =>
@@ -326,13 +326,13 @@ class EmailAuthProvider extends AuthProvider<EmailAuthProviderJsImpl> {
 class FacebookAuthProvider extends AuthProvider<FacebookAuthProviderJsImpl> {
   static String PROVIDER_ID = FacebookAuthProviderJsImpl.PROVIDER_ID;
 
-  /// Creates a new FacebookAuthProvider from a [jsObject].
-  FacebookAuthProvider.fromJsObject(FacebookAuthProviderJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-
   /// Creates a new FacebookAuthProvider.
   factory FacebookAuthProvider() =>
       new FacebookAuthProvider.fromJsObject(new FacebookAuthProviderJsImpl());
+
+  /// Creates a new FacebookAuthProvider from a [jsObject].
+  FacebookAuthProvider.fromJsObject(FacebookAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   void addScope(String scope) => jsObject.addScope(scope);
 
@@ -357,13 +357,13 @@ class FacebookAuthProvider extends AuthProvider<FacebookAuthProviderJsImpl> {
 class GithubAuthProvider extends AuthProvider<GithubAuthProviderJsImpl> {
   static String PROVIDER_ID = GithubAuthProviderJsImpl.PROVIDER_ID;
 
-  /// Creates a new GithubAuthProvider from a [jsObject].
-  GithubAuthProvider.fromJsObject(GithubAuthProviderJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-
   /// Creates a new GithubAuthProvider.
   factory GithubAuthProvider() =>
       new GithubAuthProvider.fromJsObject(new GithubAuthProviderJsImpl());
+
+  /// Creates a new GithubAuthProvider from a [jsObject].
+  GithubAuthProvider.fromJsObject(GithubAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   void addScope(String scope) => jsObject.addScope(scope);
 
@@ -388,13 +388,13 @@ class GithubAuthProvider extends AuthProvider<GithubAuthProviderJsImpl> {
 class GoogleAuthProvider extends AuthProvider<GoogleAuthProviderJsImpl> {
   static String PROVIDER_ID = GoogleAuthProviderJsImpl.PROVIDER_ID;
 
-  /// Creates a new GoogleAuthProvider from a [jsObject].
-  GoogleAuthProvider.fromJsObject(GoogleAuthProviderJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-
   /// Creates a new GoogleAuthProvider.
   factory GoogleAuthProvider() =>
       new GoogleAuthProvider.fromJsObject(new GoogleAuthProviderJsImpl());
+
+  /// Creates a new GoogleAuthProvider from a [jsObject].
+  GoogleAuthProvider.fromJsObject(GoogleAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   void addScope(String scope) => jsObject.addScope(scope);
 
@@ -421,13 +421,13 @@ class GoogleAuthProvider extends AuthProvider<GoogleAuthProviderJsImpl> {
 class TwitterAuthProvider extends AuthProvider<TwitterAuthProviderJsImpl> {
   static String PROVIDER_ID = TwitterAuthProviderJsImpl.PROVIDER_ID;
 
-  /// Creates a new TwitterAuthProvider from a [jsObject].
-  TwitterAuthProvider.fromJsObject(TwitterAuthProviderJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-
   /// Creates a new TwitterAuthProvider.
   factory TwitterAuthProvider() =>
       new TwitterAuthProvider.fromJsObject(new TwitterAuthProviderJsImpl());
+
+  /// Creates a new TwitterAuthProvider from a [jsObject].
+  TwitterAuthProvider.fromJsObject(TwitterAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   /// Sets the OAuth custom parameters to pass in a Twitter OAuth request
   /// for popup and redirect sign-in operations.
