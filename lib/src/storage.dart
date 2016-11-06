@@ -75,6 +75,7 @@ class StorageReference
   String get name => jsObject.name;
 
   StorageReference _parent;
+
   /// The reference to the parent location of this reference.
   /// It is [null] in case of root StorageReference.
   StorageReference get parent {
@@ -91,6 +92,7 @@ class StorageReference
   }
 
   StorageReference _root;
+
   /// The reference to the root of this storage reference's bucket.
   StorageReference get root {
     if (_root != null) {
@@ -102,6 +104,7 @@ class StorageReference
   }
 
   Storage _storage;
+
   /// The [Storage] service associated with this reference.
   Storage get storage {
     if (_storage != null) {
@@ -296,6 +299,7 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   }
 
   UploadTaskSnapshot _snapshot;
+
   /// Returns the upload task snapshot of the current task state.
   UploadTaskSnapshot get snapshot {
     if (_snapshot != null) {
@@ -316,6 +320,7 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
 
   var _onStateChangedUnsubscribe;
   StreamController<UploadTaskSnapshot> _changeController;
+
   /// Stream for upload task state changed event.
   Stream<UploadTaskSnapshot> get onStateChanged {
     if (_changeController == null) {
@@ -367,6 +372,7 @@ class UploadTaskSnapshot
   Uri get downloadURL => Uri.parse(jsObject.downloadURL);
 
   FullMetadata _metadata;
+
   /// The metadata. Before the upload completes, it contains the metadata sent
   /// to the server. After the upload completes, it contains the metadata sent
   /// back from the server.
@@ -384,6 +390,7 @@ class UploadTaskSnapshot
   }
 
   StorageReference _ref;
+
   /// The StorageReference that spawned the current snapshot's upload task.
   StorageReference get ref {
     if (_ref != null) {
@@ -414,6 +421,7 @@ class UploadTaskSnapshot
   }
 
   UploadTask _task;
+
   /// The UploadTask for this snapshot.
   UploadTask get task {
     if (_task != null) {
