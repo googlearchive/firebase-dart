@@ -36,4 +36,15 @@ main() {
 
   configFile
       .writeAsStringSync(new JsonEncoder.withIndent('  ').convert(config));
+
+  // now for the service_account silly
+  if (!Platform.environment.containsKey('SERVICE_ACCOUNT_JSON')) {
+    throw new StateError('Expected a ENV variable of SERVICE_ACCOUNT_JSON');
+  }
+
+  var serviceAccountJson =
+      UTF8.decode(BASE64.decode(Platform.environment['SERVICE_ACCOUNT_JSON']));
+
+  var serviceAccountPath = p.join(_assetPath, 'service_account.json');
+  new File(serviceAccountPath).writeAsStringSync(serviceAccountJson);
 }
