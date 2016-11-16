@@ -63,6 +63,8 @@ You need to ensure a couple of things before tests and examples in this library 
 
 Create `config.json` file (see `config.json.sample`) in `lib/src/assets` folder with configuration for your Firebase project.
 
+To run the io tests, you need to provide the `service_account.json` file. Go to `Settings/Project settings/Service accounts` tab in your project's Firebase console, select the `Firebase Admin SDK` and click on the `Generate new private key` button, which downloads you a file. Rename the file to `service_account.json` and put it into the `lib/src/assets` folder.
+
 > Warning: Use `config.json` for this package [development and testing only](https://github.com/Janamou/firebase3-dart/tree/master/lib/src/assets).
 
 ### App tests
