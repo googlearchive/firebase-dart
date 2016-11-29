@@ -14,3 +14,6 @@ Follow the instructions on the [pub page](http://pub.dartlang.org/packages/fireb
 ```html
 <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
 ```
+
+This gist illustrates how to make very simple public chatbox using firebase:
+https://gist.github.com/kasperpeulen/2d1d6184e6cb5fecdac1
