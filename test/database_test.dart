@@ -125,7 +125,7 @@ void main() {
         var childRef = ref.child("todos");
         childRef.set(["Programming", "Cooking", "Walking with dog"]);
 
-        var subscription = childRef.onValue.listen(expectAsync((event) {
+        var subscription = childRef.onValue.listen(expectAsync1((event) {
           var todos = event.snapshot.val();
           expect(todos, isNotNull);
           expect(todos.length, 3);
@@ -140,7 +140,7 @@ void main() {
 
         var todos = [];
         var eventsCount = 0;
-        var subscription = childRef.onChildAdded.listen(expectAsync((event) {
+        var subscription = childRef.onChildAdded.listen(expectAsync1((event) {
           var val = event.snapshot.val();
           todos.add(val);
           eventsCount++;
@@ -162,7 +162,7 @@ void main() {
         childRef.push("Cooking");
         childRef.push("Walking with dog");
 
-        var subscription = childRef.onChildRemoved.listen(expectAsync((event) {
+        var subscription = childRef.onChildRemoved.listen(expectAsync1((event) {
           var val = event.snapshot.val();
           expect(val, "Programming");
           expect(val, isNot("Cooking"));
@@ -178,7 +178,7 @@ void main() {
         childRef.push("Cooking");
         childRef.push("Walking with dog");
 
-        var subscription = childRef.onChildChanged.listen(expectAsync((event) {
+        var subscription = childRef.onChildChanged.listen(expectAsync1((event) {
           var val = event.snapshot.val();
           expect(val, "Programming a Firebase lib");
           expect(val, isNot("Programming"));
@@ -197,7 +197,7 @@ void main() {
         childRef.push("Walking with dog").setPriority(15);
 
         var subscription =
-            childRef.orderByPriority().onChildMoved.listen(expectAsync((event) {
+            childRef.orderByPriority().onChildMoved.listen(expectAsync1((event) {
                   var val = event.snapshot.val();
                   expect(val, "Programming");
                   expect(val, isNot("Cooking"));
