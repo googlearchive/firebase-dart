@@ -1,5 +1,5 @@
 @JS('firebase.auth')
-library firebase3.auth_interop;
+library firebase.auth_interop;
 
 import 'package:func/func.dart';
 import 'package:js/js.dart';

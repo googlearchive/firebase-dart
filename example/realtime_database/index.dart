@@ -1,12 +1,10 @@
-library firebase3.example.realtime_database;
-
 import 'dart:html';
 
-import 'package:firebase3/firebase.dart' as fb;
-import 'package:firebase3/src/assets/assets.dart';
+import 'package:firebase/firebase.dart' as fb;
+import 'package:firebase/src/assets/assets.dart';
 
 main() async {
-  //Use for firebase3 package development only
+  //Use for firebase package development only
   await config();
 
   fb.initializeApp(
@@ -26,7 +24,7 @@ class MessagesApp {
   final FormElement newMessageForm;
 
   MessagesApp()
-      : ref = fb.database().ref("pkg_firebase3/examples/database"),
+      : ref = fb.database().ref("pkg_firebase/examples/database"),
         messages = querySelector("#messages"),
         newMessage = querySelector("#new_message"),
         submit = querySelector('#submit'),

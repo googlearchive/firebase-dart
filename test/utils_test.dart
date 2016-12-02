@@ -1,5 +1,5 @@
 @TestOn('browser')
-import 'package:firebase3/src/utils.dart';
+import 'package:firebase/src/utils.dart';
 
 import 'package:test/test.dart';
 

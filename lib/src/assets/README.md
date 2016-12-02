@@ -1,4 +1,4 @@
-# For firebase3 package development only
+# For firebase package development only
 
 The contents of this directory are solely for use from within the `test` and
 `example` directories. You should **never** reference the contents of this

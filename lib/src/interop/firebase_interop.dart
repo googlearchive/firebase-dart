@@ -1,5 +1,5 @@
 @JS('firebase')
-library firebase3.firebase_interop;
+library firebase.firebase_interop;
 
 import 'package:func/func.dart';
 import 'package:js/js.dart';

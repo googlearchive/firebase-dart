@@ -1,5 +1,5 @@
 @JS('firebase.storage')
-library firebase3.storage_interop;
+library firebase.storage_interop;
 
 import 'package:func/func.dart';
 import 'package:js/js.dart';

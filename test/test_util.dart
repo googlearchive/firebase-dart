@@ -1,6 +1,6 @@
 import 'package:path/path.dart' as p;
 
-String validDatePath() => p.join('pkg_firebase3_test',
+String validDatePath() => p.join('pkg_firebase_test',
     new DateTime.now().toUtc().toIso8601String().replaceAll('.', '_'));
 
 printException(e) => print(
