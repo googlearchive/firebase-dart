@@ -67,6 +67,8 @@ void main() {
   
   // DELETE
   await fbClient.delete(path);
+  
+  ...
 }
 ```
 
