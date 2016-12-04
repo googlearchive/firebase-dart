@@ -57,7 +57,7 @@ class FirebaseClient {
 
     var request = new Request(method, uri);
     if (credential != null) {
-      request.headers['Authorization'] = "Bearer: $credential";
+      request.headers['Authorization'] = "Bearer $credential";
     }
 
     if (json != null) {
