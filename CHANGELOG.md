@@ -1,11 +1,11 @@
 ## 0.3.0
 
-- Update to Firebase 3.5.0.
+- Update to Firebase 3.6.2.
 - Support for custom OAuth parameters with `GoogleAuthProvider.setCustomParameters()`,
   `FacebookAuthProvider.setCustomParameters()`, `GithubAuthProvider.setCustomParameters()` and
   `TwitterAuthProvider.setCustomParameters()` methods.
 - `AuthCredential` now has the `accessToken` and `secret` (Twitter only) properties.
-- Added an initial implementation of simple, server access to Firebase via `firebase_io.dart`.
+- Added an implementation of simple, server access to Firebase realtime database via `firebase_io.dart`.
 
 ## 0.2.2
 
