@@ -44,6 +44,13 @@ class FirebaseClient {
   /// See: <https://firebase.google.com/docs/reference/rest/database/#section-post>.
   Future<dynamic> post(uri, json) => send('POST', uri, json: json);
 
+  /// Updates specific children at a location without overwriting existing data
+  /// using a HTTP PATCH request.
+  /// The response from a successful request contains a data being written.
+  ///
+  /// See: <https://firebase.google.com/docs/reference/rest/database/#section-patch>.
+  Future<dynamic> patch(uri, json) => send('PATCH', uri, json: json);
+
   /// Deletes data from database using a HTTP DELETE request.
   /// The response from a successful request contains a JSON with [:null:].
   ///

@@ -60,4 +60,14 @@ void main() {
     response = await fbClient.get(testUri);
     expect(response, {key: 'bob'});
   });
+
+  test("patch", () async {
+    var response = (await fbClient.patch(testUri, {'someNewKey': 'bob'})) as Map;
+    expect(response, contains('someNewKey'));
+
+    var key = 'someNewKey';
+
+    response = await fbClient.get(testUri);
+    expect(response, {key: 'bob'});
+  });
 }
