@@ -40,10 +40,33 @@ void main() {
 
   ref.onValue.listen((e) {
     DataSnapshot datasnapshot = e.snapshot;
-    //Do something with datasnapshot
+    // Do something with datasnapshot
   });
   
   ...
+}
+```
+
+### IO Client
+
+This library contains also an IO client. You need to create an instance of `FirebaseClient` and then use the appropriate method (`GET`, `PUT`, `POST`, `DELETE` or `PATCH`). See more info on how they work in the [official documentation](https://firebase.google.com/docs/reference/rest/database/).
+
+It also supports authentication. See the documentation on how to get the [auth credentials](https://firebase.google.com/docs/reference/rest/database/user-auth).
+
+```dart
+import 'package:firebase3/firebase_io.dart';
+
+void main() {
+  var credential = ... // Retrieve auth credential
+  var fbClient = new FirebaseClient(credential); // FirebaseClient.anonymous() is also available
+  
+  var path = ... // Full path to your database location with .json appended
+  
+  // GET
+  var response = await fbClient.get(path);
+  
+  // DELETE
+  await fbClient.delete(path);
 }
 ```
 
