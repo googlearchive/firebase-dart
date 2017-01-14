@@ -46,10 +46,10 @@ import 'package:firebase/firebase.dart' as fb;
 
 void main() {
   fb.initializeApp(
-      apiKey: "YourApiKey",
-      authDomain: "YourAuthDomain",
-      databaseURL: "YourDatabaseUrl",
-      storageBucket: "YourStorageBucket");
+    apiKey: "YourApiKey",
+    authDomain: "YourAuthDomain",
+    databaseURL: "YourDatabaseUrl",
+    storageBucket: "YourStorageBucket");
 
   fb.Database database = fb.database();
   fb.DatabaseReference ref = database.ref("messages");
