@@ -42,20 +42,20 @@ to be able to use the library.
 ### Use it
 
 ```dart
-import 'package:firebase/firebase.dart' as firebase;
+import 'package:firebase/firebase.dart' as fb;
 
 void main() {
-  firebase.initializeApp(
-    apiKey: "YourApiKey",
-    authDomain: "YourAuthDomain",
-    databaseURL: "YourDatabaseUrl",
-    storageBucket: "YourStorageBucket");
-    
-  Database database = firebase.database();
-  DatabaseReference ref = database.ref("messages");  
+  fb.initializeApp(
+      apiKey: "YourApiKey",
+      authDomain: "YourAuthDomain",
+      databaseURL: "YourDatabaseUrl",
+      storageBucket: "YourStorageBucket");
+
+  fb.Database database = fb.database();
+  fb.DatabaseReference ref = database.ref("messages");
 
   ref.onValue.listen((e) {
-    DataSnapshot datasnapshot = e.snapshot;
+    fb.DataSnapshot datasnapshot = e.snapshot;
     // Do something with datasnapshot
   });
 }
