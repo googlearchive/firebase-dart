@@ -17,7 +17,7 @@ main() async {
 }
 
 // This version of MessagesApp uses transaction() method
-// for all updates on the data.
+// for all updates on the data
 class MessagesApp {
   final fb.DatabaseReference ref;
   final UListElement messages;
@@ -113,8 +113,8 @@ class MessagesApp {
 
   _uppercaseItem(fb.DataSnapshot datasnapshot) async {
     try {
-      // update data in transaction - e.g. take prev value,
-      // update it and return it.
+      // Update data in transaction - e.g. take previous value,
+      // update it and return it
       await this.ref.child(datasnapshot.key).transaction(
           (prevValue) => {"text": prevValue["text"].toUpperCase()});
     } catch (e) {
