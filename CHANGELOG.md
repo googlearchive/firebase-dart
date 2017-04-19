@@ -1,3 +1,11 @@
+## 3.0.3
+
+* Update to the latest firebase `3.8.0`:
+    * User's `link` method deprecated in favor of `linkWithCredential`.
+    * User's `reauthenticate` method deprecated in favor of `reauthenticateWithCredential`.
+    * New methods in the `auth` library.
+    * `UserCredential` has now `operationType` property.
+
 ## 3.0.2
 
 * Throw `FirebaseClientException` if there are request failures in
