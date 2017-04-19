@@ -129,7 +129,9 @@ class UserCredentialJsImpl {
   external void set user(UserJsImpl u);
   external AuthCredential get credential;
   external void set credential(AuthCredential c);
+  external String get operationType;
+  external void set operationType(String t);
 
   external factory UserCredentialJsImpl(
-      {UserJsImpl user, AuthCredential credential});
+      {UserJsImpl user, AuthCredential credential, String operationType});
 }
