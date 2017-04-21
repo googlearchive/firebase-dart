@@ -1,3 +1,6 @@
+## 3.0.3
+* The `FirebaseJsNotLoadedException` is thrown when the firebase.js script is not included in the html file.
+
 ## 3.0.2
 
 * Throw `FirebaseClientException` if there are request failures in
