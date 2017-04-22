@@ -33,6 +33,7 @@ class App extends JsObjectWrapper<AppJsImpl> {
   /// Deletes the app and frees resources of all App's services.
   Future delete() => handleThenable(jsObject.delete());
 
-  /// Returns [Storage] service.
-  Storage storage() => new Storage.fromJsObject(jsObject.storage());
+  /// Returns [Storage] service optionally initialized with a custom storage bucket.
+  Storage storage([String url]) =>
+      new Storage.fromJsObject(jsObject.storage(url));
 }
