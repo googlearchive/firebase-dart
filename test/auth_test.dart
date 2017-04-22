@@ -243,6 +243,15 @@ void main() {
         rethrow;
       }
     });
+
+    test('reauthenticate with bad credential fails', () async {
+      user = await authValue.createUserWithEmailAndPassword(
+          "some_user@example.com", "janicka");
+      var credential =
+          EmailAuthProvider.credential("some_user@example.com", "something");
+
+      expect(user.reauthenticateWithCredential(credential), throws);
+    });
   });
 
   group('registered user', () {
