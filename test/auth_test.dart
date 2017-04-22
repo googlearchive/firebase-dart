@@ -210,6 +210,39 @@ void main() {
         rethrow;
       }
     });
+
+    test('link anonymous user with credential', () async {
+      try {
+        user = await authValue.signInAnonymously();
+        expect(user.isAnonymous, isTrue);
+
+        var credential =
+            EmailAuthProvider.credential("some_user@example.com", "janicka");
+        user = await user.linkWithCredential(credential);
+        expect(user.isAnonymous, isFalse);
+        expect(user.email, "some_user@example.com");
+      } on FirebaseError catch (e) {
+        printException(e);
+        rethrow;
+      }
+    });
+
+    test('reauthenticate with credential', () async {
+      try {
+        user = await authValue.createUserWithEmailAndPassword(
+            "some_user@example.com", "janicka");
+
+        var credential =
+            EmailAuthProvider.credential("some_user@example.com", "janicka");
+        await user.reauthenticateWithCredential(credential);
+
+        expect(authValue.currentUser, isNotNull);
+        expect(authValue.currentUser.email, "some_user@example.com");
+      } on FirebaseError catch (e) {
+        printException(e);
+        rethrow;
+      }
+    });
   });
 
   group('registered user', () {
