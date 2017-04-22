@@ -1,4 +1,4 @@
-## 3.0.3
+## 3.1.0
 
 * Update to the latest firebase `3.8.0`:
     * User's `link` method deprecated in favor of `linkWithCredential`.
