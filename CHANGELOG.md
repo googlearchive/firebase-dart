@@ -5,6 +5,7 @@
     * User's `reauthenticate` method deprecated in favor of `reauthenticateWithCredential`.
     * New methods in the `auth` library.
     * `UserCredential` has now `operationType` property.
+* The `app.storage()` has now an optional storage bucket parameter.
 
 ## 3.0.2
 
