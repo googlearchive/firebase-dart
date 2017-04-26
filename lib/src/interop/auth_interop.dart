@@ -43,7 +43,10 @@ abstract class AuthJsImpl {
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.AuthCredential>.
 @JS()
 abstract class AuthCredential {
+  @deprecated
   external String get provider;
+  /// The authentication provider ID for the credential.
+  external String get providerId;
   external String get accessToken;
   external String get secret;
 }

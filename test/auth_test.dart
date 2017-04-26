@@ -37,7 +37,7 @@ void main() {
       });
       test('credential', () {
         var cred = EmailAuthProvider.credential('un', 'pw');
-        expect(cred.provider, equals(EmailAuthProvider.PROVIDER_ID));
+        expect(cred.providerId, equals(EmailAuthProvider.PROVIDER_ID));
       });
     });
 
@@ -51,7 +51,7 @@ void main() {
       });
       test('credential', () {
         var cred = FacebookAuthProvider.credential('token');
-        expect(cred.provider, equals(FacebookAuthProvider.PROVIDER_ID));
+        expect(cred.providerId, equals(FacebookAuthProvider.PROVIDER_ID));
       });
       test('scope', () {
         var provider = new FacebookAuthProvider();
@@ -76,7 +76,7 @@ void main() {
       });
       test('credential', () {
         var cred = GithubAuthProvider.credential('token');
-        expect(cred.provider, equals(GithubAuthProvider.PROVIDER_ID));
+        expect(cred.providerId, equals(GithubAuthProvider.PROVIDER_ID));
       });
       test('scope', () {
         var provider = new GithubAuthProvider();
@@ -101,7 +101,7 @@ void main() {
       });
       test('credential', () {
         var cred = GoogleAuthProvider.credential('idToken', 'accessToken');
-        expect(cred.provider, equals(GoogleAuthProvider.PROVIDER_ID));
+        expect(cred.providerId, equals(GoogleAuthProvider.PROVIDER_ID));
       });
       test('scope', () {
         var provider = new GoogleAuthProvider();
@@ -127,7 +127,7 @@ void main() {
       });
       test('credential', () {
         var cred = TwitterAuthProvider.credential('token', 'secret');
-        expect(cred.provider, equals(TwitterAuthProvider.PROVIDER_ID));
+        expect(cred.providerId, equals(TwitterAuthProvider.PROVIDER_ID));
       });
       test('custom parameters', () {
         var provider = new TwitterAuthProvider();
