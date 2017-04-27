@@ -46,6 +46,7 @@ abstract class AuthCredential {
   /// _Deprecated: Use [providerId] instead._
   @deprecated
   external String get provider;
+
   /// The authentication provider ID for the credential.
   external String get providerId;
   external String get accessToken;
