@@ -217,6 +217,7 @@ void main() {
         // The following is a basic verification of a JWT token
         // See https://en.wikipedia.org/wiki/JSON_Web_Token
         var split = token.split('.').map((t) {
+          // If `t.length` is not a multiple of 4, pad it to the right w/ `=`.
           var remainder = (4 - t.length % 4);
           t = "$t${'='* remainder}";
           return BASE64URL.decode(t);
