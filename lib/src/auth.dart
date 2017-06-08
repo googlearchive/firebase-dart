@@ -78,15 +78,12 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   Future delete() => handleThenable(jsObject.delete());
 
   /// Returns a JWT token used to identify the user to a Firebase service.
+  ///
   /// It forces refresh regardless of token expiration if [forceRefresh]
   /// parameter is [true].
+  @Deprecated('Use `getIdToken` instead.')
   Future<String> getToken([bool forceRefresh = false]) =>
       handleThenable(jsObject.getToken(forceRefresh));
-
-  /// _Deprecated: Use [linkWithCredential] instead._
-  @deprecated
-  Future<User> link(AuthCredential credential) => handleThenableWithMapper(
-      jsObject.link(credential), (u) => new User.fromJsObject(u));
 
   /// Links the user account with the given [credential] and returns the user.
   Future<User> linkWithCredential(AuthCredential credential) =>
@@ -104,11 +101,6 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   /// a full-page redirect flow.
   Future linkWithRedirect(AuthProvider provider) =>
       handleThenable(jsObject.linkWithRedirect(provider.jsObject));
-
-  /// _Deprecated: Use [reauthenticateWithCredential] instead._
-  @deprecated
-  Future reauthenticate(AuthCredential credential) =>
-      handleThenable(jsObject.reauthenticate(credential));
 
   /// Re-authenticates a user using a fresh [credential]. Should be used
   /// before operations such as [updatePassword()] that require tokens
