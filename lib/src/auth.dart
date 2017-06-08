@@ -81,9 +81,18 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   ///
   /// It forces refresh regardless of token expiration if [forceRefresh]
   /// parameter is [true].
+  ///
+  /// This method is **DEPRECATED**. Use [getIdToken] instead.
   @Deprecated('Use `getIdToken` instead.')
   Future<String> getToken([bool forceRefresh = false]) =>
       handleThenable(jsObject.getToken(forceRefresh));
+
+  /// Returns a JWT token used to identify the user to a Firebase service.
+  ///
+  /// Returns the current token if it has not expired, otherwise this will
+  /// refresh the token and return a new one.
+  Future<String> getIdToken([bool forceRefresh = false]) =>
+      handleThenable(jsObject.getIdToken(forceRefresh));
 
   /// Links the user account with the given [credential] and returns the user.
   Future<User> linkWithCredential(AuthCredential credential) =>

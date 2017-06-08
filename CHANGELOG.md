@@ -1,3 +1,7 @@
+## 4.0.0
+
+* Added `User.getIdToken`.
+
 ## 3.2.1
 
 * Update minimum Dart SDK to `1.21.0` – required to use generic method syntax. 

@@ -1,4 +1,7 @@
 @TestOn('browser')
+
+import 'dart:convert';
+
 import 'package:firebase/firebase.dart';
 import 'package:firebase/src/assets/assets.dart';
 import 'package:test/test.dart';
@@ -201,6 +204,36 @@ void main() {
       if (user != null) {
         await user.delete();
         user = null;
+      }
+    });
+
+    test('getIdToken', () async {
+      try {
+        user = await authValue.createUserWithEmailAndPassword(
+            userEmail, "janicka");
+
+        var token = await user.getIdToken();
+
+        // The following is a basic verification of a JWT token
+        // See https://en.wikipedia.org/wiki/JSON_Web_Token
+        var split = token.split('.').map((t) {
+          var remainder = (4 - t.length % 4);
+          t = "$t${'='* remainder}";
+          return BASE64URL.decode(t);
+        }).toList();
+
+        expect(split, hasLength(3));
+
+        var header = JSON.decode(UTF8.decode(split.first));
+        expect(header, isMap);
+        expect(header, containsPair('alg', isNotEmpty));
+
+        var payload = JSON.decode(UTF8.decode(split[1]));
+        expect(payload, isMap);
+        expect(payload, containsPair('email', userEmail));
+      } on FirebaseError catch (e) {
+        printException(e);
+        rethrow;
       }
     });
 
