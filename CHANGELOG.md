@@ -1,5 +1,14 @@
 ## 4.0.0
 
+* Upgraded to Firebase JS API `4.1.2`.
+
+* Removed deprecated APIs: 
+    * `User`
+        * `link` method in favor of `linkWithCredential`.
+        * `reauthenticate` method in favor of `reauthenticateWithCredential`.
+    * `AuthCredential`
+        * `provider` property in favor of `providerId`.
+
 * Added `User.getIdToken`.
 
 ## 3.2.1
