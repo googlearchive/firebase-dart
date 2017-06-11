@@ -139,6 +139,22 @@ void main() {
         expect(provider.providerId, equals(providerWithParameters.providerId));
       });
     });
+
+    group('Phone', () {
+      test('PROVIDER_ID', () {
+        expect(PhoneAuthProvider.PROVIDER_ID, 'phone');
+      });
+      test('instance', () {
+        var provider = new PhoneAuthProvider();
+        expect(provider.providerId, PhoneAuthProvider.PROVIDER_ID);
+      });
+
+      /*
+      test('credential', () {
+        var cred = PhoneAuthProvider.credential('token', 'secret');
+        expect(cred.providerId, equals(TwitterAuthProvider.PROVIDER_ID));
+      });*/
+    });
   });
 
   group('anonymous user', () {

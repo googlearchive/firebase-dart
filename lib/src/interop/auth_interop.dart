@@ -98,6 +98,19 @@ class TwitterAuthProviderJsImpl extends AuthProviderJsImpl {
   external static AuthCredential credential(String token, String secret);
 }
 
+@JS('PhoneAuthProvider')
+class PhoneAuthProviderJsImpl extends AuthProviderJsImpl {
+  external factory PhoneAuthProviderJsImpl();
+  external static String get PROVIDER_ID;
+
+  /// The user's [phoneNumber] in E.164 format (e.g. +16505550101).
+  external verifyPhoneNumber(String phoneNumber, applicationVerifier);
+
+  // https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider#.credential
+  external static PromiseJsImpl<AuthCredential> credential(
+      String verificationId, String verificationCode);
+}
+
 /// A response from [Auth.checkActionCode].
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.ActionCodeInfo>.

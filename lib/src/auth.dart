@@ -484,6 +484,27 @@ class TwitterAuthProvider extends AuthProvider<TwitterAuthProviderJsImpl> {
       TwitterAuthProviderJsImpl.credential(token, secret);
 }
 
+/// Phone auth provider.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider>.
+class PhoneAuthProvider extends AuthProvider<PhoneAuthProviderJsImpl> {
+  static String get PROVIDER_ID => PhoneAuthProviderJsImpl.PROVIDER_ID;
+
+  factory PhoneAuthProvider() =>
+      new PhoneAuthProvider.fromJsObject(new PhoneAuthProviderJsImpl());
+
+  PhoneAuthProvider.fromJsObject(PhoneAuthProviderJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+
+  //(TODO)
+  // https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider#verifyPhoneNumber
+  // verifyPhoneNumber
+
+  //(TODO)
+  // https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider#.credential
+  // credential
+}
+
 /// Event propagated in Stream controllers when an auth state changes.
 class AuthEvent {
   /// The user.
