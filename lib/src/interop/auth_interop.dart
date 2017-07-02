@@ -10,25 +10,29 @@ import 'firebase_interop.dart';
 @JS('Auth')
 abstract class AuthJsImpl {
   external AppJsImpl get app;
-  external void set app(AppJsImpl a);
-  external UserJsImpl get currentUser;
-  external void set currentUser(UserJsImpl u);
   external PromiseJsImpl applyActionCode(String code);
   external PromiseJsImpl<ActionCodeInfo> checkActionCode(String code);
   external PromiseJsImpl confirmPasswordReset(String code, String newPassword);
   external PromiseJsImpl<UserJsImpl> createUserWithEmailAndPassword(
       String email, String password);
+  external UserJsImpl get currentUser;
   external PromiseJsImpl<List<String>> fetchProvidersForEmail(String email);
   external PromiseJsImpl<UserCredentialJsImpl> getRedirectResult();
   external Func0 onAuthStateChanged(nextOrObserver,
       [Func1 opt_error, Func0 opt_completed]);
   external PromiseJsImpl sendPasswordResetEmail(String email);
+  @Deprecated('not impld')
+  external PromiseJsImpl<UserCredentialJsImpl>
+      signInAndRetrieveDataWithCredential(AuthCredential credential);
   external PromiseJsImpl<UserJsImpl> signInAnonymously();
   external PromiseJsImpl<UserJsImpl> signInWithCredential(
       AuthCredential credential);
   external PromiseJsImpl<UserJsImpl> signInWithCustomToken(String token);
   external PromiseJsImpl<UserJsImpl> signInWithEmailAndPassword(
       String email, String password);
+  @Deprecated('not impld')
+  external PromiseJsImpl signInWithPhoneNumber(
+      String phoneNumber, /* ApplicationVerifier */ applicationVerifier);
   external PromiseJsImpl<UserCredentialJsImpl> signInWithPopup(
       AuthProviderJsImpl provider);
   external PromiseJsImpl signInWithRedirect(AuthProviderJsImpl provider);
@@ -45,8 +49,6 @@ abstract class AuthJsImpl {
 abstract class AuthCredential {
   /// The authentication provider ID for the credential.
   external String get providerId;
-  external String get accessToken;
-  external String get secret;
 }
 
 @JS('AuthProvider')

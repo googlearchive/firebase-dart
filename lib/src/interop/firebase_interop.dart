@@ -32,13 +32,9 @@ external StorageJsImpl storage([AppJsImpl app]);
 @JS('User')
 abstract class UserJsImpl extends UserInfoJsImpl {
   external bool get emailVerified;
-  external void set emailVerified(bool v);
   external bool get isAnonymous;
-  external void set isAnonymous(bool a);
   external List<UserInfoJsImpl> get providerData;
-  external void set providerData(List<UserInfoJsImpl> d);
   external String get refreshToken;
-  external void set refreshToken(String t);
   external PromiseJsImpl delete();
   @Deprecated('Use `getIdToken` instead.')
   external PromiseJsImpl<String> getToken([bool opt_forceRefresh]);
@@ -60,20 +56,16 @@ abstract class UserJsImpl extends UserInfoJsImpl {
   external PromiseJsImpl updateEmail(String newEmail);
   external PromiseJsImpl updatePassword(String newPassword);
   external PromiseJsImpl updateProfile(UserProfile profile);
+  external Object toJSON();
 }
 
 @JS('UserInfo')
 abstract class UserInfoJsImpl {
   external String get displayName;
-  external void set displayName(String s);
   external String get email;
-  external void set email(String s);
   external String get photoURL;
-  external void set photoURL(String s);
   external String get providerId;
-  external void set providerId(String s);
   external String get uid;
-  external void set uid(String s);
 }
 
 @JS('Promise')

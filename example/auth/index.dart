@@ -1,5 +1,4 @@
-library firebase.example.auth;
-
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:firebase/firebase.dart' as fb;
@@ -83,6 +82,8 @@ class AuthApp {
       error.text = "";
       authInfo.style.display = "block";
       authInfo.text = user.email;
+
+      print(const JsonEncoder.withIndent(' ').convert(user));
     } else {
       registerForm.style.display = "block";
       authInfo.style.display = "none";

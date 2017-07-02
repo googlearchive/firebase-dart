@@ -19,33 +19,18 @@ class UserInfo<T extends firebase_interop.UserInfoJsImpl>
     extends JsObjectWrapper<T> {
   /// User's display name.
   String get displayName => jsObject.displayName;
-  void set displayName(String s) {
-    jsObject.displayName = s;
-  }
 
   /// User's e-mail address.
   String get email => jsObject.email;
-  void set email(String s) {
-    jsObject.email = s;
-  }
 
   /// User's profile picture URL.
   String get photoURL => jsObject.photoURL;
-  void set photoURL(String s) {
-    jsObject.photoURL = s;
-  }
 
   /// User's authentication provider ID.
   String get providerId => jsObject.providerId;
-  void set providerId(String s) {
-    jsObject.providerId = s;
-  }
 
   /// User's unique ID.
   String get uid => jsObject.uid;
-  void set uid(String s) {
-    jsObject.uid = s;
-  }
 
   /// Creates a new UserInfo from a [jsObject].
   UserInfo.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
@@ -159,6 +144,8 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   ///     await user.updateProfile(profile);
   Future updateProfile(firebase_interop.UserProfile profile) =>
       handleThenable(jsObject.updateProfile(profile));
+
+  Map<String, dynamic> toJson() => dartify(jsObject.toJSON());
 }
 
 /// The Firebase Auth service class.
@@ -412,7 +399,7 @@ class GithubAuthProvider extends AuthProvider<GithubAuthProviderJsImpl> {
       new GithubAuthProvider.fromJsObject(
           jsObject.setCustomParameters(jsify(customOAuthParameters)));
 
-  /// Creates a credential for Github.
+  /// Creates a credential for GitHub.
   static AuthCredential credential(String token) =>
       GithubAuthProviderJsImpl.credential(token);
 }
