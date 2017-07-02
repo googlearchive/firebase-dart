@@ -1,6 +1,6 @@
 ## 4.0.0
 
-* Upgraded to Firebase JS API `4.1.2`.
+* Upgraded to Firebase JS API `4.1.3`.
 
 * Removed deprecated APIs: 
     * `User`
