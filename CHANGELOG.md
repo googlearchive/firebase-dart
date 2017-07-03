@@ -13,7 +13,10 @@
     * `AuthCredential`
         * `provider` property in favor of `providerId`.
 
-* Added `User.getIdToken`.
+* `User`: added `getIdToken`, `reauthenticateAndRetrieveDataWithCredential`,
+  `linkAndRetrieveDataWithCredential`, and `toJson()`.
+
+* Added `Auth.signInAndRetrieveDataWithCredential`.
 
 ## 3.2.1
 

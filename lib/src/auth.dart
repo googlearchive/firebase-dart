@@ -80,6 +80,13 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   Future<String> getIdToken([bool forceRefresh = false]) =>
       handleThenable(jsObject.getIdToken(forceRefresh));
 
+  /// Links the user account with the given credentials, and returns any
+  /// available additional user information, such as user name.
+  Future<UserCredential> linkAndRetrieveDataWithCredential(
+          AuthCredential credential) =>
+      handleThenableWithMapper(jsObject.linkAndRetrieveDataWithCredential(credential),
+          (u) => new UserCredential.fromJsObject(u));
+
   /// Links the user account with the given [credential] and returns the user.
   Future<User> linkWithCredential(AuthCredential credential) =>
       handleThenableWithMapper(jsObject.linkWithCredential(credential),

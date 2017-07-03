@@ -40,6 +40,8 @@ abstract class UserJsImpl extends UserInfoJsImpl {
   @Deprecated('Use `getIdToken` instead.')
   external PromiseJsImpl<String> getToken([bool opt_forceRefresh]);
   external PromiseJsImpl<String> getIdToken([bool opt_forceRefresh]);
+  external PromiseJsImpl<UserCredentialJsImpl>
+      linkAndRetrieveDataWithCredential(AuthCredential credential);
   external PromiseJsImpl<UserJsImpl> linkWithCredential(
       AuthCredential credential);
   external PromiseJsImpl<UserCredentialJsImpl> linkWithPopup(

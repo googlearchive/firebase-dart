@@ -303,6 +303,22 @@ void main() {
       }
     });
 
+    test('linkAndRetrieveDataWithCredential anonymous user', () async {
+      try {
+        user = await authValue.signInAnonymously();
+        expect(user.isAnonymous, isTrue);
+
+        var credential = EmailAuthProvider.credential(userEmail, "janicka");
+        var userCred = await user.linkAndRetrieveDataWithCredential(credential);
+
+        expect(userCred.operationType, 'link');
+        expect(userCred.user.uid, user.uid);
+      } on FirebaseError catch (e) {
+        printException(e);
+        rethrow;
+      }
+    });
+
     test('reauthenticate with credential', () async {
       try {
         user = await authValue.createUserWithEmailAndPassword(
