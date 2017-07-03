@@ -29,6 +29,7 @@ external DatabaseJsImpl database([AppJsImpl app]);
 @JS()
 external StorageJsImpl storage([AppJsImpl app]);
 
+/// https://firebase.google.com/docs/reference/js/firebase.User
 @JS('User')
 abstract class UserJsImpl extends UserInfoJsImpl {
   external bool get emailVerified;
@@ -45,6 +46,9 @@ abstract class UserJsImpl extends UserInfoJsImpl {
       AuthProviderJsImpl provider);
   external PromiseJsImpl linkWithRedirect(AuthProviderJsImpl provider);
   external PromiseJsImpl reauthenticateWithCredential(
+      AuthCredential credential);
+  @Deprecated('Not impld')
+  external PromiseJsImpl reauthenticateAndRetrieveDataWithCredential(
       AuthCredential credential);
   external PromiseJsImpl<UserCredentialJsImpl> reauthenticateWithPopup(
       AuthProviderJsImpl provider);
