@@ -84,7 +84,8 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   /// available additional user information, such as user name.
   Future<UserCredential> linkAndRetrieveDataWithCredential(
           AuthCredential credential) =>
-      handleThenableWithMapper(jsObject.linkAndRetrieveDataWithCredential(credential),
+      handleThenableWithMapper(
+          jsObject.linkAndRetrieveDataWithCredential(credential),
           (u) => new UserCredential.fromJsObject(u));
 
   /// Links the user account with the given [credential] and returns the user.
