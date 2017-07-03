@@ -1,5 +1,6 @@
 @TestOn('browser')
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase/firebase.dart';
@@ -206,6 +207,9 @@ void main() {
     Auth authValue;
     User user;
     String userEmail;
+    User lastAuthEventUser;
+
+    StreamSubscription authStateChangeSubscription;
 
     setUp(() {
       authValue = auth();
@@ -213,6 +217,18 @@ void main() {
 
       expect(userEmail, isNull);
       userEmail = getTestEmail();
+
+      expect(lastAuthEventUser, isNull);
+      expect(authStateChangeSubscription, isNull);
+
+      authStateChangeSubscription =
+          authValue.onAuthStateChanged.listen((event) {
+        lastAuthEventUser = event;
+      }, onError: (e, stack) {
+        print("AuthStateError! $e $stack");
+      }, onDone: () {
+        //print("done!");
+      });
     });
 
     tearDown(() async {
@@ -220,6 +236,12 @@ void main() {
       if (user != null) {
         await user.delete();
         user = null;
+      }
+
+      if (authStateChangeSubscription != null) {
+        await authStateChangeSubscription.cancel();
+        authStateChangeSubscription = null;
+        lastAuthEventUser = null;
       }
     });
 
@@ -288,6 +310,29 @@ void main() {
 
         var credential = EmailAuthProvider.credential(userEmail, "janicka");
         await user.reauthenticateWithCredential(credential);
+
+        expect(authValue.currentUser, isNotNull);
+        expect(authValue.currentUser.email, userEmail);
+      } on FirebaseError catch (e) {
+        printException(e);
+        rethrow;
+      }
+    });
+
+    test('reauthenticateAndRetrieveDataWithCredential', () async {
+      try {
+        user = await authValue.createUserWithEmailAndPassword(
+            userEmail, "janicka");
+
+        var credential = EmailAuthProvider.credential(userEmail, "janicka");
+        var userCred =
+            await user.reauthenticateAndRetrieveDataWithCredential(credential);
+
+        expect(userCred.operationType, 'reauthenticate');
+        expect(userCred.user.uid, user.uid);
+
+        expect(lastAuthEventUser, isNotNull);
+        expect(lastAuthEventUser.email, userEmail);
 
         expect(authValue.currentUser, isNotNull);
         expect(authValue.currentUser.email, userEmail);

@@ -97,6 +97,16 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   Future linkWithRedirect(AuthProvider provider) =>
       handleThenable(jsObject.linkWithRedirect(provider.jsObject));
 
+  // FYI: as of 2017-07-03 – the return type of this guy is documented as
+  // Promise (Future)<nothing> - Filed a bug internally.
+  /// Re-authenticates a user using a fresh credential, and returns any
+  /// available additional user information, such as user name.
+  Future<UserCredential> reauthenticateAndRetrieveDataWithCredential(
+          AuthCredential credential) =>
+      handleThenableWithMapper(
+          jsObject.reauthenticateAndRetrieveDataWithCredential(credential),
+          (o) => new UserCredential.fromJsObject(o));
+
   /// Re-authenticates a user using a fresh [credential]. Should be used
   /// before operations such as [updatePassword()] that require tokens
   /// from recent sign in attempts.
@@ -258,6 +268,8 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   Future sendPasswordResetEmail(String email) =>
       handleThenable(jsObject.sendPasswordResetEmail(email));
 
+  /// Asynchronously signs in with the given credentials, and returns any
+  /// available additional user information, such as user name.
   Future<UserCredential> signInAndRetrieveDataWithCredential(
           AuthCredential credential) =>
       handleThenableWithMapper(

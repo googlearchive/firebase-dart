@@ -47,7 +47,6 @@ abstract class UserJsImpl extends UserInfoJsImpl {
   external PromiseJsImpl linkWithRedirect(AuthProviderJsImpl provider);
   external PromiseJsImpl reauthenticateWithCredential(
       AuthCredential credential);
-  @Deprecated('Not impld')
   external PromiseJsImpl reauthenticateAndRetrieveDataWithCredential(
       AuthCredential credential);
   external PromiseJsImpl<UserCredentialJsImpl> reauthenticateWithPopup(
