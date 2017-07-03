@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:func/func.dart';
 import 'package:js/js.dart';
 
 import 'app.dart';
@@ -180,15 +181,17 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
     return _currentUser;
   }
 
-  var _onAuthUnsubscribe;
-  StreamController<AuthEvent> _changeController;
+  Func0 _onAuthUnsubscribe;
+  StreamController<User> _changeController;
 
-  /// Stream for an auth state changed event.
-  Stream<AuthEvent> get onAuthStateChanged {
+  /// Sends events when the users sign-in state changes.
+  ///
+  /// If the value is `null`, there is no signed-in user.
+  Stream<User> get onAuthStateChanged {
     if (_changeController == null) {
       var nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
-        _changeController.add(
-            new AuthEvent((user != null) ? new User.fromJsObject(user) : null));
+        _changeController
+            .add(user != null ? new User.fromJsObject(user) : null);
       });
 
       var errorWrapper = allowInterop((e) => _changeController.addError(e));
@@ -202,7 +205,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
         _onAuthUnsubscribe();
       }
 
-      _changeController = new StreamController<AuthEvent>.broadcast(
+      _changeController = new StreamController<User>.broadcast(
           onListen: startListen, onCancel: stopListen, sync: true);
     }
     return _changeController.stream;
@@ -496,15 +499,6 @@ class PhoneAuthProvider extends AuthProvider<PhoneAuthProviderJsImpl> {
   //(TODO)
   // https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider#.credential
   // credential
-}
-
-/// Event propagated in Stream controllers when an auth state changes.
-class AuthEvent {
-  /// The user.
-  final User user;
-
-  /// Creates a new AuthEvent with user.
-  AuthEvent(this.user);
 }
 
 /// A structure containing a [User], an [AuthCredential] and [operationType].

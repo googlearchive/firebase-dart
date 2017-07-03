@@ -2,6 +2,10 @@
 
 * Upgraded to Firebase JS API `4.1.3`.
 
+* Breaking changes
+  * The value in `Auth.onAuthStateChanged` is now `User`. `AuthEvent` has been 
+    removed.
+
 * Removed deprecated APIs: 
     * `User`
         * `link` method in favor of `linkWithCredential`.

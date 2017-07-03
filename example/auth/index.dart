@@ -57,7 +57,7 @@ class AuthApp {
     }
 
     // When auth state changes
-    auth.onAuthStateChanged.listen((e) => _setLayout(e.user));
+    auth.onAuthStateChanged.listen((e) => _setLayout(e));
 
     verifyEmail.onClick.listen((e) async {
       verifyEmail.disabled = true;
