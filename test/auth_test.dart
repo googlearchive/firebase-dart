@@ -307,6 +307,18 @@ void main() {
           throwsToString(contains(
               'The password is invalid or the user does not have a password')));
     });
+
+    test("signInAndRetrieveDataWithCredential", () async {
+      user =
+          await authValue.createUserWithEmailAndPassword(userEmail, "janicka");
+
+      var credential = EmailAuthProvider.credential(userEmail, "janicka");
+
+      var userCred =
+          await authValue.signInAndRetrieveDataWithCredential(credential);
+
+      expect(userCred.operationType, 'signIn');
+    });
   });
 
   group('registered user', () {

@@ -255,6 +255,12 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   Future sendPasswordResetEmail(String email) =>
       handleThenable(jsObject.sendPasswordResetEmail(email));
 
+  Future<UserCredential> signInAndRetrieveDataWithCredential(
+          AuthCredential credential) =>
+      handleThenableWithMapper(
+          jsObject.signInAndRetrieveDataWithCredential(credential),
+          (uc) => new UserCredential.fromJsObject(uc));
+
   /// Signs in as an anonymous user. If an anonymous user is already
   /// signed in, that user will be returned. In other case, new anonymous
   /// [User] identity is created and returned.
@@ -521,36 +527,11 @@ class UserCredential extends JsObjectWrapper<UserCredentialJsImpl> {
     return _user;
   }
 
-  /// Sets the user to [u].
-  void set user(User u) {
-    _user = u;
-    jsObject.user = u.jsObject;
-  }
-
   /// Returns the auth credential.
   AuthCredential get credential => jsObject.credential;
 
-  /// Sets the auth credential to [c].
-  void set credential(AuthCredential c) {
-    jsObject.credential = c;
-  }
-
   /// Returns the operation type.
   String get operationType => jsObject.operationType;
-
-  /// Sets the operation type to [t].
-  void set operationType(String t) {
-    jsObject.operationType = t;
-  }
-
-  /// Creates a new UserCredential with optional [user], [credential]
-  /// and [operationType].
-  factory UserCredential(
-          {User user, AuthCredential credential, String operationType}) =>
-      new UserCredential.fromJsObject(new UserCredentialJsImpl(
-          user: user.jsObject,
-          credential: credential,
-          operationType: operationType));
 
   /// Creates a new UserCredential from a [jsObject].
   UserCredential.fromJsObject(UserCredentialJsImpl jsObject)

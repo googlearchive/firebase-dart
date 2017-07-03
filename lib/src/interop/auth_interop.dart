@@ -21,7 +21,6 @@ abstract class AuthJsImpl {
   external Func0 onAuthStateChanged(nextOrObserver,
       [Func1 opt_error, Func0 opt_completed]);
   external PromiseJsImpl sendPasswordResetEmail(String email);
-  @Deprecated('not impld')
   external PromiseJsImpl<UserCredentialJsImpl>
       signInAndRetrieveDataWithCredential(AuthCredential credential);
   external PromiseJsImpl<UserJsImpl> signInAnonymously();
@@ -138,16 +137,21 @@ class ActionCodeEmail {
   external String get email;
 }
 
+/// https://firebase.google.com/docs/reference/js/firebase.auth#.UserCredential
 @JS()
 @anonymous
 class UserCredentialJsImpl {
+  external AdditionalUserInfoJsImpl get additionalUserInfo;
   external UserJsImpl get user;
-  external void set user(UserJsImpl u);
   external AuthCredential get credential;
-  external void set credential(AuthCredential c);
   external String get operationType;
-  external void set operationType(String t);
+}
 
-  external factory UserCredentialJsImpl(
-      {UserJsImpl user, AuthCredential credential, String operationType});
+/// https://firebase.google.com/docs/reference/js/firebase.auth#.AdditionalUserInfo
+@JS()
+@anonymous
+class AdditionalUserInfoJsImpl {
+  external String get providerId;
+  external Object get profile;
+  external String get username;
 }
