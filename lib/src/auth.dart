@@ -165,6 +165,9 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
       handleThenable(jsObject.updateProfile(profile));
 
   Map<String, dynamic> toJson() => dartify(jsObject.toJSON());
+
+  @override
+  String toString() => 'User: $uid';
 }
 
 /// The Firebase Auth service class.
@@ -215,18 +218,52 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
       var errorWrapper = allowInterop((e) => _changeController.addError(e));
 
       void startListen() {
+        assert(_onAuthUnsubscribe == null);
         _onAuthUnsubscribe =
             jsObject.onAuthStateChanged(nextWrapper, errorWrapper);
       }
 
       void stopListen() {
         _onAuthUnsubscribe();
+        _onAuthUnsubscribe = null;
       }
 
       _changeController = new StreamController<User>.broadcast(
           onListen: startListen, onCancel: stopListen, sync: true);
     }
     return _changeController.stream;
+  }
+
+  Func0 _onIdTokenChangedUnsubscribe;
+  StreamController<User> _idTokenChangedController;
+
+  /// Sends events when the signed-in user's ID token, which includes sign-in,
+  /// sign-out, and token refresh events.
+  Stream<User> get onIdTokenChanged {
+    if (_idTokenChangedController == null) {
+      var nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
+        _idTokenChangedController
+            .add(user != null ? new User.fromJsObject(user) : null);
+      });
+
+      var errorWrapper =
+          allowInterop((e) => _idTokenChangedController.addError(e));
+
+      void startListen() {
+        assert(_onIdTokenChangedUnsubscribe == null);
+        _onIdTokenChangedUnsubscribe =
+            jsObject.onIdTokenChanged(nextWrapper, errorWrapper);
+      }
+
+      void stopListen() {
+        _onIdTokenChangedUnsubscribe();
+        _onIdTokenChangedUnsubscribe = null;
+      }
+
+      _idTokenChangedController = new StreamController<User>.broadcast(
+          onListen: startListen, onCancel: stopListen, sync: true);
+    }
+    return _idTokenChangedController.stream;
   }
 
   /// Creates a new Auth from a [jsObject].

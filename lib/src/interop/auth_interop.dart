@@ -20,6 +20,8 @@ abstract class AuthJsImpl {
   external PromiseJsImpl<UserCredentialJsImpl> getRedirectResult();
   external Func0 onAuthStateChanged(nextOrObserver,
       [Func1 opt_error, Func0 opt_completed]);
+  external Func0 onIdTokenChanged(nextOrObserver,
+      [Func1 opt_error, Func0 opt_completed]);
   external PromiseJsImpl sendPasswordResetEmail(String email);
   external PromiseJsImpl<UserCredentialJsImpl>
       signInAndRetrieveDataWithCredential(AuthCredential credential);

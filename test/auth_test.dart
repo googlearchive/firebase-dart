@@ -208,8 +208,10 @@ void main() {
     User user;
     String userEmail;
     User lastAuthEventUser;
+    User lastIdTokenChangedUser;
 
     StreamSubscription authStateChangeSubscription;
+    StreamSubscription idTokenChangedSubscription;
 
     setUp(() {
       authValue = auth();
@@ -221,11 +223,22 @@ void main() {
       expect(lastAuthEventUser, isNull);
       expect(authStateChangeSubscription, isNull);
 
+      expect(lastIdTokenChangedUser, isNull);
+      expect(idTokenChangedSubscription, isNull);
+
       authStateChangeSubscription =
           authValue.onAuthStateChanged.listen((event) {
         lastAuthEventUser = event;
       }, onError: (e, stack) {
         print("AuthStateError! $e $stack");
+      }, onDone: () {
+        //print("done!");
+      });
+
+      idTokenChangedSubscription = authValue.onIdTokenChanged.listen((event) {
+        lastIdTokenChangedUser = event;
+      }, onError: (e, stack) {
+        print("IdToken error! $e $stack");
       }, onDone: () {
         //print("done!");
       });
@@ -242,6 +255,11 @@ void main() {
         await authStateChangeSubscription.cancel();
         authStateChangeSubscription = null;
         lastAuthEventUser = null;
+      }
+
+      if (idTokenChangedSubscription != null) {
+        await idTokenChangedSubscription.cancel();
+        authStateChangeSubscription = null;
       }
     });
 
@@ -349,6 +367,7 @@ void main() {
 
         expect(lastAuthEventUser, isNotNull);
         expect(lastAuthEventUser.email, userEmail);
+        expect(lastIdTokenChangedUser.email, userEmail);
 
         expect(authValue.currentUser, isNotNull);
         expect(authValue.currentUser.email, userEmail);
@@ -373,12 +392,26 @@ void main() {
       user =
           await authValue.createUserWithEmailAndPassword(userEmail, "janicka");
 
+      // at this point, we should have the same refresh tokens for "everything"
+      expect(lastAuthEventUser, isNotNull);
+      expect(lastIdTokenChangedUser, isNotNull);
+
+      lastAuthEventUser = null;
+      lastIdTokenChangedUser = null;
+
       var credential = EmailAuthProvider.credential(userEmail, "janicka");
 
       var userCred =
           await authValue.signInAndRetrieveDataWithCredential(credential);
 
       expect(userCred.operationType, 'signIn');
+
+      // at this point, the `lastIdTokenChangedUser` should be different
+      // it's newer!
+      expect(lastAuthEventUser, isNull,
+          reason: 'Not updated with signInAndRetrieveDataWithCredential');
+      expect(lastIdTokenChangedUser, isNotNull,
+          reason: 'Is updated with signInAndRetrieveDataWithCredential');
     });
   });
 
