@@ -16,7 +16,7 @@
 * `User`: added `getIdToken`, `reauthenticateAndRetrieveDataWithCredential`,
   `linkAndRetrieveDataWithCredential`, and `toJson()`.
 
-* Added `Auth.signInAndRetrieveDataWithCredential`.
+* `Auth`: added `signInAndRetrieveDataWithCredential` and `onIdTokenChanged`.
 
 ## 3.2.1
 
