@@ -260,6 +260,7 @@ void main() {
       if (idTokenChangedSubscription != null) {
         await idTokenChangedSubscription.cancel();
         idTokenChangedSubscription = null;
+        lastIdTokenChangedUser = null;
       }
     });
 
