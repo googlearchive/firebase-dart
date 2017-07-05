@@ -259,7 +259,7 @@ void main() {
 
       if (idTokenChangedSubscription != null) {
         await idTokenChangedSubscription.cancel();
-        authStateChangeSubscription = null;
+        idTokenChangedSubscription = null;
       }
     });
 
