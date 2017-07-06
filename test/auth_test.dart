@@ -2,11 +2,25 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:core' hide print;
+import 'dart:core' as core show print;
+import 'dart:html';
 
 import 'package:firebase/firebase.dart';
 import 'package:firebase/src/assets/assets.dart';
 import 'package:test/test.dart';
 import 'test_util.dart';
+
+/// A nice util to include timing with print calls
+void print(obj) => core.print(
+    [(window.performance.now() * 100).toInt() / (100 * 1000), obj].join('\t'));
+
+/// Wait for 500ms
+Future _wait() async {
+  //print("waiting...");
+  await new Future.delayed(const Duration(milliseconds: 500));
+  //print("waited...");
+}
 
 void main() {
   App app;
@@ -229,6 +243,7 @@ void main() {
       authStateChangeSubscription =
           authValue.onAuthStateChanged.listen((event) {
         lastAuthEventUser = event;
+        //print('authstate - $event');
       }, onError: (e, stack) {
         print("AuthStateError! $e $stack");
       }, onDone: () {
@@ -393,6 +408,9 @@ void main() {
       user =
           await authValue.createUserWithEmailAndPassword(userEmail, "janicka");
 
+      // Firefox takes a second to get the event values that are checked below
+      await _wait();
+
       // at this point, we should have the same refresh tokens for "everything"
       expect(lastAuthEventUser, isNotNull);
       expect(lastIdTokenChangedUser, isNotNull);
@@ -404,6 +422,9 @@ void main() {
 
       var userCred =
           await authValue.signInAndRetrieveDataWithCredential(credential);
+
+      // Firefox takes a second to get the event values that are checked below
+      await _wait();
 
       expect(userCred.operationType, 'signIn');
 
