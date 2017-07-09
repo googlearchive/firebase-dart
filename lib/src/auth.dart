@@ -200,6 +200,9 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
 
   /// Sends events when the users sign-in state changes.
   ///
+  /// After 4.0.0, this is only triggered on sign-in or sign-out.
+  /// To keep the old behavior, see [onIdTokenChanged].
+  ///
   /// If the value is `null`, there is no signed-in user.
   Stream<User> get onAuthStateChanged {
     if (_changeController == null) {
@@ -229,8 +232,12 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   Func0 _onIdTokenChangedUnsubscribe;
   StreamController<User> _idTokenChangedController;
 
-  /// Sends events when the signed-in user's ID token, which includes sign-in,
-  /// sign-out, and token refresh events.
+  /// Sends events for changes to the signed-in user's ID token,
+  /// which includes sign-in, sign-out, and token refresh events.
+  ///
+  /// This method has the same behavior as [onAuthStateChanged] had prior to 4.0.0.
+  ///
+  /// If the value is `null`, there is no signed-in user.
   Stream<User> get onIdTokenChanged {
     if (_idTokenChangedController == null) {
       var nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
