@@ -349,6 +349,23 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
       handleThenableWithMapper(
           jsObject.signInWithEmailAndPassword(email, password), User.get);
 
+  /// Asynchronously signs in using a phone number in E.164 format
+  /// (e.g. +16505550101).
+  ///
+  /// This method sends a code via SMS to the given phone number, and returns
+  /// a [ConfirmationResult].
+  /// After the user provides the code sent to their phone, call
+  /// [ConfirmationResult.confirm] with the code to sign the user in.
+  ///
+  /// For abuse prevention, this method also requires a [ApplicationVerifier].
+  /// The Firebase Auth SDK includes a reCAPTCHA-based implementation, [RecaptchaVerifier].
+  Future<ConfirmationResult> signInWithPhoneNumber(
+          String phoneNumber, ApplicationVerifier applicationVerifier) =>
+      handleThenableWithMapper(
+          jsObject.signInWithPhoneNumber(
+              phoneNumber, applicationVerifier.jsObject),
+          (c) => new ConfirmationResult.fromJsObject(c));
+
   /// Signs in using a popup-based OAuth authentication flow with the
   /// given [provider].
   /// Returns [UserCredential] if successful, or an error object if unsuccessful.
@@ -552,13 +569,74 @@ class PhoneAuthProvider extends AuthProvider<PhoneAuthProviderJsImpl> {
   PhoneAuthProvider.fromJsObject(PhoneAuthProviderJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  //(TODO)
-  // https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider#verifyPhoneNumber
-  // verifyPhoneNumber
+//(TODO)
+// https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider#verifyPhoneNumber
+// verifyPhoneNumber
 
-  //(TODO)
-  // https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider#.credential
-  // credential
+//(TODO)
+// https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider#.credential
+// credential
+}
+
+/// A verifier for domain verification and abuse prevention.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.ApplicationVerifier>
+abstract class ApplicationVerifier<T extends ApplicationVerifierJsImpl>
+    extends JsObjectWrapper<T> {
+  /// Returns the type of application verifier (e.g. "recaptcha").
+  String get type => jsObject.type;
+
+  /// Creates a new ApplicationVerifier from a [jsObject].
+  ApplicationVerifier.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
+
+  /// Executes the verification process.
+  /// Returns a Future containing string for a token that can be used to
+  /// assert the validity of a request.
+  Future<String> verify() => handleThenable(jsObject.verify());
+}
+
+/// reCAPTCHA verifier.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.RecaptchaVerifier>
+/// See: <https://www.google.com/recaptcha/>
+class RecaptchaVerifier extends ApplicationVerifier<RecaptchaVerifierJsImpl> {
+  // TODO what if there is a callback in the parameters?
+  /// Creates a new RecaptchaVerifier from [container], [parameters] and [app].
+  factory RecaptchaVerifier(container,
+          [Map<String, dynamic> parameters, App app]) =>
+      new RecaptchaVerifier.fromJsObject(new RecaptchaVerifierJsImpl(
+          container, jsify(parameters), app?.jsObject));
+
+  /// Creates a new RecaptchaVerifier from a [jsObject].
+  RecaptchaVerifier.fromJsObject(RecaptchaVerifierJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+
+  /// Clears the reCAPTCHA widget from the page and destroys the current instance.
+  clear() => jsObject.clear();
+
+  /// Renders the reCAPTCHA widget on the page.
+  /// Returns a Future that resolves with the reCAPTCHA widget ID.
+  Future<num> render() => handleThenable(jsObject.render());
+}
+
+/// A result from a phone number sign-in, link, or reauthenticate call.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.ConfirmationResult>
+class ConfirmationResult extends JsObjectWrapper<ConfirmationResultJsImpl> {
+  /// Returns the phone number authentication operation's verification ID.
+  /// This can be used along with the verification code to initialize a phone
+  /// auth credential.
+  String get verificationId => jsObject.verificationId;
+
+  /// Creates a new ConfirmationResult from a [jsObject].
+  ConfirmationResult.fromJsObject(ConfirmationResultJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+
+  /// Finishes a phone number sign-in, link, or reauthentication, given
+  /// the code that was sent to the user's mobile device.
+  Future<UserCredential> confirm(String verificationCode) =>
+      handleThenableWithMapper(jsObject.confirm(verificationCode),
+          (u) => new UserCredential.fromJsObject(u));
 }
 
 /// A structure containing a [User], an [AuthCredential] and [operationType].
