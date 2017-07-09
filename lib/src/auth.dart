@@ -557,25 +557,39 @@ class TwitterAuthProvider extends AuthProvider<TwitterAuthProviderJsImpl> {
       TwitterAuthProviderJsImpl.credential(token, secret);
 }
 
-/// Phone auth provider.
+/// Phone number auth provider.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider>.
 class PhoneAuthProvider extends AuthProvider<PhoneAuthProviderJsImpl> {
   static String get PROVIDER_ID => PhoneAuthProviderJsImpl.PROVIDER_ID;
 
-  factory PhoneAuthProvider() =>
-      new PhoneAuthProvider.fromJsObject(new PhoneAuthProviderJsImpl());
+  /// Creates a new PhoneAuthProvider with the optional [Auth] instance
+  /// in which sign-ins should occur.
+  factory PhoneAuthProvider([Auth auth]) => new PhoneAuthProvider.fromJsObject(
+      new PhoneAuthProviderJsImpl(auth?.jsObject));
 
+  /// Creates a new PhoneAuthProvider from a [jsObject].
   PhoneAuthProvider.fromJsObject(PhoneAuthProviderJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-//(TODO)
-// https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider#verifyPhoneNumber
-// verifyPhoneNumber
+  /// Starts a phone number authentication flow by sending a verification code
+  /// to the given [phoneNumber] in E.164 format (e.g. +16505550101).
+  /// Returns an ID that can be passed to [PhoneAuthProvider.credential]
+  /// to identify this flow.
+  ///
+  /// For abuse prevention, this method also requires an [ApplicationVerifier].
+  Future<String> verifyPhoneNumber(
+      String phoneNumber, ApplicationVerifier applicationVerifier) =>
+      handleThenable(jsObject.verifyPhoneNumber(
+          phoneNumber, applicationVerifier.jsObject));
 
-//(TODO)
-// https://firebase.google.com/docs/reference/js/firebase.auth.PhoneAuthProvider#.credential
-// credential
+  /// Creates a phone auth credential given the verification ID
+  /// from [verifyPhoneNumber] and the [verificationCode] that was sent to the
+  /// user's mobile device.
+  static Future<AuthCredential> credential(
+          String verificationId, String verificationCode) =>
+      handleThenable(
+          PhoneAuthProviderJsImpl.credential(verificationId, verificationCode));
 }
 
 /// A verifier for domain verification and abuse prevention.

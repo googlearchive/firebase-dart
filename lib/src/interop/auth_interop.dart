@@ -104,9 +104,9 @@ class TwitterAuthProviderJsImpl extends AuthProviderJsImpl {
 class PhoneAuthProviderJsImpl extends AuthProviderJsImpl {
   external factory PhoneAuthProviderJsImpl([AuthJsImpl auth]);
   external static String get PROVIDER_ID;
-  external PromiseJsImpl verifyPhoneNumber(
+  external PromiseJsImpl<String> verifyPhoneNumber(
       String phoneNumber, ApplicationVerifierJsImpl applicationVerifier);
-  external static AuthCredential credential(
+  external static PromiseJsImpl<AuthCredential> credential(
       String verificationId, String verificationCode);
 }
 
