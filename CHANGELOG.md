@@ -17,6 +17,7 @@
   `linkAndRetrieveDataWithCredential`, and `toJson()`.
 
 * `Auth`: added `signInAndRetrieveDataWithCredential` and `onIdTokenChanged`.
+    * Implemented `PhoneAuthProvider` and `RecaptchaVerifier`.
 
 ## 3.2.1
 
