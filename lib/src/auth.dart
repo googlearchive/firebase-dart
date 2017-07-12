@@ -177,6 +177,7 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   Future updateProfile(firebase_interop.UserProfile profile) =>
       handleThenable(jsObject.updateProfile(profile));
 
+  /// Returns a JSON-serializable representation of this object.
   Map<String, dynamic> toJson() => dartify(jsObject.toJSON());
 
   @override
@@ -565,8 +566,10 @@ class PhoneAuthProvider extends AuthProvider<PhoneAuthProviderJsImpl> {
 
   /// Creates a new PhoneAuthProvider with the optional [Auth] instance
   /// in which sign-ins should occur.
-  factory PhoneAuthProvider([Auth auth]) => new PhoneAuthProvider.fromJsObject(
-      new PhoneAuthProviderJsImpl(auth?.jsObject));
+  factory PhoneAuthProvider([Auth auth]) =>
+      new PhoneAuthProvider.fromJsObject((auth != null)
+          ? new PhoneAuthProviderJsImpl(auth.jsObject)
+          : new PhoneAuthProviderJsImpl());
 
   /// Creates a new PhoneAuthProvider from a [jsObject].
   PhoneAuthProvider.fromJsObject(PhoneAuthProviderJsImpl jsObject)
@@ -579,17 +582,16 @@ class PhoneAuthProvider extends AuthProvider<PhoneAuthProviderJsImpl> {
   ///
   /// For abuse prevention, this method also requires an [ApplicationVerifier].
   Future<String> verifyPhoneNumber(
-      String phoneNumber, ApplicationVerifier applicationVerifier) =>
+          String phoneNumber, ApplicationVerifier applicationVerifier) =>
       handleThenable(jsObject.verifyPhoneNumber(
           phoneNumber, applicationVerifier.jsObject));
 
   /// Creates a phone auth credential given the verification ID
   /// from [verifyPhoneNumber] and the [verificationCode] that was sent to the
   /// user's mobile device.
-  static Future<AuthCredential> credential(
+  static AuthCredential credential(
           String verificationId, String verificationCode) =>
-      handleThenable(
-          PhoneAuthProviderJsImpl.credential(verificationId, verificationCode));
+      PhoneAuthProviderJsImpl.credential(verificationId, verificationCode);
 }
 
 /// A verifier for domain verification and abuse prevention.
@@ -618,8 +620,14 @@ class RecaptchaVerifier extends ApplicationVerifier<RecaptchaVerifierJsImpl> {
   /// Creates a new RecaptchaVerifier from [container], [parameters] and [app].
   factory RecaptchaVerifier(container,
           [Map<String, dynamic> parameters, App app]) =>
-      new RecaptchaVerifier.fromJsObject(new RecaptchaVerifierJsImpl(
-          container, jsify(parameters), app?.jsObject));
+      (parameters != null)
+          ? ((app != null)
+              ? new RecaptchaVerifier.fromJsObject(new RecaptchaVerifierJsImpl(
+                  container, jsify(parameters), app.jsObject))
+              : new RecaptchaVerifier.fromJsObject(
+                  new RecaptchaVerifierJsImpl(container, jsify(parameters))))
+          : new RecaptchaVerifier.fromJsObject(
+              new RecaptchaVerifierJsImpl(container));
 
   /// Creates a new RecaptchaVerifier from a [jsObject].
   RecaptchaVerifier.fromJsObject(RecaptchaVerifierJsImpl jsObject)

@@ -106,7 +106,8 @@ class PhoneAuthProviderJsImpl extends AuthProviderJsImpl {
   external static String get PROVIDER_ID;
   external PromiseJsImpl<String> verifyPhoneNumber(
       String phoneNumber, ApplicationVerifierJsImpl applicationVerifier);
-  external static PromiseJsImpl<AuthCredential> credential(
+  // TODO official documentation says PromiseJsImpl<AuthCredential> return type
+  external static AuthCredential credential(
       String verificationId, String verificationCode);
 }
 

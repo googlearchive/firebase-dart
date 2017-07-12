@@ -44,6 +44,48 @@ void main() {
     }
   });
 
+  group('verifiers', () {
+    DivElement el;
+
+    group('Recaptcha', () {
+      setUp(() {
+        el = document.createElement("div")..id = "test-recaptcha";
+        document.body.append(el);
+      });
+
+      tearDown(() {
+        el.remove();
+      });
+
+      test('type', () {
+        var verifier = new RecaptchaVerifier("test-recaptcha");
+        expect(verifier.type, "recaptcha");
+      });
+
+      test('render', () async {
+        var verifier = new RecaptchaVerifier("test-recaptcha");
+        await verifier.render();
+
+        var iframe = document.querySelector("#test-recaptcha iframe");
+        expect(iframe, isNotNull);
+        expect(iframe.getAttribute("src"), contains("recaptcha"));
+      });
+
+      test('clear', () async {
+        var verifier = new RecaptchaVerifier("test-recaptcha");
+        await verifier.render();
+
+        var iframe = document.querySelector("#test-recaptcha iframe");
+        expect(iframe, isNotNull);
+
+        verifier.clear();
+
+        iframe = document.querySelector("#test-recaptcha iframe");
+        expect(iframe, isNull);
+      });
+    });
+  });
+
   group('providers', () {
     group('Email', () {
       test('PROVIDER_ID', () {
@@ -163,12 +205,10 @@ void main() {
         var provider = new PhoneAuthProvider();
         expect(provider.providerId, PhoneAuthProvider.PROVIDER_ID);
       });
-
-      /*
       test('credential', () {
-        var cred = PhoneAuthProvider.credential('token', 'secret');
-        expect(cred.providerId, equals(TwitterAuthProvider.PROVIDER_ID));
-      });*/
+        var cred = PhoneAuthProvider.credential('id', 'code');
+        expect(cred.providerId, equals(PhoneAuthProvider.PROVIDER_ID));
+      });
     });
   });
 
@@ -469,6 +509,35 @@ void main() {
         var profile = new UserProfile(displayName: "Other User");
         await user.updateProfile(profile);
         expect(user.displayName, "Other User");
+      } on FirebaseError catch (e) {
+        printException(e);
+        rethrow;
+      }
+    });
+
+    test('toJson', () async {
+      try {
+        expect(user, isNotNull);
+
+        var profile = new UserProfile(
+            displayName: "Other User", photoURL: "http://google.com");
+        await user.updateProfile(profile);
+
+        var userMap = user.toJson();
+        expect(userMap, isNotNull);
+        expect(userMap, isNotEmpty);
+        expect(userMap["displayName"], "Other User");
+        expect(userMap["photoURL"], "http://google.com");
+
+        await authValue.signOut();
+        await authValue.signInAnonymously();
+        user = authValue.currentUser;
+
+        userMap = user.toJson();
+        expect(userMap, isNotNull);
+        expect(userMap, isNotEmpty);
+        expect(userMap["displayName"], isNot("Other User"));
+        expect(userMap["photoURL"], isNot("http://google.com"));
       } on FirebaseError catch (e) {
         printException(e);
         rethrow;
