@@ -330,7 +330,8 @@ void main() {
         // See https://en.wikipedia.org/wiki/JSON_Web_Token
         var split = token.split('.').map((t) {
           // If `t.length` is not a multiple of 4, pad it to the right w/ `=`.
-          var remainder = (4 - t.length % 4);
+          var originalLength = t.length;
+          var remainder = (originalLength / 4).ceil() * 4 - originalLength;
           t = "$t${'='* remainder}";
           return BASE64URL.decode(t);
         }).toList();
