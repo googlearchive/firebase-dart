@@ -72,6 +72,7 @@ abstract class QueryJsImpl {
   external Object toJSON();
   @override
   external String toString();
+  external Object toJSON();
 }
 
 @JS('DataSnapshot')
