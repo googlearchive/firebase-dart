@@ -58,6 +58,11 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   /// Refresh token for the user account.
   String get refreshToken => jsObject.refreshToken;
 
+  /// The phone number normalized based on the E.164 standard (e.g. +16505550101)
+  /// for the current user. This is [:null:] if the user has no phone credential
+  /// linked to the account.
+  String get phoneNumber => jsObject.phoneNumber;
+
   /// Creates a new User from a [jsObject].
   ///
   /// If an instance of [User] is already associated with [jsObject], it is
@@ -107,6 +112,15 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
       handleThenableWithMapper(
           jsObject.linkWithCredential(credential), User.get);
 
+  /// Links the user account with the given [phoneNumber] in E.164 format
+  /// (e.g. +16505550101) and [applicationVerifier].
+  Future<ConfirmationResult> linkWithPhoneNumber(
+          String phoneNumber, ApplicationVerifier applicationVerifier) =>
+      handleThenableWithMapper(
+          jsObject.linkWithPhoneNumber(
+              phoneNumber, applicationVerifier.jsObject),
+          (c) => new ConfirmationResult.fromJsObject(c));
+
   /// Links the authenticated [provider] to the user account using
   /// a pop-up based OAuth flow.
   /// It returns the [UserCredential] information if linking is successful.
@@ -128,6 +142,18 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
       handleThenableWithMapper(
           jsObject.reauthenticateAndRetrieveDataWithCredential(credential),
           (o) => new UserCredential.fromJsObject(o));
+
+  /// Re-authenticates a user using a fresh credential.
+  /// Use before operations such as [updatePassword] that require tokens
+  /// from recent sign-in attempts.
+  ///
+  /// The user's phone number is in E.164 format (e.g. +16505550101).
+  Future<ConfirmationResult> reauthenticateWithPhoneNumber(
+          String phoneNumber, ApplicationVerifier applicationVerifier) =>
+      handleThenableWithMapper(
+          jsObject.reauthenticateWithPhoneNumber(
+              phoneNumber, applicationVerifier.jsObject),
+          (c) => new ConfirmationResult.fromJsObject(c));
 
   /// Re-authenticates a user using a fresh [credential]. Should be used
   /// before operations such as [updatePassword()] that require tokens
@@ -168,6 +194,10 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   /// to authenticate again and then use [reauthenticate()].
   Future updatePassword(String newPassword) =>
       handleThenable(jsObject.updatePassword(newPassword));
+
+  /// Updates the user's phone number.
+  Future updatePhoneNumber(AuthCredential phoneCredential) =>
+      handleThenable(jsObject.updatePhoneNumber(phoneCredential));
 
   /// Updates a user's [profile] data.
   /// UserProfile has a displayName and photoURL.

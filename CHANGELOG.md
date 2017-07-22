@@ -4,6 +4,9 @@
 * Added more tests for V4 API.
 * `Auth`:
     * Implemented `PhoneAuthProvider` and `RecaptchaVerifier`.
+* `User`:
+    * Added `phoneNumber` property.
+    * Added `linkWithPhoneNumber`, `updatePhoneNumber` and `reauthenticateWithPhoneNumber` methods.
 
 ## 4.0.0
 

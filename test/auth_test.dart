@@ -357,6 +357,7 @@ void main() {
             userEmail, "janicka");
         expect(user, isNotNull);
         expect(user.email, userEmail);
+        expect(user.phoneNumber, isNull);
       } on FirebaseError catch (e) {
         printException(e);
         rethrow;

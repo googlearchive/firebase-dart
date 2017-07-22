@@ -36,8 +36,8 @@ abstract class UserJsImpl extends UserInfoJsImpl {
   external bool get isAnonymous;
   external List<UserInfoJsImpl> get providerData;
   external String get refreshToken;
-  external PromiseJsImpl delete();
   external String get phoneNumber;
+  external PromiseJsImpl delete();
   @Deprecated('Use `getIdToken` instead.')
   external PromiseJsImpl<String> getToken([bool opt_forceRefresh]);
   external PromiseJsImpl<String> getIdToken([bool opt_forceRefresh]);
@@ -45,7 +45,7 @@ abstract class UserJsImpl extends UserInfoJsImpl {
       linkAndRetrieveDataWithCredential(AuthCredential credential);
   external PromiseJsImpl<UserJsImpl> linkWithCredential(
       AuthCredential credential);
-  external PromiseJsImpl linkWithPhoneNumber(
+  external PromiseJsImpl<ConfirmationResultJsImpl> linkWithPhoneNumber(
       String phoneNumber, ApplicationVerifierJsImpl applicationVerifier);
   external PromiseJsImpl<UserCredentialJsImpl> linkWithPopup(
       AuthProviderJsImpl provider);
@@ -54,8 +54,9 @@ abstract class UserJsImpl extends UserInfoJsImpl {
       AuthCredential credential);
   external PromiseJsImpl reauthenticateAndRetrieveDataWithCredential(
       AuthCredential credential);
-  external PromiseJsImpl reauthenticateWithPhoneNumber(
-      String phoneNumber, ApplicationVerifierJsImpl applicationVerifier);
+  external PromiseJsImpl<ConfirmationResultJsImpl>
+      reauthenticateWithPhoneNumber(
+          String phoneNumber, ApplicationVerifierJsImpl applicationVerifier);
   external PromiseJsImpl<UserCredentialJsImpl> reauthenticateWithPopup(
       AuthProviderJsImpl provider);
   external PromiseJsImpl reauthenticateWithRedirect(
