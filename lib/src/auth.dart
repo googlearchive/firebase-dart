@@ -710,7 +710,8 @@ class UserCredential extends JsObjectWrapper<UserCredentialJsImpl> {
   String get operationType => jsObject.operationType;
 
   /// Returns additional user information from a federated identity provider.
-  AdditionalUserInfoJsImpl get additionalUserInfo => jsObject.additionalUserInfo;
+  AdditionalUserInfoJsImpl get additionalUserInfo =>
+      jsObject.additionalUserInfo;
 
   /// Creates a new UserCredential from a [jsObject].
   UserCredential.fromJsObject(UserCredentialJsImpl jsObject)
