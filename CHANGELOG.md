@@ -1,6 +1,9 @@
 ## 4.1.0
 
 * Added `toJson` to `DataSnapshot` and `Query`. 
+* Added more tests for V4 API.
+* `Auth`:
+    * Implemented `PhoneAuthProvider` and `RecaptchaVerifier`.
 
 ## 4.0.0
 
@@ -21,7 +24,6 @@
   `linkAndRetrieveDataWithCredential`, and `toJson()`.
 
 * `Auth`: added `signInAndRetrieveDataWithCredential` and `onIdTokenChanged`.
-    * Implemented `PhoneAuthProvider` and `RecaptchaVerifier`.
 
 ## 3.2.1
 
