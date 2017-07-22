@@ -23,7 +23,6 @@ main() async {
 
 class PhoneAuthApp {
   final fb.Auth auth;
-  final fb.RecaptchaVerifier verifier;
 
   final FormElement registerForm, verificationForm;
   final InputElement phone, code;
@@ -31,22 +30,22 @@ class PhoneAuthApp {
   final TableElement authInfo;
   final ParagraphElement error;
 
+  fb.RecaptchaVerifier verifier;
   fb.ConfirmationResult _confirmationResult;
 
   PhoneAuthApp()
       : this.auth = fb.auth(),
-        this.verifier =
-            new fb.RecaptchaVerifier("recaptcha-container"),
         this.logout = querySelector("#logout_btn"),
         this.error = querySelector(".error"),
         this.authInfo = querySelector("#auth_info"),
         this.phone = querySelector("#phone"),
         this.code = querySelector("#code"),
         this.registerForm = querySelector("#register_form"),
-        this.verificationForm = querySelector("#verification_form"){
+        this.verificationForm = querySelector("#verification_form") {
     logout.onClick.listen((e) {
       e.preventDefault();
       auth.signOut();
+      _resetVerifier();
     });
 
     this.registerForm.onSubmit.listen((e) {
@@ -65,11 +64,20 @@ class PhoneAuthApp {
     if (auth.currentUser != null) {
       _setLayout(auth.currentUser);
     } else {
-      this.verifier.render();
+      _initVerifier();
     }
 
     // When auth state changes
     auth.onAuthStateChanged.listen((e) => _setLayout(e));
+  }
+
+  _initVerifier() {
+    verifier = new fb.RecaptchaVerifier("recaptcha-container")..render();
+  }
+
+  _resetVerifier() {
+    verifier.clear();
+    _initVerifier();
   }
 
   _registerUser(String phone) async {
