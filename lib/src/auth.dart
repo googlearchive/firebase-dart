@@ -697,6 +697,8 @@ class ConfirmationResult extends JsObjectWrapper<ConfirmationResultJsImpl> {
 /// A structure containing a [User], an [AuthCredential] and [operationType].
 /// operationType could be 'signIn' for a sign-in operation, 'link' for a
 /// linking operation and 'reauthenticate' for a reauthentication operation.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth#.UserCredential>
 class UserCredential extends JsObjectWrapper<UserCredentialJsImpl> {
   /// Returns the user.
   User get user => User.get(jsObject.user);
@@ -706,6 +708,9 @@ class UserCredential extends JsObjectWrapper<UserCredentialJsImpl> {
 
   /// Returns the operation type.
   String get operationType => jsObject.operationType;
+
+  /// Returns additional user information from a federated identity provider.
+  AdditionalUserInfoJsImpl get additionalUserInfo => jsObject.additionalUserInfo;
 
   /// Creates a new UserCredential from a [jsObject].
   UserCredential.fromJsObject(UserCredentialJsImpl jsObject)

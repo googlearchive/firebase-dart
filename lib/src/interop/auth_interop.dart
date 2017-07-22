@@ -160,10 +160,10 @@ class ActionCodeEmail {
 @JS()
 @anonymous
 class UserCredentialJsImpl {
-  external AdditionalUserInfoJsImpl get additionalUserInfo;
   external UserJsImpl get user;
   external AuthCredential get credential;
   external String get operationType;
+  external AdditionalUserInfoJsImpl get additionalUserInfo;
 }
 
 /// https://firebase.google.com/docs/reference/js/firebase.auth#.AdditionalUserInfo
