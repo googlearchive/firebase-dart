@@ -96,6 +96,9 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   ///
   /// Returns the current token if it has not expired, otherwise this will
   /// refresh the token and return a new one.
+  ///
+  /// It forces refresh regardless of token expiration if [forceRefresh]
+  /// parameter is [true].
   Future<String> getIdToken([bool forceRefresh = false]) =>
       handleThenable(jsObject.getIdToken(forceRefresh));
 
