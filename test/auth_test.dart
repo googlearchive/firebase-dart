@@ -540,6 +540,7 @@ void main() {
         expect(userMap, isNotEmpty);
         expect(userMap["displayName"], isNot("Other User"));
         expect(userMap["photoURL"], isNot("http://google.com"));
+        expect(userMap["phoneNumber"], isNull);
       } on FirebaseError catch (e) {
         printException(e);
         rethrow;

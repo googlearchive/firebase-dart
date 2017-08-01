@@ -6,7 +6,7 @@
 * `Auth`:
     * Implemented `PhoneAuthProvider` and `RecaptchaVerifier`.
 * `User`:
-    * Added `phoneNumber` property.
+    * Added `phoneNumber` property to the `UserInfo`.
     * Added `linkWithPhoneNumber`, `updatePhoneNumber` and `reauthenticateWithPhoneNumber` methods.
 * New example demonstrating `PhoneAuthProvider` functionality in `example/auth_phone`.
 

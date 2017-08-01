@@ -24,6 +24,9 @@ class UserInfo<T extends firebase_interop.UserInfoJsImpl>
   /// User's e-mail address.
   String get email => jsObject.email;
 
+  /// The user's E.164 formatted phone number (if available).
+  String get phoneNumber => jsObject.phoneNumber;
+
   /// User's profile picture URL.
   String get photoURL => jsObject.photoURL;
 
@@ -57,11 +60,6 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
 
   /// Refresh token for the user account.
   String get refreshToken => jsObject.refreshToken;
-
-  /// The phone number normalized based on the E.164 standard (e.g. +16505550101)
-  /// for the current user. This is [:null:] if the user has no phone credential
-  /// linked to the account.
-  String get phoneNumber => jsObject.phoneNumber;
 
   /// Creates a new User from a [jsObject].
   ///
