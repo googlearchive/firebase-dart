@@ -7,6 +7,7 @@
 * `User`:
     * Added `phoneNumber` property.
     * Added `linkWithPhoneNumber`, `updatePhoneNumber` and `reauthenticateWithPhoneNumber` methods.
+* New example demonstrating `PhoneAuthProvider` functionality in `example/auth_phone`.
 
 ## 4.0.0
 
