@@ -735,10 +735,29 @@ class UserCredential extends JsObjectWrapper<UserCredentialJsImpl> {
   String get operationType => jsObject.operationType;
 
   /// Returns additional user information from a federated identity provider.
-  AdditionalUserInfoJsImpl get additionalUserInfo =>
-      jsObject.additionalUserInfo;
+  AdditionalUserInfo get additionalUserInfo =>
+      new AdditionalUserInfo.fromJsObject(jsObject.additionalUserInfo);
 
   /// Creates a new UserCredential from a [jsObject].
   UserCredential.fromJsObject(UserCredentialJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+}
+
+/// A structure containing additional user information from
+/// a federated identity provider.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth#.AdditionalUserInfo>
+class AdditionalUserInfo extends JsObjectWrapper<AdditionalUserInfoJsImpl> {
+  /// Returns the provider id.
+  String get providerId => jsObject.providerId;
+
+  /// Returns the profile.
+  Map get profile => dartify(jsObject.profile);
+
+  /// Returns the user name.
+  String get username => jsObject.username;
+
+  /// Creates a new AdditionalUserInfo from a [jsObject].
+  AdditionalUserInfo.fromJsObject(AdditionalUserInfoJsImpl jsObject)
       : super.fromJsObject(jsObject);
 }
