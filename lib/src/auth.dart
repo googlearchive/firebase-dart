@@ -752,7 +752,7 @@ class AdditionalUserInfo extends JsObjectWrapper<AdditionalUserInfoJsImpl> {
   String get providerId => jsObject.providerId;
 
   /// Returns the profile.
-  Map get profile => dartify(jsObject.profile);
+  Map<String, dynamic> get profile => dartify(jsObject.profile);
 
   /// Returns the user name.
   String get username => jsObject.username;
