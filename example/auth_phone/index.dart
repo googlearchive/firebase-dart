@@ -23,7 +23,6 @@ main() async {
 
 class PhoneAuthApp {
   final fb.Auth auth;
-
   final FormElement registerForm, verificationForm;
   final InputElement phone, code;
   final AnchorElement logout;
@@ -31,7 +30,7 @@ class PhoneAuthApp {
   final ParagraphElement error;
 
   fb.RecaptchaVerifier verifier;
-  fb.ConfirmationResult _confirmationResult;
+  fb.ConfirmationResult confirmationResult;
 
   PhoneAuthApp()
       : this.auth = fb.auth(),
@@ -72,7 +71,7 @@ class PhoneAuthApp {
   }
 
   _initVerifier() {
-    // This is anonymous recaptcha - size has to be defined
+    // This is anonymous recaptcha - size must be defined
     verifier = new fb.RecaptchaVerifier("register", {
       "size": "invisible",
       "callback": (resp) {
@@ -95,7 +94,7 @@ class PhoneAuthApp {
   _registerUser(String phone) async {
     if (phone.isNotEmpty) {
       try {
-        _confirmationResult = await auth.signInWithPhoneNumber(phone, verifier);
+        confirmationResult = await auth.signInWithPhoneNumber(phone, verifier);
         verificationForm.style.display = "block";
         registerForm.style.display = "none";
       } catch (e) {
@@ -107,9 +106,9 @@ class PhoneAuthApp {
   }
 
   _verifyUser(String code) async {
-    if (code.isNotEmpty) {
+    if (code.isNotEmpty && confirmationResult != null) {
       try {
-        await _confirmationResult.confirm(code);
+        await confirmationResult.confirm(code);
       } catch (e) {
         error.text = e.toString();
       }
