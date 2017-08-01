@@ -133,6 +133,7 @@ The following providers need to be enabled in Firebase console,
 
 * E-mail/password
 * Anonymous
+* Phone
 
 ### Database tests and example
 

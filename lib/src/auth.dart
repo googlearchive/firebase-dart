@@ -649,8 +649,33 @@ abstract class ApplicationVerifier<T extends ApplicationVerifierJsImpl>
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.RecaptchaVerifier>
 /// See: <https://www.google.com/recaptcha/>
 class RecaptchaVerifier extends ApplicationVerifier<RecaptchaVerifierJsImpl> {
-  // TODO what if there is a callback in the parameters?
   /// Creates a new RecaptchaVerifier from [container], [parameters] and [app].
+  ///
+  /// The [container] has different meaning depending on whether the reCAPTCHA
+  /// is hidden or visible. For a visible reCAPTCHA it must be empty.
+  /// If a string is used, it has to correspond to an element ID.
+  /// The corresponding element must also must be in the DOM at the time
+  /// of initialization.
+  ///
+  /// The [parameters] are optional [Map] of Recaptcha parameters.
+  /// See: <https://developers.google.com/recaptcha/docs/display#render_param>.
+  /// All parameters are accepted except for the sitekey.
+  /// Firebase Auth backend provisions a reCAPTCHA for each project
+  /// and will configure this upon rendering.
+  /// For an invisible reCAPTCHA, a size key must have the value 'invisible'.
+  ///
+  /// The [app] is the corresponding Firebase app.
+  /// If none is provided, the default Firebase App instance is used.
+  ///
+  ///     verifier = new fb.RecaptchaVerifier("register", {
+  ///       "size": "invisible",
+  ///       "callback": (resp) {
+  ///         print("Successful reCAPTCHA response");
+  ///       },
+  ///       "expired-callback": () {
+  ///         print("Response expired");
+  ///       }
+  ///     });
   factory RecaptchaVerifier(container,
           [Map<String, dynamic> parameters, App app]) =>
       (parameters != null)

@@ -72,7 +72,19 @@ class PhoneAuthApp {
   }
 
   _initVerifier() {
-    verifier = new fb.RecaptchaVerifier("recaptcha-container")..render();
+    // This is anonymous recaptcha - size has to be defined
+    verifier = new fb.RecaptchaVerifier("register", {
+      "size": "invisible",
+      "callback": (resp) {
+        print("reCAPTCHA solved, allow signInWithPhoneNumber.");
+      },
+      "expired-callback": () {
+        print("Response expired. Ask user to solve reCAPTCHA again.");
+      }
+    });
+
+    // Use this if you want to use recaptcha widget directly
+    //verifier = new fb.RecaptchaVerifier("recaptcha-container")..render();
   }
 
   _resetVerifier() {
@@ -117,10 +129,10 @@ class PhoneAuthApp {
       authInfo.style.display = "block";
 
       var data = <String, dynamic>{
-        'email': user.email,
-        'emailVerified': user.emailVerified,
-        'isAnonymous': user.isAnonymous,
-        'phoneNumber': user.phoneNumber
+        "email": user.email,
+        "emailVerified": user.emailVerified,
+        "isAnonymous": user.isAnonymous,
+        "phoneNumber": user.phoneNumber
       };
 
       data.forEach((k, v) {
@@ -129,12 +141,12 @@ class PhoneAuthApp {
 
           row.addCell()
             ..text = k
-            ..classes.add('header');
+            ..classes.add("header");
           row.addCell()..text = "$v";
         }
       });
 
-      print('User.toJson:');
+      print("User.toJson:");
       print(const JsonEncoder.withIndent(' ').convert(user));
     } else {
       registerForm.style.display = "block";
