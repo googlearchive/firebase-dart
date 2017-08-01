@@ -1,5 +1,6 @@
 ## 4.1.0
 
+* Upgraded to Firebase JS API `4.2.0`.
 * Added `toJson` to `DataSnapshot` and `Query`. 
 * Added more tests for V4 API.
 * `Auth`:
