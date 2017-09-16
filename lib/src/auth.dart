@@ -369,8 +369,27 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
 
   /// Sends a password reset e-mail to the given [email].
   /// To confirm password reset, use the [Auth.confirmPasswordReset].
-  Future sendPasswordResetEmail(String email) =>
-      handleThenable(jsObject.sendPasswordResetEmail(email));
+  ///
+  /// The optional parameter [actionCodeSettings] is the action code settings.
+  /// If specified, the state/continue URL will be set as the "continueUrl"
+  /// parameter in the password reset link.
+  /// The default password reset landing page will use this to display
+  /// a link to go back to the app if it is installed.
+  ///
+  /// If the [actionCodeSettings] is not specified, no URL is appended to the
+  /// action URL. The state URL provided must belong to a domain that is
+  /// whitelisted by the developer in the console. Otherwise an error will be
+  /// thrown.
+  ///
+  /// Mobile app redirects will only be applicable if the developer configures
+  /// and accepts the Firebase Dynamic Links terms of condition.
+  ///
+  /// The Android package name and iOS bundle ID will be respected only if
+  /// they are configured in the same Firebase Auth project used.
+  Future sendPasswordResetEmail(String email,
+          [ActionCodeSettings actionCodeSettings]) =>
+      handleThenable(
+          jsObject.sendPasswordResetEmail(email, actionCodeSettings));
 
   /// Asynchronously signs in with the given credentials, and returns any
   /// available additional user information, such as user name.

@@ -22,7 +22,8 @@ abstract class AuthJsImpl {
       [Func1 opt_error, Func0 opt_completed]);
   external Func0 onIdTokenChanged(nextOrObserver,
       [Func1 opt_error, Func0 opt_completed]);
-  external PromiseJsImpl sendPasswordResetEmail(String email);
+  external PromiseJsImpl sendPasswordResetEmail(String email,
+      [ActionCodeSettings actionCodeSettings]);
   external PromiseJsImpl<UserCredentialJsImpl>
       signInAndRetrieveDataWithCredential(AuthCredential credential);
   external PromiseJsImpl<UserJsImpl> signInAnonymously();
