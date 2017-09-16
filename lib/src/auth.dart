@@ -250,6 +250,19 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// Currently signed-in [User].
   User get currentUser => User.get(jsObject.currentUser);
 
+  /// The current Auth instance's language code.
+  /// When set to [:null:], the default Firebase Console language setting
+  /// is applied.
+  /// The language code will propagate to email action templates
+  /// (password reset, email verification and email change revocation),
+  /// SMS templates for phone authentication,
+  /// reCAPTCHA verifier and OAuth popup/redirect operations provided the
+  /// specified providers support localization with the language code specified.
+  String get languageCode => jsObject.languageCode;
+  void set languageCode(String s) {
+    jsObject.languageCode = s;
+  }
+
   Func0 _onAuthUnsubscribe;
   StreamController<User> _changeController;
 
@@ -453,6 +466,9 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
 
   /// Signs out the current user.
   Future signOut() => handleThenable(jsObject.signOut());
+
+  /// Sets the current language to the default device/browser preference.
+  void useDeviceLanguage() => jsObject.useDeviceLanguage();
 
   /// Verifies a password reset [code] sent to the user by email
   /// or other out-of-band mechanism.

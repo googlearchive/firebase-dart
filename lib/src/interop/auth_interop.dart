@@ -18,6 +18,8 @@ abstract class AuthJsImpl {
   external UserJsImpl get currentUser;
   external PromiseJsImpl<List<String>> fetchProvidersForEmail(String email);
   external PromiseJsImpl<UserCredentialJsImpl> getRedirectResult();
+  external String get languageCode;
+  external void set languageCode(String s);
   external Func0 onAuthStateChanged(nextOrObserver,
       [Func1 opt_error, Func0 opt_completed]);
   external Func0 onIdTokenChanged(nextOrObserver,
@@ -38,6 +40,7 @@ abstract class AuthJsImpl {
       AuthProviderJsImpl provider);
   external PromiseJsImpl signInWithRedirect(AuthProviderJsImpl provider);
   external PromiseJsImpl signOut();
+  external void useDeviceLanguage();
   external PromiseJsImpl<String> verifyPasswordResetCode(String code);
 }
 

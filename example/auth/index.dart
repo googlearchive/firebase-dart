@@ -63,6 +63,8 @@ class AuthApp {
       verifyEmail.disabled = true;
       verifyEmail.text = 'Sending verification email...';
       try {
+        // you will get the verification email in czech language
+        auth.languageCode = 'cs';
         // url should be any authorized domain in your console - we use here,
         // for this example, authDomain because it is whitelisted by default
         await auth.currentUser.sendEmailVerification(
