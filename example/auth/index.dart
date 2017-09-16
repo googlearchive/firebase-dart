@@ -62,8 +62,17 @@ class AuthApp {
     verifyEmail.onClick.listen((e) async {
       verifyEmail.disabled = true;
       verifyEmail.text = 'Sending verification email...';
-      await auth.currentUser.sendEmailVerification();
-      verifyEmail.text = 'Verification email sent!';
+      try {
+        // url should be any authorized domain in your console - we use here,
+        // for this example, authDomain because it is whitelisted by default
+        await auth.currentUser.sendEmailVerification(
+            new fb.ActionCodeSettings(url: "https://$authDomain"));
+        verifyEmail.text = 'Verification email sent!';
+      } catch (e) {
+        verifyEmail
+          ..text = e.toString()
+          ..style.color = 'red';
+      }
     });
   }
 

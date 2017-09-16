@@ -10,7 +10,13 @@ import 'js.dart';
 import 'utils.dart';
 
 export 'interop/auth_interop.dart'
-    show ActionCodeInfo, ActionCodeEmail, AuthCredential;
+    show
+        ActionCodeInfo,
+        ActionCodeEmail,
+        AuthCredential,
+        ActionCodeSettings,
+        IosSettings,
+        AndroidSettings;
 export 'interop/firebase_interop.dart' show UserProfile;
 
 /// User profile information, visible only to the Firebase project's apps.
@@ -179,8 +185,25 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   Future reload() => handleThenable(jsObject.reload());
 
   /// Sends an e-mail verification to a user.
-  Future sendEmailVerification() =>
-      handleThenable(jsObject.sendEmailVerification());
+  ///
+  /// The optional parameter [actionCodeSettings] is the action code settings.
+  /// If specified, the state/continue URL will be set as the "continueUrl"
+  /// parameter in the email verification link.
+  /// The default email verification landing page will use this to display
+  /// a link to go back to the app if it is installed.
+  ///
+  /// If the [actionCodeSettings] is not specified, no URL is appended to the
+  /// action URL. The state URL provided must belong to a domain that is
+  /// whitelisted by the developer in the console. Otherwise an error will be
+  /// thrown.
+  ///
+  /// Mobile app redirects will only be applicable if the developer configures
+  /// and accepts the Firebase Dynamic Links terms of condition.
+  ///
+  /// The Android package name and iOS bundle ID will be respected only if
+  /// they are configured in the same Firebase Auth project used.
+  Future sendEmailVerification([ActionCodeSettings actionCodeSettings]) =>
+      handleThenable(jsObject.sendEmailVerification(actionCodeSettings));
 
   /// Unlinks a provider with [providerId] from a user account.
   Future<User> unlink(String providerId) =>
