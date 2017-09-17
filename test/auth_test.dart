@@ -478,7 +478,7 @@ void main() {
           reason: 'Is updated with signInAndRetrieveDataWithCredential');
     });
 
-    test('language', () async {
+    test('language', () {
       expect(authValue.languageCode, isNull);
 
       authValue.languageCode = 'cs';

@@ -255,9 +255,9 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// is applied.
   /// The language code will propagate to email action templates
   /// (password reset, email verification and email change revocation),
-  /// SMS templates for phone authentication,
-  /// reCAPTCHA verifier and OAuth popup/redirect operations provided the
-  /// specified providers support localization with the language code specified.
+  /// SMS templates for phone authentication, reCAPTCHA verifier and OAuth
+  /// popup/redirect operations provided the specified providers support
+  /// localization with the language code specified.
   String get languageCode => jsObject.languageCode;
   void set languageCode(String s) {
     jsObject.languageCode = s;
