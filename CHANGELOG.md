@@ -1,7 +1,7 @@
 ## 4.1.1
 
 * Improve the generic types in the interop library.
-* Upgraded to Firebase JS API `4.3.1`.
+* Upgraded to Firebase JS API `4.4.0`.
 * Added client side localization for email actions, phone authentication SMS messages, OAuth flows and reCAPTCHA verification:
     * Added readable/writable `languageCode` property to `Auth`.
     * Added `useDeviceLanguage` method.
