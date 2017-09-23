@@ -148,12 +148,15 @@ class StringFormat {
   /// The string will be interpreted as UTF-16, then uploaded as a UTF-8 byte
   /// sequence.
   external static String get RAW;
+
   /// Indicates the string should be interpreted as base64-encoded data.
   /// Padding characters (trailing '='s) are optional.
   external static String get BASE64;
+
   /// Indicates the string should be interpreted as base64url-encoded data.
   /// Padding characters (trailing '='s) are optional.
   external static String get BASE64URL;
+
   /// Indicates the string is a data URL, such as one obtained from
   /// [:canvas.toDataURL():].
   external static String get DATA_URL;
