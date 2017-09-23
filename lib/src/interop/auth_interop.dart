@@ -44,7 +44,7 @@ abstract class AuthJsImpl {
 /// An enumeration of the possible persistence mechanism types.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.Auth#.Persistence>
-@JS('Persistence')
+@JS('Auth.Persistence')
 class Persistence {
   /// Indicates that the state will be persisted even when the browser window
   /// is closed.
