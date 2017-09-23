@@ -69,6 +69,7 @@ class AuthApp {
         auth.languageCode = 'cs';
         // url should be any authorized domain in your console - we use here,
         // for this example, authDomain because it is whitelisted by default
+        // More info: https://firebase.google.com/docs/auth/web/passing-state-in-email-actions
         await auth.currentUser.sendEmailVerification(
             new fb.ActionCodeSettings(url: "https://$authDomain"));
         verifyEmail.text = 'Verification email sent!';
@@ -84,6 +85,7 @@ class AuthApp {
     if (email.isNotEmpty && password.isNotEmpty) {
       var trySignin = false;
       try {
+        // Modifies persistence state. More info: https://firebase.google.com/docs/auth/web/auth-state-persistence
         var selectedPersistence =
             persistenceState.options[persistenceState.selectedIndex].value;
         await auth.setPersistence(selectedPersistence);
