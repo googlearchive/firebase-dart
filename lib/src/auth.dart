@@ -362,9 +362,10 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// the Auth state for applications that are shared by other users or have
   /// sensitive data.
   ///
-  /// The default is 'local' (provided the browser supports this mechanism).
+  /// The default is [:'local':] (provided the browser supports this mechanism).
   ///
-  /// The [persistence] is the auth state persistence mechanism.
+  /// The [persistence] string is the auth state persistence mechanism.
+  /// See allowed [persistence] values in [Persistence] class.
   Future setPersistence(String persistence) =>
       handleThenable(jsObject.setPersistence(persistence));
 
