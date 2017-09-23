@@ -191,18 +191,9 @@ class ActionCodeEmail {
 /// * When the link is handled in the app directly, this is the continueUrl
 /// query parameter in the deep link of the Dynamic Link.
 ///
-/// [iOS] Sets the iOS bundle ID. This will try to open the link in an iOS app
-/// if it is installed.
+/// [iOS] Sets the [IosSettings] object.
 ///
-/// [android] Sets the Android package name. This will try to open the link
-/// in an android app if it is installed.
-/// If installApp is passed, it specifies whether to install the Android app
-/// if the device supports it and the app is not already installed.
-/// If this field is provided without a packageName, an error is thrown
-/// explaining that the packageName must be provided in conjunction with
-/// this field.
-/// If minimumVersion is specified, and an older version of the app
-/// is installed, the user is taken to the Play Store to upgrade the app.
+/// [android] Sets the [AndroidSettings] object.
 ///
 /// [handleCodeInApp] The default is [:false:]. When set to [:true:],
 /// the action code link will be be sent as a Universal Link or Android App Link
