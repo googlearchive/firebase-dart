@@ -10,7 +10,7 @@ import 'js.dart';
 import 'utils.dart';
 
 export 'interop/auth_interop.dart'
-    show ActionCodeInfo, ActionCodeEmail, AuthCredential;
+    show ActionCodeInfo, ActionCodeEmail, AuthCredential, Persistence;
 export 'interop/firebase_interop.dart' show UserProfile;
 
 /// User profile information, visible only to the Firebase project's apps.
@@ -348,6 +348,25 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// To confirm password reset, use the [Auth.confirmPasswordReset].
   Future sendPasswordResetEmail(String email) =>
       handleThenable(jsObject.sendPasswordResetEmail(email));
+
+  /// Changes the current type of persistence on the current Auth instance for
+  /// the currently saved Auth session and applies this type of persistence
+  /// for future sign-in requests, including sign-in with redirect requests.
+  /// This will return a Future that will resolve once the state finishes
+  /// copying from one type of storage to the other.
+  /// Calling a sign-in method after changing persistence will wait for that
+  /// persistence change to complete before applying it on the new Auth state.
+  ///
+  /// This makes it easy for a user signing in to specify whether their session
+  /// should be remembered or not. It also makes it easier to never persist
+  /// the Auth state for applications that are shared by other users or have
+  /// sensitive data.
+  ///
+  /// The default is 'local' (provided the browser supports this mechanism).
+  ///
+  /// The [persistence] is the auth state persistence mechanism.
+  Future setPersistence(String persistence) =>
+      handleThenable(jsObject.setPersistence(persistence));
 
   /// Asynchronously signs in with the given credentials, and returns any
   /// available additional user information, such as user name.
