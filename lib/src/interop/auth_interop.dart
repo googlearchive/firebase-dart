@@ -26,6 +26,7 @@ abstract class AuthJsImpl {
       [Func1 opt_error, Func0 opt_completed]);
   external PromiseJsImpl sendPasswordResetEmail(String email,
       [ActionCodeSettings actionCodeSettings]);
+  external PromiseJsImpl setPersistence(String persistence);
   external PromiseJsImpl<UserCredentialJsImpl>
       signInAndRetrieveDataWithCredential(AuthCredential credential);
   external PromiseJsImpl<UserJsImpl> signInAnonymously();
@@ -42,6 +43,22 @@ abstract class AuthJsImpl {
   external PromiseJsImpl signOut();
   external void useDeviceLanguage();
   external PromiseJsImpl<String> verifyPasswordResetCode(String code);
+}
+
+/// An enumeration of the possible persistence mechanism types.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.Auth#.Persistence>
+@JS('Auth.Persistence')
+class Persistence {
+  /// Indicates that the state will be persisted even when the browser window
+  /// is closed.
+  external static String get LOCAL;
+  /// Indicates that the state will only be stored in memory and will be cleared
+  /// when the window.
+  external static String get NONE;
+  /// Indicates that the state will only persist in current session/tab,
+  /// relevant to web only, and will be cleared when the tab is closed.
+  external static String get SESSION;
 }
 
 /// Represents the credentials returned by an auth provider.

@@ -28,6 +28,7 @@ class AuthApp {
   final AnchorElement logout;
   final TableElement authInfo;
   final ParagraphElement error;
+  final SelectElement persistenceState;
   final ButtonElement verifyEmail;
 
   AuthApp()
@@ -38,6 +39,7 @@ class AuthApp {
         this.error = querySelector("#register_form p"),
         this.logout = querySelector("#logout_btn"),
         this.registerForm = querySelector("#register_form"),
+        this.persistenceState = querySelector("#persistent_state"),
         this.verifyEmail = querySelector('#verify_email') {
     logout.onClick.listen((e) {
       e.preventDefault();
@@ -82,6 +84,9 @@ class AuthApp {
     if (email.isNotEmpty && password.isNotEmpty) {
       var trySignin = false;
       try {
+        var selectedPersistence =
+            persistenceState.options[persistenceState.selectedIndex].value;
+        await auth.setPersistence(selectedPersistence);
         await auth.createUserWithEmailAndPassword(email, password);
       } on fb.FirebaseError catch (e) {
         if (e.code == "auth/email-already-in-use") {
