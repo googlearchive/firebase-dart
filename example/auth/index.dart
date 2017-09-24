@@ -145,7 +145,7 @@ class AuthApp {
       print(const JsonEncoder.withIndent(' ').convert(user));
 
       verifyEmailContainer.style.display =
-          user.emailVerified ? 'none' : 'block';
+          user.emailVerified ? "none" : "block";
     } else {
       registerForm.style.display = "block";
       registeredUser.style.display = "none";
