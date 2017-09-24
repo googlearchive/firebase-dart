@@ -44,7 +44,7 @@ class AuthApp {
         this.verifyEmail = querySelector('#verify_email'),
         this.verifyEmailLanguage = querySelector('#verify_email_language'),
         this.registeredUser = querySelector("#registered_user"),
-        this.verifyEmailContainer = querySelector("#verify_email_container"){
+        this.verifyEmailContainer = querySelector("#verify_email_container") {
     logout.onClick.listen((e) {
       e.preventDefault();
       auth.signOut();
@@ -70,8 +70,7 @@ class AuthApp {
       verifyEmail.text = 'Sending verification email...';
       try {
         // you will get the verification email in selected language
-        auth.languageCode = verifyEmailLanguage
-            .options[verifyEmailLanguage.selectedIndex].value;
+        auth.languageCode = _getSelectedValue(verifyEmailLanguage);
         // url should be any authorized domain in your console - we use here,
         // for this example, authDomain because it is whitelisted by default
         // More info: https://firebase.google.com/docs/auth/web/passing-state-in-email-actions
@@ -91,8 +90,7 @@ class AuthApp {
       var trySignin = false;
       try {
         // Modifies persistence state. More info: https://firebase.google.com/docs/auth/web/auth-state-persistence
-        var selectedPersistence =
-            persistenceState.options[persistenceState.selectedIndex].value;
+        var selectedPersistence = _getSelectedValue(persistenceState);
         await auth.setPersistence(selectedPersistence);
         await auth.createUserWithEmailAndPassword(email, password);
       } on fb.FirebaseError catch (e) {
@@ -114,6 +112,9 @@ class AuthApp {
       error.text = "Please fill correct e-mail and password.";
     }
   }
+
+  String _getSelectedValue(SelectElement element) =>
+      element.options[element.selectedIndex].value;
 
   void _setLayout(fb.User user) {
     if (user != null) {
@@ -143,7 +144,8 @@ class AuthApp {
       print('User.toJson:');
       print(const JsonEncoder.withIndent(' ').convert(user));
 
-      verifyEmailContainer.style.display = user.emailVerified ? 'none' : 'block';
+      verifyEmailContainer.style.display =
+          user.emailVerified ? 'none' : 'block';
     } else {
       registerForm.style.display = "block";
       registeredUser.style.display = "none";
