@@ -94,20 +94,36 @@ void main() {
     });
 
     group("top level", () {
+      fb.App app;
+
+      setUpAll(() {
+        app = fb.initializeApp(
+            apiKey: apiKey,
+            authDomain: authDomain,
+            databaseURL: databaseUrl,
+            projectId: projectId,
+            storageBucket: storageBucket,
+            name: 'SomeAnotherApp');
+      });
+
       test("Get Auth", () {
         expect(fb.auth(), isNotNull);
+        expect(fb.auth(app), isNotNull);
       });
 
       test("Get Database", () {
         expect(fb.database(), isNotNull);
+        expect(fb.database(app), isNotNull);
       });
 
       test("Get Storage", () {
         expect(fb.storage(), isNotNull);
+        expect(fb.storage(app), isNotNull);
       });
 
       test("Get Firestore", () {
         expect(fb.firestore(), isNotNull);
+        expect(fb.firestore(app), isNotNull);
       });
     });
 
