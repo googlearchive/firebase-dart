@@ -36,6 +36,7 @@ abstract class UserJsImpl extends UserInfoJsImpl {
   external bool get isAnonymous;
   external List<UserInfoJsImpl> get providerData;
   external String get refreshToken;
+  external UserMetadata get metadata;
   external PromiseJsImpl delete();
   @Deprecated('Use `getIdToken` instead.')
   external PromiseJsImpl<String> getToken([bool opt_forceRefresh]);

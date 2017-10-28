@@ -239,6 +239,9 @@ void main() {
       expect(user.emailVerified, isFalse);
       expect(user.providerData, isEmpty);
       expect(user.providerId, 'firebase');
+      expect(user.metadata, isNotNull);
+      expect(user.metadata.lastSignInTime, isNotNull);
+      expect(user.metadata.creationTime, isNotNull);
     });
 
     test('delete', () async {
@@ -389,6 +392,8 @@ void main() {
 
         expect(userCred.operationType, 'link');
         expect(userCred.user.uid, user.uid);
+        expect(userCred.additionalUserInfo, isNotNull);
+        expect(userCred.additionalUserInfo.isNewUser, isFalse);
       } on FirebaseError catch (e) {
         printException(e);
         rethrow;

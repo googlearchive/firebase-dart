@@ -162,6 +162,19 @@ abstract class ActionCodeInfo {
   external ActionCodeEmail get data;
 }
 
+/// Interface representing a user's metadata.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.auth.UserMetadata>.
+@JS()
+abstract class UserMetadata {
+  /// The date the user was created, formatted as a UTC string.
+  /// For example, 'Fri, 22 Sep 2017 01:49:58 GMT'.
+  external String get creationTime;
+  /// The date the user last signed in, formatted as a UTC string.
+  /// For example, 'Fri, 22 Sep 2017 01:49:58 GMT'.
+  external String get lastSignInTime;
+}
+
 /// An authentication error.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.Error>.
@@ -275,4 +288,5 @@ class AdditionalUserInfoJsImpl {
   external String get providerId;
   external Object get profile;
   external String get username;
+  external bool get isNewUser;
 }

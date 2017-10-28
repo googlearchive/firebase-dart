@@ -17,7 +17,8 @@ export 'interop/auth_interop.dart'
         ActionCodeSettings,
         IosSettings,
         AndroidSettings,
-        Persistence;
+        Persistence,
+        UserMetadata;
 export 'interop/firebase_interop.dart' show UserProfile;
 
 /// User profile information, visible only to the Firebase project's apps.
@@ -58,6 +59,9 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
 
   /// If the user is anonymous.
   bool get isAnonymous => jsObject.isAnonymous;
+
+  /// Non-null additional metadata about the user.
+  UserMetadata get metadata => jsObject.metadata;
 
   /// List of additional provider-specific information about the user.
   List<UserInfo> get providerData => jsObject.providerData
@@ -833,6 +837,9 @@ class AdditionalUserInfo extends JsObjectWrapper<AdditionalUserInfoJsImpl> {
 
   /// Returns the user name.
   String get username => jsObject.username;
+
+  /// Returns whether a user is a new or returning user.
+  bool get isNewUser => jsObject.isNewUser;
 
   /// Creates a new AdditionalUserInfo from a [jsObject].
   AdditionalUserInfo.fromJsObject(AdditionalUserInfoJsImpl jsObject)
