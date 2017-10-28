@@ -3,6 +3,7 @@ import 'package:js/js_util.dart' as js;
 import 'app.dart';
 import 'auth.dart';
 import 'database.dart';
+import 'firestore.dart';
 import 'interop/firebase_interop.dart' as firebase;
 import 'storage.dart';
 
@@ -23,6 +24,7 @@ App initializeApp(
     {String apiKey,
     String authDomain,
     String databaseURL,
+    String projectId,
     String storageBucket,
     String name}) {
   name ??= _defaultAppName;
@@ -33,6 +35,7 @@ App initializeApp(
             apiKey: apiKey,
             authDomain: authDomain,
             databaseURL: databaseURL,
+            projectId: projectId,
             storageBucket: storageBucket),
         name));
   } catch (e) {
@@ -92,6 +95,16 @@ Storage storage([App app]) {
       (app != null) ? firebase.storage(app.jsObject) : firebase.storage();
 
   return Storage.get(jsObject);
+}
+
+/// Accesses the [Firestore] service for the default App or a given app.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.firestore>.
+Firestore firestore([App app]) {
+  var jsObject =
+      (app != null) ? firebase.firestore(app.jsObject) : firebase.firestore();
+
+  return Firestore.get(jsObject);
 }
 
 /// Exception thrown when the firebase.js is not loaded.

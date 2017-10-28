@@ -10,10 +10,12 @@ You can find more information on how to use Firebase on the
 [Getting started](https://firebase.google.com/docs/web/setup) page.
 
 Don't forget to setup correct **rules** for your
-[realtime database](https://firebase.google.com/docs/database/security/)
-and/or
-[storage](https://firebase.google.com/docs/storage/security/)
+[realtime database](https://firebase.google.com/docs/database/security/),
+[storage](https://firebase.google.com/docs/storage/security/) and/or [firestore](https://firebase.google.com/docs/firestore/security/get-started).
 in the Firebase console. 
+
+If you want to use [Firestore](https://firebase.google.com/docs/firestore/quickstart), 
+you need to enable it in the Firebase console and include the additional script.
 
 Authentication also has to be enabled in the Firebase console.
 For more info, see the
@@ -40,6 +42,15 @@ to be able to use the library.
 <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
 ```
 
+#### Do you need to use Firestore?
+
+Include the `firebase-firestore.js` script also:
+
+```html
+<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+```
+
 ### Use it
 
 ```dart
@@ -50,6 +61,7 @@ void main() {
     apiKey: "YourApiKey",
     authDomain: "YourAuthDomain",
     databaseURL: "YourDatabaseUrl",
+    projectId: "YourProjectId",
     storageBucket: "YourStorageBucket");
 
   fb.Database database = fb.database();
@@ -92,7 +104,7 @@ void main() {
 
 ## Examples
 
-You can find more examples on realtime database, auth and storage in the
+You can find more examples on realtime database, auth, storage and firestore in the
 [example](https://github.com/firebase/firebase-dart/tree/master/example) folder.
 
 ## Dart Dev Summit 2016 demo app
@@ -155,6 +167,12 @@ You *usually* don't want to have this in your production apps.
 You can find more information on how to setup correct database rules in the 
 official
 [Firebase documentation](https://firebase.google.com/docs/database/security/). 
+
+### Firestore tests and example
+
+To be able to run tests and example, Firestore needs to be enabled in the `Database/Cloud Firestore` section.
+
+You also need to include the additional `firebase-firestore.js` script. See [more info]().
 
 ### Storage tests and example
 

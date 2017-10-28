@@ -4,12 +4,12 @@ import 'package:firebase/src/assets/assets.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group("App", () {
+  group("Firebase", () {
     setUpAll(() async {
       await config();
     });
 
-    group('instance', () {
+    group('App instance', () {
       fb.App app;
 
       setUpAll(() {
@@ -17,6 +17,7 @@ void main() {
             apiKey: apiKey,
             authDomain: authDomain,
             databaseURL: databaseUrl,
+            projectId: projectId,
             storageBucket: storageBucket);
       });
 
@@ -53,41 +54,63 @@ void main() {
       test("Get storage with a bucket", () {
         expect(app.storage("gs://$storageBucket"), isNotNull);
       });
+
+      test("Get firestore", () {
+        expect(app.firestore(), isNotNull);
+      });
+
+      test("Can be created with name", () {
+        var app2 = fb.initializeApp(
+            apiKey: apiKey,
+            authDomain: authDomain,
+            databaseURL: databaseUrl,
+            projectId: projectId,
+            storageBucket: storageBucket,
+            name: "MySuperApp");
+
+        expect(app2, isNotNull);
+        expect(fb.app("MySuperApp"), isNotNull);
+        expect(app2.name, "MySuperApp");
+        expect(fb.apps.length, 2); //[DEFAULT] and MySuperApp
+      });
+
+      test("Can be deleted", () async {
+        fb.initializeApp(
+            apiKey: apiKey,
+            authDomain: authDomain,
+            databaseURL: databaseUrl,
+            projectId: projectId,
+            storageBucket: storageBucket,
+            name: "MyDeletedApp");
+
+        expect(fb.app("MyDeletedApp"), isNotNull);
+        expect(fb.apps.where((app) => app.name == "MyDeletedApp").toList(),
+            isNotEmpty);
+
+        await fb.app("MyDeletedApp").delete();
+        expect(fb.apps.where((app) => app.name == "MyDeletedApp").toList(),
+            isEmpty);
+      });
     });
 
-    test("Can be created with name", () {
-      var app2 = fb.initializeApp(
-          apiKey: apiKey,
-          authDomain: authDomain,
-          databaseURL: databaseUrl,
-          storageBucket: storageBucket,
-          name: "MySuperApp");
+    group("top level", () {
+      test("Get Auth", () {
+        expect(fb.auth(), isNotNull);
+      });
 
-      expect(app2, isNotNull);
-      expect(fb.app("MySuperApp"), isNotNull);
-      expect(app2.name, "MySuperApp");
-      expect(fb.apps.length, 2); //[DEFAULT] and MySuperApp
+      test("Get Database", () {
+        expect(fb.database(), isNotNull);
+      });
+
+      test("Get Storage", () {
+        expect(fb.storage(), isNotNull);
+      });
+
+      test("Get Firestore", () {
+        expect(fb.firestore(), isNotNull);
+      });
     });
 
-    test("Can be deleted", () async {
-      fb.initializeApp(
-          apiKey: apiKey,
-          authDomain: authDomain,
-          databaseURL: databaseUrl,
-          storageBucket: storageBucket,
-          name: "MyDeletedApp");
-
-      expect(fb.app("MyDeletedApp"), isNotNull);
-      expect(fb.apps.where((app) => app.name == "MyDeletedApp").toList(),
-          isNotEmpty);
-
-      await fb.app("MyDeletedApp").delete();
-      expect(
-          fb.apps.where((app) => app.name == "MyDeletedApp").toList(), isEmpty);
-    });
-  });
-
-  group("Firebase", () {
     test("SDK version", () {
       expect(fb.SDK_VERSION, startsWith("4."));
     });

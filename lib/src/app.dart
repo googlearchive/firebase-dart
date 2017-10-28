@@ -5,6 +5,7 @@ import 'database.dart';
 import 'interop/app_interop.dart';
 import 'interop/firebase_interop.dart';
 import 'js.dart';
+import 'firestore.dart';
 import 'storage.dart';
 import 'utils.dart';
 
@@ -48,4 +49,7 @@ class App extends JsObjectWrapper<AppJsImpl> {
         (url != null) ? jsObject.storage(url) : jsObject.storage();
     return Storage.get(jsObjectStorage);
   }
+
+  /// Returns [Firestore] service.
+  Firestore firestore() => Firestore.get(jsObject.firestore());
 }
