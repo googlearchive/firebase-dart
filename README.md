@@ -172,7 +172,7 @@ official
 
 To be able to run tests and example, Firestore needs to be enabled in the `Database/Cloud Firestore` section.
 
-You also need to include the additional `firebase-firestore.js` script. See [more info]().
+You also need to include the additional `firebase-firestore.js` script. See [more info](#do-you-need-to-use-firestore).
 
 ### Storage tests and example
 
