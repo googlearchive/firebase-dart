@@ -5,22 +5,29 @@ import 'package:test/test.dart';
 
 void main() {
   group("Firebase", () {
+    fb.App app;
+
     setUpAll(() async {
       await config();
     });
 
+    setUp(() async {
+      app = fb.initializeApp(
+          apiKey: apiKey,
+          authDomain: authDomain,
+          databaseURL: databaseUrl,
+          projectId: projectId,
+          storageBucket: storageBucket);
+    });
+
+    tearDown(() async {
+      if (app != null) {
+        await app.delete();
+        app = null;
+      }
+    });
+
     group('App instance', () {
-      fb.App app;
-
-      setUpAll(() {
-        app = fb.initializeApp(
-            apiKey: apiKey,
-            authDomain: authDomain,
-            databaseURL: databaseUrl,
-            projectId: projectId,
-            storageBucket: storageBucket);
-      });
-
       test("Exists", () {
         expect(app, isNotNull);
         expect(fb.app(), isNotNull);
@@ -59,7 +66,7 @@ void main() {
         expect(app.firestore(), isNotNull);
       });
 
-      test("Can be created with name", () {
+      test("Can be created with name", () async {
         var app2 = fb.initializeApp(
             apiKey: apiKey,
             authDomain: authDomain,
@@ -72,6 +79,8 @@ void main() {
         expect(fb.app("MySuperApp"), isNotNull);
         expect(app2.name, "MySuperApp");
         expect(fb.apps.length, 2); //[DEFAULT] and MySuperApp
+
+        await app2.delete();
       });
 
       test("Can be deleted", () async {
@@ -93,19 +102,7 @@ void main() {
       });
     });
 
-    group("top level", () {
-      fb.App app;
-
-      setUpAll(() {
-        app = fb.initializeApp(
-            apiKey: apiKey,
-            authDomain: authDomain,
-            databaseURL: databaseUrl,
-            projectId: projectId,
-            storageBucket: storageBucket,
-            name: 'SomeAnotherApp');
-      });
-
+    group("Top level", () {
       test("Get Auth", () {
         expect(fb.auth(), isNotNull);
         expect(fb.auth(app), isNotNull);
