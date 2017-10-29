@@ -3,7 +3,7 @@
 * Added `metadata` property to `User`.
 * Added `isNewUser` property to `AdditionalUserInfo`.
 * Updated auth examples and tests with the latest features.
-* Added Firestore library - WIP
+* Added new Firestore library - WIP
 
 ## 4.2.0
 
