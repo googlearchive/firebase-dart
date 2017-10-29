@@ -2,6 +2,7 @@
 library firebase.firestore_interop;
 
 import 'dart:typed_data' show Uint8List;
+
 import 'package:js/js.dart';
 import 'package:func/func.dart';
 

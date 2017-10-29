@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'auth.dart';
 import 'database.dart';
+import 'firestore.dart';
 import 'interop/app_interop.dart';
 import 'interop/firebase_interop.dart';
 import 'js.dart';
-import 'firestore.dart';
 import 'storage.dart';
 import 'utils.dart';
 
