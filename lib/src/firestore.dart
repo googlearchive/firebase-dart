@@ -113,8 +113,6 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   /// Value must not be null.
   void settings(firestore_interop.Settings settings) =>
       jsObject.settings(settings);
-
-  // TODO DocumentData object?
 }
 
 /// An immutable object representing a List of bytes.
@@ -189,7 +187,7 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
   /// The [DocumentReference] parameter is a reference to the document to be
   /// created. Value must not be null.
   ///
-  /// The [DocumentData] parameter is an object of the fields and values
+  /// The [data] parameter is an object of the fields and values
   /// for the document. Value must not be null.
   ///
   /// The optional [SetOptions] parameters is an object to configure the set
@@ -197,13 +195,12 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
   /// the data argument. Fields omitted will remain untouched. Value may be null.
   ///
   /// Returns non-null [WriteBatch] instance. Used for chaining method calls.
-  // TODO shouldnt be DocumentData and SetOptions Map?
-  WriteBatch set(
-      DocumentReference documentRef, firestore_interop.DocumentData data,
+  // TODO shouldnt be SetOptions Map?
+  WriteBatch set(DocumentReference documentRef, data,
       [firestore_interop.SetOptions options]) {
     var jsObjectSet = (options != null)
-        ? jsObject.set(documentRef.jsObject, data, options)
-        : jsObject.set(documentRef.jsObject, data);
+        ? jsObject.set(documentRef.jsObject, jsify(data), options)
+        : jsObject.set(documentRef.jsObject, jsify(data));
     return WriteBatch.get(jsObjectSet);
   }
 
@@ -305,10 +302,11 @@ class DocumentReference
   /// The optional [SetOptions] is an object to configure the set behavior.
   /// Pass [: {merge: true} :] to only replace the values specified in the data
   /// argument. Fields omitted will remain untouched. Value may be null.
-  Future<Null> set(firestore_interop.DocumentData data,
-      [firestore_interop.SetOptions options]) {
-    var jsObjectSet =
-        (options != null) ? jsObject.set(data, options) : jsObject.set(data);
+  // TODO options
+  Future<Null> set(data, [firestore_interop.SetOptions options]) {
+    var jsObjectSet = (options != null)
+        ? jsObject.set(jsify(data), options)
+        : jsObject.set(jsify(data));
     return handleThenable(jsObjectSet);
   }
 
@@ -365,7 +363,6 @@ class Query<T extends firestore_interop.QueryJsImpl>
   ///
   /// Returns non-null Future that will be resolved with the results of the
   /// query.
-  // TODO return type is Promise?
   Future<QuerySnapshot> get() =>
       handleThenableWithMapper(jsObject.get(), QuerySnapshot.get);
 
@@ -477,16 +474,15 @@ class CollectionReference<T extends firestore_interop.CollectionReferenceJsImpl>
       firestore_interop.CollectionReferenceJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  /// Adds a new document to this collection with the specified data,
+  /// Adds a new document to this collection with the specified [data],
   /// assigning it a document ID automatically.
   ///
   /// The [data] parameter must not be null.
   ///
   /// Returns [Future] that resolves with a [DocumentReference] pointing to the
   /// newly created document after it has been written to the backend.
-  Future<DocumentReference> add(firestore_interop.DocumentData data) =>
-      handleThenableWithMapper(
-          jsObject.add(data), DocumentReference.getInstance);
+  Future<DocumentReference> add(data) => handleThenableWithMapper(
+      jsObject.add(jsify(data)), DocumentReference.getInstance);
 
   /// Gets a [DocumentReference] for the document within the collection
   /// at the specified path. If no path is specified, an automatically-generated
@@ -559,9 +555,9 @@ class DocumentSnapshot
 
   /// Retrieves all fields in the document as an object.
   ///
-  /// Returns non-null [DocumentData] containing all fields in the specified
+  /// Returns non-null data containing all fields in the specified
   /// document.
-  firestore_interop.DocumentData data() => jsObject.data();
+  dynamic data() => dartify(jsObject.data());
 
   /// Retrieves the field specified by [fieldPath] parameter at the specified
   /// field location or [:null:] if no such field exists in the document.
@@ -619,18 +615,9 @@ class QuerySnapshot
       : super.fromJsObject(jsObject);
 
   /// Enumerates all of the documents in the [QuerySnapshot].
-  ///
-  /// The optional [thisArg] is the [:this:] binding for the [callback].
-  // TODO with this??
-  // TODO check what this really does
-  void forEach(callback(DocumentSnapshot snapshot), [dynamic thisArg]) {
+  void forEach(callback(DocumentSnapshot snapshot)) {
     var callbackWrap =
         allowInterop((s) => callback(DocumentSnapshot.getInstance(s)));
-
-    if (thisArg != null) {
-      return jsObject.forEach(callbackWrap, jsify(thisArg));
-    }
-
     return jsObject.forEach(callbackWrap);
   }
 }
@@ -682,7 +669,7 @@ class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl> {
   /// The [DocumentReference] parameter is a reference to the document to be
   /// created. Value must not be null.
   ///
-  /// The [DocumentData] paramater is object of the fields and values for
+  /// The [data] paramater is object of the fields and values for
   /// the document. Value must not be null.
   ///
   /// The optional [SetOptions] is an object to configure the set behavior.
@@ -693,11 +680,11 @@ class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl> {
   /// Returns non-null [Transaction] used for chaining method calls.
   // TODO finish the implementation probably convert data?
   Transaction set(
-      DocumentReference documentRef, firestore_interop.DocumentData data,
+      DocumentReference documentRef, data,
       [firestore_interop.SetOptions options]) {
     var jsObjectSet = (options != null)
-        ? jsObject.set(documentRef.jsObject, data, options)
-        : jsObject.set(documentRef.jsObject, data);
+        ? jsObject.set(documentRef.jsObject, jsify(data), options)
+        : jsObject.set(documentRef.jsObject, jsify(data));
     return Transaction.getInstance(jsObjectSet);
   }
 

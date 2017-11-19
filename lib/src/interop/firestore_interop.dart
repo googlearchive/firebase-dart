@@ -21,8 +21,6 @@ abstract class FirestoreJsImpl {
       Func1<TransactionJsImpl, dynamic> updateFunction);
   external void setLogLevel(String logLevel);
   external void settings(Settings settings);
-
-  // TODO DocumentData object?
 }
 
 @JS("WriteBatch")
@@ -342,7 +340,6 @@ abstract class SetOptions {
   external factory SetOptions({bool merge});
 }
 
-//TODO
 /// An object of the fields and values for the document.
 @anonymous
 @JS()
