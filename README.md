@@ -1,4 +1,4 @@
-# Firebase REST APIs for Dart
+# Firebase APIs for Dart VM (server), Fuchsia, and Browser
 
 [![Build Status](https://travis-ci.org/firebase/firebase-dart.svg?branch=master)](https://travis-ci.org/firebase/firebase-dart)
 
