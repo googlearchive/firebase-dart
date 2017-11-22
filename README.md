@@ -3,9 +3,9 @@
 [![Build Status](https://travis-ci.org/firebase/firebase-dart.svg?branch=master)](https://travis-ci.org/firebase/firebase-dart)
 
 Use [Firebase](https://firebase.google.com)
-REST APIs with dart:html (for example: dart2js, AngularDart)
-and dart:io apps
-(for example: server-side Dart or Fuchsia).
+REST APIs for dart:io apps
+(for example: server-side Dart or Fuchsia),
+and a Dart wrapper for Firebase's JavaScript API for the browser.
 
 If you are writing Flutter apps for iOS and Android, you should use 
 [FlutterFire plugins](https://github.com/flutter/plugins/blob/master/FlutterFire.md)
