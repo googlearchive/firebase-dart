@@ -61,9 +61,16 @@ class FieldPath {
   /// Creates a [FieldPath] from the provided field names. If more than one
   /// field name is provided, the path will point to a nested field in
   /// a document.
-  ///
-  /// The [varArgs] is a list of field names. Value may be repeated.
-  external factory FieldPath([List<String> varArgs]);
+  external factory FieldPath(String fieldName1,
+      [String fieldName2,
+      String fieldName3,
+      String fieldName4,
+      String fieldName5,
+      String fieldName6,
+      String fieldName7,
+      String fieldName8,
+      String fieldName9,
+      String fieldName10]);
 
   /// Returns a special sentinel FieldPath to refer to the ID of a document.
   /// It can be used in queries to sort or filter by the document ID.
@@ -151,8 +158,7 @@ abstract class DocumentReferenceJsImpl {
       optionsOrObserverOrOnNext, observerOrOnNextOrOnError,
       [Func1<FirebaseError, dynamic> onError]);
   external PromiseJsImpl<Null> set(DocumentData data, [SetOptions options]);
-  external PromiseJsImpl<Null> update(dynamic /*String|FieldPath*/ data_field,
-      [dynamic value, List<dynamic> moreFieldsAndValues]);
+  external PromiseJsImpl<Null> update(data);
 }
 
 @JS("DocumentSnapshot")

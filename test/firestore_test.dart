@@ -42,15 +42,16 @@ void main() {
       });
     });
 
-    group("CollectionReference", () {
+    group("Collections and documents", () {
       fs.CollectionReference ref;
 
       setUp(() {
         ref = firestore.collection("messages");
       });
 
-      tearDown(() async {
+      tearDown(() {
         // TODO delete collection - more complicated
+        // TODO delete subcollections
         ref = null;
       });
 
@@ -67,23 +68,168 @@ void main() {
       });
 
       test("create document", () {
-        var docRef = ref.doc("mes1");
+        var docRef = ref.doc("message1");
 
         expect(docRef, isNotNull);
-        expect(docRef.id, "mes1");
+        expect(docRef.id, "message1");
         expect(docRef.parent.id, ref.id);
       });
 
       test("get document in collection", () {
-        var docRef = ref.doc("mes2");
-        var docRefSecond = firestore.doc("messages/mes2");
+        var docRef = ref.doc("message2");
+        var docRefSecond = firestore.doc("messages/message2");
         expect(docRefSecond, isNotNull);
         expect(docRefSecond.id, docRef.id);
       });
 
-      /*test("set document", () {
-        ref.doc("mes1").set({"text": "Hi!"});
-      });*/
+      test("get document in collection of document", () {
+        var docRef = ref.doc("message3").collection("words").doc("word1");
+        expect(docRef, isNotNull);
+        expect(docRef.id, "word1");
+      });
+      
+      test("collection path", () {
+        var collectionRef = firestore.collection("messages/message4/words");
+        expect(collectionRef, isNotNull);
+        expect(collectionRef.id, "words");
+        expect(collectionRef.parent.id, "message4");
+      });
     });
+
+    group("DocumentReference", () {
+      fs.CollectionReference ref;
+
+      setUp(() {
+        ref = firestore.collection("messages");
+      });
+
+      tearDown(() {
+        // TODO delete collection - more complicated
+        // TODO delete subcollections
+        ref = null;
+      });
+
+      test("set document", () async {
+        var docRef = ref.doc("message1");
+        await docRef.set({"text": "Hi!"});
+
+        var snapshot = await docRef.get();
+        expect(snapshot.id, "message1");
+        expect(snapshot.exists, true);
+      });
+
+      test("set overwrites document", () async {
+        var docRef = ref.doc("message2");
+
+        await docRef.set({"text": "Message2"});
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData, new isInstanceOf<Map>());
+        expect(snapshotData["text"], "Message2");
+
+        await docRef.set({"title": "Ahoj"});
+        snapshot = await docRef.get();
+        snapshotData = snapshot.data();
+
+        expect(snapshotData["text"], isNull);
+        expect(snapshotData["title"], "Ahoj");
+      });
+
+      test("set with merge", () async {
+        var docRef = ref.doc("message3");
+
+        await docRef.set({"text": "Message3"});
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        await docRef.set({"text": "MessageNew", "title": "Ahoj"},
+            new fs.SetOptions(merge: true));
+        snapshot = await docRef.get();
+        snapshotData = snapshot.data();
+
+        expect(snapshotData["text"], "MessageNew");
+        expect(snapshotData["title"], "Ahoj");
+      });
+
+      test("set various types", () async {
+        var docRef = ref.doc("message4");
+
+        var map = {
+          "stringExample": "Hello world!",
+          "booleanExample": true,
+          "numberExample": 3.14159265,
+          "dateExample": new DateTime.now(),
+          "arrayExample": [5, true, "hello"],
+          "nullExample": null,
+          "mapExample": {
+            "a": 5,
+            "b": {
+              "nested": "foo"
+            }
+          }
+        };
+
+        await docRef.set(map);
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["stringExample"], map["stringExample"]);
+        expect(snapshotData["booleanExample"], map["booleanExample"]);
+        expect(snapshotData["numberExample"], map["numberExample"]);
+        expect(snapshotData["dateExample"], isNotNull); // different format
+        expect(snapshotData["arrayExample"], map["arrayExample"]);
+        expect(snapshotData["nullExample"], map["nullExample"]);
+        expect(snapshotData["mapExample"], map["mapExample"]);
+      });
+
+      test("add document", () async {
+        var docRef = await ref.add({"text": "MessageAdd"});
+
+        expect(docRef, isNotNull);
+        expect(docRef.id, isNotNull);
+        expect(docRef.parent.id, ref.id);
+      });
+
+      test("update document with Map", () async {
+        var docRef = await ref.add({"text": "Ahoj"});
+        await docRef.update({"text": "Ahoj2"});
+
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["text"], "Ahoj2");
+
+        await docRef.update({"text": "Ahoj", "text_en": "Hi"});
+
+        snapshot = await docRef.get();
+        snapshotData = snapshot.data();
+
+        expect(snapshotData["text"], "Ahoj");
+        expect(snapshotData["text_en"], "Hi");
+      });
+
+      test("update with serverTimestamp", () async {
+        var docRef = await ref.add({"text": "Good night"});
+        await docRef.update({"timestamp": fs.FieldValue.serverTimestamp()});
+
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["timestamp"], isNotNull);
+      });
+
+      test("update nested with dot notation", () async {
+        var docRef = await ref.add({"greeting": {"text": "Good Morning"}});
+        await docRef.update({"greeting.text": "Good Morning after update"});
+
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["greeting"]["text"], "Good Morning after update");
+      });
+    });
+
+    
   });
 }

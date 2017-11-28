@@ -9,7 +9,7 @@ import 'interop/firestore_interop.dart' as firestore_interop;
 import 'js.dart';
 import 'utils.dart';
 
-export 'interop/firestore_interop.dart' show Settings;
+export 'interop/firestore_interop.dart' show FieldValue, FieldPath, SetOptions, Settings;
 // TODO export more stuff
 
 /// The Cloud Firestore service interface.
@@ -302,7 +302,9 @@ class DocumentReference
   /// The optional [SetOptions] is an object to configure the set behavior.
   /// Pass [: {merge: true} :] to only replace the values specified in the data
   /// argument. Fields omitted will remain untouched. Value may be null.
-  // TODO options
+  ///
+  /// Returns non-null [Future] that resolves once the data has been successfully
+  /// written to the backend. (Note that it won't resolve while you're offline).
   Future<Null> set(data, [firestore_interop.SetOptions options]) {
     var jsObjectSet = (options != null)
         ? jsObject.set(jsify(data), options)
@@ -310,8 +312,20 @@ class DocumentReference
     return handleThenable(jsObjectSet);
   }
 
-  // TODO implement
-  Future<Null> update(Map<dynamic, dynamic> args) => null;
+  /// Updates fields in the document referred to by this [DocumentReference].
+  /// The update will fail if applied to a document that does not exist.
+  ///
+  /// Nested fields can be updated by providing dot-separated field path strings
+  /// or by providing FieldPath objects.
+  ///
+  /// The [data] param is the object containing all of the fields and values
+  /// to update.
+  ///
+  /// Returns non-null [Future] that resolves once the data has been successfully
+  /// written to the backend (Note that it won't resolve while you're offline).
+  // TODO in future: varargs parameter
+  Future<Null> update(Map<String, dynamic> data) =>
+      handleThenable(jsObject.update(jsify(data)));
 }
 
 /// A Query refers to a Query which you can read or listen to.
