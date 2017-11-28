@@ -492,9 +492,11 @@ class CollectionReference<T extends firestore_interop.CollectionReferenceJsImpl>
   /// a document.
   ///
   /// Returns non-null [DocumentReference].
-  // TODO test without documentPath
-  DocumentReference doc([String documentPath]) =>
-      DocumentReference.getInstance(jsObject.doc(documentPath));
+  DocumentReference doc([String documentPath]) {
+    var jsObjectDoc =
+        (documentPath != null) ? jsObject.doc(documentPath) : jsObject.doc();
+    return DocumentReference.getInstance(jsObjectDoc);
+  }
 }
 
 /// A [DocumentChange] represents a change to the documents matching a query.
@@ -679,8 +681,7 @@ class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl> {
   ///
   /// Returns non-null [Transaction] used for chaining method calls.
   // TODO finish the implementation probably convert data?
-  Transaction set(
-      DocumentReference documentRef, data,
+  Transaction set(DocumentReference documentRef, data,
       [firestore_interop.SetOptions options]) {
     var jsObjectSet = (options != null)
         ? jsObject.set(documentRef.jsObject, jsify(data), options)

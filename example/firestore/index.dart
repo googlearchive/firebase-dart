@@ -31,7 +31,7 @@ class MessagesApp {
   final FormElement newMessageForm;
 
   MessagesApp()
-      : ref = fb.firestore().collection("pkg_firebase_firestore"),
+      : ref = fb.firestore().collection("pkg_firestore"),
         messages = querySelector("#messages"),
         newMessage = querySelector("#new_message"),
         submit = querySelector('#submit'),
