@@ -9,7 +9,8 @@ import 'interop/firestore_interop.dart' as firestore_interop;
 import 'js.dart';
 import 'utils.dart';
 
-export 'interop/firestore_interop.dart' show FieldValue, FieldPath, SetOptions, Settings;
+export 'interop/firestore_interop.dart'
+    show FieldValue, FieldPath, SetOptions, Settings;
 // TODO export more stuff
 
 /// The Cloud Firestore service interface.
@@ -73,7 +74,6 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   Future<Null> enablePersistence() =>
       handleThenable(jsObject.enablePersistence());
 
-  //TODO return type? Future<Transaction>???
   /// Executes the given [updateFunction] and then attempts to commit the
   /// changes applied within the transaction. If any document read within
   /// the transaction has changed, Cloud Firestore retries
@@ -86,14 +86,11 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   /// Else, if the transaction failed, a rejected Future with the corresponding
   /// failure error will be returned.
   Future runTransaction(updateFunction(Transaction transaction)) {
-    Completer c = new Completer();
+    var updateFunctionWrap = allowInterop((transaction) => handleFuture(
+        updateFunction(Transaction.getInstance(transaction)), (v) => jsify(v)));
 
-    var updateFunctionWrap = allowInterop(
-        (firestore_interop.TransactionJsImpl transaction) =>
-            Transaction.getInstance(transaction));
-
-    jsObject.runTransaction(updateFunctionWrap);
-    return c.future;
+    return handleThenableWithMapper(
+        jsObject.runTransaction(updateFunctionWrap), (d) => dartify(d));
   }
 
   /// Sets the verbosity of Cloud Firestore logs.
@@ -315,8 +312,7 @@ class DocumentReference
   /// Updates fields in the document referred to by this [DocumentReference].
   /// The update will fail if applied to a document that does not exist.
   ///
-  /// Nested fields can be updated by providing dot-separated field path strings
-  /// or by providing FieldPath objects.
+  /// Nested fields can be updated by providing dot-separated field path strings.
   ///
   /// The [data] param is the object containing all of the fields and values
   /// to update.
@@ -703,10 +699,21 @@ class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl> {
     return Transaction.getInstance(jsObjectSet);
   }
 
-  // TODO this method needs more work
-  WriteBatch update(
-          DocumentReference documentRef, Map<dynamic, dynamic> args) =>
-      null;
+  /// Updates fields in the document referred to by this [DocumentReference].
+  /// The update will fail if applied to a document that does not exist.
+  /// The value must not be null.
+  ///
+  /// Nested fields can be updated by providing dot-separated field path strings.
+  ///
+  /// The [data] param is the object containing all of the fields and values
+  /// to update.
+  ///
+  /// Returns non-null [Transaction] instance used for chaining method calls.
+  // TODO in future: varargs parameter
+  Transaction update(
+          DocumentReference documentRef, Map<String, dynamic> data) =>
+      Transaction
+          .getInstance(jsObject.update(documentRef.jsObject, jsify(data)));
 }
 
 /*

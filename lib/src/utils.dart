@@ -40,7 +40,7 @@ bool _isBasicType(value) {
   return false;
 }
 
-/// Handles the [thenable] object.
+/// Handles the [Thenable] object.
 Future<T> handleThenable<T>(ThenableJsImpl<T> thenable) {
   var completer = new Completer<T>();
 
@@ -50,7 +50,7 @@ Future<T> handleThenable<T>(ThenableJsImpl<T> thenable) {
   return completer.future;
 }
 
-/// Handles the [thenable] object with provided [mapper] function.
+/// Handles the [Thenable] object with the provided [mapper] function.
 Future<S> handleThenableWithMapper<T, S>(
     ThenableJsImpl<T> thenable, Func1<T, S> mapper) {
   var completer = new Completer<S>();
@@ -60,6 +60,23 @@ Future<S> handleThenableWithMapper<T, S>(
     completer.complete(mappedValue);
   }), resolveError(completer));
   return completer.future;
+}
+
+/// Handles the [Future] object with the optional [mapper] function.
+PromiseJsImpl<S> handleFuture<T, S>(Future<T> future, [Func1<T, S> mapper]) {
+  return new PromiseJsImpl(allowInterop((VoidFunc1 resolve, VoidFunc1 reject) {
+    future.then((value) {
+      var mappedValue;
+      if (mapper != null) {
+        mappedValue = mapper(value);
+      } else {
+        mappedValue = value;
+      }
+      resolve(mappedValue);
+    }).catchError((error) {
+      reject(error);
+    });
+  }));
 }
 
 /// Resolves error.

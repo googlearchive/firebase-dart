@@ -87,7 +87,7 @@ void main() {
         expect(docRef, isNotNull);
         expect(docRef.id, "word1");
       });
-      
+
       test("collection path", () {
         var collectionRef = firestore.collection("messages/message4/words");
         expect(collectionRef, isNotNull);
@@ -164,9 +164,7 @@ void main() {
           "nullExample": null,
           "mapExample": {
             "a": 5,
-            "b": {
-              "nested": "foo"
-            }
+            "b": {"nested": "foo"}
           }
         };
 
@@ -220,7 +218,9 @@ void main() {
       });
 
       test("update nested with dot notation", () async {
-        var docRef = await ref.add({"greeting": {"text": "Good Morning"}});
+        var docRef = await ref.add({
+          "greeting": {"text": "Good Morning"}
+        });
         await docRef.update({"greeting.text": "Good Morning after update"});
 
         var snapshot = await docRef.get();
@@ -228,8 +228,39 @@ void main() {
 
         expect(snapshotData["greeting"]["text"], "Good Morning after update");
       });
-    });
 
-    
+      test("transaction", () async {
+        var docRef = ref.doc("message5");
+        await docRef.set({"text": "Hi"});
+
+        await firestore.runTransaction((transaction) async {
+          transaction.update(docRef, {"text": "Hi from transaction"});
+        });
+
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["text"], "Hi from transaction");
+      });
+
+      test("transaction returns updated value", () async {
+        var docRef = ref.doc("message6");
+        await docRef.set({"text": "Hi"});
+
+        var newValue = await firestore.runTransaction((transaction) async {
+          var documentSnapshot = await transaction.get(docRef);
+          var value = documentSnapshot.data()["text"] + " val from transaction";
+          transaction.update(docRef, {"text": value});
+          return value;
+        });
+
+        expect(newValue, "Hi val from transaction");
+
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["text"], newValue);
+      });
+    });
   });
 }

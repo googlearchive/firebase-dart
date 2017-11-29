@@ -18,7 +18,7 @@ abstract class FirestoreJsImpl {
   external DocumentReferenceJsImpl doc(String documentPath);
   external PromiseJsImpl<Null> enablePersistence();
   external PromiseJsImpl runTransaction(
-      Func1<TransactionJsImpl, dynamic> updateFunction);
+      Func1<TransactionJsImpl, PromiseJsImpl> updateFunction);
   external void setLogLevel(String logLevel);
   external void settings(Settings settings);
 }
@@ -61,6 +61,7 @@ class FieldPath {
   /// Creates a [FieldPath] from the provided field names. If more than one
   /// field name is provided, the path will point to a nested field in
   /// a document.
+  // TODO in future: varargs parameter
   external factory FieldPath(String fieldName1,
       [String fieldName2,
       String fieldName3,
@@ -237,9 +238,7 @@ abstract class TransactionJsImpl {
   external TransactionJsImpl set(
       DocumentReferenceJsImpl documentRef, DocumentData data,
       [SetOptions options]);
-  external TransactionJsImpl update(DocumentReferenceJsImpl documentRef,
-      dynamic /*String|FieldPath*/ data_field,
-      [dynamic value, List<dynamic> moreFieldsAndValues]);
+  external TransactionJsImpl update(DocumentReferenceJsImpl documentRef, data);
 }
 
 /// The set of Cloud Firestore status codes.
