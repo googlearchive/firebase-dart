@@ -159,7 +159,7 @@ void main() {
           "stringExample": "Hello world!",
           "booleanExample": true,
           "numberExample": 3.14159265,
-          "dateExample": new DateTime.now(),
+          "dateExample": new DateTime.now().toIso8601String(),
           "arrayExample": [5, true, "hello"],
           "nullExample": null,
           "mapExample": {
