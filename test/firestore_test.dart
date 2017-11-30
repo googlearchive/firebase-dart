@@ -1,9 +1,51 @@
 @TestOn('browser')
+import 'dart:async';
 import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firebase_firestore.dart' as fs;
 import 'package:firebase/src/assets/assets.dart';
 import 'package:test/test.dart';
 import 'test_util.dart';
+
+// TODO finish
+// Delete entire collection
+// <https://firebase.google.com/docs/firestore/manage-data/delete-data#collections>
+Future _deleteCollection(db, collectionRef, batchSize) {
+  Completer completer = new Completer();
+
+  var query = collectionRef.orderBy('__name__').limit(batchSize);
+  _deleteQueryBatch(db, query, batchSize, completer);
+
+  return completer.future;
+}
+
+_deleteQueryBatch(db, query, batchSize, Completer completer) async {
+  try {
+    var snapshot = await query.get();
+
+    // When there are no documents left, we are done
+    if (snapshot.size == 0) {
+      completer.complete();
+      return;
+    }
+
+    // Delete documents in a batch
+    var batch = db.batch();
+    snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+    await batch.commit();
+
+    var numDeleted = snapshot.size;
+    if (numDeleted <= batchSize) {
+      completer.complete();
+      return;
+    }
+
+    // Recurse with delay, to avoid exploding the stack.
+    new Future.delayed(const Duration(milliseconds: 10),
+        () => _deleteQueryBatch(db, query, batchSize, completer));
+  } catch (e) {
+    completer.completeError(e);
+  }
+}
 
 void main() {
   fb.App app;
@@ -277,16 +319,16 @@ void main() {
       });
 
       test("WriteBatch operations", () async {
-        var citiesRef = firestore.collection("cities");
-        var nycRef = citiesRef.doc("NYC");
+        ref = firestore.collection("cities");
+        var nycRef = ref.doc("NYC");
         await nycRef.set({"name": "NYC"});
-        var sfRef = citiesRef.doc("SF");
+        var sfRef = ref.doc("SF");
         await sfRef.set({"name": "SF", "population": 0});
-        var laRef = citiesRef.doc("LA");
+        var laRef = ref.doc("LA");
         await laRef.set({"name": "LA"});
 
-        var citiesSnapshot = await citiesRef.get();
-        expect(citiesSnapshot.size, 3);
+        var collectionSnapshot = await ref.get();
+        expect(collectionSnapshot.size, 3);
 
         var batch = firestore.batch();
         batch.set(nycRef, {"name": "New York"});
@@ -302,9 +344,23 @@ void main() {
         snapshotData = snapshot.data();
         expect(snapshotData["population"], 1000000);
 
-        citiesSnapshot = await citiesRef.get();
-        expect(citiesSnapshot.size, 2);
+        collectionSnapshot = await ref.get();
+        expect(collectionSnapshot.size, 2);
       });
+
+      /*test("delete", () async {
+        ref = firestore.collection("flowers");
+        await ref.doc("DC").set({"name": "DC"});
+
+        await ref.doc("DC").delete();
+
+        var collectionSnapshot = await ref.get();
+        print(collectionSnapshot.docs);
+        expect(collectionSnapshot.empty, isTrue);
+      });*/
+
+      // TODO finish delete!!!!
+      // https://firebase.google.com/docs/firestore/manage-data/delete-data#top_of_page
     });
   });
 }
