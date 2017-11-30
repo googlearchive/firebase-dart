@@ -3,6 +3,7 @@ import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firebase_firestore.dart' as fs;
 import 'package:firebase/src/assets/assets.dart';
 import 'package:test/test.dart';
+import 'test_util.dart';
 
 void main() {
   fb.App app;
@@ -260,6 +261,49 @@ void main() {
         var snapshotData = snapshot.data();
 
         expect(snapshotData["text"], newValue);
+      });
+
+      test("transaction fails", () async {
+        // update is before get -> transaction fails
+        var docRef = ref.doc("message7");
+        await docRef.set({"text": "Hi"});
+
+        expect(firestore.runTransaction((transaction) async {
+          transaction.update(docRef, {"text": "Some value"});
+          await transaction.get(docRef);
+        }),
+            throwsToString(
+                contains('Transactions lookups are invalid after writes.')));
+      });
+
+      test("WriteBatch operations", () async {
+        var citiesRef = firestore.collection("cities");
+        var nycRef = citiesRef.doc("NYC");
+        await nycRef.set({"name": "NYC"});
+        var sfRef = citiesRef.doc("SF");
+        await sfRef.set({"name": "SF", "population": 0});
+        var laRef = citiesRef.doc("LA");
+        await laRef.set({"name": "LA"});
+
+        var citiesSnapshot = await citiesRef.get();
+        expect(citiesSnapshot.size, 3);
+
+        var batch = firestore.batch();
+        batch.set(nycRef, {"name": "New York"});
+        batch.update(sfRef, {"population": 1000000});
+        batch.delete(laRef);
+        await batch.commit();
+
+        var snapshot = await nycRef.get();
+        var snapshotData = snapshot.data();
+        expect(snapshotData["name"], "New York");
+
+        snapshot = await sfRef.get();
+        snapshotData = snapshot.data();
+        expect(snapshotData["population"], 1000000);
+
+        citiesSnapshot = await citiesRef.get();
+        expect(citiesSnapshot.size, 2);
       });
     });
   });

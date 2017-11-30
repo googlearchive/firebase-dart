@@ -30,9 +30,7 @@ abstract class WriteBatchJsImpl {
   external WriteBatchJsImpl set(
       DocumentReferenceJsImpl documentRef, DocumentData data,
       [SetOptions options]);
-  external WriteBatchJsImpl update(DocumentReferenceJsImpl documentRef,
-      dynamic /*String|FieldPath*/ data_field,
-      [dynamic value, List<dynamic> moreFieldsAndValues]);
+  external WriteBatchJsImpl update(DocumentReferenceJsImpl documentRef, data);
 }
 
 @JS("CollectionReference")

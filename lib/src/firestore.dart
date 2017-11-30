@@ -192,7 +192,6 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
   /// the data argument. Fields omitted will remain untouched. Value may be null.
   ///
   /// Returns non-null [WriteBatch] instance. Used for chaining method calls.
-  // TODO shouldnt be SetOptions Map?
   WriteBatch set(DocumentReference documentRef, data,
       [firestore_interop.SetOptions options]) {
     var jsObjectSet = (options != null)
@@ -204,19 +203,18 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
   /// Updates fields in the document referred to by this [DocumentReference].
   /// The update will fail if applied to a document that does not exist.
   ///
-  /// Nested fields can be updated by providing dot-separated field path strings
-  /// or by providing [FieldPath] objects.
+  /// Nested fields can be updated by providing dot-separated field path strings.
   ///
   /// The [DocumentReference] parameter is a reference to the document to
   /// be updated. Value must not be null.
   ///
-  /// TODO: Either an object containing all of the fields and values to update,
-  /// or a series of arguments alternating between fields
-  /// (as string or [FieldPath] objects) and values. Value may be repeated.
-  // TODO this method needs more work
-  WriteBatch update(
-          DocumentReference documentRef, Map<dynamic, dynamic> args) =>
-      null;
+  /// The [data] param is the object containing all of the fields and values
+  /// to update.
+  ///
+  /// Returns non-null [WriteBatch] instance used for chaining method calls.
+  // TODO in future: varargs parameter
+  WriteBatch update(DocumentReference documentRef, Map<String, dynamic> data) =>
+      WriteBatch.get(jsObject.update(documentRef.jsObject, jsify(data)));
 }
 
 /// A [DocumentReference] refers to a document location in a
