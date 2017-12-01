@@ -206,10 +206,7 @@ abstract class QueryJsImpl {
   external QueryJsImpl startAfter(
       /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
   external QueryJsImpl startAt(/*DocumentSnapshot|dynamic*/ snapshotOrField1,
-      [field2,
-      field3,
-      field4,
-      field5]);
+      [field2, field3, field4, field5]);
   external QueryJsImpl where(/*String|FieldPath*/ fieldPath,
       String /*'<'|'<='|'=='|'>='|'>'*/ opStr, value);
 }

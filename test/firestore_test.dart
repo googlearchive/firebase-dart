@@ -369,20 +369,21 @@ void main() {
       fs.CollectionReference ref;
 
       setUp(() async {
-
-
         ref = firestore.collection("messages");
 
         await _deleteCollection(firestore, ref, 4);
 
-
-        await ref.doc("message1").set({"text": "hello", "lang": "en", "new": true});
+        await ref
+            .doc("message1")
+            .set({"text": "hello", "lang": "en", "new": true});
         await ref.doc("message2").set({
           "text": "hi",
           "lang": "en",
           "description": {"text": "description text"}
         });
-        await ref.doc("message3").set({"text": "ahoj", "lang": "cs", "new": true});
+        await ref
+            .doc("message3")
+            .set({"text": "ahoj", "lang": "cs", "new": true});
         await ref.doc("message4").set({"text": "cau", "lang": "cs"});
       });
 
@@ -492,9 +493,7 @@ void main() {
             {"text": "description text"});
 
         var message2Snapshot = await ref.doc("message2").get();
-        snapshot = await ref
-            .orderBy("text")
-            .startAt(message2Snapshot).get();
+        snapshot = await ref.orderBy("text").startAt(message2Snapshot).get();
 
         // message2 text = "hi" => it is the last one
         expect(snapshot.size, 1);
