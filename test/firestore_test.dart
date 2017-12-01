@@ -6,7 +6,6 @@ import 'package:firebase/src/assets/assets.dart';
 import 'package:test/test.dart';
 import 'test_util.dart';
 
-// TODO finish
 // Delete entire collection
 // <https://firebase.google.com/docs/firestore/manage-data/delete-data#collections>
 Future _deleteCollection(db, collectionRef, batchSize) {
@@ -18,7 +17,7 @@ Future _deleteCollection(db, collectionRef, batchSize) {
   return completer.future;
 }
 
-_deleteQueryBatch(db, query, batchSize, Completer completer) async {
+_deleteQueryBatch(db, query, batchSize, completer) async {
   try {
     var snapshot = await query.get();
 
@@ -43,6 +42,7 @@ _deleteQueryBatch(db, query, batchSize, Completer completer) async {
     new Future.delayed(const Duration(milliseconds: 10),
         () => _deleteQueryBatch(db, query, batchSize, completer));
   } catch (e) {
+    print(e);
     completer.completeError(e);
   }
 }
@@ -92,10 +92,11 @@ void main() {
         ref = firestore.collection("messages");
       });
 
-      tearDown(() {
-        // TODO delete collection - more complicated
-        // TODO delete subcollections
-        ref = null;
+      tearDown(() async {
+        if (ref != null) {
+          await _deleteCollection(firestore, ref, 4);
+          ref = null;
+        }
       });
 
       test("collection exists", () {
@@ -146,10 +147,11 @@ void main() {
         ref = firestore.collection("messages");
       });
 
-      tearDown(() {
-        // TODO delete collection - more complicated
-        // TODO delete subcollections
-        ref = null;
+      tearDown(() async {
+        if (ref != null) {
+          await _deleteCollection(firestore, ref, 4);
+          ref = null;
+        }
       });
 
       test("set document", () async {
@@ -361,6 +363,143 @@ void main() {
 
       // TODO finish delete!!!!
       // https://firebase.google.com/docs/firestore/manage-data/delete-data#top_of_page
+    });
+
+    group("Quering data", () {
+      fs.CollectionReference ref;
+
+      setUp(() async {
+
+
+        ref = firestore.collection("messages");
+
+        await _deleteCollection(firestore, ref, 4);
+
+
+        await ref.doc("message1").set({"text": "hello", "lang": "en", "new": true});
+        await ref.doc("message2").set({
+          "text": "hi",
+          "lang": "en",
+          "description": {"text": "description text"}
+        });
+        await ref.doc("message3").set({"text": "ahoj", "lang": "cs", "new": true});
+        await ref.doc("message4").set({"text": "cau", "lang": "cs"});
+      });
+
+      tearDown(() async {
+        if (ref != null) {
+          await _deleteCollection(firestore, ref, 4);
+          ref = null;
+        }
+      });
+
+      test("get document data", () async {
+        var docRef = ref.doc("message1");
+        var snapshot = await docRef.get();
+        expect(snapshot, isNotNull);
+        expect(snapshot.exists, isTrue);
+
+        var data = snapshot.data();
+        expect(data, isNotNull);
+        expect(data["text"], "hello");
+      });
+
+      test("get nonexistent document", () async {
+        var docRef = ref.doc("message0");
+        var snapshot = await docRef.get();
+        expect(snapshot.exists, isFalse);
+      });
+
+      test("get documents where", () async {
+        var snapshot = await ref.where("new", "==", true).get();
+        expect(snapshot.size, 2);
+      });
+
+      test("get documents where with FieldPath", () async {
+        var snapshot =
+            await ref.where(new fs.FieldPath("new"), "==", true).get();
+        expect(snapshot.size, 2);
+      });
+
+      test("get documents using compound query", () async {
+        var snapshot = await ref
+            .where("new", "==", true)
+            .where("text", "==", "hello")
+            .get();
+        expect(snapshot.size, 1);
+        expect(snapshot.docs.length, 1);
+        expect(snapshot.docs[0].data()["text"], "hello");
+      });
+
+      test("get all documents", () async {
+        var snapshot = await ref.get();
+        expect(snapshot.size, 4);
+        expect(snapshot.docs, isNotEmpty);
+        expect(snapshot.docs.length, snapshot.size);
+        expect(snapshot.docs[0].data()["text"],
+            anyOf("hello", "hi", "ahoj", "cau"));
+      });
+
+      // TODO onSnapshot
+      // https://firebase.google.com/docs/firestore/query-data/listen
+
+      test("order by", () async {
+        var snapshot = await ref.orderBy("text").get();
+
+        expect(snapshot.size, 4);
+        expect(snapshot.docs[0].data()["text"], "ahoj");
+        expect(snapshot.docs[3].data()["text"], "hi");
+
+        snapshot = await ref.orderBy("text", "desc").get();
+
+        expect(snapshot.size, 4);
+        expect(snapshot.docs[0].data()["text"], "hi");
+        expect(snapshot.docs[3].data()["text"], "ahoj");
+      });
+
+      test("limit", () async {
+        var snapshot = await ref.get();
+        expect(snapshot.size, 4);
+
+        snapshot = await ref.limit(2).get();
+        expect(snapshot.size, 2);
+      });
+
+      test("get documents where with limit", () async {
+        var snapshot = await ref.where("new", "==", true).limit(1).get();
+        expect(snapshot.size, 1);
+      });
+
+      // !!!IMPORTANT: You need to build index for lang and text under messages
+      // collection to be able to run these tests.
+      // (You can do this in Firebase console)
+      test("startAt", () async {
+        var snapshot = await ref
+            .orderBy("lang")
+            .orderBy("text")
+            .startAt("cs", "cau")
+            .get();
+        expect(snapshot.size, 3);
+        expect(snapshot.docs[0].data()["text"], "cau");
+        expect(snapshot.docs[2].data()["text"], "hi");
+
+        snapshot = await ref
+            .orderBy("description")
+            .startAt({"text": "description text"}).get();
+
+        expect(snapshot.size, 1);
+        expect(snapshot.docs[0].data()["description"],
+            {"text": "description text"});
+
+        var message2Snapshot = await ref.doc("message2").get();
+        snapshot = await ref
+            .orderBy("text")
+            .startAt(message2Snapshot).get();
+
+        // message2 text = "hi" => it is the last one
+        expect(snapshot.size, 1);
+        expect(snapshot.docs[0].data()["text"], "hi");
+      });
     });
   });
 }

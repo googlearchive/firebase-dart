@@ -394,13 +394,17 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// The [fieldPath] parameter is a String or [FieldPath] to sort by.
   ///
   /// The optional [directionStr] parameter is a direction to sort by
-  /// ([:asc:] or [:desc:]). If not specified, the default order is ascending.
+  /// ([: "asc" :] or [: "desc" :]).
+  /// If not specified, the default order is ascending.
   ///
   /// Returns non-null created [Query].
-  // TODO implement
   Query orderBy(/*String|FieldPath*/ fieldPath,
-          [String /*'desc'|'asc'*/ directionStr]) =>
-      new Query.fromJsObject(jsObject.orderBy(fieldPath, directionStr));
+      [String /*'desc'|'asc'*/ directionStr]) {
+    var jsObjectOrderBy = (directionStr != null)
+        ? jsObject.orderBy(fieldPath, directionStr)
+        : jsObject.orderBy(fieldPath);
+    return new Query.fromJsObject(jsObjectOrderBy);
+  }
 
   /// Creates a new [Query] where the results start after the provided document
   /// (exclusive). The starting position is relative to the order of the query.
@@ -422,29 +426,52 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// The document must contain all of the fields provided in the orderBy of
   /// the query.
   ///
-  /// The [snapshotOrVarArgs] parameter is the [DocumentSnapshot] of the
+  /// The [snapshotOrField1] parameter is the [DocumentSnapshot] of the
   /// document you want the query to start at or the field values to start
   /// this query at, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
-  // TODO DocumentSnapshot convert
-  Query startAt(dynamic /*DocumentSnapshot|List<dynamic>*/ snapshotOrVarArgs) =>
-      new Query.fromJsObject(jsObject.startAt(snapshotOrVarArgs));
+  // TODO in future: varargs parameter
+  Query startAt(/*DocumentSnapshot|dynamic*/ snapshotOrField1,
+      [field2, field3, field4, field5]) {
+    if (snapshotOrField1 == null) {
+      throw new ArgumentError("snapshotOrField1 parameter can't be null");
+    }
+
+    var jsField1 = (snapshotOrField1 is DocumentSnapshot)
+        ? snapshotOrField1.jsObject
+        : jsify(snapshotOrField1);
+
+    // I know, I know... :-(
+    var jsObjectStartAt = (field2 == null)
+        ? jsObject.startAt(jsField1)
+        : (field3 == null)
+            ? jsObject.startAt(jsField1, jsify(field2))
+            : (field4 == null)
+                ? jsObject.startAt(jsField1, jsify(field2), jsify(field3))
+                : (field5 == null)
+                    ? jsObject.startAt(
+                        jsField1, jsify(field2), jsify(field3), jsify(field4))
+                    : jsObject.startAt(jsField1, jsify(field2), jsify(field3),
+                        jsify(field4), jsify(field5));
+
+    return new Query.fromJsObject(jsObjectStartAt);
+  }
 
   /// Creates a new [Query] that returns only documents that include the
   /// specified fields and where the values satisfy the constraints provided.
   ///
-  /// The [fieldPath] parameter is a String or [FieldPath] to compare.
+  /// The [fieldPath] parameter is a String or non-null [FieldPath] to compare.
   ///
   /// The [opStr] parameter is the operation string
   /// (e.g "<", "<=", "==", ">", ">=").
   ///
   /// The [value] parameter is the value for comparison.
+  ///
   /// Returns non-null created [Query].
-  // TODO parameters
   Query where(dynamic /*String|FieldPath*/ fieldPath,
           String /*'<'|'<='|'=='|'>='|'>'*/ opStr, dynamic value) =>
-      new Query.fromJsObject(jsObject.where(fieldPath, opStr, value));
+      new Query.fromJsObject(jsObject.where(fieldPath, opStr, jsify(value)));
 }
 
 /// A [CollectionReference] class can be used for adding documents,

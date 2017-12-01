@@ -171,7 +171,7 @@ abstract class DocumentSnapshotJsImpl {
   external DocumentReferenceJsImpl get ref;
   external set ref(DocumentReferenceJsImpl v);
   external DocumentData data();
-  external dynamic get(dynamic /*String|FieldPath*/ fieldPath);
+  external dynamic get(/*String|FieldPath*/ fieldPath);
 }
 
 /// Sentinel values that can be used when writing document fields with
@@ -193,9 +193,9 @@ abstract class QueryJsImpl {
   external FirestoreJsImpl get firestore;
   external set firestore(FirestoreJsImpl f);
   external QueryJsImpl endAt(
-      dynamic /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
+      /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
   external QueryJsImpl endBefore(
-      dynamic /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
+      /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
   external PromiseJsImpl<QuerySnapshotJsImpl> get();
   external QueryJsImpl limit(num limit);
   external VoidFunc0 onSnapshot(
@@ -204,11 +204,14 @@ abstract class QueryJsImpl {
   external QueryJsImpl orderBy(/*String|FieldPath*/ fieldPath,
       [String /*'desc'|'asc'*/ directionStr]);
   external QueryJsImpl startAfter(
-      dynamic /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
-  external QueryJsImpl startAt(
-      dynamic /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
-  external QueryJsImpl where(dynamic /*String|FieldPath*/ fieldPath,
-      String /*'<'|'<='|'=='|'>='|'>'*/ opStr, dynamic value);
+      /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
+  external QueryJsImpl startAt(/*DocumentSnapshot|dynamic*/ snapshotOrField1,
+      [field2,
+      field3,
+      field4,
+      field5]);
+  external QueryJsImpl where(/*String|FieldPath*/ fieldPath,
+      String /*'<'|'<='|'=='|'>='|'>'*/ opStr, value);
 }
 
 @JS("QuerySnapshot")
@@ -249,7 +252,7 @@ abstract class TransactionJsImpl {
 abstract class FirestoreError {
   external dynamic /*|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/ get code;
   external set code(
-      dynamic /*|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/ v);
+      /*|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/ v);
   external String get message;
   external set message(String v);
   external String get name;
@@ -257,7 +260,7 @@ abstract class FirestoreError {
   external String get stack;
   external set stack(String v);
   external factory FirestoreError(
-      {dynamic /*|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/ code,
+      {/*|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/ code,
       String message,
       String name,
       String stack});
