@@ -341,31 +341,28 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// The document must contain all of the fields provided in the orderBy
   /// of this query.
   ///
-  /// Parameter is the [DocumentSnapshot] of the document the query results
-  /// should end at or the field values to start this query at, in order of
-  /// the query's order by.
+  /// The [DocumentSnapshot] parameter is the snapshot of the document you want
+  /// the query to end at. Or the list of [fields] values to
+  /// start this query at, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
-  ///
-  // TODO parameter
-  Query endAt(dynamic /*DocumentSnapshot|List<dynamic>*/ snapshotOrVarArgs) =>
-      new Query.fromJsObject(jsObject.endAt(snapshotOrVarArgs));
+  Query endAt({DocumentSnapshot snapshot, List<dynamic> fields}) =>
+      new Query.fromJsObject(
+          _wrapPaginatingFunctionCall("endAt", snapshot, fields));
 
   /// Creates a new [Query] where the results end before the provided document
   /// (exclusive). The end position is relative to the order of the query.
   /// The document must contain all of the fields provided in the orderBy of
   /// this query.
   ///
-  /// Parameter is the [DocumentSnapshot] of the document the query results
-  /// should end before or the field values to start this query at, in order of
-  /// the query's order by.
+  /// The [DocumentSnapshot] parameter is the snapshot of the document you want
+  /// the query to end before. Or the list of [fields] values to
+  /// start this query at, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
-  ///
-  // TODO DocumentSnapshot convert
-  Query endBefore(
-          dynamic /*DocumentSnapshot|List<dynamic>*/ snapshotOrVarArgs) =>
-      new Query.fromJsObject(jsObject.endBefore(snapshotOrVarArgs));
+  Query endBefore({DocumentSnapshot snapshot, List<dynamic> fields}) =>
+      new Query.fromJsObject(
+          _wrapPaginatingFunctionCall("endBefore", snapshot, fields));
 
   /// Executes the query and returns the results as a [QuerySnapshot].
   ///
@@ -411,42 +408,8 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// The document must contain all of the fields provided in the
   /// [orderBy] of this query.
   ///
-  /// The [snapshotOrField0] parameter is the [DocumentSnapshot] of the
-  /// document to start after or the [dynamic] field values to start this query
-  /// at, in order of the query's order by.
-  ///
-  /// Returns non-null created [Query].
-  Query startAfter(/*DocumentSnapshot|dynamic*/ snapshotOrField0,
-      [field1,
-      field2,
-      field3,
-      field4,
-      field5,
-      field6,
-      field7,
-      field8,
-      field9]) {
-    return new Query.fromJsObject(_wrapPaginatingFunctionCall(
-        "startAfter",
-        snapshotOrField0,
-        field1,
-        field2,
-        field3,
-        field4,
-        field5,
-        field6,
-        field7,
-        field8,
-        field9));
-  }
-
-  /// Creates a new [Query] where the results start at the provided document
-  /// (inclusive). The starting position is relative to the order of the query.
-  /// The document must contain all of the fields provided in the orderBy of
-  /// the query.
-  ///
-  /// The [snapshotOrField0] parameter is the [DocumentSnapshot] of the
-  /// document you want the query to start at or the [dynamic] field values to
+  /// The [DocumentSnapshot] parameter is the snapshot of the document you want
+  /// the query to start after. Or the list of [fields] values to
   /// start this query at, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
@@ -454,30 +417,29 @@ class Query<T extends firestore_interop.QueryJsImpl>
   ///     firestore().collection("cities")
   ///         .orderBy("name")
   ///         .orderBy("state")
-  ///         .startAt("Springfield", "Missouri");
-  Query startAt(/*DocumentSnapshot|dynamic*/ snapshotOrField0,
-      [field1,
-      field2,
-      field3,
-      field4,
-      field5,
-      field6,
-      field7,
-      field8,
-      field9]) {
-    return new Query.fromJsObject(_wrapPaginatingFunctionCall(
-        "startAt",
-        snapshotOrField0,
-        field1,
-        field2,
-        field3,
-        field4,
-        field5,
-        field6,
-        field7,
-        field8,
-        field9));
-  }
+  ///         .startAfter(fields: ["Springfield", "Missouri"]);
+  Query startAfter({DocumentSnapshot snapshot, List<dynamic> fields}) =>
+      new Query.fromJsObject(
+          _wrapPaginatingFunctionCall("startAfter", snapshot, fields));
+
+  /// Creates a new [Query] where the results start at the provided document
+  /// (inclusive). The starting position is relative to the order of the query.
+  /// The document must contain all of the fields provided in the orderBy of
+  /// the query.
+  ///
+  /// The [DocumentSnapshot] parameter is the snapshot of the document you want
+  /// the query to start at. Or the list of [fields] values to
+  /// start this query at, in order of the query's order by.
+  ///
+  /// Returns non-null created [Query].
+  ///
+  ///     firestore().collection("cities")
+  ///         .orderBy("name")
+  ///         .orderBy("state")
+  ///         .startAt(fields: ["Springfield", "Missouri"]);
+  Query startAt({DocumentSnapshot snapshot, List<dynamic> fields}) =>
+      new Query.fromJsObject(
+          _wrapPaginatingFunctionCall("startAt", snapshot, fields));
 
   /// Creates a new [Query] that returns only documents that include the
   /// specified fields and where the values satisfy the constraints provided.
@@ -494,43 +456,17 @@ class Query<T extends firestore_interop.QueryJsImpl>
           String /*'<'|'<='|'=='|'>='|'>'*/ opStr, dynamic value) =>
       new Query.fromJsObject(jsObject.where(fieldPath, opStr, jsify(value)));
 
-  /// Calls paginating [method] with non-null fields.
+  /// Calls paginating [method] with [DocumentSnapshot] or [fields].
   _wrapPaginatingFunctionCall(
-      String method, /*DocumentSnapshot|dynamic*/ snapshotOrField0,
-      [field1,
-      field2,
-      field3,
-      field4,
-      field5,
-      field6,
-      field7,
-      field8,
-      field9]) {
-    if (snapshotOrField0 == null) {
-      throw new ArgumentError("snapshotOrField1 parameter can't be null");
+      String method, DocumentSnapshot snapshot, List<dynamic> fields) {
+    if (snapshot == null && fields == null) {
+      throw new ArgumentError("Please provide snapshot or fields parameter.");
     }
 
-    var jsField0 = (snapshotOrField0 is DocumentSnapshot)
-        ? snapshotOrField0.jsObject
-        : jsify(snapshotOrField0);
-
-    // we don't take null as valid parameter value here - e.g. we don't count
-    // with the fact that somebody calls someFunction("a", "b", null, "c")
-    return callMethod(
-        jsObject,
-        method,
-        [
-          jsField0,
-          jsify(field1),
-          jsify(field2),
-          jsify(field3),
-          jsify(field4),
-          jsify(field5),
-          jsify(field6),
-          jsify(field7),
-          jsify(field8),
-          jsify(field9)
-        ].where((v) => v != null).toList());
+    if (snapshot != null) {
+      return callMethod(jsObject, method, [snapshot.jsObject]);
+    }
+    return callMethod(jsObject, method, fields.map((f) => jsify(f)).toList());
   }
 }
 

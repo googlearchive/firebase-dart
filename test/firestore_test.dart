@@ -478,26 +478,101 @@ void main() {
         var snapshot = await ref
             .orderBy("lang")
             .orderBy("text")
-            .startAt("cs", "cau")
-            .get();
+            .startAt(fields: ["cs", "cau"]).get();
         expect(snapshot.size, 3);
         expect(snapshot.docs[0].data()["text"], "cau");
         expect(snapshot.docs[2].data()["text"], "hi");
 
-        snapshot = await ref
-            .orderBy("description")
-            .startAt({"text": "description text"}).get();
+        snapshot = await ref.orderBy("description").startAt(fields: [
+          {"text": "description text"}
+        ]).get();
 
         expect(snapshot.size, 1);
         expect(snapshot.docs[0].data()["description"],
             {"text": "description text"});
 
         var message2Snapshot = await ref.doc("message2").get();
-        snapshot = await ref.orderBy("text").startAt(message2Snapshot).get();
+        snapshot =
+            await ref.orderBy("text").startAt(snapshot: message2Snapshot).get();
 
         // message2 text = "hi" => it is the last one
         expect(snapshot.size, 1);
         expect(snapshot.docs[0].data()["text"], "hi");
+      });
+
+      test("startAfter", () async {
+        var snapshot = await ref
+            .orderBy("lang")
+            .orderBy("text")
+            .startAfter(fields: ["cs", "cau"]).get();
+        expect(snapshot.size, 2);
+        expect(snapshot.docs[0].data()["text"], "hello");
+        expect(snapshot.docs[1].data()["text"], "hi");
+
+        snapshot = await ref.orderBy("description").startAfter(fields: [
+          {"text": "description text"}
+        ]).get();
+
+        expect(snapshot.empty, isTrue);
+
+        var message2Snapshot = await ref.doc("message2").get();
+        snapshot =
+        await ref.orderBy("text").startAfter(snapshot: message2Snapshot).get();
+
+        // message2 text = "hi"
+        expect(snapshot.empty, isTrue);
+      });
+
+      test("endBefore", () async {
+        var snapshot = await ref
+            .orderBy("lang")
+            .orderBy("text")
+            .endBefore(fields: ["en", "hello"]).get();
+        expect(snapshot.size, 2);
+        expect(snapshot.docs[0].data()["text"], "ahoj");
+        expect(snapshot.docs[1].data()["text"], "cau");
+
+        snapshot = await ref.orderBy("description").endBefore(fields: [
+          {"text": "description text"}
+        ]).get();
+
+        expect(snapshot.empty, isTrue);
+
+        var message2Snapshot = await ref.doc("message2").get();
+        snapshot =
+        await ref.orderBy("text").endBefore(snapshot: message2Snapshot).get();
+
+        // message2 text = "hi"
+        expect(snapshot.size, 3);
+        expect(snapshot.docs[0].data()["text"], "ahoj");
+        expect(snapshot.docs[2].data()["text"], "hello");
+      });
+
+      test("endAt", () async {
+        var snapshot = await ref
+            .orderBy("lang")
+            .orderBy("text")
+            .endAt(fields: ["en", "hello"]).get();
+        expect(snapshot.size, 3);
+        expect(snapshot.docs[0].data()["text"], "ahoj");
+        expect(snapshot.docs[2].data()["text"], "hello");
+
+        snapshot = await ref.orderBy("description").endAt(fields: [
+          {"text": "description text"}
+        ]).get();
+
+        expect(snapshot.size, 1);
+        expect(snapshot.docs[0].data()["description"],
+            {"text": "description text"});
+
+        var message2Snapshot = await ref.doc("message2").get();
+        snapshot =
+        await ref.orderBy("text").endAt(snapshot: message2Snapshot).get();
+
+        // message2 text = "hi"
+        expect(snapshot.size, 4);
+        expect(snapshot.docs[0].data()["text"], "ahoj");
+        expect(snapshot.docs[3].data()["text"], "hi");
       });
     });
   });
