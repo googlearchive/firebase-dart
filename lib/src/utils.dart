@@ -31,6 +31,10 @@ dynamic jsify(Object dartObject) {
   return util.jsify(dartObject);
 }
 
+/// Calls [method] on JavaScript object [jsObject].
+dynamic callMethod(Object jsObject, String method, List<dynamic> args) =>
+    util.callMethod(jsObject, method, args);
+
 /// Returns [:true:] if the [value] is a very basic built-in type - e.g.
 /// [null], [num], [bool] or [String]. It returns [:false:] in the other case.
 bool _isBasicType(value) {

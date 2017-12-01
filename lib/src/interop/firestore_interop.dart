@@ -203,10 +203,10 @@ abstract class QueryJsImpl {
       [Func1<FirebaseError, dynamic> onError, QueryListenOptions onCompletion]);
   external QueryJsImpl orderBy(/*String|FieldPath*/ fieldPath,
       [String /*'desc'|'asc'*/ directionStr]);
-  external QueryJsImpl startAfter(
-      /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
-  external QueryJsImpl startAt(/*DocumentSnapshot|dynamic*/ snapshotOrField1,
-      [field2, field3, field4, field5]);
+  external QueryJsImpl startAfter(/*DocumentSnapshot|dynamic*/ snapshotOrField0,
+      [field1, field2, field3, field4, field5, field6, field7, field8, field9]);
+  external QueryJsImpl startAt(/*DocumentSnapshot|dynamic*/ snapshotOrField0,
+      [field1, field2, field3, field4, field5, field6, field7, field8, field9]);
   external QueryJsImpl where(/*String|FieldPath*/ fieldPath,
       String /*'<'|'<='|'=='|'>='|'>'*/ opStr, value);
 }
