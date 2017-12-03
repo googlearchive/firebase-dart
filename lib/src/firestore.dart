@@ -10,7 +10,13 @@ import 'js.dart';
 import 'utils.dart';
 
 export 'interop/firestore_interop.dart'
-    show FieldValue, FieldPath, SetOptions, Settings;
+    show
+        FieldValue,
+        FieldPath,
+        GeoPoint,
+        SetOptions,
+        Settings,
+        SnapshotMetadata;
 // TODO export more stuff
 
 /// The Cloud Firestore service interface.
@@ -281,10 +287,50 @@ class DocumentReference
   Future<DocumentSnapshot> get() =>
       handleThenableWithMapper(jsObject.get(), DocumentSnapshot.getInstance);
 
-  // TODO implement
-  VoidFunc0 onSnapshot(optionsOrObserverOrOnNext, observerOrOnNextOrOnError,
-          [Func1<FirebaseError, dynamic> onError]) =>
-      null;
+  StreamController<DocumentSnapshot> _onSnapshotController;
+  StreamController<DocumentSnapshot> _onMetadataController;
+
+  /// Attaches a listener for [DocumentSnapshot] events.
+  Stream<DocumentSnapshot> get onSnapshot =>
+      _createStream(_onSnapshotController);
+
+  /// Attaches a listener for [DocumentSnapshot] events
+  /// with [: {includeMetadataChanges: true} :] - raise an event even if only
+  /// metadata of the document changed. Default is [:false:].
+  Stream<DocumentSnapshot> get onMetadataChangesSnapshot => _createStream(
+      _onMetadataController,
+      new firestore_interop.DocumentListenOptions(
+          includeMetadataChanges: true));
+
+  Stream<DocumentSnapshot> _createStream(
+      StreamController<DocumentSnapshot> controller,
+      [firestore_interop.DocumentListenOptions options]) {
+    if (controller == null) {
+      var nextWrapper =
+          allowInterop((firestore_interop.DocumentSnapshotJsImpl snapshot) {
+        controller.add(DocumentSnapshot.getInstance(snapshot));
+      });
+
+      var errorWrapper = allowInterop((e) => controller.addError(e));
+
+      var onSnapshotUnsubscribe;
+
+      void startListen() {
+        onSnapshotUnsubscribe = (options != null)
+            ? jsObject.onSnapshot(options, nextWrapper, errorWrapper)
+            : jsObject.onSnapshot(nextWrapper, errorWrapper);
+      }
+
+      void stopListen() {
+        onSnapshotUnsubscribe();
+        onSnapshotUnsubscribe = null;
+      }
+
+      controller = new StreamController<DocumentSnapshot>.broadcast(
+          onListen: startListen, onCancel: stopListen, sync: true);
+    }
+    return controller.stream;
+  }
 
   /// Writes to the document referred to by this [DocumentReference].
   /// If the document does not exist yet, it will be created.
@@ -379,11 +425,61 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// Returns non-null created [Query].
   Query limit(num limit) => new Query.fromJsObject(jsObject.limit(limit));
 
-  // TODO implement
-  VoidFunc0 onSnapshot(optionsOrObserverOrOnNext, observerOrOnNextOrOnError,
-          [Func1<FirebaseError, dynamic> onError,
-          firestore_interop.QueryListenOptions onCompletion]) =>
-      null;
+  StreamController<QuerySnapshot> _onSnapshotController;
+  StreamController<QuerySnapshot> _onDocumentMetadataController;
+  StreamController<QuerySnapshot> _onQueryMetadataController;
+
+  /// Attaches a listener for [QuerySnapshot] events.
+  Stream<QuerySnapshot> get onSnapshot => _createStream(_onSnapshotController);
+
+  /// Attaches a listener for [QuerySnapshot] events
+  /// with [: {includeDocumentMetadataChanges: true} :] - raise an event even
+  /// if only metadata of a document in the query results changes
+  /// (for example, one of the [DocumentSnapshot.metadata] properties
+  /// on one of the documents). Default is [:false:].
+  Stream<QuerySnapshot> get onDocumentMetadataChangesSnapshot => _createStream(
+      _onDocumentMetadataController,
+      new firestore_interop.QueryListenOptions(
+          includeDocumentMetadataChanges: true));
+
+  /// Attaches a listener for [QuerySnapshot] events
+  /// with [: {includeQueryMetadataChanges: true} :] - raise an event even
+  /// if only metadata changes (for example, one of the
+  /// [QuerySnapshot.metadata] properties). Default is [:false:].
+  Stream<QuerySnapshot> get onQueryMetadataChangesSnapshot => _createStream(
+      _onQueryMetadataController,
+      new firestore_interop.QueryListenOptions(
+          includeQueryMetadataChanges: true));
+
+  Stream<QuerySnapshot> _createStream(
+      StreamController<QuerySnapshot> controller,
+      [firestore_interop.QueryListenOptions options]) {
+    if (controller == null) {
+      var nextWrapper =
+          allowInterop((firestore_interop.QuerySnapshotJsImpl snapshot) {
+        controller.add(QuerySnapshot.get(snapshot));
+      });
+
+      var errorWrapper = allowInterop((e) => controller.addError(e));
+
+      var onSnapshotUnsubscribe;
+
+      void startListen() {
+        onSnapshotUnsubscribe = (options != null)
+            ? jsObject.onSnapshot(options, nextWrapper, errorWrapper)
+            : jsObject.onSnapshot(nextWrapper, errorWrapper);
+      }
+
+      void stopListen() {
+        onSnapshotUnsubscribe();
+        onSnapshotUnsubscribe = null;
+      }
+
+      controller = new StreamController<QuerySnapshot>.broadcast(
+          onListen: startListen, onCancel: stopListen, sync: true);
+    }
+    return controller.stream;
+  }
 
   /// Creates a new [Query] where the results are sorted by the specified field,
   /// in descending or ascending order.
@@ -534,19 +630,36 @@ class CollectionReference<T extends firestore_interop.CollectionReferenceJsImpl>
 /// It contains the document affected and the type of change that occurred.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.DocumentChange>.
-// TODO finish this class
-class DocumentChange extends JsObjectWrapper<firestore_interop.DocumentChange> {
+class DocumentChange
+    extends JsObjectWrapper<firestore_interop.DocumentChangeJsImpl> {
   static final _expando = new Expando<DocumentChange>();
 
+  /// Type of the change: [:"added":], [:"removed":] or [:"modified":].
+  String get type => jsObject.type;
+
+  /// The document affected by this change.
+  DocumentSnapshot get doc => DocumentSnapshot.getInstance(jsObject.doc);
+
+  /// The index of the changed document in the result set immediately prior to
+  /// this [DocumentChange] (i.e. supposing that all prior DocumentChange
+  /// objects have been applied). Is -1 for 'added' events.
+  num get oldIndex => jsObject.oldIndex;
+
+  /// The index of the changed document in the result set immediately after
+  /// this [DocumentChange] (i.e. supposing that all prior DocumentChange
+  /// objects and the current DocumentChange object have been applied).
+  /// Is -1 for 'removed' events.
+  num get newIndex => jsObject.newIndex;
+
   /// Creates a new DocumentChange from a [jsObject].
-  static DocumentChange get(firestore_interop.DocumentChange jsObject) {
+  static DocumentChange get(firestore_interop.DocumentChangeJsImpl jsObject) {
     if (jsObject == null) {
       return null;
     }
     return _expando[jsObject] ??= new DocumentChange._fromJsObject(jsObject);
   }
 
-  DocumentChange._fromJsObject(firestore_interop.DocumentChange jsObject)
+  DocumentChange._fromJsObject(firestore_interop.DocumentChangeJsImpl jsObject)
       : super.fromJsObject(jsObject);
 }
 
@@ -736,23 +849,3 @@ class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl> {
       Transaction
           .getInstance(jsObject.update(documentRef.jsObject, jsify(data)));
 }
-
-/*
-
-class Firestore extends JsObjectWrapper<FirestoreJsImpl> {
-  static final _expando = new Expando<Firestore>();
-
-  /// Creates a new Firestore from a [jsObject].
-  static Firestore get(FirestoreJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= new Firestore._fromJsObject(jsObject);
-  }
-
-  Firestore._fromJsObject(FirestoreJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-}
-
-
-* */

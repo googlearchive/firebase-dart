@@ -473,8 +473,49 @@ void main() {
             anyOf("hello", "hi", "ahoj", "cau"));
       });
 
-      // TODO onSnapshot
-      // https://firebase.google.com/docs/firestore/query-data/listen
+      test("onSnapshot", () async {
+        var subscription;
+
+        subscription = ref.onSnapshot.listen((snapshot) {
+          expect(snapshot, isNotNull);
+          expect(snapshot.docChanges, isNotEmpty);
+
+          snapshot.forEach(expectAsync1((doc) {
+            expect(
+                doc.id, anyOf("message1", "message2", "message3", "message4"));
+            expect(doc.metadata, isNotNull);
+          }, count: 4));
+
+          subscription.cancel();
+        });
+      });
+
+      test("onSnapshot view changes", () async {
+        ref.onSnapshot.listen((snapshot) {
+          snapshot.docChanges.forEach((change) {
+            if (change.type == "added") {
+              expect(change.doc.id,
+                  anyOf("message1", "message2", "message3", "message4"));
+            }
+          });
+        });
+      });
+
+      test("onSnapshot document", () async {
+        ref.doc("message1").onSnapshot.listen((doc) {
+          if (doc.exists) {
+            expect(doc.data()["text"], "hello");
+          }
+        });
+      });
+
+      test("onSnapshot document", () async {
+        ref.doc("message1").onSnapshot.listen((doc) {
+          if (doc.exists) {
+            expect(doc.data()["text"], "hello");
+          }
+        });
+      });
 
       test("order by", () async {
         var snapshot = await ref.orderBy("text").get();
@@ -611,8 +652,5 @@ void main() {
         expect(snapshot.docs[3].data()["text"], "hi");
       });
     });
-
-    // Enable persistence testy
-    // https://firebase.google.com/docs/firestore/manage-data/enable-offline
   });
 }

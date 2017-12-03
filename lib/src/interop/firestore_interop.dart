@@ -80,6 +80,7 @@ class FieldPath {
 /// The geo point is represented as latitude/longitude pair.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.GeoPoint>.
+// TODO
 @JS()
 class GeoPoint {
   /// Creates a new immutable [GeoPoint] object with the provided [latitude] and
@@ -98,6 +99,7 @@ class GeoPoint {
   external set longitude(num l);
 }
 
+// TODO
 @JS()
 abstract class BlobJsImpl {
   external static BlobJsImpl fromBase64String(String base64);
@@ -106,35 +108,16 @@ abstract class BlobJsImpl {
   external Uint8List toUint8Array();
 }
 
-// TODO implementation
-@JS()
-abstract class DocumentChange {
-  // TODO atributes?
-  /*
+@JS("DocumentChange")
+abstract class DocumentChangeJsImpl {
   external String /*'added'|'removed'|'modified'*/ get type;
   external set type(String /*'added'|'removed'|'modified'*/ v);
-
-  /// The document affected by this change.
   external DocumentSnapshotJsImpl get doc;
   external set doc(DocumentSnapshotJsImpl v);
-
-  /// The index of the changed document in the result set immediately prior to
-  /// this DocumentChange (i.e. supposing that all prior DocumentChange objects
-  /// have been applied). Is -1 for 'added' events.
   external num get oldIndex;
   external set oldIndex(num v);
-
-  /// The index of the changed document in the result set immediately after
-  /// this DocumentChange (i.e. supposing that all prior DocumentChange
-  /// objects and the current DocumentChange object have been applied).
-  /// Is -1 for 'removed' events.
   external num get newIndex;
   external set newIndex(num v);
-  external factory DocumentChangeJsImpl(
-      {String /*'added'|'removed'|'modified'*/ type,
-      DocumentSnapshotJsImpl doc,
-      num oldIndex,
-      num newIndex});*/
 }
 
 @JS("DocumentReference")
@@ -213,8 +196,8 @@ abstract class QueryJsImpl {
 
 @JS("QuerySnapshot")
 abstract class QuerySnapshotJsImpl {
-  external List<DocumentChange> get docChanges;
-  external set docChanges(List<DocumentChange> v);
+  external List<DocumentChangeJsImpl> get docChanges;
+  external set docChanges(List<DocumentChangeJsImpl> v);
   external List<DocumentSnapshotJsImpl> get docs;
   external set docs(List<DocumentSnapshotJsImpl> v);
   external bool get empty;
@@ -298,23 +281,25 @@ abstract class Settings {
   external factory Settings({String host, bool ssl});
 }
 
-//TODO
+/// Metadata about a snapshot, describing the state of the snapshot.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.SnapshotMetadata>.
 @anonymous
 @JS()
 abstract class SnapshotMetadata {
-  /// True if the snapshot contains the result of local writes (e.g. set() or
-  /// update() calls) that have not yet been committed to the backend.
-  /// If your listener has opted into metadata updates (via
-  /// `DocumentListenOptions` or `QueryListenOptions`) you will receive another
-  /// snapshot with `hasPendingWrites` equal to false once the writes have been
-  /// committed to the backend.
+  /// [:true:] if the snapshot includes local writes (set() or update() calls)
+  /// that haven't been committed to the backend yet.
+  /// If your listener has opted into metadata updates via
+  /// onDocumentMetadataSnapshot, onQueryMetadataSnapshot or onMetadataSnapshot,
+  /// you receive another snapshot with [hasPendingWrites]
+  /// set to [:false:] once the writes have been committed to the backend.
   external bool get hasPendingWrites;
   external set hasPendingWrites(bool v);
 
-  /// True if the snapshot was created from cached data rather than
-  /// guaranteed up-to-date server data. If your listener has opted into
-  /// metadata updates (via `DocumentListenOptions` or `QueryListenOptions`)
-  /// you will receive another snapshot with `fromCache` equal to false once
+  /// [:true:] if the snapshot was created from cached data rather than guaranteed
+  /// up-to-date server data. If your listener has opted into metadata updates
+  /// (onDocumentMetadataSnapshot, onQueryMetadataSnapshot or onMetadataSnapshot)
+  /// you will receive another snapshot with [fromCache] set to [:false:] once
   /// the client has received up-to-date data from the backend.
   external bool get fromCache;
   external set fromCache(bool v);
@@ -338,12 +323,15 @@ abstract class DocumentListenOptions {
 @anonymous
 @JS()
 abstract class SetOptions {
+  /// Set to true to replace only the values from the new data.
+  /// Fields omitted will remain untouched.
   external bool get merge;
   external set merge(bool v);
   external factory SetOptions({bool merge});
 }
 
 /// An object of the fields and values for the document.
+// TODO
 @anonymous
 @JS()
 class DocumentData {}
