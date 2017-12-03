@@ -133,10 +133,10 @@ void main() {
       });
 
       test("collection path", () {
-        var collectionRef = firestore.collection("messages/message4/words");
-        expect(collectionRef, isNotNull);
-        expect(collectionRef.id, "words");
-        expect(collectionRef.parent.id, "message4");
+        ref = firestore.collection("messages/message4/words");
+        expect(ref, isNotNull);
+        expect(ref.id, "words");
+        expect(ref.parent.id, "message4");
       });
     });
 
@@ -152,6 +152,52 @@ void main() {
           await _deleteCollection(firestore, ref, 4);
           ref = null;
         }
+      });
+
+      test("delete collection", () async {
+        ref = firestore.collection("cities");
+        var nycRef = ref.doc("NYC");
+        await nycRef.set({"name": "NYC"});
+        var sfRef = ref.doc("SF");
+        await sfRef.set({"name": "SF", "population": 0});
+        var laRef = ref.doc("LA");
+        await laRef.set({"name": "LA"});
+
+        await _deleteCollection(firestore, ref, 4);
+
+        var snapshot = await ref.get();
+        expect(snapshot.empty, isTrue);
+        expect(snapshot.docs.isEmpty, isTrue);
+      });
+
+      test("delete", () async {
+        ref = firestore.collection("cities");
+        var nycRef = ref.doc("NYC");
+        await nycRef.set({"name": "NYC"});
+
+        await nycRef.delete();
+        nycRef = ref.doc("NYC");
+
+        var snapshot = await nycRef.get();
+        expect(snapshot.exists, isFalse);
+      });
+
+      test("delete fields", () async {
+        ref = firestore.collection("cities");
+        var nycRef = ref.doc("NYC");
+        await nycRef.set({"name": "New York", "population": 1000});
+
+        var snapshot = await nycRef.get();
+        var snapshotData = snapshot.data();
+        expect(snapshotData["name"], "New York");
+        expect(snapshotData["population"], 1000);
+
+        await nycRef.update({"population": fs.FieldValue.delete()});
+
+        snapshot = await nycRef.get();
+        snapshotData = snapshot.data();
+        expect(snapshotData["name"], "New York");
+        expect(snapshotData["population"], isNull);
       });
 
       test("set document", () async {
@@ -349,20 +395,6 @@ void main() {
         collectionSnapshot = await ref.get();
         expect(collectionSnapshot.size, 2);
       });
-
-      /*test("delete", () async {
-        ref = firestore.collection("flowers");
-        await ref.doc("DC").set({"name": "DC"});
-
-        await ref.doc("DC").delete();
-
-        var collectionSnapshot = await ref.get();
-        print(collectionSnapshot.docs);
-        expect(collectionSnapshot.empty, isTrue);
-      });*/
-
-      // TODO finish delete!!!!
-      // https://firebase.google.com/docs/firestore/manage-data/delete-data#top_of_page
     });
 
     group("Quering data", () {
@@ -516,8 +548,10 @@ void main() {
         expect(snapshot.empty, isTrue);
 
         var message2Snapshot = await ref.doc("message2").get();
-        snapshot =
-        await ref.orderBy("text").startAfter(snapshot: message2Snapshot).get();
+        snapshot = await ref
+            .orderBy("text")
+            .startAfter(snapshot: message2Snapshot)
+            .get();
 
         // message2 text = "hi"
         expect(snapshot.empty, isTrue);
@@ -539,8 +573,10 @@ void main() {
         expect(snapshot.empty, isTrue);
 
         var message2Snapshot = await ref.doc("message2").get();
-        snapshot =
-        await ref.orderBy("text").endBefore(snapshot: message2Snapshot).get();
+        snapshot = await ref
+            .orderBy("text")
+            .endBefore(snapshot: message2Snapshot)
+            .get();
 
         // message2 text = "hi"
         expect(snapshot.size, 3);
@@ -567,7 +603,7 @@ void main() {
 
         var message2Snapshot = await ref.doc("message2").get();
         snapshot =
-        await ref.orderBy("text").endAt(snapshot: message2Snapshot).get();
+            await ref.orderBy("text").endAt(snapshot: message2Snapshot).get();
 
         // message2 text = "hi"
         expect(snapshot.size, 4);
@@ -575,5 +611,8 @@ void main() {
         expect(snapshot.docs[3].data()["text"], "hi");
       });
     });
+
+    // Enable persistence testy
+    // https://firebase.google.com/docs/firestore/manage-data/enable-offline
   });
 }
