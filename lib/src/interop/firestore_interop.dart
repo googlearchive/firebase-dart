@@ -267,7 +267,10 @@ abstract class QueryListenOptions {
       {bool includeQueryMetadataChanges, bool includeDocumentMetadataChanges});
 }
 
-//TODO
+/// Specifies custom configurations for your Cloud Firestore instance.
+/// You must set these before invoking any other methods.
+///
+/// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.Settings>.
 @anonymous
 @JS()
 abstract class Settings {
