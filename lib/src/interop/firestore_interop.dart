@@ -27,8 +27,7 @@ abstract class FirestoreJsImpl {
 abstract class WriteBatchJsImpl {
   external PromiseJsImpl<Null> commit();
   external WriteBatchJsImpl delete(DocumentReferenceJsImpl documentRef);
-  external WriteBatchJsImpl set(
-      DocumentReferenceJsImpl documentRef, DocumentData data,
+  external WriteBatchJsImpl set(DocumentReferenceJsImpl documentRef, data,
       [SetOptions options]);
   external WriteBatchJsImpl update(DocumentReferenceJsImpl documentRef, data);
 }
@@ -39,12 +38,11 @@ class CollectionReferenceJsImpl extends QueryJsImpl {
   external set id(String v);
   external DocumentReferenceJsImpl get parent;
   external set parent(DocumentReferenceJsImpl d);
-  // TODO not in API?
   external String get path;
   external set path(String v);
 
   external factory CollectionReferenceJsImpl();
-  external PromiseJsImpl<DocumentReferenceJsImpl> add(DocumentData data);
+  external PromiseJsImpl<DocumentReferenceJsImpl> add(data);
   external DocumentReferenceJsImpl doc([String documentPath]);
 }
 
@@ -59,17 +57,16 @@ class FieldPath {
   /// Creates a [FieldPath] from the provided field names. If more than one
   /// field name is provided, the path will point to a nested field in
   /// a document.
-  // TODO in future: varargs parameter
-  external factory FieldPath(String fieldName1,
-      [String fieldName2,
+  external factory FieldPath(String fieldName0,
+      [String fieldName1,
+      String fieldName2,
       String fieldName3,
       String fieldName4,
       String fieldName5,
       String fieldName6,
       String fieldName7,
       String fieldName8,
-      String fieldName9,
-      String fieldName10]);
+      String fieldName9]);
 
   /// Returns a special sentinel FieldPath to refer to the ID of a document.
   /// It can be used in queries to sort or filter by the document ID.
@@ -80,7 +77,6 @@ class FieldPath {
 /// The geo point is represented as latitude/longitude pair.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.GeoPoint>.
-// TODO
 @JS()
 class GeoPoint {
   /// Creates a new immutable [GeoPoint] object with the provided [latitude] and
@@ -99,8 +95,7 @@ class GeoPoint {
   external set longitude(num l);
 }
 
-// TODO
-@JS()
+@JS("Blob")
 abstract class BlobJsImpl {
   external static BlobJsImpl fromBase64String(String base64);
   external static BlobJsImpl fromUint8Array(Uint8List list);
@@ -128,8 +123,6 @@ abstract class DocumentReferenceJsImpl {
   external set id(String s);
   external CollectionReferenceJsImpl get parent;
   external set parent(CollectionReferenceJsImpl c);
-
-  // TODO path?
   external String get path;
   external set path(String v);
 
@@ -139,7 +132,7 @@ abstract class DocumentReferenceJsImpl {
   external VoidFunc0 onSnapshot(
       optionsOrObserverOrOnNext, observerOrOnNextOrOnError,
       [Func1<FirebaseError, dynamic> onError]);
-  external PromiseJsImpl<Null> set(DocumentData data, [SetOptions options]);
+  external PromiseJsImpl<Null> set(data, [SetOptions options]);
   external PromiseJsImpl<Null> update(data);
 }
 
@@ -153,7 +146,7 @@ abstract class DocumentSnapshotJsImpl {
   external set metadata(SnapshotMetadata v);
   external DocumentReferenceJsImpl get ref;
   external set ref(DocumentReferenceJsImpl v);
-  external DocumentData data();
+  external dynamic data();
   external dynamic get(/*String|FieldPath*/ fieldPath);
 }
 
@@ -176,9 +169,9 @@ abstract class QueryJsImpl {
   external FirestoreJsImpl get firestore;
   external set firestore(FirestoreJsImpl f);
   external QueryJsImpl endAt(
-      /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
+      /*DocumentSnapshot|List<dynamic>*/ snapshotOrFieldValues);
   external QueryJsImpl endBefore(
-      /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
+      /*DocumentSnapshot|List<dynamic>*/ snapshotOrFieldValues);
   external PromiseJsImpl<QuerySnapshotJsImpl> get();
   external QueryJsImpl limit(num limit);
   external VoidFunc0 onSnapshot(
@@ -187,9 +180,9 @@ abstract class QueryJsImpl {
   external QueryJsImpl orderBy(/*String|FieldPath*/ fieldPath,
       [String /*'desc'|'asc'*/ directionStr]);
   external QueryJsImpl startAfter(
-      /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
+      /*DocumentSnapshot|List<dynamic>*/ snapshotOrFieldValues);
   external QueryJsImpl startAt(
-      /*DocumentSnapshot|List<dynamic>*/ snapshot_fieldValues);
+      /*DocumentSnapshot|List<dynamic>*/ snapshotOrFieldValues);
   external QueryJsImpl where(/*String|FieldPath*/ fieldPath,
       String /*'<'|'<='|'=='|'>='|'>'*/ opStr, value);
 }
@@ -216,8 +209,7 @@ abstract class TransactionJsImpl {
   external TransactionJsImpl delete(DocumentReferenceJsImpl documentRef);
   external PromiseJsImpl<DocumentSnapshotJsImpl> get(
       DocumentReferenceJsImpl documentRef);
-  external TransactionJsImpl set(
-      DocumentReferenceJsImpl documentRef, DocumentData data,
+  external TransactionJsImpl set(DocumentReferenceJsImpl documentRef, data,
       [SetOptions options]);
   external TransactionJsImpl update(DocumentReferenceJsImpl documentRef, data);
 }
@@ -226,7 +218,6 @@ abstract class TransactionJsImpl {
 /// These status codes are also exposed by gRPC.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.FirestoreError>.
-// TODO
 @anonymous
 @JS()
 abstract class FirestoreError {
@@ -246,7 +237,8 @@ abstract class FirestoreError {
       String stack});
 }
 
-/// Options for use with [Query.onSnapshot()] to control the behavior of
+/// Options for use with [Query.onDocumentMetadataChangesSnapshot()] and
+/// [Query.onQueryMetadataChangesSnapshot()] to control the behavior of
 /// the snapshot listener.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.QueryListenOptions>.
@@ -309,12 +301,13 @@ abstract class SnapshotMetadata {
   external factory SnapshotMetadata({bool hasPendingWrites, bool fromCache});
 }
 
-//TODO
+/// Options for use with [DocumentReference.onMetadataChangesSnapshot()] to
+/// control the behavior of the snapshot listener.
 @anonymous
 @JS()
 abstract class DocumentListenOptions {
   /// Raise an event even if only metadata of the document changed. Default is
-  /// false.
+  /// [:false:].
   external bool get includeMetadataChanges;
   external set includeMetadataChanges(bool v);
   external factory DocumentListenOptions({bool includeMetadataChanges});
@@ -332,9 +325,3 @@ abstract class SetOptions {
   external set merge(bool v);
   external factory SetOptions({bool merge});
 }
-
-/// An object of the fields and values for the document.
-// TODO
-@anonymous
-@JS()
-class DocumentData {}

@@ -102,6 +102,7 @@ void main() {
       test("collection exists", () {
         expect(ref, isNotNull);
         expect(ref.id, "messages");
+        expect(ref.path, "messages");
       });
 
       test("create document with auto generated ID", () {
@@ -116,6 +117,7 @@ void main() {
 
         expect(docRef, isNotNull);
         expect(docRef.id, "message1");
+        expect(docRef.path, "messages/message1");
         expect(docRef.parent.id, ref.id);
       });
 
@@ -270,6 +272,24 @@ void main() {
         expect(snapshotData["arrayExample"], map["arrayExample"]);
         expect(snapshotData["nullExample"], map["nullExample"]);
         expect(snapshotData["mapExample"], map["mapExample"]);
+      });
+
+      test("get field", () async {
+        var docRef = ref.doc("message4");
+
+        var map = {
+          "stringExample": "Hello world!",
+          "innerMap": {"someNumber": 3.14159265}
+        };
+
+        await docRef.set(map);
+        var snapshot = await docRef.get();
+
+        expect(snapshot.get("stringExample"), "Hello world!");
+        expect(snapshot.get("innerMap.someNumber"), 3.14159265);
+        expect(snapshot.get(new fs.FieldPath("innerMap", "someNumber")),
+            3.14159265);
+        expect(snapshot.get("someNotExistentValue"), isNull);
       });
 
       test("add document", () async {

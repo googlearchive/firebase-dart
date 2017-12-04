@@ -10,8 +10,8 @@ import 'utils.dart';
 
 export 'interop/firestore_interop.dart'
     show
-        FieldValue,
         FieldPath,
+        FieldValue,
         GeoPoint,
         SetOptions,
         Settings,
@@ -23,7 +23,7 @@ export 'interop/firestore_interop.dart'
 class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   static final _expando = new Expando<Firestore>();
 
-  /// App for this instance of firestore service.
+  /// Non-null App for this instance of firestore service.
   App get app => App.getInstance(jsObject.app);
 
   /// Creates a new Firestore from a [jsObject].
@@ -44,7 +44,8 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   /// multiple writes.
   WriteBatch batch() => WriteBatch.getInstance(jsObject.batch());
 
-  /// Gets a slash-separated path to a collection.
+  /// Gets a [CollectionReference] instance that refers to the collection
+  /// at the specified path.
   /// The [collectionPath] parameter is a slash-separated path to a collection.
   ///
   /// Returns non-null [CollectionReference] instance.
@@ -188,15 +189,15 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
   /// The [DocumentReference] parameter is a reference to the document to be
   /// created. Value must not be null.
   ///
-  /// The [data] parameter is an object of the fields and values
-  /// for the document. Value must not be null.
+  /// The [data] parameter is a Map of the fields and values for the document.
+  /// Value must not be null.
   ///
   /// The optional [SetOptions] parameters is an object to configure the set
   /// behavior. Pass [: {merge: true} :] to only replace the values specified in
   /// the data argument. Fields omitted will remain untouched. Value may be null.
   ///
   /// Returns non-null [WriteBatch] instance. Used for chaining method calls.
-  WriteBatch set(DocumentReference documentRef, data,
+  WriteBatch set(DocumentReference documentRef, Map<String, dynamic> data,
       [firestore_interop.SetOptions options]) {
     var jsObjectSet = (options != null)
         ? jsObject.set(documentRef.jsObject, jsify(data), options)
@@ -207,13 +208,16 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
   /// Updates fields in the document referred to by this [DocumentReference].
   /// The update will fail if applied to a document that does not exist.
   ///
-  /// Nested fields can be updated by providing dot-separated field path strings.
+  /// Nested fields can be updated by providing dot-separated field path strings
+  /// or by providing [FieldPath] objects.
   ///
   /// The [DocumentReference] parameter is a reference to the document to
   /// be updated. Value must not be null.
   ///
-  /// The [data] param is the object containing all of the fields and values
+  /// The [data] param is the Map containing all of the fields and values
   /// to update.
+  ///
+  /// TODO fields
   ///
   /// Returns non-null [WriteBatch] instance used for chaining method calls.
   // TODO in future: varargs parameter
@@ -245,6 +249,9 @@ class DocumentReference
   /// The Collection this [DocumentReference] belongs to.
   CollectionReference get parent =>
       CollectionReference.getInstance(jsObject.parent);
+
+  /// The document's path within its collection.
+  String get path => jsObject.path;
 
   /// Creates a new DocumentReference from a [jsObject].
   static DocumentReference getInstance(
@@ -336,7 +343,7 @@ class DocumentReference
   /// If you pass [options], the provided data can be merged into the
   /// existing document.
   ///
-  /// The [data] parameter is an object of the fields and values for the
+  /// The [data] parameter is a Map of the fields and values for the
   /// document. Value must not be null.
   ///
   /// The optional [SetOptions] is an object to configure the set behavior.
@@ -345,7 +352,8 @@ class DocumentReference
   ///
   /// Returns non-null [Future] that resolves once the data has been successfully
   /// written to the backend. (Note that it won't resolve while you're offline).
-  Future<Null> set(data, [firestore_interop.SetOptions options]) {
+  Future<Null> set(Map<String, dynamic> data,
+      [firestore_interop.SetOptions options]) {
     var jsObjectSet = (options != null)
         ? jsObject.set(jsify(data), options)
         : jsObject.set(jsify(data));
@@ -355,9 +363,10 @@ class DocumentReference
   /// Updates fields in the document referred to by this [DocumentReference].
   /// The update will fail if applied to a document that does not exist.
   ///
-  /// Nested fields can be updated by providing dot-separated field path strings.
+  /// Nested fields can be updated by providing dot-separated field path strings
+  /// or by providing TODO [FieldPath] objects.
   ///
-  /// The [data] param is the object containing all of the fields and values
+  /// The [data] param is the Map containing all of the fields and values
   /// to update.
   ///
   /// Returns non-null [Future] that resolves once the data has been successfully
@@ -388,7 +397,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
   ///
   /// The [DocumentSnapshot] parameter is the snapshot of the document you want
   /// the query to end at. Or the list of [fields] values to
-  /// start this query at, in order of the query's order by.
+  /// end this query at, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
   Query endAt({DocumentSnapshot snapshot, List<dynamic> fields}) =>
@@ -402,7 +411,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
   ///
   /// The [DocumentSnapshot] parameter is the snapshot of the document you want
   /// the query to end before. Or the list of [fields] values to
-  /// start this query at, in order of the query's order by.
+  /// end this query before, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
   Query endBefore({DocumentSnapshot snapshot, List<dynamic> fields}) =>
@@ -411,7 +420,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
 
   /// Executes the query and returns the results as a [QuerySnapshot].
   ///
-  /// Returns non-null Future that will be resolved with the results of the
+  /// Returns non-null [Future] that will be resolved with the results of the
   /// query.
   Future<QuerySnapshot> get() =>
       handleThenableWithMapper(jsObject.get(), QuerySnapshot.getInstance);
@@ -486,8 +495,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// The [fieldPath] parameter is a String or [FieldPath] to sort by.
   ///
   /// The optional [directionStr] parameter is a direction to sort by
-  /// ([: "asc" :] or [: "desc" :]).
-  /// If not specified, the default order is ascending.
+  /// ([:asc:] or [:desc:]). If not specified, the default order is ascending.
   ///
   /// Returns non-null created [Query].
   Query orderBy(/*String|FieldPath*/ fieldPath,
@@ -505,7 +513,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
   ///
   /// The [DocumentSnapshot] parameter is the snapshot of the document you want
   /// the query to start after. Or the list of [fields] values to
-  /// start this query at, in order of the query's order by.
+  /// start this query after, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
   ///
@@ -542,20 +550,21 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// The [fieldPath] parameter is a String or non-null [FieldPath] to compare.
   ///
   /// The [opStr] parameter is the operation string
-  /// (e.g "<", "<=", "==", ">", ">=").
+  /// (e.g [:<:], [:<=:], [:==:], [:>:], [:>=:]).
   ///
   /// The [value] parameter is the value for comparison.
   ///
   /// Returns non-null created [Query].
-  Query where(dynamic /*String|FieldPath*/ fieldPath,
-          String /*'<'|'<='|'=='|'>='|'>'*/ opStr, dynamic value) =>
+  Query where(/*String|FieldPath*/ fieldPath,
+          String /*'<'|'<='|'=='|'>='|'>'*/ opStr, value) =>
       new Query.fromJsObject(jsObject.where(fieldPath, opStr, jsify(value)));
 
   /// Calls paginating [method] with [DocumentSnapshot] or [fields].
   _wrapPaginatingFunctionCall(
       String method, DocumentSnapshot snapshot, List<dynamic> fields) {
     if (snapshot == null && fields == null) {
-      throw new ArgumentError("Please provide snapshot or fields parameter.");
+      throw new ArgumentError(
+          "Please provide either snapshot or fields parameter.");
     }
 
     if (snapshot != null) {
@@ -582,6 +591,9 @@ class CollectionReference<T extends firestore_interop.CollectionReferenceJsImpl>
   DocumentReference get parent =>
       DocumentReference.getInstance(jsObject.parent);
 
+  /// The collection's path.
+  String get path => jsObject.path;
+
   /// Creates a new CollectionReference from a [jsObject].
   static CollectionReference getInstance(
       firestore_interop.CollectionReferenceJsImpl jsObject) {
@@ -605,14 +617,17 @@ class CollectionReference<T extends firestore_interop.CollectionReferenceJsImpl>
   ///
   /// The [data] parameter must not be null.
   ///
-  /// Returns [Future] that resolves with a [DocumentReference] pointing to the
-  /// newly created document after it has been written to the backend.
-  Future<DocumentReference> add(data) => handleThenableWithMapper(
-      jsObject.add(jsify(data)), DocumentReference.getInstance);
+  /// Returns non-null [Future] that resolves with a [DocumentReference]
+  /// pointing to the newly created document after it has been written
+  /// to the backend.
+  Future<DocumentReference> add(Map<String, dynamic> data) =>
+      handleThenableWithMapper(
+          jsObject.add(jsify(data)), DocumentReference.getInstance);
 
   /// Gets a [DocumentReference] for the document within the collection
-  /// at the specified path. If no path is specified, an automatically-generated
-  /// unique ID will be used for the returned [DocumentReference].
+  /// at the specified path. If no [documentPath] is specified,
+  /// an automatically-generated unique ID will be used for the
+  /// returned [DocumentReference].
   ///
   /// The optional [documentPath] parameter is a slash-separated path to
   /// a document.
@@ -633,7 +648,7 @@ class DocumentChange
     extends JsObjectWrapper<firestore_interop.DocumentChangeJsImpl> {
   static final _expando = new Expando<DocumentChange>();
 
-  /// Type of the change: [:"added":], [:"removed":] or [:"modified":].
+  /// Type of the change: [:added:], [:removed:] or [:modified:].
   String get type => jsObject.type;
 
   /// The document affected by this change.
@@ -699,27 +714,24 @@ class DocumentSnapshot
       firestore_interop.DocumentSnapshotJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  /// Retrieves all fields in the document as an object.
+  /// Retrieves all fields in the document as a Map.
   ///
-  /// Returns non-null data containing all fields in the specified
+  /// Returns non-null [Map] containing all fields in the specified
   /// document.
-  dynamic data() => dartify(jsObject.data());
+  Map<String, dynamic> data() => dartify(jsObject.data());
 
   /// Retrieves the field specified by [fieldPath] parameter at the specified
   /// field location or [:null:] if no such field exists in the document.
   ///
   /// The [fieldPath] is the String or [FieldPath] - the path
   /// (e.g. 'foo' or 'foo.bar') to a specific field.
-  // TODO fieldpath
-  // TODO really returns null?
-  dynamic get(dynamic /*String|FieldPath*/ fieldPath) =>
-      jsObject.get(fieldPath);
+  dynamic get(/*String|FieldPath*/ fieldPath) => jsObject.get(fieldPath);
 }
 
 /// A [QuerySnapshot] contains zero or more [DocumentSnapshot] objects
 /// representing the results of a query. The documents can be accessed as
 /// an array via the docs property or enumerated using the [forEach()] method.
-/// The number of documents can be determined via the empty and size properties.
+/// The number of documents can be determined via the [empty] and [size] properties.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.QuerySnapshot>.
 class QuerySnapshot
@@ -810,7 +822,7 @@ class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl> {
 
   /// Writes to the document referred to by the provided [DocumentReference].
   /// If the document does not exist yet, it will be created.
-  /// If you pass options, the provided data can be merged into the existing
+  /// If you pass [options], the provided data can be merged into the existing
   /// document.
   ///
   /// The [DocumentReference] parameter is a reference to the document to be
@@ -825,8 +837,7 @@ class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl> {
   /// Value must not be null.
   ///
   /// Returns non-null [Transaction] used for chaining method calls.
-  // TODO finish the implementation probably convert data?
-  Transaction set(DocumentReference documentRef, data,
+  Transaction set(DocumentReference documentRef, Map<String, dynamic> data,
       [firestore_interop.SetOptions options]) {
     var jsObjectSet = (options != null)
         ? jsObject.set(documentRef.jsObject, jsify(data), options)
