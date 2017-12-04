@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data' show Uint8List;
 
-import 'package:func/func.dart';
 import 'package:js/js.dart';
 
 import 'app.dart';
@@ -17,7 +16,6 @@ export 'interop/firestore_interop.dart'
         SetOptions,
         Settings,
         SnapshotMetadata;
-// TODO export more stuff
 
 /// The Cloud Firestore service interface.
 ///
@@ -26,10 +24,10 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   static final _expando = new Expando<Firestore>();
 
   /// App for this instance of firestore service.
-  App get app => App.get(jsObject.app);
+  App get app => App.getInstance(jsObject.app);
 
   /// Creates a new Firestore from a [jsObject].
-  static Firestore get(firestore_interop.FirestoreJsImpl jsObject) {
+  static Firestore getInstance(firestore_interop.FirestoreJsImpl jsObject) {
     if (jsObject == null) {
       return null;
     }
@@ -44,7 +42,7 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   ///
   /// Returns non-null [WriteBatch] that can be used to atomically execute
   /// multiple writes.
-  WriteBatch batch() => WriteBatch.get(jsObject.batch());
+  WriteBatch batch() => WriteBatch.getInstance(jsObject.batch());
 
   /// Gets a slash-separated path to a collection.
   /// The [collectionPath] parameter is a slash-separated path to a collection.
@@ -156,7 +154,7 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
   static final _expando = new Expando<WriteBatch>();
 
   /// Creates a new WriteBatch from a [jsObject].
-  static WriteBatch get(firestore_interop.WriteBatchJsImpl jsObject) {
+  static WriteBatch getInstance(firestore_interop.WriteBatchJsImpl jsObject) {
     if (jsObject == null) {
       return null;
     }
@@ -180,7 +178,7 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
   ///
   /// Returns non-null [WriteBatch] instance. Used for chaining method calls.
   WriteBatch delete(DocumentReference documentRef) =>
-      WriteBatch.get(jsObject.delete(documentRef.jsObject));
+      WriteBatch.getInstance(jsObject.delete(documentRef.jsObject));
 
   /// Writes to the document referred to by the provided [DocumentReference].
   /// If the document does not exist yet, it will be created.
@@ -203,7 +201,7 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
     var jsObjectSet = (options != null)
         ? jsObject.set(documentRef.jsObject, jsify(data), options)
         : jsObject.set(documentRef.jsObject, jsify(data));
-    return WriteBatch.get(jsObjectSet);
+    return WriteBatch.getInstance(jsObjectSet);
   }
 
   /// Updates fields in the document referred to by this [DocumentReference].
@@ -220,7 +218,8 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
   /// Returns non-null [WriteBatch] instance used for chaining method calls.
   // TODO in future: varargs parameter
   WriteBatch update(DocumentReference documentRef, Map<String, dynamic> data) =>
-      WriteBatch.get(jsObject.update(documentRef.jsObject, jsify(data)));
+      WriteBatch
+          .getInstance(jsObject.update(documentRef.jsObject, jsify(data)));
 }
 
 /// A [DocumentReference] refers to a document location in a
@@ -237,7 +236,7 @@ class DocumentReference
 
   /// Non-null [Firestore] the document is in.
   /// This is useful for performing transactions, for example.
-  Firestore get firestore => Firestore.get(jsObject.firestore);
+  Firestore get firestore => Firestore.getInstance(jsObject.firestore);
 
   /// The document's identifier within its collection.
   String get id => jsObject.id;
@@ -377,7 +376,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
     extends JsObjectWrapper<T> {
   /// Non-null [Firestore] for the Cloud Firestore database
   /// (useful for performing transactions, etc.).
-  Firestore get firestore => Firestore.get(jsObject.firestore);
+  Firestore get firestore => Firestore.getInstance(jsObject.firestore);
 
   /// Creates a new Query from a [jsObject].
   Query.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
@@ -415,7 +414,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// Returns non-null Future that will be resolved with the results of the
   /// query.
   Future<QuerySnapshot> get() =>
-      handleThenableWithMapper(jsObject.get(), QuerySnapshot.get);
+      handleThenableWithMapper(jsObject.get(), QuerySnapshot.getInstance);
 
   /// Creates a new [Query] where the results are limited to the specified
   /// number of documents.
@@ -457,7 +456,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
     if (controller == null) {
       var nextWrapper =
           allowInterop((firestore_interop.QuerySnapshotJsImpl snapshot) {
-        controller.add(QuerySnapshot.get(snapshot));
+        controller.add(QuerySnapshot.getInstance(snapshot));
       });
 
       var errorWrapper = allowInterop((e) => controller.addError(e));
@@ -652,7 +651,8 @@ class DocumentChange
   num get newIndex => jsObject.newIndex;
 
   /// Creates a new DocumentChange from a [jsObject].
-  static DocumentChange get(firestore_interop.DocumentChangeJsImpl jsObject) {
+  static DocumentChange getInstance(
+      firestore_interop.DocumentChangeJsImpl jsObject) {
     if (jsObject == null) {
       return null;
     }
@@ -730,7 +730,7 @@ class QuerySnapshot
   /// If this is the first snapshot, all documents will be in the list as
   /// added changes.
   List<DocumentChange> get docChanges =>
-      jsObject.docChanges.map(DocumentChange.get).toList();
+      jsObject.docChanges.map(DocumentChange.getInstance).toList();
 
   /// Non-null list of all the documents.
   List<DocumentSnapshot> get docs =>
@@ -750,7 +750,8 @@ class QuerySnapshot
   num get size => jsObject.size;
 
   /// Creates a new QuerySnapshot from a [jsObject].
-  static QuerySnapshot get(firestore_interop.QuerySnapshotJsImpl jsObject) {
+  static QuerySnapshot getInstance(
+      firestore_interop.QuerySnapshotJsImpl jsObject) {
     if (jsObject == null) {
       return null;
     }

@@ -25,7 +25,7 @@ class App extends JsObjectWrapper<AppJsImpl> {
   FirebaseOptions get options => jsObject.options;
 
   /// Creates a new App from a [jsObject].
-  static App get(AppJsImpl jsObject) {
+  static App getInstance(AppJsImpl jsObject) {
     if (jsObject == null) {
       return null;
     }
@@ -35,10 +35,10 @@ class App extends JsObjectWrapper<AppJsImpl> {
   App._fromJsObject(AppJsImpl jsObject) : super.fromJsObject(jsObject);
 
   /// Returns [Auth] service.
-  Auth auth() => Auth.get(jsObject.auth());
+  Auth auth() => Auth.getInstance(jsObject.auth());
 
   /// Returns [Database] service.
-  Database database() => Database.get(jsObject.database());
+  Database database() => Database.getInstance(jsObject.database());
 
   /// Deletes the app and frees resources of all App's services.
   Future delete() => handleThenable(jsObject.delete());
@@ -47,9 +47,9 @@ class App extends JsObjectWrapper<AppJsImpl> {
   Storage storage([String url]) {
     var jsObjectStorage =
         (url != null) ? jsObject.storage(url) : jsObject.storage();
-    return Storage.get(jsObjectStorage);
+    return Storage.getInstance(jsObjectStorage);
   }
 
   /// Returns [Firestore] service.
-  Firestore firestore() => Firestore.get(jsObject.firestore());
+  Firestore firestore() => Firestore.getInstance(jsObject.firestore());
 }
