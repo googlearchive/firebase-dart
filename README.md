@@ -16,15 +16,15 @@ You can find more information on how to use Firebase on the
 
 Don't forget to setup correct **rules** for your
 [realtime database](https://firebase.google.com/docs/database/security/),
-[storage](https://firebase.google.com/docs/storage/security/) and/or [firestore](https://firebase.google.com/docs/firestore/security/get-started).
+[storage](https://firebase.google.com/docs/storage/security/) and/or [firestore](https://firebase.google.com/docs/firestore/security/get-started)
 in the Firebase console. 
 
 If you want to use [Firestore](https://firebase.google.com/docs/firestore/quickstart), 
-you need to enable it in the Firebase console and include the additional script.
+you need to enable it in the Firebase console and include the [additional js script](#do-you-need-to-use-firestore).
 
 Authentication also has to be enabled in the Firebase console.
 For more info, see the
-[next section](https://github.com/firebase/firebase-dart#before-tests-and-examples-are-run)
+[next section](#before-tests-and-examples-are-run)
 in this document.
 
 ## Installation
@@ -78,6 +78,33 @@ void main() {
   ref.onValue.listen((e) {
     DataSnapshot datasnapshot = e.snapshot;
     // Do something with datasnapshot
+  });
+}
+```
+
+### Example Firestore
+
+```dart
+import 'package:firebase/firebase.dart';
+import 'package:firebase/firebase_firestore.dart';
+
+void main() {
+  initializeApp(
+    apiKey: "YourApiKey",
+    authDomain: "YourAuthDomain",
+    databaseURL: "YourDatabaseUrl",
+    projectId: "YourProjectId",
+    storageBucket: "YourStorageBucket");
+
+  Firestore firestore = firestore();
+  CollectionReference ref = firestore.collection("messages");
+
+  ref.onSnapshot.listen((querySnapshot) {
+    querySnapshot.docChanges.forEach((change) {
+      if (change.type == "added") {
+        // Do something with change.doc
+      }     
+    });
   });
 }
 ```
@@ -160,7 +187,7 @@ The following providers need to be enabled in Firebase console,
 ### Database tests and example
 
 Database tests and example need to have **public rules** to be able to read and
-write to database. Update your rules in Firebase console, `Database/Rules`
+write to database. Update your rules in Firebase console, `Database/Realtime Database/Rules`
 section to:
 
 ```json
@@ -180,7 +207,27 @@ official
 
 ### Firestore tests and example
 
-To be able to run tests and example, Firestore needs to be enabled in the `Database/Cloud Firestore` section.
+To be able to run tests and example, Firestore needs to be enabled in the `Database/Cloud Firestore` section. 
+
+Firestore tests and example need to have **public rules** to be able to read and
+write to Firestore. Update your rules in Firebase console, `Database/Cloud Firestore/Rules`
+section to:
+
+```
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write;
+    }
+  }
+}
+```
+
+> Warning: At the moment, anybody can read and write to your Firestore.
+You *usually* don't want to have this in your production apps.
+You can find more information on how to setup correct Firestore rules in the 
+official
+[Firebase documentation](https://firebase.google.com/docs/firestore/security/get-started). 
 
 You also need to include the additional `firebase-firestore.js` script. See [more info](#do-you-need-to-use-firestore).
 
