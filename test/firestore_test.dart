@@ -253,7 +253,6 @@ void main() {
           "stringExample": "Hello world!",
           "booleanExample": true,
           "numberExample": 3.14159265,
-          "dateExample": new DateTime.now().toIso8601String(),
           "arrayExample": [5, true, "hello"],
           "nullExample": null,
           "mapExample": {
@@ -269,7 +268,6 @@ void main() {
         expect(snapshotData["stringExample"], map["stringExample"]);
         expect(snapshotData["booleanExample"], map["booleanExample"]);
         expect(snapshotData["numberExample"], map["numberExample"]);
-        expect(snapshotData["dateExample"], isNotNull); // different format
         expect(snapshotData["arrayExample"], map["arrayExample"]);
         expect(snapshotData["nullExample"], map["nullExample"]);
         expect(snapshotData["mapExample"], map["mapExample"]);

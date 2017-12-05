@@ -23,7 +23,6 @@ main() async {
 }
 
 class MessagesApp {
-  //final Firestore db;
   final CollectionReference ref;
   final UListElement messages;
   final InputElement newMessage;
@@ -44,12 +43,15 @@ class MessagesApp {
       e.preventDefault();
 
       if (newMessage.value.trim().isNotEmpty) {
-        var map = {"text": newMessage.value};
+        // store also created at for purposes of ordering
+        var map = {
+          "text": newMessage.value,
+          "createdAt": new DateTime.now().toIso8601String()
+        };
 
         try {
-          var docRef = await ref.add(map);
-          print("Written document with id ${docRef.id}");
           newMessage.value = "";
+          await ref.add(map);
         } catch (e) {
           print("Error while writing document, $e");
         }
@@ -58,72 +60,82 @@ class MessagesApp {
   }
 
   showMessages() async {
-    var querySnapshot = await this.ref.get();
-    querySnapshot.forEach((doc) => print("${doc.id} => ${doc.data()}"));
-    /*this.ref.onChildAdded.listen((e) {
-      fb.DataSnapshot datasnapshot = e.snapshot;
-
-      var spanElement = new SpanElement()..text = datasnapshot.val()["text"];
-
-      var aElementDelete = new AnchorElement(href: "#")
-        ..text = "Delete"
-        ..onClick.listen((e) {
-          e.preventDefault();
-          _deleteItem(datasnapshot);
-        });
-
-      var aElementUpdate = new AnchorElement(href: "#")
-        ..text = "To Uppercase"
-        ..onClick.listen((e) {
-          e.preventDefault();
-          _uppercaseItem(datasnapshot);
-        });
-
-      var element = new LIElement()
-        ..id = datasnapshot.key
-        ..append(spanElement)
-        ..append(aElementDelete)
-        ..append(aElementUpdate);
-      messages.append(element);
+    this.ref.orderBy("createdAt").onSnapshot.listen((querySnapshot) {
+      querySnapshot.docChanges.forEach((change) {
+        var docSnapshot = change.doc;
+        switch (change.type) {
+          case "added":
+            _renderItemView(docSnapshot);
+            break;
+          case "removed":
+            _removeItemView(docSnapshot);
+            break;
+          case "modified":
+            _modifyItemView(docSnapshot);
+            break;
+        }
+      });
     });
-
-    this.ref.onChildChanged.listen((e) {
-      fb.DataSnapshot datasnapshot = e.snapshot;
-      var element = querySelector("#${datasnapshot.key} span");
-
-      if (element != null) {
-        element.text = datasnapshot.val()["text"];
-      }
-    });
-
-    this.ref.onChildRemoved.listen((e) {
-      fb.DataSnapshot datasnapshot = e.snapshot;
-
-      var element = querySelector("#${datasnapshot.key}");
-
-      if (element != null) {
-        element.remove();
-      }
-    });*/
   }
 
-  _deleteItem(fb.DataSnapshot datasnapshot) async {
-    /*try {
-      await this.ref.child(datasnapshot.key).remove();
+  _renderItemView(DocumentSnapshot docSnapshot) {
+    var spanElement = new SpanElement()..text = docSnapshot.data()["text"];
+
+    var aElementDelete = new AnchorElement(href: "#")
+      ..text = "Delete"
+      ..onClick.listen((e) {
+        e.preventDefault();
+        _deleteItem(docSnapshot);
+      });
+
+    var aElementUpdate = new AnchorElement(href: "#")
+      ..text = "To Uppercase"
+      ..onClick.listen((e) {
+        e.preventDefault();
+        _uppercaseItem(docSnapshot);
+      });
+
+    var element = new LIElement()
+      ..id = "item-${docSnapshot.id}"
+      ..append(spanElement)
+      ..append(aElementDelete)
+      ..append(aElementUpdate);
+    messages.append(element);
+  }
+
+  _removeItemView(DocumentSnapshot docSnapshot) {
+    var element = querySelector("#item-${docSnapshot.id}");
+
+    if (element != null) {
+      element.remove();
+    }
+  }
+
+  _modifyItemView(DocumentSnapshot docSnapshot) {
+    var element = querySelector("#item-${docSnapshot.id} span");
+
+    if (element != null) {
+      element.text = docSnapshot.data()["text"];
+    }
+  }
+
+  _deleteItem(DocumentSnapshot docSnapshot) async {
+    try {
+      await this.ref.doc(docSnapshot.id).delete();
     } catch (e) {
       print("Error while deleting item, $e");
-    }*/
+    }
   }
 
-  _uppercaseItem(fb.DataSnapshot datasnapshot) async {
-    /*var value = datasnapshot.val();
+  _uppercaseItem(DocumentSnapshot docSnapshot) async {
+    var value = docSnapshot.data();
     var valueUppercase = value["text"].toString().toUpperCase();
     value["text"] = valueUppercase;
 
     try {
-      await this.ref.child(datasnapshot.key).update(value);
+      await this.ref.doc(docSnapshot.id).update(data: value);
     } catch (e) {
       print("Error while updating item, $e");
-    }*/
+    }
   }
 }
