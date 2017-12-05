@@ -66,16 +66,13 @@ Future<S> handleThenableWithMapper<T, S>(
   return completer.future;
 }
 
-/// Handles the [Future] object with the optional [mapper] function.
-PromiseJsImpl<S> handleFuture<T, S>(Future<T> future, [Func1<T, S> mapper]) {
-  return new PromiseJsImpl(allowInterop((VoidFunc1 resolve, VoidFunc1 reject) {
+/// Handles the [Future] object with the provided [mapper] function.
+PromiseJsImpl<S> handleFutureWithMapper<T, S>(
+    Future<T> future, Func1<T, S> mapper) {
+  return new PromiseJsImpl<S>(
+      allowInterop((VoidFunc1 resolve, VoidFunc1 reject) {
     future.then((value) {
-      var mappedValue;
-      if (mapper != null) {
-        mappedValue = mapper(value);
-      } else {
-        mappedValue = value;
-      }
+      var mappedValue = mapper(value);
       resolve(mappedValue);
     }).catchError((error) {
       reject(error);

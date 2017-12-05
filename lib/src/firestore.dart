@@ -91,8 +91,10 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   /// Else, if the transaction failed, a rejected Future with the corresponding
   /// failure error will be returned.
   Future runTransaction(updateFunction(Transaction transaction)) {
-    var updateFunctionWrap = allowInterop((transaction) => handleFuture(
-        updateFunction(Transaction.getInstance(transaction)), (v) => jsify(v)));
+    var updateFunctionWrap = allowInterop((transaction) =>
+        handleFutureWithMapper(
+            updateFunction(Transaction.getInstance(transaction)),
+            (v) => jsify(v)));
 
     return handleThenableWithMapper(
         jsObject.runTransaction(updateFunctionWrap), (d) => dartify(d));
