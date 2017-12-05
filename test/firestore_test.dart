@@ -1,4 +1,3 @@
-@Timeout(const Duration(seconds: 60))
 @TestOn('browser')
 import 'dart:async';
 import 'package:firebase/firebase.dart' as fb;
