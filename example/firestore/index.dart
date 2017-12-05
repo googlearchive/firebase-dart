@@ -59,7 +59,7 @@ class MessagesApp {
     });
   }
 
-  showMessages() async {
+  showMessages() {
     this.ref.orderBy("createdAt").onSnapshot.listen((querySnapshot) {
       querySnapshot.docChanges.forEach((change) {
         var docSnapshot = change.doc;
