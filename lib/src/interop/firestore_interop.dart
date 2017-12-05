@@ -29,7 +29,8 @@ abstract class WriteBatchJsImpl {
   external WriteBatchJsImpl delete(DocumentReferenceJsImpl documentRef);
   external WriteBatchJsImpl set(DocumentReferenceJsImpl documentRef, data,
       [SetOptions options]);
-  external WriteBatchJsImpl update(DocumentReferenceJsImpl documentRef, data);
+  external WriteBatchJsImpl update(
+      DocumentReferenceJsImpl documentRef, dataOrFieldsAndValues);
 }
 
 @JS("CollectionReference")
@@ -133,7 +134,7 @@ abstract class DocumentReferenceJsImpl {
       optionsOrObserverOrOnNext, observerOrOnNextOrOnError,
       [Func1<FirebaseError, dynamic> onError]);
   external PromiseJsImpl<Null> set(data, [SetOptions options]);
-  external PromiseJsImpl<Null> update(data);
+  external PromiseJsImpl<Null> update(dataOrFieldsAndValues);
 }
 
 @JS("DocumentSnapshot")
@@ -211,7 +212,8 @@ abstract class TransactionJsImpl {
       DocumentReferenceJsImpl documentRef);
   external TransactionJsImpl set(DocumentReferenceJsImpl documentRef, data,
       [SetOptions options]);
-  external TransactionJsImpl update(DocumentReferenceJsImpl documentRef, data);
+  external TransactionJsImpl update(
+      DocumentReferenceJsImpl documentRef, dataOrFieldsAndValues);
 }
 
 /// The set of Cloud Firestore status codes.

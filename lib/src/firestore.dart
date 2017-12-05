@@ -151,7 +151,8 @@ class Blob extends JsObjectWrapper<firestore_interop.BlobJsImpl> {
 /// are preferable when you don't need to condition your writes on read data.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.WriteBatch>.
-class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
+class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl>
+    with _Updatable {
   static final _expando = new Expando<WriteBatch>();
 
   /// Creates a new WriteBatch from a [jsObject].
@@ -217,13 +218,15 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
   /// The [data] param is the Map containing all of the fields and values
   /// to update.
   ///
-  /// TODO fields
+  /// The [fieldsAndValues] param is the List alternating between fields
+  /// (as String or [FieldPath] objects) and values.
   ///
   /// Returns non-null [WriteBatch] instance used for chaining method calls.
-  // TODO in future: varargs parameter
-  WriteBatch update(DocumentReference documentRef, Map<String, dynamic> data) =>
-      WriteBatch
-          .getInstance(jsObject.update(documentRef.jsObject, jsify(data)));
+  WriteBatch update(DocumentReference documentRef,
+          {Map<String, dynamic> data,
+          List< /*String|FieldPath|dynamic*/ dynamic> fieldsAndValues}) =>
+      WriteBatch.getInstance(_wrapUpdateFunctionCall(
+          jsObject, data, fieldsAndValues, documentRef));
 }
 
 /// A [DocumentReference] refers to a document location in a
@@ -235,7 +238,8 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl> {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.DocumentReference>.
 class DocumentReference
-    extends JsObjectWrapper<firestore_interop.DocumentReferenceJsImpl> {
+    extends JsObjectWrapper<firestore_interop.DocumentReferenceJsImpl>
+    with _Updatable {
   static final _expando = new Expando<DocumentReference>();
 
   /// Non-null [Firestore] the document is in.
@@ -364,16 +368,20 @@ class DocumentReference
   /// The update will fail if applied to a document that does not exist.
   ///
   /// Nested fields can be updated by providing dot-separated field path strings
-  /// or by providing TODO [FieldPath] objects.
+  /// or by providing [FieldPath] objects.
   ///
   /// The [data] param is the Map containing all of the fields and values
   /// to update.
   ///
+  /// The [fieldsAndValues] param is the List alternating between fields
+  /// (as String or [FieldPath] objects) and values.
+  ///
   /// Returns non-null [Future] that resolves once the data has been successfully
   /// written to the backend (Note that it won't resolve while you're offline).
-  // TODO in future: varargs parameter
-  Future<Null> update(Map<String, dynamic> data) =>
-      handleThenable(jsObject.update(jsify(data)));
+  Future<Null> update(
+          {Map<String, dynamic> data,
+          List< /*String|FieldPath|dynamic*/ dynamic> fieldsAndValues}) =>
+      handleThenable(_wrapUpdateFunctionCall(jsObject, data, fieldsAndValues));
 }
 
 /// A Query refers to a Query which you can read or listen to.
@@ -396,13 +404,13 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// of this query.
   ///
   /// The [DocumentSnapshot] parameter is the snapshot of the document you want
-  /// the query to end at. Or the list of [fields] values to
+  /// the query to end at. Or the list of [fieldValues] to
   /// end this query at, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
-  Query endAt({DocumentSnapshot snapshot, List<dynamic> fields}) =>
+  Query endAt({DocumentSnapshot snapshot, List<dynamic> fieldValues}) =>
       new Query.fromJsObject(
-          _wrapPaginatingFunctionCall("endAt", snapshot, fields));
+          _wrapPaginatingFunctionCall("endAt", snapshot, fieldValues));
 
   /// Creates a new [Query] where the results end before the provided document
   /// (exclusive). The end position is relative to the order of the query.
@@ -410,13 +418,13 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// this query.
   ///
   /// The [DocumentSnapshot] parameter is the snapshot of the document you want
-  /// the query to end before. Or the list of [fields] values to
+  /// the query to end before. Or the list of [fieldValues] to
   /// end this query before, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
-  Query endBefore({DocumentSnapshot snapshot, List<dynamic> fields}) =>
+  Query endBefore({DocumentSnapshot snapshot, List<dynamic> fieldValues}) =>
       new Query.fromJsObject(
-          _wrapPaginatingFunctionCall("endBefore", snapshot, fields));
+          _wrapPaginatingFunctionCall("endBefore", snapshot, fieldValues));
 
   /// Executes the query and returns the results as a [QuerySnapshot].
   ///
@@ -512,7 +520,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// [orderBy] of this query.
   ///
   /// The [DocumentSnapshot] parameter is the snapshot of the document you want
-  /// the query to start after. Or the list of [fields] values to
+  /// the query to start after. Or the list of [fieldValues] to
   /// start this query after, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
@@ -520,10 +528,10 @@ class Query<T extends firestore_interop.QueryJsImpl>
   ///     firestore().collection("cities")
   ///         .orderBy("name")
   ///         .orderBy("state")
-  ///         .startAfter(fields: ["Springfield", "Missouri"]);
-  Query startAfter({DocumentSnapshot snapshot, List<dynamic> fields}) =>
+  ///         .startAfter(fieldValues: ["Springfield", "Missouri"]);
+  Query startAfter({DocumentSnapshot snapshot, List<dynamic> fieldValues}) =>
       new Query.fromJsObject(
-          _wrapPaginatingFunctionCall("startAfter", snapshot, fields));
+          _wrapPaginatingFunctionCall("startAfter", snapshot, fieldValues));
 
   /// Creates a new [Query] where the results start at the provided document
   /// (inclusive). The starting position is relative to the order of the query.
@@ -531,7 +539,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// the query.
   ///
   /// The [DocumentSnapshot] parameter is the snapshot of the document you want
-  /// the query to start at. Or the list of [fields] values to
+  /// the query to start at. Or the list of [fieldValues] to
   /// start this query at, in order of the query's order by.
   ///
   /// Returns non-null created [Query].
@@ -539,10 +547,10 @@ class Query<T extends firestore_interop.QueryJsImpl>
   ///     firestore().collection("cities")
   ///         .orderBy("name")
   ///         .orderBy("state")
-  ///         .startAt(fields: ["Springfield", "Missouri"]);
-  Query startAt({DocumentSnapshot snapshot, List<dynamic> fields}) =>
+  ///         .startAt(fieldValues: ["Springfield", "Missouri"]);
+  Query startAt({DocumentSnapshot snapshot, List<dynamic> fieldValues}) =>
       new Query.fromJsObject(
-          _wrapPaginatingFunctionCall("startAt", snapshot, fields));
+          _wrapPaginatingFunctionCall("startAt", snapshot, fieldValues));
 
   /// Creates a new [Query] that returns only documents that include the
   /// specified fields and where the values satisfy the constraints provided.
@@ -559,18 +567,20 @@ class Query<T extends firestore_interop.QueryJsImpl>
           String /*'<'|'<='|'=='|'>='|'>'*/ opStr, value) =>
       new Query.fromJsObject(jsObject.where(fieldPath, opStr, jsify(value)));
 
-  /// Calls paginating [method] with [DocumentSnapshot] or [fields].
+  /// Calls js paginating [method] with [DocumentSnapshot] or List of [fieldValues].
+  /// We need to call this method in all paginating methods to fix that Dart
+  /// doesn't support varargs - we need to use [List] to call js function.
   _wrapPaginatingFunctionCall(
-      String method, DocumentSnapshot snapshot, List<dynamic> fields) {
-    if (snapshot == null && fields == null) {
+      String method, DocumentSnapshot snapshot, List<dynamic> fieldValues) {
+    if (snapshot == null && fieldValues == null) {
       throw new ArgumentError(
-          "Please provide either snapshot or fields parameter.");
+          "Please provide either snapshot or fieldValues parameter.");
     }
 
-    if (snapshot != null) {
-      return callMethod(jsObject, method, [snapshot.jsObject]);
-    }
-    return callMethod(jsObject, method, fields.map((f) => jsify(f)).toList());
+    List<dynamic> args = (snapshot != null)
+        ? [snapshot.jsObject]
+        : fieldValues.map((f) => jsify(f)).toList();
+    return callMethod(jsObject, method, args);
   }
 }
 
@@ -787,7 +797,8 @@ class QuerySnapshot
 /// See: [Firestore.runTransaction()].
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.Transaction>.
-class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl> {
+class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl>
+    with _Updatable {
   static final _expando = new Expando<Transaction>();
 
   /// Creates a new Transaction from a [jsObject].
@@ -849,15 +860,48 @@ class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl> {
   /// The update will fail if applied to a document that does not exist.
   /// The value must not be null.
   ///
-  /// Nested fields can be updated by providing dot-separated field path strings.
+  /// Nested fields can be updated by providing dot-separated field path strings
+  /// or by providing [FieldPath] objects.
   ///
   /// The [data] param is the object containing all of the fields and values
   /// to update.
   ///
+  /// The [fieldsAndValues] param is the List alternating between fields
+  /// (as String or [FieldPath] objects) and values.
+  ///
   /// Returns non-null [Transaction] instance used for chaining method calls.
-  // TODO in future: varargs parameter
-  Transaction update(
-          DocumentReference documentRef, Map<String, dynamic> data) =>
-      Transaction
-          .getInstance(jsObject.update(documentRef.jsObject, jsify(data)));
+  Transaction update(DocumentReference documentRef,
+          {Map<String, dynamic> data,
+          List< /*String|FieldPath|dynamic*/ dynamic> fieldsAndValues}) =>
+      Transaction.getInstance(_wrapUpdateFunctionCall(
+          jsObject, data, fieldsAndValues, documentRef));
+}
+
+/// Mixin class for all classes with the [update()] method.
+/// We need to call [_wrapUpdateFunctionCall()] in all [update()] methods
+/// to fix that Dart doesn't support varargs - we need to use [List]
+/// to call js function.
+abstract class _Updatable {
+  /// Calls js [:update():] method on [jsObject] with [data] or list of
+  /// [fieldsAndValues] and optionally [documentRef].
+  _wrapUpdateFunctionCall(jsObject, Map<String, dynamic> data,
+      List< /*String|FieldPath|dynamic*/ dynamic> fieldsAndValues,
+      [DocumentReference documentRef]) {
+    if (data == null && fieldsAndValues == null) {
+      throw new ArgumentError(
+          "Please provide either data or fieldsAndValues parameter.");
+    }
+
+    List<dynamic> args = (data != null)
+        ? [jsify(data)]
+        : fieldsAndValues
+            .map((f) => (f is firestore_interop.FieldPath) ? f : jsify(f))
+            .toList();
+
+    // documentRef has to be the first parameter in list of args
+    if (documentRef != null) {
+      args.insert(0, documentRef.jsObject);
+    }
+    return callMethod(jsObject, "update", args);
+  }
 }

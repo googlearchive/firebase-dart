@@ -194,7 +194,7 @@ void main() {
         expect(snapshotData["name"], "New York");
         expect(snapshotData["population"], 1000);
 
-        await nycRef.update({"population": fs.FieldValue.delete()});
+        await nycRef.update(data: {"population": fs.FieldValue.delete()});
 
         snapshot = await nycRef.get();
         snapshotData = snapshot.data();
@@ -302,14 +302,14 @@ void main() {
 
       test("update document with Map", () async {
         var docRef = await ref.add({"text": "Ahoj"});
-        await docRef.update({"text": "Ahoj2"});
+        await docRef.update(data: {"text": "Ahoj2"});
 
         var snapshot = await docRef.get();
         var snapshotData = snapshot.data();
 
         expect(snapshotData["text"], "Ahoj2");
 
-        await docRef.update({"text": "Ahoj", "text_en": "Hi"});
+        await docRef.update(data: {"text": "Ahoj", "text_en": "Hi"});
 
         snapshot = await docRef.get();
         snapshotData = snapshot.data();
@@ -320,7 +320,8 @@ void main() {
 
       test("update with serverTimestamp", () async {
         var docRef = await ref.add({"text": "Good night"});
-        await docRef.update({"timestamp": fs.FieldValue.serverTimestamp()});
+        await docRef
+            .update(data: {"timestamp": fs.FieldValue.serverTimestamp()});
 
         var snapshot = await docRef.get();
         var snapshotData = snapshot.data();
@@ -332,7 +333,8 @@ void main() {
         var docRef = await ref.add({
           "greeting": {"text": "Good Morning"}
         });
-        await docRef.update({"greeting.text": "Good Morning after update"});
+        await docRef
+            .update(data: {"greeting.text": "Good Morning after update"});
 
         var snapshot = await docRef.get();
         var snapshotData = snapshot.data();
@@ -340,12 +342,48 @@ void main() {
         expect(snapshotData["greeting"]["text"], "Good Morning after update");
       });
 
+      test("update with FieldPath", () async {
+        var docRef = await ref.add({
+          "greeting": {"text": "Good Evening"}
+        });
+        await docRef.update(fieldsAndValues: [
+          new fs.FieldPath("greeting", "text"),
+          "Good Evening after update",
+          new fs.FieldPath("greeting", "text_cs"),
+          "Dobry vecer po uprave"
+        ]);
+
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["greeting"]["text"], "Good Evening after update");
+        expect(snapshotData["greeting"]["text_cs"], "Dobry vecer po uprave");
+      });
+
+      test("update with alternating fields as Strings and values", () async {
+        var docRef = await ref.add({
+          "greeting": {"text": "Hello"}
+        });
+        await docRef.update(fieldsAndValues: [
+          "greeting.text",
+          "Hello after update",
+          "greeting.text_cs",
+          "Ahoj po uprave"
+        ]);
+
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["greeting"]["text"], "Hello after update");
+        expect(snapshotData["greeting"]["text_cs"], "Ahoj po uprave");
+      });
+
       test("transaction", () async {
         var docRef = ref.doc("message5");
         await docRef.set({"text": "Hi"});
 
         await firestore.runTransaction((transaction) async {
-          transaction.update(docRef, {"text": "Hi from transaction"});
+          transaction.update(docRef, data: {"text": "Hi from transaction"});
         });
 
         var snapshot = await docRef.get();
@@ -361,7 +399,7 @@ void main() {
         var newValue = await firestore.runTransaction((transaction) async {
           var documentSnapshot = await transaction.get(docRef);
           var value = documentSnapshot.data()["text"] + " val from transaction";
-          transaction.update(docRef, {"text": value});
+          transaction.update(docRef, data: {"text": value});
           return value;
         });
 
@@ -379,11 +417,60 @@ void main() {
         await docRef.set({"text": "Hi"});
 
         expect(firestore.runTransaction((transaction) async {
-          transaction.update(docRef, {"text": "Some value"});
+          transaction.update(docRef, data: {"text": "Some value"});
           await transaction.get(docRef);
         }),
             throwsToString(
                 contains('Transactions lookups are invalid after writes.')));
+      });
+
+      test("transaction with FieldPath", () async {
+        var docRef = ref.doc("message8");
+        await docRef.set({
+          "description": {"text": "Good morning!!!"}
+        });
+
+        await firestore.runTransaction((transaction) async {
+          transaction.update(docRef, fieldsAndValues: [
+            new fs.FieldPath("description", "text"),
+            "Good morning after update!!!",
+            new fs.FieldPath("description", "text_cs"),
+            "Dobre rano po uprave!!!"
+          ]);
+        });
+
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["description"]["text"],
+            "Good morning after update!!!");
+        expect(
+            snapshotData["description"]["text_cs"], "Dobre rano po uprave!!!");
+      });
+
+      test("transaction with alternating fields as Strings and values",
+          () async {
+        var docRef = ref.doc("message8");
+        await docRef.set({
+          "description": {"text": "Good morning!!!"}
+        });
+
+        await firestore.runTransaction((transaction) async {
+          transaction.update(docRef, fieldsAndValues: [
+            "description.text",
+            "Good morning after update!!!",
+            "description.text_cs",
+            "Dobre rano po uprave!!!"
+          ]);
+        });
+
+        var snapshot = await docRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["description"]["text"],
+            "Good morning after update!!!");
+        expect(
+            snapshotData["description"]["text_cs"], "Dobre rano po uprave!!!");
       });
 
       test("WriteBatch operations", () async {
@@ -400,7 +487,7 @@ void main() {
 
         var batch = firestore.batch();
         batch.set(nycRef, {"name": "New York"});
-        batch.update(sfRef, {"population": 1000000});
+        batch.update(sfRef, data: {"population": 1000000});
         batch.delete(laRef);
         await batch.commit();
 
@@ -414,6 +501,55 @@ void main() {
 
         collectionSnapshot = await ref.get();
         expect(collectionSnapshot.size, 2);
+      });
+
+      test("WriteBatch operations with FieldPath", () async {
+        ref = firestore.collection("cities");
+        var sfRef = ref.doc("SF");
+        await sfRef.set({
+          "name": {"short": "SF"},
+          "population": 0
+        });
+
+        var batch = firestore.batch();
+        batch.update(sfRef, fieldsAndValues: [
+          new fs.FieldPath("name", "long"),
+          "San Francisco",
+          new fs.FieldPath("population"),
+          1000000
+        ]);
+        await batch.commit();
+
+        var snapshot = await sfRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["name"]["long"], "San Francisco");
+        expect(snapshotData["population"], 1000000);
+      });
+
+      test("WriteBatch with alternating fields as Strings and values",
+          () async {
+        ref = firestore.collection("cities");
+        var sfRef = ref.doc("SF");
+        await sfRef.set({
+          "name": {"short": "SF"},
+          "population": 0
+        });
+
+        var batch = firestore.batch();
+        batch.update(sfRef, fieldsAndValues: [
+          "name.long",
+          "San Francisco",
+          "population",
+          1000000
+        ]);
+        await batch.commit();
+
+        var snapshot = await sfRef.get();
+        var snapshotData = snapshot.data();
+
+        expect(snapshotData["name"]["long"], "San Francisco");
+        expect(snapshotData["population"], 1000000);
       });
     });
 
@@ -571,12 +707,12 @@ void main() {
         var snapshot = await ref
             .orderBy("lang")
             .orderBy("text")
-            .startAt(fields: ["cs", "cau"]).get();
+            .startAt(fieldValues: ["cs", "cau"]).get();
         expect(snapshot.size, 3);
         expect(snapshot.docs[0].data()["text"], "cau");
         expect(snapshot.docs[2].data()["text"], "hi");
 
-        snapshot = await ref.orderBy("description").startAt(fields: [
+        snapshot = await ref.orderBy("description").startAt(fieldValues: [
           {"text": "description text"}
         ]).get();
 
@@ -597,12 +733,12 @@ void main() {
         var snapshot = await ref
             .orderBy("lang")
             .orderBy("text")
-            .startAfter(fields: ["cs", "cau"]).get();
+            .startAfter(fieldValues: ["cs", "cau"]).get();
         expect(snapshot.size, 2);
         expect(snapshot.docs[0].data()["text"], "hello");
         expect(snapshot.docs[1].data()["text"], "hi");
 
-        snapshot = await ref.orderBy("description").startAfter(fields: [
+        snapshot = await ref.orderBy("description").startAfter(fieldValues: [
           {"text": "description text"}
         ]).get();
 
@@ -622,12 +758,12 @@ void main() {
         var snapshot = await ref
             .orderBy("lang")
             .orderBy("text")
-            .endBefore(fields: ["en", "hello"]).get();
+            .endBefore(fieldValues: ["en", "hello"]).get();
         expect(snapshot.size, 2);
         expect(snapshot.docs[0].data()["text"], "ahoj");
         expect(snapshot.docs[1].data()["text"], "cau");
 
-        snapshot = await ref.orderBy("description").endBefore(fields: [
+        snapshot = await ref.orderBy("description").endBefore(fieldValues: [
           {"text": "description text"}
         ]).get();
 
@@ -649,12 +785,12 @@ void main() {
         var snapshot = await ref
             .orderBy("lang")
             .orderBy("text")
-            .endAt(fields: ["en", "hello"]).get();
+            .endAt(fieldValues: ["en", "hello"]).get();
         expect(snapshot.size, 3);
         expect(snapshot.docs[0].data()["text"], "ahoj");
         expect(snapshot.docs[2].data()["text"], "hello");
 
-        snapshot = await ref.orderBy("description").endAt(fields: [
+        snapshot = await ref.orderBy("description").endAt(fieldValues: [
           {"text": "description text"}
         ]).get();
 
