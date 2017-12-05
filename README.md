@@ -57,7 +57,7 @@ Include the `firebase-firestore.js` script also:
 ```
 
 Firestore library is available in the `firebase_firestore.dart` and you can find an example
-how to use this library in the [example/firestore](https://github.com/firebase/firebase-dart/tree/firestore/example/firestore).
+how to use this library in the [example/firestore](example/firestore).
 
 ### Example
 

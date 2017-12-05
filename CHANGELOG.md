@@ -3,7 +3,7 @@
 * Added `metadata` property to `User`.
 * Added `isNewUser` property to `AdditionalUserInfo`.
 * Updated auth examples and tests with the latest features.
-* Added new Firestore library - see [README](README.md) and [example](example/firestore) on how to use it.
+* Added new Firestore library - see [README](README.md) and [example/firestore](example/firestore) on how to use it.
 
 ## 4.2.0
 
