@@ -15,6 +15,9 @@ abstract class AuthJsImpl {
   external PromiseJsImpl confirmPasswordReset(String code, String newPassword);
   external PromiseJsImpl<UserJsImpl> createUserWithEmailAndPassword(
       String email, String password);
+  external PromiseJsImpl<UserCredentialJsImpl>
+      createUserAndRetrieveDataWithEmailAndPassword(
+          String email, String password);
   external UserJsImpl get currentUser;
   external PromiseJsImpl<List<String>> fetchProvidersForEmail(String email);
   external PromiseJsImpl<UserCredentialJsImpl> getRedirectResult();
@@ -30,11 +33,17 @@ abstract class AuthJsImpl {
   external PromiseJsImpl<UserCredentialJsImpl>
       signInAndRetrieveDataWithCredential(AuthCredential credential);
   external PromiseJsImpl<UserJsImpl> signInAnonymously();
+  external PromiseJsImpl<UserCredentialJsImpl>
+      signInAnonymouslyAndRetrieveData();
   external PromiseJsImpl<UserJsImpl> signInWithCredential(
       AuthCredential credential);
   external PromiseJsImpl<UserJsImpl> signInWithCustomToken(String token);
+  external PromiseJsImpl<UserCredentialJsImpl>
+      signInAndRetrieveDataWithCustomToken(String token);
   external PromiseJsImpl<UserJsImpl> signInWithEmailAndPassword(
       String email, String password);
+  external PromiseJsImpl<UserCredentialJsImpl>
+      signInAndRetrieveDataWithEmailAndPassword(String email, String password);
   external PromiseJsImpl<ConfirmationResultJsImpl> signInWithPhoneNumber(
       String phoneNumber, ApplicationVerifierJsImpl applicationVerifier);
   external PromiseJsImpl<UserCredentialJsImpl> signInWithPopup(
