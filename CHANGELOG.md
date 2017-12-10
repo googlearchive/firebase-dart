@@ -12,6 +12,11 @@ methods.
     * `signInAndRetrieveDataWithEmailAndPassword`
     * `signInAnonymouslyAndRetrieveData`
     
+## 4.2.0+1
+
+* Updates to `lib/src/` files that are not meant for consumptions outside this
+  package.
+
 ## 4.2.0
 
 * Improve the generic types in the interop library.
