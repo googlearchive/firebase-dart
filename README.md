@@ -86,7 +86,7 @@ void main() {
 
 ```dart
 import 'package:firebase/firebase.dart';
-import 'package:firebase/firebase_firestore.dart';
+import 'package:firebase/firebase_firestore.dart' as fs;
 
 void main() {
   initializeApp(
@@ -96,8 +96,8 @@ void main() {
     projectId: "YourProjectId",
     storageBucket: "YourStorageBucket");
 
-  Firestore firestore = firestore();
-  CollectionReference ref = firestore.collection("messages");
+  fs.Firestore firestore = firestore();
+  fs.CollectionReference ref = firestore.collection("messages");
 
   ref.onSnapshot.listen((querySnapshot) {
     querySnapshot.docChanges.forEach((change) {
