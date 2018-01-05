@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:func/func.dart';
 import 'package:js/js.dart';
@@ -14,18 +13,51 @@ dynamic dartify(Object jsObject) {
     return jsObject;
   }
 
-  if (jsObject is List) {
+  // if already a date time good
+  if (jsObject is DateTime) {
+    return jsObject;
+  }
+
+  var jsDate = js.dartifyDate(jsObject);
+  if (jsDate != null) {
+    return jsDate;
+  }
+
+  // Handle list
+  if (jsObject is Iterable) {
     return jsObject.map(dartify).toList();
   }
 
-  var json = js.stringify(jsObject);
-  return JSON.decode(json);
+  // Assume a map then...
+  var keys = js.objectKeys(jsObject);
+  var map = <String, Object>{};
+  for (String key in keys) {
+    map[key] = dartify(util.getProperty(jsObject, key));
+  }
+  return map;
 }
 
 /// Returns the JS implementation from Dart Object.
 dynamic jsify(Object dartObject) {
   if (_isBasicType(dartObject)) {
     return dartObject;
+  }
+
+  var dartDateTime = js.jsifyDate(dartObject);
+  if (dartDateTime != null) {
+    return dartDateTime;
+  }
+
+  if (dartObject is Iterable) {
+    return dartObject.map(jsify).toList();
+  }
+
+  if (dartObject is Map) {
+    var jsMap = util.newObject();
+    dartObject.forEach((key, value) {
+      util.setProperty(jsMap, key, jsify(value));
+    });
+    return jsMap;
   }
 
   return util.jsify(dartObject);
@@ -37,7 +69,7 @@ dynamic callMethod(Object jsObject, String method, List<dynamic> args) =>
 
 /// Returns `true` if the [value] is a very basic built-in type - e.g.
 /// `null`, [num], [bool] or [String]. It returns `false` in the other case.
-bool _isBasicType(value) {
+bool _isBasicType(Object value) {
   if (value == null || value is num || value is bool || value is String) {
     return true;
   }
