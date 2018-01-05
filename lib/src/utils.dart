@@ -4,7 +4,8 @@ import 'package:func/func.dart';
 import 'package:js/js.dart';
 import 'package:js/js_util.dart' as util;
 
-import 'interop/firebase_interop.dart';
+import 'interop/firebase_interop.dart' show ThenableJsImpl, PromiseJsImpl;
+import 'interop/firestore_interop.dart' show FieldValue;
 import 'interop/js_interop.dart' as js;
 
 /// Returns Dart representation from JS Object.
@@ -18,19 +19,19 @@ dynamic dartify(Object jsObject) {
     return jsObject;
   }
 
-  var jsDate = js.dartifyDate(jsObject);
-  if (jsDate != null) {
-    return jsDate;
-  }
-
   // Handle list
   if (jsObject is Iterable) {
     return jsObject.map(dartify).toList();
   }
 
+  var jsDate = js.dartifyDate(jsObject);
+  if (jsDate != null) {
+    return jsDate;
+  }
+
   // Assume a map then...
   var keys = js.objectKeys(jsObject);
-  var map = <String, Object>{};
+  var map = <String, dynamic>{};
   for (String key in keys) {
     map[key] = dartify(util.getProperty(jsObject, key));
   }
@@ -58,6 +59,10 @@ dynamic jsify(Object dartObject) {
       util.setProperty(jsMap, key, jsify(value));
     });
     return jsMap;
+  }
+
+  if (dartObject is FieldValue) {
+    return dartObject;
   }
 
   return util.jsify(dartObject);
