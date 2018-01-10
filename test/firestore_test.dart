@@ -293,7 +293,9 @@ void main() {
           if (value is DateTime) {
             expectSameMoment(snapshotDataValue, value);
             expectSameMoment(snapshotGetValue, value);
-          } else if (value is fs.GeoPoint) {
+          } else if (key == 'geoPoint') {
+            // NOTE: `is` checks on interop objects always return true
+            // TODO(kevmoo): consider using a Dart wrapper around GeoPoint?
             expectSameGeo(snapshotDataValue, value);
             expectSameGeo(snapshotGetValue, value);
           } else {
