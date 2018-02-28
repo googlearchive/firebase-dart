@@ -28,14 +28,18 @@ abstract class MessagingJsImpl {
 
 @JS()
 @anonymous
-abstract class Notification {
+abstract class NotificationJsImpl {
   external String get title;
   external String get body;
-  external String get clickAction;
+  external String get click_action;
 }
+
+
 
 @JS()
 @anonymous
-abstract class Payload {
-  external Notification get notification;
+abstract class PayloadJsImpl {
+  external String get collapse_key;
+  external String get from;
+  external NotificationJsImpl get notification;
 }

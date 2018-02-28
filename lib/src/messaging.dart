@@ -27,16 +27,16 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
   Future<String> getToken() =>
       handleThenableWithMapper(jsObject.getToken(), (s) => s);
 
-  StreamController<messaging_interop.Payload> _onMessageController;
+  StreamController<Payload> _onMessageController;
   StreamController<Null> _onTokenRefresh;
 
-  Stream<messaging_interop.Payload> get onMessage =>
-      _createPayloadStream(_onMessageController);
+  Stream<Payload> get onMessage => _createPayloadStream(_onMessageController);
   Stream<Null> get onTokenRefresh => _createNullStream(_onTokenRefresh);
 
-  Stream<messaging_interop.Payload> _createPayloadStream(StreamController controller) {
+  Stream<Payload> _createPayloadStream(StreamController controller) {
     if (controller == null) {
-      var nextWrapper = allowInterop((payload) => controller.add(payload));
+      var nextWrapper = allowInterop(
+          (payload) => controller.add(new Payload._fromJsObject(payload)));
       var errorWrapper = allowInterop((e) => controller.addError(e));
       ZoneCallback onSnapshotUnsubscribe;
 
@@ -49,7 +49,7 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
         onSnapshotUnsubscribe = null;
       }
 
-      controller = new StreamController<messaging_interop.Payload>.broadcast(
+      controller = new StreamController<Payload>.broadcast(
           onListen: startListen, onCancel: stopListen, sync: true);
     }
     return controller.stream;
@@ -75,5 +75,24 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
     }
     return controller.stream;
   }
+}
 
+class Notification
+    extends JsObjectWrapper<messaging_interop.NotificationJsImpl> {
+  Notification._fromJsObject(messaging_interop.NotificationJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+
+  String get title => jsObject.title;
+  String get body => jsObject.body;
+  String get clickAction => jsObject.click_action;
+}
+
+class Payload extends JsObjectWrapper<messaging_interop.PayloadJsImpl> {
+  Payload._fromJsObject(messaging_interop.PayloadJsImpl jsObject)
+      : super.fromJsObject(jsObject);
+
+  Notification get notification =>
+      new Notification._fromJsObject(jsObject.notification);
+  String get collapseKey => jsObject.collapse_key;
+  String get from => jsObject.from;
 }
