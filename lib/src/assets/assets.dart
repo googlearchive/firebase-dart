@@ -5,11 +5,13 @@ import 'package:http/browser_client.dart' as http;
 
 Map<String, dynamic> _configVal;
 
-String get apiKey => _getConfig('API_KEY');
-String get authDomain => _getConfig('AUTH_DOMAIN');
-String get databaseUrl => _getConfig('DATABASE_URL');
-String get storageBucket => _getConfig('STORAGE_BUCKET');
-String get projectId => _getConfig('PROJECT_ID');
+String get apiKey => _config['API_KEY'];
+String get authDomain => _config['AUTH_DOMAIN'];
+String get databaseUrl => _config['DATABASE_URL'];
+String get storageBucket => _config['STORAGE_BUCKET'];
+String get projectId => _config['PROJECT_ID'];
+String get messagingSenderId => _config['MESSAGING_SENDER_ID'];
+String get serverKey => _config['SERVER_KEY'];
 
 String _getConfig(String key) {
   if (_configVal == null) {
