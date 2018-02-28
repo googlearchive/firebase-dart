@@ -43,5 +43,5 @@ abstract class PayloadJsImpl {
   external String get collapse_key;
   external String get from;
   external NotificationJsImpl get notification;
-  external Map<String, String> get data;
+  external dynamic /*Map<String, String>*/ get data;
 }

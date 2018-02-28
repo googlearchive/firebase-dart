@@ -96,5 +96,5 @@ class Payload extends JsObjectWrapper<messaging_interop.PayloadJsImpl> {
       new Notification._fromJsObject(jsObject.notification);
   String get collapseKey => jsObject.collapse_key;
   String get from => jsObject.from;
-  Map<String, String> get data => jsObject.data;
+  Map<String, String> get data => dartify(jsObject.data);
 }
