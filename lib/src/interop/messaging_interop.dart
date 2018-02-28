@@ -11,10 +11,11 @@ abstract class MessagingJsImpl {
   external void usePublicVapidKey(String key);
   external PromiseJsImpl requestPermission();
   external PromiseJsImpl<String> getToken();
-  external VoidFunc0 onMessage(optionsOrObserverOrOnNext, observerOrOnNextOrOnError);
-  external VoidFunc0 onTokenRefresh(optionsOrObserverOrOnNext, observerOrOnNextOrOnError);
+  external VoidFunc0 onMessage(
+      optionsOrObserverOrOnNext, observerOrOnNextOrOnError);
+  external VoidFunc0 onTokenRefresh(
+      optionsOrObserverOrOnNext, observerOrOnNextOrOnError);
 }
-
 
 //  {
 //    collapse_key: do_not_collapse,
@@ -34,8 +35,6 @@ abstract class NotificationJsImpl {
   external String get click_action;
   external String get icon;
 }
-
-
 
 @JS()
 @anonymous
