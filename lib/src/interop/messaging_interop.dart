@@ -32,6 +32,7 @@ abstract class NotificationJsImpl {
   external String get title;
   external String get body;
   external String get click_action;
+  external String get icon;
 }
 
 
@@ -42,4 +43,5 @@ abstract class PayloadJsImpl {
   external String get collapse_key;
   external String get from;
   external NotificationJsImpl get notification;
+  external Map<String, String> get data;
 }

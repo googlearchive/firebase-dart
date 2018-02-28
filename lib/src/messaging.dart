@@ -85,6 +85,7 @@ class Notification
   String get title => jsObject.title;
   String get body => jsObject.body;
   String get clickAction => jsObject.click_action;
+  String get icon => jsObject.icon;
 }
 
 class Payload extends JsObjectWrapper<messaging_interop.PayloadJsImpl> {
@@ -95,4 +96,5 @@ class Payload extends JsObjectWrapper<messaging_interop.PayloadJsImpl> {
       new Notification._fromJsObject(jsObject.notification);
   String get collapseKey => jsObject.collapse_key;
   String get from => jsObject.from;
+  Map<String, String> get data => jsObject.data;
 }
