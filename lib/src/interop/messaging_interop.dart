@@ -15,17 +15,9 @@ abstract class MessagingJsImpl {
       optionsOrObserverOrOnNext, observerOrOnNextOrOnError);
   external VoidFunc0 onTokenRefresh(
       optionsOrObserverOrOnNext, observerOrOnNextOrOnError);
+  external void setBackgroundMessageHandler(Func1 f);
+  external void useServiceWorker(registration);
 }
-
-//  {
-//    collapse_key: do_not_collapse,
-//    from: 288369714417,
-//    notification: {
-//      title: New chat message!,
-//      body: There is a new message in FriendlyChat,
-//      click_action: http://localhost:5000
-//    }
-//  }
 
 @JS()
 @anonymous

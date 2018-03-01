@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:js/js.dart';
+import 'package:func/func.dart';
 
 import 'interop/messaging_interop.dart' as messaging_interop;
 import 'js.dart';
@@ -21,19 +22,28 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
 
   void usePublicVapidKey(String key) => jsObject.usePublicVapidKey(key);
 
+  void useServiceWorker(registration) =>
+      jsObject.useServiceWorker(registration);
+
   Future requestPermission() =>
       handleThenableWithMapper(jsObject.requestPermission(), dartify);
 
   Future<String> getToken() =>
       handleThenableWithMapper(jsObject.getToken(), (s) => s);
 
+  void setBackgroundMessageHandler(Func1<Payload, void> f) =>
+      jsObject.setBackgroundMessageHandler(
+          allowInterop((payload) => f(new Payload._fromJsObject(payload))));
+
   StreamController<Payload> _onMessageController;
   StreamController<Null> _onTokenRefresh;
 
-  Stream<Payload> get onMessage => _createPayloadStream(_onMessageController);
+  Stream<Payload> get onMessage =>
+      _createPayloadStream(_onMessageController, jsObject.onMessage);
   Stream<Null> get onTokenRefresh => _createNullStream(_onTokenRefresh);
 
-  Stream<Payload> _createPayloadStream(StreamController controller) {
+  Stream<Payload> _createPayloadStream(
+      StreamController controller, Func2 function) {
     if (controller == null) {
       var nextWrapper = allowInterop(
           (payload) => controller.add(new Payload._fromJsObject(payload)));
@@ -41,7 +51,7 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
       ZoneCallback onSnapshotUnsubscribe;
 
       void startListen() {
-        onSnapshotUnsubscribe = jsObject.onMessage(nextWrapper, errorWrapper);
+        onSnapshotUnsubscribe = function(nextWrapper, errorWrapper);
       }
 
       void stopListen() {
