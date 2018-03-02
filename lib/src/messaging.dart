@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:js/js.dart';
-import 'package:func/func.dart';
 
 import 'interop/messaging_interop.dart' as messaging_interop;
 import 'js.dart';
@@ -20,34 +19,47 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
   Messaging._fromJsObject(messaging_interop.MessagingJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
+  /// To set your own server application key,
+  /// you can specify here the public key you set up from the Firebase Console under the Settings options.
   void usePublicVapidKey(String key) {
     jsObject.usePublicVapidKey(key);
   }
 
+  /// To use your own service worker for receiving push messages,
+  /// you can pass in your service worker registration in this method.
   void useServiceWorker(registration) {
     jsObject.useServiceWorker(registration);
   }
 
+  /// Notification permissions are required to send a user push messages.
+  /// Calling this method displays the permission dialog to the user and resolves if the permission is granted.
   Future requestPermission() async {
     await handleThenableWithMapper(jsObject.requestPermission(), dartify);
   }
 
+  /// After calling [requestPermission] you can call this method to get an FCM registration token
+  /// that can be used to send push messages to this user.
   Future<String> getToken() =>
       handleThenableWithMapper(jsObject.getToken(), (s) => s);
 
-  void setBackgroundMessageHandler(
-      Func1<Payload, Null> dartSetBackgroundHandler) {
-    jsObject.setBackgroundMessageHandler(allowInterop((payload) =>
-        dartSetBackgroundHandler(new Payload._fromJsObject(payload))));
-  }
-
   StreamController<Payload> _onMessageController;
   StreamController<Null> _onTokenRefresh;
+  StreamController<Payload> _onBackgroundMessage;
 
-  Stream<Payload> get onMessage => _createPayloadStream(_onMessageController);
+  /// When a push message is received and the user is currently on a page for your origin,
+  /// the message is passed to the page and an [onMessage] event is dispatched with the payload of the push message.
+  Stream<Payload> get onMessage => _createOnMessageStream(_onMessageController);
+
+  /// FCM directs push messages to your web page's [onMessage] callback if the user currently has it open.
+  /// Otherwise, it calls your callback passed into [onBackgroundMessage].
+  Stream<Payload> get onBackgroundMessage =>
+      _createBackgroundMessagedStream(_onBackgroundMessage);
+
+  /// You should listen for token refreshes so your web app knows when FCM
+  /// has invalidated your existing token and you need to call [getToken] to get a new token.
   Stream<Null> get onTokenRefresh => _createNullStream(_onTokenRefresh);
 
-  Stream<Payload> _createPayloadStream(StreamController controller) {
+  Stream<Payload> _createOnMessageStream(StreamController controller) {
     if (controller == null) {
       controller = new StreamController.broadcast(sync: true);
       final nextWrapper = allowInterop((payload) {
@@ -57,6 +69,17 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
         controller.addError(e);
       });
       jsObject.onMessage(nextWrapper, errorWrapper);
+    }
+    return controller.stream;
+  }
+
+  Stream<Payload> _createBackgroundMessagedStream(StreamController controller) {
+    if (controller == null) {
+      controller = new StreamController.broadcast(sync: true);
+      final nextWrapper = allowInterop((payload) {
+        controller.add(new Payload._fromJsObject(payload));
+      });
+      jsObject.setBackgroundMessageHandler(nextWrapper);
     }
     return controller.stream;
   }

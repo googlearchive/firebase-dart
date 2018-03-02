@@ -46,6 +46,7 @@ class MessagesApp {
     try {
       await messaging.requestPermission();
       permissionInput.value = 'granted';
+      newNotification.disabled = false;
       final token = await messaging.getToken();
       tokenInput.value = token;
       messaging.onMessage.listen((payload) {

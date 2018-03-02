@@ -29,11 +29,11 @@ void main(List<String> args) {
   );
 
   final messaging = firebase.messaging();
-  messaging.setBackgroundMessageHandler((payload) {
-      final options =
-          new sw.ShowNotificationOptions(body: payload.notification.body);
-      sw.registration.showNotification(payload.notification.title, options);
-    });
+  messaging.onBackgroundMessage.listen((payload) {
+    final options =
+        new sw.ShowNotificationOptions(body: payload.notification.body);
+    sw.registration.showNotification(payload.notification.title, options);
+  });
 }
 
 @JS('importScripts')
