@@ -20,59 +20,58 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
   Messaging._fromJsObject(messaging_interop.MessagingJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  void usePublicVapidKey(String key) => jsObject.usePublicVapidKey(key);
+  void usePublicVapidKey(String key) {
+    jsObject.usePublicVapidKey(key);
+  }
 
-  void useServiceWorker(registration) =>
-      jsObject.useServiceWorker(registration);
+  void useServiceWorker(registration) {
+    jsObject.useServiceWorker(registration);
+  }
 
-  Future requestPermission() =>
-      handleThenableWithMapper(jsObject.requestPermission(), dartify);
+  Future requestPermission() async {
+    await handleThenableWithMapper(jsObject.requestPermission(), dartify);
+  }
 
   Future<String> getToken() =>
       handleThenableWithMapper(jsObject.getToken(), (s) => s);
 
-  void setBackgroundMessageHandler(Func1<Payload, void> f) =>
-      jsObject.setBackgroundMessageHandler(
-          allowInterop((payload) => f(new Payload._fromJsObject(payload))));
+  void setBackgroundMessageHandler(
+      Func1<Payload, Null> dartSetBackgroundHandler) {
+    jsObject.setBackgroundMessageHandler(allowInterop((payload) =>
+        dartSetBackgroundHandler(new Payload._fromJsObject(payload))));
+  }
 
   StreamController<Payload> _onMessageController;
   StreamController<Null> _onTokenRefresh;
 
-  Stream<Payload> get onMessage =>
-      _createPayloadStream(_onMessageController, jsObject.onMessage);
+  Stream<Payload> get onMessage => _createPayloadStream(_onMessageController);
   Stream<Null> get onTokenRefresh => _createNullStream(_onTokenRefresh);
 
-  Stream<Payload> _createPayloadStream(
-      StreamController controller, Func2 function) {
+  Stream<Payload> _createPayloadStream(StreamController controller) {
     if (controller == null) {
-      var nextWrapper = allowInterop(
-          (payload) => controller.add(new Payload._fromJsObject(payload)));
-      var errorWrapper = allowInterop((e) => controller.addError(e));
-      ZoneCallback onSnapshotUnsubscribe;
-
-      void startListen() {
-        onSnapshotUnsubscribe = function(nextWrapper, errorWrapper);
-      }
-
-      void stopListen() {
-        onSnapshotUnsubscribe();
-        onSnapshotUnsubscribe = null;
-      }
-
-      controller = new StreamController<Payload>.broadcast(
-          onListen: startListen, onCancel: stopListen, sync: true);
+      controller = new StreamController.broadcast(sync: true);
+      final nextWrapper = allowInterop((payload) {
+        controller.add(new Payload._fromJsObject(payload));
+      });
+      final errorWrapper = allowInterop((e) {
+        controller.addError(e);
+      });
+      jsObject.onMessage(nextWrapper, errorWrapper);
     }
     return controller.stream;
   }
 
   Stream<Null> _createNullStream(StreamController controller) {
     if (controller == null) {
-      var nextWrapper = allowInterop((_) => null);
-      var errorWrapper = allowInterop((e) => controller.addError(e));
+      final nextWrapper = allowInterop((_) => null);
+      final errorWrapper = allowInterop((e) {
+        controller.addError(e);
+      });
       ZoneCallback onSnapshotUnsubscribe;
 
       void startListen() {
-        onSnapshotUnsubscribe = jsObject.onMessage(nextWrapper, errorWrapper);
+        onSnapshotUnsubscribe =
+            jsObject.onTokenRefresh(nextWrapper, errorWrapper);
       }
 
       void stopListen() {

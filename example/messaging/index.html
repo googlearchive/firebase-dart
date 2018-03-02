@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Realtime database demo</title>
+    <title>Messaging demo</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <style type="text/css">
@@ -18,33 +18,42 @@
             border-bottom: 1px solid silver;
             overflow: auto;
         }
-
-        #messages_wrapper {
-            width: 500px;
-            margin-bottom: 15px;
-            overflow-y: auto;
+        label {
+            width: 100%;
         }
-
-        #messages a {
-            float: right;
-            margin-left: 10px;
-        }
-
-        #new_message {
-            width: 350px;
+        input {
+            width: 100%;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Messaging demo</h1>
-    <input disabled id="token" />
-    <button id="new_notification"></button>
-    <p id="payload_data"></p>
+    <ul>
+        <li>
+            <label>
+                Token
+                <input disabled id="token" />
+            </label>
+        </li>
+        <li>
+            <label>
+                Notification permission
+                <input disabled id="permission" />
+            </label>
+        </li>
+    </ul>
+    <div>
+        <button id="new_notification">Send notification</button>
+    </div>
+    <div>
+        <label>Payload</label>
+        <p id="payload_data"></p>
+    </div>
 </div>
-<script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.9.1/messaging.js"></script>
-<script src="index.dart" type="application/dart"></script>
-<script src="packages/browser/dart.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/4.10.1/firebase-app.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/4.10.1/firebase-messaging.js"></script>
+<script defer src="index.dart" type="application/dart"></script>
+<script defer src="packages/browser/dart.js"></script>
 </body>
 </html>

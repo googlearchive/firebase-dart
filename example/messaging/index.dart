@@ -1,9 +1,10 @@
-import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/src/assets/assets.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/browser_client.dart';
+import 'package:service_worker/window.dart' as sw;
 
 main() async {
   //Use for firebase package development only
@@ -17,7 +18,7 @@ main() async {
         storageBucket: storageBucket,
         messagingSenderId: messagingSenderId);
 
-    await new MessagesApp().showMessages();
+    new MessagesApp().showMessages();
   } on fb.FirebaseJsNotLoadedException catch (e) {
     print(e);
   }
@@ -27,35 +28,50 @@ class MessagesApp {
   final InputElement tokenInput;
   final ButtonElement newNotification;
   final ParagraphElement payloadData;
+  final InputElement permissionInput;
 
   MessagesApp()
       : tokenInput = document.querySelector("#token"),
         newNotification = document.querySelector('#new_notification'),
-        payloadData = document.querySelector("#payload_data");
+        payloadData = document.querySelector("#payload_data"),
+        permissionInput = document.querySelector("#permission");
 
-  Future showMessages() async {
-    final messaging = fb.messaging();
-    await messaging.requestPermission();
-    final token = await messaging.getToken();
-    tokenInput.value = token;
+  showMessages() async {
+    await sw.register('sw.dart.js');
+    final registration = await sw.ready;
+    final messaging = fb.messaging()
+      ..usePublicVapidKey(vapidKey)
+      ..useServiceWorker(registration.jsObject);
 
-    messaging.onMessage.listen((payload) {
-      payloadData.text = payload.data.toString();
-    });
-
-    newNotification.onClick.listen((_) async {
-      await http.post('https://fcm.googleapis.com/fcm/send', headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'key=$serverKey',
-      }, body: {
-        "notification": {
-          "title": "New chat message!",
-          "body": "There is a new message in FriendlyChat",
-          "click_action": "http://localhost:5000"
-        },
-        "data": {"toto": "titi"},
-        "to": token
+    try {
+      await messaging.requestPermission();
+      permissionInput.value = 'granted';
+      final token = await messaging.getToken();
+      tokenInput.value = token;
+      messaging.onMessage.listen((payload) {
+        payloadData.text = payload.data.toString();
+        new Notification(payload.notification.title,
+            body: payload.notification.body);
       });
-    });
+      newNotification.onClick.listen((_) async {
+        final client = new BrowserClient();
+
+        await client.post('https://fcm.googleapis.com/fcm/send',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'key=$serverKey',
+            },
+            body: JSON.encode({
+              "notification": {
+                "title": "New demo message!",
+                "body": "There is a new message in Messaging Demo",
+              },
+              "data": {"toto": "titi"},
+              "to": token
+            }));
+      });
+    } catch (e) {
+      permissionInput.value = 'denied';
+    }
   }
 }
