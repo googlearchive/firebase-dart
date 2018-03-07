@@ -8,6 +8,8 @@ import 'package:firebase/src/assets/assets.dart';
 import 'package:test/test.dart';
 import 'test_util.dart' show throwsToString, validDatePathComponent;
 
+//  TODO add MetadataSnapshot test
+
 // Delete entire collection
 // <https://firebase.google.com/docs/firestore/manage-data/delete-data#collections>
 Future _deleteCollection(fs.Firestore db, fs.CollectionReference collectionRef,
