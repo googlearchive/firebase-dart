@@ -186,6 +186,17 @@ void main() {
       }
     });
 
+    test("ref is equal", () async {
+      var a = firestore.collection('a');
+      var b = firestore.collection('a');
+
+      expect(a.isEqual(b), isTrue);
+      expect(a.isEqual(ref), isFalse);
+
+      await _deleteCollection(firestore, a);
+      await _deleteCollection(firestore, b);
+    });
+
     test("delete collection", () async {
       var nycRef = ref.doc("NYC");
       await nycRef.set({"name": "NYC"});
@@ -210,6 +221,18 @@ void main() {
 
       var snapshot = await nycRef.get();
       expect(snapshot.exists, isFalse);
+    });
+
+    test('snapshot is equal', () async {
+      var aRef = ref.doc("a");
+      var bRef = ref.doc("b");
+
+      var a = await aRef.get();
+      var b = await aRef.get();
+      var c = await bRef.get();
+
+      expect(a.isEqual(b), isTrue);
+      expect(a.isEqual(c), isFalse);
     });
 
     test("delete fields", () async {
@@ -690,6 +713,22 @@ void main() {
       expect(snapshot.size, 1);
       expect(snapshot.docs.length, 1);
       expect(snapshot.docs[0].data()["text"], "hello");
+    });
+
+    test("query snapshot is equal", () async {
+      var snapshotA =
+          await ref.where("new", "==", true).where("text", "==", "hello").get();
+      var snapshotB =
+          await ref.where("new", "==", true).where("text", "==", "hello").get();
+      var snapshotC = await ref
+          .where("new", "==", false)
+          .where("text", "==", "hello")
+          .get();
+
+      expect(snapshotA.isEqual(snapshotB), isTrue);
+      expect(snapshotA.isEqual(snapshotC), isFalse);
+      expect(snapshotA.metadata.isEqual(snapshotB.metadata), isTrue);
+      expect(snapshotA.metadata.isEqual(snapshotC.metadata), isFalse);
     });
 
     test("get all documents", () async {
