@@ -727,8 +727,6 @@ void main() {
 
       expect(snapshotA.isEqual(snapshotB), isTrue);
       expect(snapshotA.isEqual(snapshotC), isFalse);
-      expect(snapshotA.metadata.isEqual(snapshotB.metadata), isTrue);
-      expect(snapshotA.metadata.isEqual(snapshotC.metadata), isFalse);
     });
 
     test("get all documents", () async {
