@@ -3,13 +3,11 @@
 **NOTE:** This package provides two libraries:
 
 * Browser-based applications:
-
   [`package:firebase/firebase.dart`](#using-this-package-for-browser-applications)
 
   A wrapper over the [Firebase JS API](https://firebase.google.com/docs/reference/js/).
 
 * Dart VM and Fuchsia:
-
   [`package:firebase/firebase_io.dart`](https://github.com/firebase/firebase-dart/tree/docs#using-this-package-with-the-dart-vm-and-fuchsia)
   
   A lightly maintained wrapper over the
@@ -19,6 +17,12 @@
 ### Other platforms
 
 * Flutter: [FlutterFire plugins](https://github.com/flutter/plugins/blob/master/FlutterFire.md)
+
+* Node (via dart2js): [Anatoly Pulyaevskiy](https://github.com/pulyaevskiy) has
+  been working on unofficial wrappers.
+  * [package:firebase_admin_interop](https://pub.dartlang.org/packages/firebase_admin_interop)
+  * [package:firestore_interop](https://pub.dartlang.org/packages/firestore_interop)
+  * [package:firebase_functions_interop](https://pub.dartlang.org/packages/firebase_functions_interop)
 
 ## Firebase Configuration
 You can find more information on how to use Firebase on the
