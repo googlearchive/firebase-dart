@@ -1,16 +1,20 @@
-# Firebase APIs for Dart VM (server), Fuchsia, and Browser
-
 [![Build Status](https://travis-ci.org/firebase/firebase-dart.svg?branch=master)](https://travis-ci.org/firebase/firebase-dart)
 
-Use [Firebase](https://firebase.google.com)
-REST APIs for dart:io apps
-(for example: server-side Dart or Fuchsia),
-and a Dart wrapper for Firebase's JavaScript API for the browser.
+**NOTE:** This package provides two libraries:
 
-If you are writing Flutter apps for iOS and Android, you should use 
-[FlutterFire plugins](https://github.com/flutter/plugins/blob/master/FlutterFire.md)
-instead.
+* Browser-based applications: `package:firebase/firebase.dart`
+  A wrapper over the [Firebase JS API](https://firebase.google.com/docs/reference/js/).
 
+* Dart VM and Fuchsia: `package:firebase/firebase_io.dart`
+  A lightly maintained wrapper over the
+  [Firebase Database REST API](https://firebase.google.com/docs/reference/rest/database/).
+  Contributions to expand support to the other REST APIs are appreciated! 
+
+### Other platforms
+
+* Flutter: [FlutterFire plugins](https://github.com/flutter/plugins/blob/master/FlutterFire.md)
+
+## Firebase Configuration
 You can find more information on how to use Firebase on the
 [Getting started](https://firebase.google.com/docs/web/setup) page.
 
@@ -37,18 +41,6 @@ Install the library from pub:
 dependencies:
   firebase: '^4.3.0'
 ```
-
-## Usage
-
-**NOTE:** This package provides two libraries:
-
-* `package:firebase/firebase.dart` – for browser-based applications.
-  A wrapper over the [Firebase JS API](https://firebase.google.com/docs/reference/js/).
-
-* `package:firebase/firebase_io.dart` - for use with the Dart VM.
-  A lightly maintained wrapper over the
-  [Firebase Database REST API](https://firebase.google.com/docs/reference/rest/database/).
-  Contributions to expand support to the other REST APIs are appreciated! 
 
 ## Using this package for browser applications
 
