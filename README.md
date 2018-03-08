@@ -38,7 +38,19 @@ dependencies:
   firebase: '^4.3.0'
 ```
 
-## Using this package with dart:html
+## Usage
+
+**NOTE:** This package provides two libraries:
+
+* `package:firebase/firebase.dart` – for browser-based applications.
+  A wrapper over the [Firebase JS API](https://firebase.google.com/docs/reference/js/).
+
+* `package:firebase/firebase_io.dart` - for use with the Dart VM.
+  A lightly maintained wrapper over the
+  [Firebase Database REST API](https://firebase.google.com/docs/reference/rest/database/).
+  Contributions to expand support to the other REST APIs are appreciated! 
+
+## Using this package for browser applications
 
 ### Include Firebase JavaScript source
 
@@ -111,7 +123,7 @@ void main() {
 }
 ```
 
-## Using this package with dart:io
+## Using this package with the Dart VM and Fuchsia
 
 This library also contains a dart:io client.
 
