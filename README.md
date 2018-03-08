@@ -2,10 +2,16 @@
 
 **NOTE:** This package provides two libraries:
 
-* Browser-based applications: `package:firebase/firebase.dart`
+* Browser-based applications:
+
+  [`package:firebase/firebase.dart`](#using-this-package-for-browser-applications)
+
   A wrapper over the [Firebase JS API](https://firebase.google.com/docs/reference/js/).
 
-* Dart VM and Fuchsia: `package:firebase/firebase_io.dart`
+* Dart VM and Fuchsia:
+
+  [`package:firebase/firebase_io.dart`](https://github.com/firebase/firebase-dart/tree/docs#using-this-package-with-the-dart-vm-and-fuchsia)
+  
   A lightly maintained wrapper over the
   [Firebase Database REST API](https://firebase.google.com/docs/reference/rest/database/).
   Contributions to expand support to the other REST APIs are appreciated! 
