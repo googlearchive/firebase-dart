@@ -5,15 +5,17 @@ stages:
   - name: test
     if: (type != pull_request) OR (sender = kevmoo)
 
+# Pinning to 2.0.0-dev.63 until the latest dev release is fixed
 jobs:
   include:
-    - dart: dev
+    - dart: 2.0.0-dev.63.0
       dart_task: dartanalyzer
-    - dart_task: dartfmt
-      dart: dev
+
+    - dart: 2.0.0-dev.63.0
+      dart_task: dartfmt
 
     - stage: test
-      dart: dev
+      dart: 2.0.0-dev.63.0
       before_script: ./tool/travis_before_script.sh
       dart_task: test # default to vm and chrome
 
