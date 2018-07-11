@@ -695,7 +695,8 @@ class DocumentSnapshot
   ///
   /// Returns non-null [Map] containing all fields in the specified
   /// document.
-  Map<String, dynamic> data() => dartify(jsObject.data());
+  /// Can return JSObject (dartium) or Map<String, dynamic> (chrome)
+  dynamic data() => dartify(jsObject.data());
 
   /// Retrieves the field specified by [fieldPath] parameter at the specified
   /// field location or [:null:] if no such field exists in the document.
