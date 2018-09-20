@@ -135,6 +135,24 @@ void main() {
         expect(val, "Cooking delicious dinner!");
       });
 
+      test("distinctListeners", () async {
+        ref.onValue.listen(expectAsync1((event) {
+          print("first listener called.");
+        }, count: 1));
+        var sub1 = ref.onValue.listen(expectAsync1((event) {
+          print("second listener called.");
+        }, count: 0));
+        await sub1.cancel().then((_) => print("second listener cancelled."));
+
+        fb.database().ref("test").onValue.listen(expectAsync1((event) {
+          print("third listener called.");
+        }, count: 1));
+        var sub2 = fb.database().ref("test").onValue.listen(expectAsync1((event) {
+          print("fourth listener called.");
+        }, count: 0));
+        await sub2.cancel().then((_) => print("fourth listener cancelled."));
+      });
+
       test("onValue", () async {
         var childRef = ref.child("todos");
         // ignore: unawaited_futures
