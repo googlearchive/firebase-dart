@@ -145,11 +145,12 @@ void main() {
         await sub1.cancel().then((_) => print("second listener cancelled."));
 
         fb.database().ref("test").onValue.listen(expectAsync1((event) {
-          print("third listener called.");
-        }, count: 1));
-        var sub2 = fb.database().ref("test").onValue.listen(expectAsync1((event) {
-          print("fourth listener called.");
-        }, count: 0));
+              print("third listener called.");
+            }, count: 1));
+        var sub2 =
+            fb.database().ref("test").onValue.listen(expectAsync1((event) {
+                  print("fourth listener called.");
+                }, count: 0));
         await sub2.cancel().then((_) => print("fourth listener cancelled."));
       });
 
