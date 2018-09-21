@@ -136,21 +136,31 @@ void main() {
       });
 
       test("distinctListeners", () async {
-        ref.onValue.listen(expectAsync1((event) {
+        var sub1 = ref.onValue.listen(expectAsync1((event) {
           print("first listener called.");
         }, count: 1));
-        var sub1 = ref.onValue.listen(expectAsync1((event) {
+
+        addTearDown(sub1.cancel);
+
+        var sub2 = ref.onValue.listen(expectAsync1((event) {
           print("second listener called.");
         }, count: 0));
-        await sub1.cancel().then((_) => print("second listener cancelled."));
+        
+        await sub2.cancel().then((_) => print("second listener cancelled."));
 
-        fb.database().ref("test").onValue.listen(expectAsync1((event) {
+        var anotherRef = database.ref("test");
+        var sub3 = anotherRef.onValue.listen(expectAsync1((event) {
           print("third listener called.");
         }, count: 1));
-        var sub2 = fb.database().ref("test").onValue.listen(expectAsync1((event) {
+
+        addTearDown(sub3.cancel);
+
+        var yetAnotherRef = database.ref("test");
+        var sub4 = yetAnotherRef.onValue.listen(expectAsync1((event) {
           print("fourth listener called.");
         }, count: 0));
-        await sub2.cancel().then((_) => print("fourth listener cancelled."));
+
+        await sub4.cancel().then((_) => print("fourth listener cancelled."));
       });
 
       test("onValue", () async {
