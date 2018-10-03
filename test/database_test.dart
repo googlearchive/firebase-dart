@@ -145,7 +145,7 @@ void main() {
         var sub2 = ref.onValue.listen(expectAsync1((event) {
           print("second listener called.");
         }, count: 0));
-        
+
         await sub2.cancel().then((_) => print("second listener cancelled."));
 
         var anotherRef = database.ref("test");
