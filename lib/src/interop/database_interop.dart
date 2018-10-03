@@ -62,7 +62,8 @@ abstract class QueryJsImpl {
   external bool isEqual(QueryJsImpl other);
   external QueryJsImpl limitToFirst(int limit);
   external QueryJsImpl limitToLast(int limit);
-  external void off([String eventType, Func2Opt1<DataSnapshotJsImpl, String, Null>  callback, context]);
+  external void off([String eventType,
+    Func2Opt1<DataSnapshotJsImpl, String, Null>  callback, context]);
   external Func0 on(
       String eventType, Func2Opt1<DataSnapshotJsImpl, String, Null> callback,
       [cancelCallbackOrContext, context]);
