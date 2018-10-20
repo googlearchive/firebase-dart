@@ -6,6 +6,7 @@ import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firestore.dart' as fs;
 import 'package:firebase/src/assets/assets.dart';
 import 'package:test/test.dart';
+
 import 'test_util.dart' show throwsToString, validDatePathComponent;
 
 //  TODO add MetadataSnapshot test
@@ -654,6 +655,7 @@ void main() {
   });
 
   test('metadata docChanges', () async {
+    var watch = Stopwatch()..start();
     var ref = firestore.collection('$testPath/with/index');
 
     await _deleteCollection(firestore, ref);
@@ -661,6 +663,7 @@ void main() {
     var count = 0;
     ref.onSnapshotMetadata.listen(expectAsync1((qs) {
       count++;
+      print('$count ${watch.elapsed}');
       var metadata = qs.metadata;
       var changes = qs.docChanges();
       switch (count) {
@@ -687,6 +690,10 @@ void main() {
 
     // ignore: unawaited_futures
     ref.doc("message1").set({'value': fs.FieldValue.serverTimestamp()});
+
+    addTearDown(() {
+      print('final ${watch.elapsed}');
+    });
   });
 
   group("Quering data", () {
