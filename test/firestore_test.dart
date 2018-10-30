@@ -55,8 +55,7 @@ void main() {
         databaseURL: databaseUrl,
         projectId: projectId,
         storageBucket: storageBucket);
-
-    firestore = fb.firestore();
+    firestore = app.firestore();
   });
 
   tearDown(() async {
@@ -957,6 +956,74 @@ void main() {
       expect(snapshot.size, 4);
       expect(snapshot.docs[0].data()["text"], "ahoj");
       expect(snapshot.docs[3].data()["text"], "hi");
+    });
+  });
+  group('timestamp', () {
+    // Here we create another app
+    fb.App appWithTimestamps;
+    fs.Firestore firestoreWithTimestamps;
+
+    setUp(() async {
+      appWithTimestamps = fb.initializeApp(
+          apiKey: apiKey,
+          authDomain: authDomain,
+          databaseURL: databaseUrl,
+          projectId: projectId,
+          storageBucket: storageBucket,
+          name: 'withTimestamps');
+
+      // This one has timestamp
+      firestoreWithTimestamps = appWithTimestamps.firestore()
+        ..settings(fs.Settings(timestampsInSnapshots: true));
+    });
+
+    tearDown(() async {
+      if (appWithTimestamps != null) {
+        await appWithTimestamps.delete();
+        appWithTimestamps = null;
+      }
+    });
+
+    test('set/get', () async {
+      // We can write both
+      var dateTime = DateTime.parse('2018-10-30T01:02:03.789Z');
+      var timestamp = fs.Timestamp.parse('2018-10-31T01:02:03.123456Z');
+      var timestampNanos = fs.Timestamp.parse('2018-11-01T01:02:03.123456789Z');
+
+      var docRef = firestore.collection(testPath).doc('timestamp');
+      var docRefWithTimestamps = firestoreWithTimestamps.doc(docRef.path);
+      await docRef.set({
+        'dateTime': dateTime,
+        'timestamp': timestamp,
+        'timestampNanos': timestampNanos
+      });
+
+      // We read what we expect, i.e. date in this app
+      expect((await docRef.get()).data(), {
+        'dateTime': dateTime.toLocal(),
+        'timestamp': timestamp.toDateTime(),
+        'timestampNanos': timestampNanos.toDateTime()
+      });
+      // timestamp in this one
+      expect((await docRefWithTimestamps.get()).data(), {
+        'dateTime': fs.Timestamp.fromDateTime(dateTime),
+        'timestamp': timestamp,
+        // To note that currently we only have micros precision
+        'timestampNanos': fs.Timestamp(
+            timestampNanos.seconds, (timestampNanos.nanoseconds ~/ 1000) * 1000)
+      });
+    });
+
+    test('serverTimestamp', () async {
+      var docRef = firestore.collection(testPath).doc('serverTimestamp');
+      var docRefWithTimestamps = firestoreWithTimestamps.doc(docRef.path);
+      await docRef.set({'timestamp': fs.FieldValue.serverTimestamp()});
+
+      var map = (await docRef.get()).data();
+      expect(map['timestamp'], const TypeMatcher<DateTime>());
+
+      var mapWithTimestamps = (await docRefWithTimestamps.get()).data();
+      expect(mapWithTimestamps['timestamp'], const TypeMatcher<fs.Timestamp>());
     });
   });
 }

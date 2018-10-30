@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:html' show promiseToFuture;
 
+import 'package:firebase/src/timestamp.dart';
 import 'package:js/js.dart';
 import 'package:js/js_util.dart' as util;
 
@@ -46,8 +47,8 @@ dynamic dartify(Object jsObject) {
 
   if (util.hasProperty(proto, 'toDate') &&
       util.hasProperty(proto, 'toMillis')) {
-    return DateTime.fromMillisecondsSinceEpoch(
-        (jsObject as TimestampJsImpl).toMillis());
+    var jsTimestamp = jsObject as TimestampJsImpl;
+    return Timestamp(jsTimestamp.seconds, jsTimestamp.nanoseconds);
   }
 
   if (util.hasProperty(proto, 'isEqual') &&
@@ -74,6 +75,10 @@ dynamic jsify(Object dartObject) {
 
   if (dartObject is DateTime) {
     return TimestampJsImpl.fromMillis(dartObject.millisecondsSinceEpoch);
+  }
+
+  if (dartObject is Timestamp) {
+    return TimestampJsImpl(dartObject.seconds, dartObject.nanoseconds);
   }
 
   if (dartObject is Iterable) {
