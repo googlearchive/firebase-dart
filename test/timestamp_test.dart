@@ -1,5 +1,5 @@
+import 'package:firebase/src/timestamp.dart';
 import 'package:test/test.dart';
-import 'package:firebase/firestore.dart';
 
 // Use this test to properly test on all platform
 // pub run test -p chrome,node,vm,firefox .\test\timestamp_test.dart
