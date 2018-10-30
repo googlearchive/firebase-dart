@@ -11,6 +11,3 @@ doc/api/
 # Files with private data. Used for development and testing
 lib/src/assets/config.json
 lib/src/assets/service_account.json
-
-# IDE
-.idea/
