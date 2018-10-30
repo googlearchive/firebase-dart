@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
 import 'package:firebase/firestore.dart';
+
 // Use this test to properly test on all platform
 // pub run test -p chrome,node,vm,firefox .\test\timestamp_test.dart
 bool get _runningAsJavascript => identical(1, 1.0);

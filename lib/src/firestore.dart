@@ -33,8 +33,7 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
       return null;
     }
 
-    return _expando[jsObject] ??= Firestore._fromJsObject(jsObject
-      ..settings(firestore_interop.Settings(timestampsInSnapshots: true)));
+    return _expando[jsObject] ??= Firestore._fromJsObject(jsObject);
   }
 
   Firestore._fromJsObject(firestore_interop.FirestoreJsImpl jsObject)

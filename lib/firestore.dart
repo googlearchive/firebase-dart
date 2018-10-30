@@ -4,3 +4,4 @@
 library firebase_firestore;
 
 export 'src/firestore.dart';
+export 'src/timestamp.dart' show Timestamp;
