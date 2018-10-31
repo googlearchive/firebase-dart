@@ -79,7 +79,7 @@ class Timestamp implements Comparable<Timestamp> {
         }
       }
 
-      var seconds = dateTime.millisecondsSinceEpoch ~/ 1000;
+      var seconds = (dateTime.millisecondsSinceEpoch / 1000).floor();
       var nanoseconds = int.tryParse(nanosString.toString());
       return Timestamp(seconds, nanoseconds);
     }
@@ -88,7 +88,7 @@ class Timestamp implements Comparable<Timestamp> {
 
   /// Creates a new [Timestamp] instance from the given date
   factory Timestamp.fromDateTime(DateTime dateTime) {
-    final seconds = dateTime.millisecondsSinceEpoch ~/ 1000;
+    final seconds = (dateTime.millisecondsSinceEpoch / 1000).floor();
     final nanoseconds = (dateTime.microsecondsSinceEpoch % 1000000) * 1000;
     return Timestamp(seconds, nanoseconds);
   }
@@ -96,7 +96,7 @@ class Timestamp implements Comparable<Timestamp> {
   /// Constructs a new [Timestamp] instance
   /// with the given [millisecondsSinceEpoch].
   factory Timestamp.fromMillisecondsSinceEpoch(int millisecondsSinceEpoch) {
-    final seconds = millisecondsSinceEpoch ~/ 1000;
+    final seconds = (millisecondsSinceEpoch / 1000).floor();
     final nanoseconds = (millisecondsSinceEpoch % 1000) * 1000000;
     return Timestamp(seconds, nanoseconds);
   }
