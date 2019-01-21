@@ -99,6 +99,7 @@ dynamic jsify(Object dartObject) {
   if (dartObject is FieldValue) {
     return jsifyFieldValue(dartObject);
   }
+
   if (dartObject is Blob || dartObject is GeoPoint) {
     return dartObject;
   }
