@@ -94,11 +94,7 @@ void main() {
       b = fs.FieldValue.serverTimestamp();
       expect(a, b);
       expect(a, a);
-      expect(b, b);
-
-      // opaque values
-      fs.FieldValue.arrayUnion([1]);
-      fs.FieldValue.arrayRemove([1]);
+      expect(b, a);
     });
 
     test("FieldPath", () {
