@@ -4,3 +4,4 @@
 library firebase_firestore;
 
 export 'src/firestore.dart' hide jsifyFieldValue;
+export 'src/timestamp.dart';

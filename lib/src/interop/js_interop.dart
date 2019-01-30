@@ -1,6 +1,7 @@
 @JS()
 library firebase.js_interop;
 
+import 'package:firebase/src/interop/firestore_interop.dart';
 import 'package:js/js.dart';
 import 'package:js/js_util.dart' as util;
 
@@ -16,7 +17,7 @@ external Object toJSArray(List source);
 DateTime dartifyDate(Object jsObject) {
   if (util.hasProperty(jsObject, "toDateString")) {
     try {
-      var date = jsObject as dynamic;
+      var date = jsObject as DateJsImpl;
       return DateTime.fromMillisecondsSinceEpoch(date.getTime());
     } on NoSuchMethodError {
       // so it's not a JsDate!

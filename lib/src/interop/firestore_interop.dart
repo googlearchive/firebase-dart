@@ -274,6 +274,12 @@ abstract class TimestampJsImpl {
   external String toString();
 }
 
+@JS()
+@anonymous
+abstract class DateJsImpl {
+  external int getTime();
+}
+
 /// The set of Cloud Firestore status codes.
 /// These status codes are also exposed by gRPC.
 ///
