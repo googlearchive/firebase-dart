@@ -49,8 +49,11 @@ class HttpsCallable
   HttpsCallable._fromJsObject(functions_interop.HttpsCallableJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  Future<HttpsCallableResult> call(data) =>
-      handleThenable(jsObject.call(data).then(data));
+  Future<HttpsCallableResult> call(data) {
+    return handleThenable(jsObject
+        .call(jsify(data))
+        .then((result) => HttpsCallableResult.getInstance(jsify(result))));
+  }
 }
 
 class HttpsCallableOptions
@@ -95,5 +98,5 @@ class HttpsCallableResult
       functions_interop.HttpsCallableResultJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  dynamic get data => jsObject.data;
+  Map<String, dynamic> get data => dartify(jsObject.data);
 }

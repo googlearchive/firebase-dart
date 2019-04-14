@@ -29,7 +29,7 @@ abstract class HttpsCallableOptionsJsImpl {
 
 @JS('HttpsCallableResult')
 abstract class HttpsCallableResultJsImpl {
-  external dynamic get data;
+  external Map<String, dynamic> get data;
 }
 
 @JS('HttpsError')
