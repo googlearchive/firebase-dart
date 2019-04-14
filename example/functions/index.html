@@ -3,35 +3,17 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Realtime database demo</title>
+  <title>Firestore demo</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
     integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <style type="text/css">
-    ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    li {
-      margin: 0;
-      padding: 4px 2px;
-      border-bottom: 1px solid silver;
-      overflow: auto;
-    }
-
-    #messages_wrapper {
+    #text_wrapper {
       width: 500px;
       margin-bottom: 15px;
       overflow-y: auto;
     }
 
-    #messages a {
-      float: right;
-      margin-left: 10px;
-    }
-
-    #new_message {
+    #new_name {
       width: 350px;
     }
   </style>
@@ -39,17 +21,17 @@
 
 <body>
   <div class="container">
-    <h1>Messages demo</h1>
-    <div id="messages_wrapper">
-      <ul id="messages"></ul>
+    <h1>Functions demo</h1>
+    <div id="text_wrapper">
+      <p id="result"></p>
     </div>
-    <form id="new_message_form">
-      <input type="text" placeholder="Your Message" id="new_message" disabled>
+    <form id="hello_world_form">
+      <input type="text" placeholder="Your Name" id="new_name" disabled>
       <input type="submit" value="Send" id="submit" disabled>
     </form>
   </div>
   <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-functions.js"></script>
   <script defer src="index.dart.js" type="application/javascript"></script>
 </body>
 

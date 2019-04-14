@@ -10,6 +10,7 @@ import 'app_interop.dart';
 import 'auth_interop.dart';
 import 'database_interop.dart';
 import 'firestore_interop.dart';
+import 'functions_interop.dart';
 import 'messaging_interop.dart';
 import 'storage_interop.dart';
 
@@ -34,6 +35,8 @@ external DatabaseJsImpl database([AppJsImpl app]);
 external StorageJsImpl storage([AppJsImpl app]);
 @JS()
 external FirestoreJsImpl firestore([AppJsImpl app]);
+@JS()
+external FunctionsJsImpl functions();
 @JS()
 external MessagingJsImpl messaging([AppJsImpl app]);
 

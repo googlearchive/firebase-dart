@@ -7,6 +7,7 @@ library firebase;
 export 'src/app.dart';
 export 'src/auth.dart';
 export 'src/database.dart';
+export 'src/functions.dart';
 export 'src/messaging.dart';
 export 'src/storage.dart';
 export 'src/top_level.dart';
