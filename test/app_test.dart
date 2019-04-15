@@ -66,6 +66,10 @@ void main() {
         expect(app.firestore(), isNotNull);
       });
 
+      test("Get functions", () {
+        expect(app.functions(), isNotNull);
+      });
+
       test("Can be created with name", () async {
         var app2 = fb.initializeApp(
             apiKey: apiKey,
