@@ -15,7 +15,8 @@ void main() {
         apiKey: apiKey,
         authDomain: authDomain,
         databaseURL: databaseUrl,
-        storageBucket: storageBucket);
+        storageBucket: storageBucket,
+        projectId: projectId);
   });
 
   group('Functions', () {
@@ -32,7 +33,7 @@ void main() {
 
       var result = await functions.httpsCallable(functionName).call(data);
 
-      expect(result.data, 'hello world, angulardart');
+      expect(result.data['text'], 'hello world, angulardart');
     });
   });
 }

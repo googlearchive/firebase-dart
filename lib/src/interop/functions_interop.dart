@@ -28,6 +28,7 @@ abstract class HttpsCallableOptionsJsImpl {
 }
 
 @JS('HttpsCallableResult')
+@anonymous
 abstract class HttpsCallableResultJsImpl {
   external Map<String, dynamic> get data;
 }
