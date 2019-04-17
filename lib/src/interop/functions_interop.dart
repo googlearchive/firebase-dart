@@ -20,6 +20,7 @@ abstract class HttpsCallableJsImpl {
 }
 
 @JS('HttpsCallableOptions')
+@anonymous
 abstract class HttpsCallableOptionsJsImpl {
   external int get timeout;
   external set timeout(int t);
