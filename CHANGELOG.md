@@ -1,3 +1,7 @@
+## 5.0.7
+
+- Fixed compilation failed for `HttpsCallableOptionsJsImpl`
+
 ## 5.0.6
 
 - Updated repository homepage url
