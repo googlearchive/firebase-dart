@@ -1,3 +1,8 @@
+## 5.0.6
+
+- Updated repository homepage url
+- Updated repository description
+
 ## 5.0.5
 
 - Added firebase cloud functions `firebase.functions().httpsCallable()`

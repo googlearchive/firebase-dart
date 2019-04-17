@@ -1,11 +1,11 @@
 name: firebase_web
-description: Firebase libraries for Dart on the web and server
-version: 5.0.5-dev
+description: Firebase libraries for Dart on the web and server with Cloud Functions
+version: 5.0.6
 authors:
   - Jason Choo <choo.yansheng@gmail.com>
   - Jana Moudra <jana.moudra@gmail.com>
   - Kevin Moore <kevmoo@google.com>
-homepage: https://github.com/firebase/firebase-dart
+homepage: https://github.com/grandnexus/firebase-dart
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
