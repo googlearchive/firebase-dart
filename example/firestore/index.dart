@@ -1,8 +1,8 @@
 import 'dart:html';
 
-import 'package:firebase/firebase.dart' as fb;
-import 'package:firebase/firestore.dart';
-import 'package:firebase/src/assets/assets.dart';
+import 'package:firebase_web/firebase.dart' as fb;
+import 'package:firebase_web/firestore.dart';
+import 'package:firebase_web/src/assets/assets.dart';
 
 main() async {
   //Use for firebase package development only

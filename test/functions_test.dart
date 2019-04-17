@@ -1,6 +1,6 @@
 @TestOn('browser')
-import 'package:firebase/firebase.dart';
-import 'package:firebase/src/assets/assets.dart';
+import 'package:firebase_web/firebase.dart';
+import 'package:firebase_web/src/assets/assets.dart';
 import 'package:test/test.dart';
 
 void main() {

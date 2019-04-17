@@ -1,6 +1,6 @@
 @TestOn('vm')
-import 'package:firebase/firebase_io.dart';
-import 'package:firebase/src/assets/assets_io.dart';
+import 'package:firebase_web/firebase_io.dart';
+import 'package:firebase_web/src/assets/assets_io.dart';
 import 'package:http/http.dart';
 import 'package:test/test.dart';
 
