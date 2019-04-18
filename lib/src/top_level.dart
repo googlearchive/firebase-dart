@@ -4,6 +4,7 @@ import 'app.dart';
 import 'auth.dart';
 import 'database.dart';
 import 'firestore.dart';
+import 'functions.dart';
 import 'interop/firebase_interop.dart' as firebase;
 import 'messaging.dart';
 import 'storage.dart';
@@ -113,6 +114,12 @@ Firestore firestore([App app]) {
       (app != null) ? firebase.firestore(app.jsObject) : firebase.firestore();
 
   return Firestore.getInstance(jsObject);
+}
+
+Functions functions() {
+  var jsObject = firebase.functions();
+
+  return Functions.getInstance(jsObject);
 }
 
 Messaging messaging([App app]) {

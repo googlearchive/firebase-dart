@@ -3,6 +3,7 @@ import 'dart:async';
 import 'auth.dart';
 import 'database.dart';
 import 'firestore.dart';
+import 'functions.dart';
 import 'interop/app_interop.dart';
 import 'interop/firebase_interop.dart';
 import 'js.dart';
@@ -52,4 +53,7 @@ class App extends JsObjectWrapper<AppJsImpl> {
 
   /// Returns [Firestore] service.
   Firestore firestore() => Firestore.getInstance(jsObject.firestore());
+
+  /// Returns [Functions] service.
+  Functions functions() => Functions.getInstance(jsObject.functions());
 }
