@@ -53,7 +53,7 @@ abstract class HttpsCallableResultJsImpl {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.functions.HttpsError>.
 @JS('HttpsError')
-abstract class HttpsError {
+abstract class HttpsErrorJsImpl {
   external ErrorJsImpl get error;
   external set error(ErrorJsImpl e);
   external dynamic /*|'ok'|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/ get code;
@@ -67,11 +67,6 @@ abstract class HttpsError {
   external set name(String v);
   external String get stack;
   external set stack(String s);
-  external factory HttpsError(
-      {/*|'ok'|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/ code,
-      String message,
-      String name,
-      String stack});
 }
 
 @JS('Error')
