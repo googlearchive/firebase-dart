@@ -1,3 +1,8 @@
+## 5.0.8
+
+- Updated package name in `assets.dart`
+- Fixed type error for firebase cloud functions `call()`
+
 ## 5.0.7
 
 - Fixed compilation failed for `HttpsCallableOptionsJsImpl`
