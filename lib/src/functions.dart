@@ -49,11 +49,9 @@ class HttpsCallable
   HttpsCallable._fromJsObject(functions_interop.HttpsCallableJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  Future<HttpsCallableResult> call(data) {
-    return handleThenable(jsObject
-        .call(jsify(data))
-        .then((result) => HttpsCallableResult.getInstance(jsify(result))));
-  }
+  Future<HttpsCallableResult> call(data) =>
+      handleThenable(jsObject.call(jsify(data)))
+          .then(HttpsCallableResult.getInstance);
 }
 
 class HttpsCallableOptions
