@@ -1,3 +1,8 @@
+## 5.0.9
+
+- Added comments in `functions_interop.dart`
+- Added simple `main.dart` example
+
 ## 5.0.8
 
 - Updated package name in `assets.dart`
