@@ -33,7 +33,7 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
     }
 
     return _expando[jsObject] ??= Firestore._fromJsObject(jsObject
-      ..settings(firestore_interop.Settings(timestampsInSnapshots: true)));
+      ..settings(firestore_interop.Settings()));
   }
 
   Firestore._fromJsObject(firestore_interop.FirestoreJsImpl jsObject)
@@ -940,6 +940,19 @@ class _FieldValueArrayRemove extends _FieldValueArray {
   String toString() => 'FieldValue.arrayRemove($elements)';
 }
 
+class _FieldValueIncrement implements FieldValue {
+  final num n;
+
+  _FieldValueIncrement(this.n);
+  @override
+  dynamic _jsify() {
+    return firestore_interop.FieldValue.increment(n);
+  }
+
+  @override
+  String toString() => 'FieldValue.increment($n)';
+}
+
 dynamic jsifyFieldValue(FieldValue fieldValue) => fieldValue._jsify();
 
 /// Sentinel values that can be used when writing document fields with set()
@@ -987,6 +1000,20 @@ abstract class FieldValue {
   static FieldValue arrayRemove(List elements) =>
       _FieldValueArrayRemove(elements);
 
+  /// Returns a special value that can be used with set() or update() that tells
+  /// the server to increment the field's current value by the given value.
+
+  /// If either the operand or the current field value uses floating point 
+  /// precision, all arithmetic follows IEEE 754 semantics. If both values
+  /// are integers, values outside of JavaScript's safe number range
+  /// (Number.MIN_SAFE_INTEGER to Number.MAX_SAFE_INTEGER) are also subject 
+  /// to precision loss. Furthermore, once processed by the Firestore backend,
+  /// all integer operations are capped between -2^63 and 2^63-1.
+
+  /// If the current field value is not of type number, or if the field does not
+  /// yet exist, the transformation sets the field to the given value.
+  static FieldValue increment(num n) => _FieldValueIncrement(n);
+  
   FieldValue._();
 
   static final FieldValue _serverTimestamp = _FieldValueServerTimestamp();

@@ -547,6 +547,36 @@ void main() {
       });
     });
 
+    test('increment', () async {
+      var docRef = await ref.doc("increment");
+      await docRef.set({
+        'increment': {
+          'int': 1,
+          'double': 3.141,
+          'nonnumber': 'firebase'
+        }
+      });
+      
+      await docRef.set({
+      'increment': {
+          'int': fs.FieldValue.increment(100),
+          'double': fs.FieldValue.increment(1.618),
+          'nonnumber': fs.FieldValue.increment(42)
+        }
+      }, fs.SetOptions(merge: true));
+
+      var snapshot = await docRef.get();
+      var snapshotData = snapshot.data();
+      
+      expect(snapshotData, {
+        "increment": {
+          'int': 101,
+          'double': 4.759,
+          'nonnumber': 42
+        }
+      });
+    });
+
     test("transaction", () async {
       var docRef = ref.doc("message5");
       await docRef.set({"text": "Hi"});
