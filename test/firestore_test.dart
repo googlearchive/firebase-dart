@@ -548,7 +548,7 @@ void main() {
     });
 
     test('increment', () async {
-      var docRef = await ref.doc("increment");
+      var docRef = ref.doc("increment");
       await docRef.set({
         'increment': {
           'int': 1,
