@@ -7,6 +7,7 @@ import 'package:js/js.dart';
 
 import '../func.dart';
 import 'app_interop.dart';
+import 'es6_interop.dart';
 import 'firebase_interop.dart';
 
 @JS('Auth')
