@@ -63,7 +63,7 @@ void main() {
 
     test("Get firestore", () {
       expect(app.firestore(), isNotNull);
-    });
+    }, skip: 'Causes teardown to hang on delete');
 
     test("Can be created with name", () async {
       var app2 = fb.initializeApp(
@@ -120,7 +120,7 @@ void main() {
     test("Get Firestore", () {
       expect(fb.firestore(), isNotNull);
       expect(fb.firestore(app), isNotNull);
-    });
+    }, skip: 'Causes teardown to hang on delete');
   });
 
   test("SDK version", () {
