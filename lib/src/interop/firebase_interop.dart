@@ -48,11 +48,7 @@ abstract class UserJsImpl extends UserInfoJsImpl {
   external UserMetadata get metadata;
   external PromiseJsImpl delete();
   external PromiseJsImpl<String> getIdToken([bool opt_forceRefresh]);
-  external PromiseJsImpl<UserCredentialJsImpl>
-      linkAndRetrieveDataWithCredential(AuthCredential credential);
-
-  @deprecated
-  external PromiseJsImpl<UserJsImpl> linkWithCredential(
+  external PromiseJsImpl<UserCredentialJsImpl> linkWithCredential(
       AuthCredential credential);
   external PromiseJsImpl<ConfirmationResultJsImpl> linkWithPhoneNumber(
       String phoneNumber, ApplicationVerifierJsImpl applicationVerifier);
@@ -60,10 +56,7 @@ abstract class UserJsImpl extends UserInfoJsImpl {
       AuthProviderJsImpl provider);
   external PromiseJsImpl linkWithRedirect(AuthProviderJsImpl provider);
 
-  @deprecated
   external PromiseJsImpl reauthenticateWithCredential(
-      AuthCredential credential);
-  external PromiseJsImpl reauthenticateAndRetrieveDataWithCredential(
       AuthCredential credential);
   external PromiseJsImpl<ConfirmationResultJsImpl>
       reauthenticateWithPhoneNumber(

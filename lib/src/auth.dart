@@ -107,9 +107,8 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
 
   /// Links the user account with the given credentials, and returns any
   /// available additional user information, such as user name.
-  Future<UserCredential> linkAndRetrieveDataWithCredential(
-          AuthCredential credential) =>
-      handleThenable(jsObject.linkAndRetrieveDataWithCredential(credential))
+  Future<UserCredential> linkWithCredential(AuthCredential credential) =>
+      handleThenable(jsObject.linkWithCredential(credential))
           .then((u) => UserCredential.fromJsObject(u));
 
   /// Links the user account with the given [phoneNumber] in E.164 format
@@ -136,10 +135,9 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   // Promise (Future)<nothing> - Filed a bug internally.
   /// Re-authenticates a user using a fresh credential, and returns any
   /// available additional user information, such as user name.
-  Future<UserCredential> reauthenticateAndRetrieveDataWithCredential(
+  Future<UserCredential> reauthenticateWithCredential(
           AuthCredential credential) =>
-      handleThenable(
-              jsObject.reauthenticateAndRetrieveDataWithCredential(credential))
+      handleThenable(jsObject.reauthenticateWithCredential(credential))
           .then((o) => UserCredential.fromJsObject(o));
 
   /// Re-authenticates a user using a fresh credential.
@@ -243,6 +241,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// popup/redirect operations provided the specified providers support
   /// localization with the language code specified.
   String get languageCode => jsObject.languageCode;
+
   set languageCode(String s) {
     jsObject.languageCode = s;
   }
@@ -356,28 +355,6 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
       handleThenable(jsObject.createUserWithEmailAndPassword(email, password))
           .then((u) => UserCredential.fromJsObject(u));
 
-  /// Creates a new user account associated with the specified [email] address
-  /// and [password] and returns any additional user info data or credentials.
-  ///
-  /// This method will be renamed to [createUserWithEmailAndPassword()]
-  /// replacing the existing method with the same name in the next major
-  /// version change.
-  ///
-  /// On successful creation of the user account, this user will also be signed
-  /// in to your application.
-  ///
-  /// User account creation can fail if the account already exists or the
-  /// password is invalid.
-  ///
-  /// Note: The email address acts as a unique identifier for the user and
-  /// enables an email-based password reset. This function will create a
-  /// new user account and set the initial user password.
-  Future<UserCredential> createUserAndRetrieveDataWithEmailAndPassword(
-          String email, String password) =>
-      handleThenable(jsObject.createUserAndRetrieveDataWithEmailAndPassword(
-              email, password))
-          .then((u) => UserCredential.fromJsObject(u));
-
   /// Returns the list of provider IDs for the given [email] address,
   /// that can be used to sign in.
   @deprecated
@@ -439,9 +416,8 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
 
   /// Asynchronously signs in with the given credentials, and returns any
   /// available additional user information, such as user name.
-  Future<UserCredential> signInAndRetrieveDataWithCredential(
-          AuthCredential credential) =>
-      handleThenable(jsObject.signInAndRetrieveDataWithCredential(credential))
+  Future<UserCredential> signInWithCredential(AuthCredential credential) =>
+      handleThenable(jsObject.signInWithCredential(credential))
           .then((u) => UserCredential.fromJsObject(u));
 
   /// Signs in as an anonymous user. If an anonymous user is already
@@ -453,25 +429,6 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   Future<UserCredential> signInAnonymously() =>
       handleThenable(jsObject.signInAnonymously())
           .then((u) => UserCredential.fromJsObject(u));
-
-  /// Signs in a user anonymously and returns any additional user info data
-  /// or credentials.
-  ///
-  /// This method will be renamed to [signInAnonymously()] replacing the
-  /// existing method with the same name in the next major version change.
-  ///
-  /// If there is already an anonymous user signed in, that user with additional
-  /// date will be returned; otherwise, a new anonymous user identity will be
-  /// created and returned.
-  Future<UserCredential> signInAnonymouslyAndRetrieveData() =>
-      handleThenable(jsObject.signInAnonymouslyAndRetrieveData())
-          .then((u) => UserCredential.fromJsObject(u));
-
-  /// Signs in with the given [credential] and returns the [User].
-  @deprecated
-  Future<User> signInWithCredential(AuthCredential credential) =>
-      handleThenable(jsObject.signInWithCredential(credential))
-          .then(User.getInstance);
 
   /// Signs in with the custom [token] and returns the [User].
   /// Custom token must be generated by an auth backend.
@@ -508,24 +465,6 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   Future<UserCredential> signInWithEmailAndPassword(
           String email, String password) =>
       handleThenable(jsObject.signInWithEmailAndPassword(email, password))
-          .then((u) => UserCredential.fromJsObject(u));
-
-  /// Asynchronously signs in using an [email] and [password] and returns any
-  /// additional user info data or credentials.
-  ///
-  /// This method will be renamed to [signInWithEmailAndPassword()] replacing
-  /// the existing method with the same name in the next major version change.
-  ///
-  /// Fails with an error if the email address and password do not match.
-  ///
-  /// Note: The user's password is NOT the password used to access the user's
-  /// email account. The email address serves as a unique identifier for the
-  /// user, and the password is used to access the user's account in your
-  /// Firebase project.
-  Future<UserCredential> signInAndRetrieveDataWithEmailAndPassword(
-          String email, String password) =>
-      handleThenable(jsObject.signInAndRetrieveDataWithEmailAndPassword(
-              email, password))
           .then((u) => UserCredential.fromJsObject(u));
 
   /// Asynchronously signs in using a phone number in E.164 format
