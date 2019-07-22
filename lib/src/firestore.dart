@@ -889,9 +889,8 @@ abstract class _Updatable {
 
 class _FieldValueDelete implements FieldValue {
   @override
-  dynamic _jsify() {
-    return firestore_interop.FieldValue.delete();
-  }
+  firestore_interop.FieldValue _jsify() =>
+      firestore_interop.FieldValue.delete();
 
   @override
   String toString() => 'FieldValue.delete()';
@@ -899,9 +898,8 @@ class _FieldValueDelete implements FieldValue {
 
 class _FieldValueServerTimestamp implements FieldValue {
   @override
-  dynamic _jsify() {
-    return firestore_interop.FieldValue.serverTimestamp();
-  }
+  firestore_interop.FieldValue _jsify() =>
+      firestore_interop.FieldValue.serverTimestamp();
 
   @override
   String toString() => 'FieldValue.serverTimestamp()';
@@ -945,10 +943,10 @@ class _FieldValueIncrement implements FieldValue {
   final num n;
 
   _FieldValueIncrement(this.n);
+
   @override
-  dynamic _jsify() {
-    return firestore_interop.FieldValue.increment(n);
-  }
+  firestore_interop.FieldValue _jsify() =>
+      firestore_interop.FieldValue.increment(n);
 
   @override
   String toString() => 'FieldValue.increment($n)';
@@ -959,18 +957,7 @@ dynamic jsifyFieldValue(FieldValue fieldValue) => fieldValue._jsify();
 /// Sentinel values that can be used when writing document fields with set()
 /// or update().
 abstract class FieldValue {
-  factory FieldValue._fromJs(dynamic jsFieldValue) {
-    if (jsFieldValue == firestore_interop.FieldValue.delete()) {
-      return FieldValue.delete();
-    } else if (jsFieldValue == firestore_interop.FieldValue.serverTimestamp()) {
-      return FieldValue.serverTimestamp();
-    } else {
-      throw ArgumentError.value(jsFieldValue, 'jsFieldValue',
-          "Invalid value provided. We don't support dartfying object like arrayUnion or arrayRemove since not needed");
-    }
-  }
-
-  dynamic _jsify();
+  firestore_interop.FieldValue _jsify();
 
   /// Returns a sentinel used with set() or update() to include a
   /// server-generated timestamp in the written data.
