@@ -329,11 +329,10 @@ abstract class Settings {
   external num get cacheSizeBytes;
   external set cacheSizeBytes(num v);
 
-  external factory Settings({
-    bool timestampsInSnapshots, 
-    bool experimentalForceLongPolling,
-    num cacheSizeBytes
-  });
+  external factory Settings(
+      {bool timestampsInSnapshots,
+      bool experimentalForceLongPolling,
+      num cacheSizeBytes});
 }
 
 /// Metadata about a snapshot, describing the state of the snapshot.
