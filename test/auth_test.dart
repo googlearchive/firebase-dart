@@ -1,5 +1,4 @@
 @TestOn('browser')
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core' hide print;
@@ -9,6 +8,7 @@ import 'dart:html';
 import 'package:firebase/firebase.dart';
 import 'package:firebase/src/assets/assets.dart';
 import 'package:test/test.dart';
+
 import 'test_util.dart';
 
 /// A nice util to include timing with print calls
