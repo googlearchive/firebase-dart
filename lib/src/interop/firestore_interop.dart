@@ -323,16 +323,7 @@ abstract class Settings {
   external bool get timestampsInSnapshots;
   external set timestampsInSnapshots(bool v);
 
-  external bool get experimentalForceLongPolling;
-  external set experimentalForceLongPolling(bool v);
-
-  external num get cacheSizeBytes;
-  external set cacheSizeBytes(num v);
-
-  external factory Settings(
-      {bool timestampsInSnapshots,
-      bool experimentalForceLongPolling,
-      num cacheSizeBytes});
+  external factory Settings({bool timestampsInSnapshots});
 }
 
 /// Metadata about a snapshot, describing the state of the snapshot.
