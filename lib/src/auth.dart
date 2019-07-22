@@ -112,12 +112,6 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
       handleThenable(jsObject.linkAndRetrieveDataWithCredential(credential))
           .then((u) => UserCredential.fromJsObject(u));
 
-  /// Links the user account with the given [credential] and returns the user.
-  @deprecated
-  Future<User> linkWithCredential(AuthCredential credential) =>
-      handleThenable(jsObject.linkWithCredential(credential))
-          .then(User.getInstance);
-
   /// Links the user account with the given [phoneNumber] in E.164 format
   /// (e.g. +16505550101) and [applicationVerifier].
   Future<ConfirmationResult> linkWithPhoneNumber(
@@ -158,13 +152,6 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
       handleThenable(jsObject.reauthenticateWithPhoneNumber(
               phoneNumber, applicationVerifier.jsObject))
           .then((c) => ConfirmationResult.fromJsObject(c));
-
-  /// Re-authenticates a user using a fresh [credential]. Should be used
-  /// before operations such as [updatePassword()] that require tokens
-  /// from recent sign in attempts.
-  @deprecated
-  Future reauthenticateWithCredential(AuthCredential credential) =>
-      handleThenable(jsObject.reauthenticateWithCredential(credential));
 
   /// Reauthenticates a user with the specified provider using
   /// a pop-up based OAuth flow.

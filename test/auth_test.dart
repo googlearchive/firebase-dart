@@ -393,22 +393,6 @@ void main() {
       }
     });
 
-    test('link anonymous user with credential', () async {
-      try {
-        userCredential = await authValue.signInAnonymously();
-        expect(userCredential.user.isAnonymous, isTrue);
-
-        var credential = EmailAuthProvider.credential(userEmail, "janicka");
-        // ignore: deprecated_member_use
-        var user = await userCredential.user.linkWithCredential(credential);
-        expect(user.isAnonymous, isFalse);
-        expect(user.email, userEmail);
-      } on FirebaseError catch (e) {
-        printException(e);
-        rethrow;
-      }
-    });
-
     test('linkAndRetrieveDataWithCredential anonymous user', () async {
       try {
         userCredential = await authValue.signInAnonymously();
@@ -422,23 +406,6 @@ void main() {
         expect(userCred.user.uid, userCredential.user.uid);
         expect(userCred.additionalUserInfo, isNotNull);
         expect(userCred.additionalUserInfo.isNewUser, isFalse);
-      } on FirebaseError catch (e) {
-        printException(e);
-        rethrow;
-      }
-    });
-
-    test('reauthenticate with credential', () async {
-      try {
-        userCredential = await authValue.createUserWithEmailAndPassword(
-            userEmail, "janicka");
-
-        var credential = EmailAuthProvider.credential(userEmail, "janicka");
-        // ignore: deprecated_member_use
-        await userCredential.user.reauthenticateWithCredential(credential);
-
-        expect(authValue.currentUser, isNotNull);
-        expect(authValue.currentUser.email, userEmail);
       } on FirebaseError catch (e) {
         printException(e);
         rethrow;
