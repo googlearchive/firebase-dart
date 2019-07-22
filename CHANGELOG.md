@@ -1,7 +1,15 @@
+## 6.0.0
+
+- **BREAKING** Removed and renamed members across `auth` and `firestore` to
+  align with v6 changes to
+  [JS API](https://firebase.google.com/support/release-notes/js#version_600_-_may_7_2019).
+- **BREAKING** The `Promise` polyfil has been removed from the JS SDK. Users
+  will have to include their own polyfil for `Promise`. 
+
 ## 5.0.4
 
 - Require at least Dart 2.1.0.
-- Updated documented JS library from `5.5.2` of the JS API to `5.9.2`.
+- Updated documented JS library from `5.5.2` of the JS API to `5.10.1`.
 
 ## 5.0.3
 
