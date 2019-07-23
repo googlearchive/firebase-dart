@@ -20,9 +20,9 @@
 
 * Node (via dart2js): [Anatoly Pulyaevskiy](https://github.com/pulyaevskiy) has
   been working on unofficial wrappers.
-  * [package:firebase_admin_interop](https://pub.dartlang.org/packages/firebase_admin_interop)
-  * [package:firebase_functions_interop](https://pub.dartlang.org/packages/firebase_functions_interop)
-  * [package:firestore_interop](https://pub.dartlang.org/packages/firestore_interop)
+  * [package:firebase_admin_interop](https://pub.dev/packages/packages/firebase_admin_interop)
+  * [package:firebase_functions_interop](https://pub.dev/packages/packages/firebase_functions_interop)
+  * [package:firestore_interop](https://pub.dev/packages/packages/firestore_interop)
 
 ## Firebase Configuration
 You can find more information on how to use Firebase on the
@@ -61,8 +61,8 @@ as well as one or more libraries corresponding to the features you are using.
 For example:
 
 ```html
-<script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.3.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.3.1/firebase-firestore.js"></script>
 ```
 
 The firestore library is available in `firestore.dart`. You can find an
@@ -247,10 +247,13 @@ See [more info](#do-you-need-to-use-firestore).
 ### Storage tests and example
 
 Storage tests and example need to have **public rules** to be able to read and
-write to storage. Update your rules in Firebase console, `Storage/Rules` section
+write to storage. Firebase Storage Rules Version 2 is
+[required](https://firebase.google.com/docs/storage/web/list-files) for `list` and 
+`listAll`. Update your rules in Firebase console, `Storage/Rules` section
 to:
 
 ```
+rules_version = '2';
 service firebase.storage {
   match /b/YOUR_STORAGE_BUCKET_URL/o {
     match /{allPaths=**} {

@@ -5,10 +5,10 @@ library firebase.firebase_interop;
 
 import 'package:js/js.dart';
 
-import '../func.dart';
 import 'app_interop.dart';
 import 'auth_interop.dart';
 import 'database_interop.dart';
+import 'es6_interop.dart';
 import 'firestore_interop.dart';
 import 'messaging_interop.dart';
 import 'storage_interop.dart';
@@ -48,11 +48,7 @@ abstract class UserJsImpl extends UserInfoJsImpl {
   external UserMetadata get metadata;
   external PromiseJsImpl delete();
   external PromiseJsImpl<String> getIdToken([bool opt_forceRefresh]);
-  external PromiseJsImpl<UserCredentialJsImpl>
-      linkAndRetrieveDataWithCredential(AuthCredential credential);
-
-  @deprecated
-  external PromiseJsImpl<UserJsImpl> linkWithCredential(
+  external PromiseJsImpl<UserCredentialJsImpl> linkWithCredential(
       AuthCredential credential);
   external PromiseJsImpl<ConfirmationResultJsImpl> linkWithPhoneNumber(
       String phoneNumber, ApplicationVerifierJsImpl applicationVerifier);
@@ -60,10 +56,7 @@ abstract class UserJsImpl extends UserInfoJsImpl {
       AuthProviderJsImpl provider);
   external PromiseJsImpl linkWithRedirect(AuthProviderJsImpl provider);
 
-  @deprecated
   external PromiseJsImpl reauthenticateWithCredential(
-      AuthCredential credential);
-  external PromiseJsImpl reauthenticateAndRetrieveDataWithCredential(
       AuthCredential credential);
   external PromiseJsImpl<ConfirmationResultJsImpl>
       reauthenticateWithPhoneNumber(
@@ -94,21 +87,6 @@ abstract class UserInfoJsImpl {
   external String get uid;
 }
 
-@JS('Promise')
-class PromiseJsImpl<T> extends ThenableJsImpl<T> {
-  external PromiseJsImpl(Function resolver);
-  external static PromiseJsImpl<List> all(List<PromiseJsImpl> values);
-  external static PromiseJsImpl reject(error);
-  external static PromiseJsImpl resolve(value);
-}
-
-@anonymous
-@JS()
-abstract class ThenableJsImpl<T> {
-  external ThenableJsImpl JS$catch([Func1 onReject]);
-  external ThenableJsImpl then([Func1 onResolve, Func1 onReject]);
-}
-
 /// FirebaseError is a subclass of the standard Error object.
 /// In addition to a message string, it contains a string-valued code.
 ///
@@ -116,13 +94,12 @@ abstract class ThenableJsImpl<T> {
 @JS()
 abstract class FirebaseError {
   external String get code;
-  external set code(String s);
   external String get message;
-  external set message(String s);
   external String get name;
-  external set name(String s);
   external String get stack;
-  external set stack(String s);
+
+  /// Not part of the core JS API, but occasionally exposed in error objects.
+  external Object get serverResponse;
 }
 
 /// A structure for [User]'s user profile.
