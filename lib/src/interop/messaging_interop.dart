@@ -9,6 +9,9 @@ import 'es6_interop.dart';
 @JS('isSupported')
 external bool isSupported();
 
+@JS('isSupported')
+external bool isSupported();
+
 @JS('Messaging')
 abstract class MessagingJsImpl {
   external void usePublicVapidKey(String key);
