@@ -3,8 +3,8 @@
 @JS('firebase.functions')
 library firebase.functions_interop;
 
+import 'package:firebase/src/interop/es6_interop.dart';
 import 'package:js/js.dart';
-import 'firebase_interop.dart';
 
 /// The Cloud Functions for Firebase service interface.
 ///
@@ -24,7 +24,7 @@ abstract class FunctionsJsImpl {
 /// See: <https://firebase.google.com/docs/reference/js/firebase.functions.Functions>.
 @JS('HttpsCallable')
 abstract class HttpsCallableJsImpl {
-  external PromiseJsImpl<HttpsCallableResultJsImpl> call(dynamic data);
+  external PromiseJsImpl<HttpsCallableResultJsImpl> call({dynamic data});
 }
 
 /// An HttpsCallableOptions is an option to set timeout property

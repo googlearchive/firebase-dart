@@ -56,7 +56,7 @@ class FunctionsApp {
 
   triggerHelloWorld(String name) async {
     final httpsCallable =
-        this.functions.httpsCallable('helloWorld').call({'text': name});
+        this.functions.httpsCallable('helloWorld').call(data: {'text': name});
     return await httpsCallable.then((result) {
       return result;
     }).catchError((e) => print);
