@@ -55,5 +55,6 @@ class App extends JsObjectWrapper<AppJsImpl> {
   Firestore firestore() => Firestore.getInstance(jsObject.firestore());
 
   /// Returns [Functions] service.
-  Functions functions() => Functions.getInstance(jsObject.functions());
+  Functions functions([String region]) =>
+      Functions.getInstance(jsObject.functions(region));
 }

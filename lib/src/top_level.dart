@@ -116,8 +116,9 @@ Firestore firestore([App app]) {
   return Firestore.getInstance(jsObject);
 }
 
-Functions functions() {
-  var jsObject = firebase.functions();
+Functions functions([App app]) {
+  var jsObject =
+      (app != null) ? firebase.functions(app.jsObject) : firebase.functions();
 
   return Functions.getInstance(jsObject);
 }

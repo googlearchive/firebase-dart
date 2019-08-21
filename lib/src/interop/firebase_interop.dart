@@ -36,7 +36,7 @@ external StorageJsImpl storage([AppJsImpl app]);
 @JS()
 external FirestoreJsImpl firestore([AppJsImpl app]);
 @JS()
-external FunctionsJsImpl functions();
+external FunctionsJsImpl functions([AppJsImpl app]);
 @JS()
 external MessagingJsImpl messaging([AppJsImpl app]);
 

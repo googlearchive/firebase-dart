@@ -19,5 +19,5 @@ abstract class AppJsImpl {
   external PromiseJsImpl delete();
   external StorageJsImpl storage([String url]);
   external FirestoreJsImpl firestore();
-  external FunctionsJsImpl functions();
+  external FunctionsJsImpl functions([String region]);
 }
