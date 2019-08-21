@@ -4,7 +4,10 @@ library firebase.messaging_interop;
 import 'package:js/js.dart';
 
 import '../func.dart';
-import 'firebase_interop.dart';
+import 'es6_interop.dart';
+
+@JS('isSupported')
+external bool isSupported();
 
 @JS('Messaging')
 abstract class MessagingJsImpl {
