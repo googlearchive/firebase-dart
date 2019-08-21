@@ -9,6 +9,7 @@ import 'package:js/js.dart';
 
 import '../func.dart';
 import 'app_interop.dart';
+import 'es6_interop.dart';
 import 'firebase_interop.dart';
 
 /// Sets the verbosity of Cloud Firestore logs.
@@ -29,13 +30,14 @@ abstract class FirestoreJsImpl {
   external set app(AppJsImpl a);
   external WriteBatchJsImpl batch();
   external CollectionReferenceJsImpl collection(String collectionPath);
+  external QueryJsImpl collectionGroup(String collectionId);
   external DocumentReferenceJsImpl doc(String documentPath);
   external PromiseJsImpl<Null> enablePersistence();
   external PromiseJsImpl runTransaction(
       Func1<TransactionJsImpl, PromiseJsImpl> updateFunction);
   external void settings(Settings settings);
-  external ThenableJsImpl<Null> disableNetwork();
-  external ThenableJsImpl<Null> enableNetwork();
+  external PromiseJsImpl<Null> disableNetwork();
+  external PromiseJsImpl<Null> enableNetwork();
 }
 
 @JS("WriteBatch")
@@ -192,6 +194,8 @@ abstract class FieldValue {
   /// Returns a sentinel used with [set()] or [update()] to include a
   /// server-generated timestamp in the written data.
   external static FieldValue serverTimestamp();
+
+  external static FieldValue increment(num n);
 
   /// Returns `true` if this [FieldValue] is equal to the provided [other].
   external bool isEqual(Object other);

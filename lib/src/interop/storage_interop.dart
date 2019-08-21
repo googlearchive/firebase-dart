@@ -7,7 +7,7 @@ import 'package:js/js.dart';
 
 import '../func.dart';
 import 'app_interop.dart';
-import 'firebase_interop.dart';
+import 'es6_interop.dart';
 
 @JS('Storage')
 abstract class StorageJsImpl {
@@ -41,6 +41,8 @@ abstract class ReferenceJsImpl {
   external PromiseJsImpl delete();
   external PromiseJsImpl<String> getDownloadURL();
   external PromiseJsImpl<FullMetadataJsImpl> getMetadata();
+  external PromiseJsImpl<ListResultJsImpl> list([ListOptionsJsImpl options]);
+  external PromiseJsImpl<ListResultJsImpl> listAll();
   external UploadTaskJsImpl put(blob, [UploadMetadataJsImpl metadata]);
   external UploadTaskJsImpl putString(String value,
       [String format, UploadMetadataJsImpl metadata]);
@@ -91,7 +93,7 @@ class UploadMetadataJsImpl extends SettableMetadataJsImpl {
 
 @JS('UploadTask')
 abstract class UploadTaskJsImpl
-    implements ThenableJsImpl<UploadTaskSnapshotJsImpl> {
+    implements PromiseJsImpl<UploadTaskSnapshotJsImpl> {
   external UploadTaskSnapshotJsImpl get snapshot;
   external set snapshot(UploadTaskSnapshotJsImpl t);
   external bool cancel();
@@ -100,9 +102,7 @@ abstract class UploadTaskJsImpl
   external bool pause();
   external bool resume();
   @override
-  external ThenableJsImpl JS$catch([Func1 onReject]);
-  @override
-  external ThenableJsImpl then([Func1 onResolve, Func1 onReject]);
+  external PromiseJsImpl then([Func1 onResolve, Func1 onReject]);
 }
 
 @JS()
@@ -138,6 +138,25 @@ class SettableMetadataJsImpl {
       String contentLanguage,
       String contentType,
       dynamic customMetadata});
+}
+
+@JS()
+@anonymous
+class ListOptionsJsImpl {
+  external set maxResults(int s);
+  external int get maxResults;
+  external set pageToken(String s);
+  external String get pageToken;
+
+  external factory ListOptionsJsImpl({int maxResults, String pageToken});
+}
+
+@JS()
+@anonymous
+class ListResultJsImpl {
+  external List<ReferenceJsImpl> get items;
+  external String get nextPageToken;
+  external List<ReferenceJsImpl> get prefixes;
 }
 
 /// An enumeration of the possible string formats for upload.

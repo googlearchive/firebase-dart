@@ -32,8 +32,7 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
       return null;
     }
 
-    return _expando[jsObject] ??= Firestore._fromJsObject(jsObject
-      ..settings(firestore_interop.Settings(timestampsInSnapshots: true)));
+    return _expando[jsObject] ??= Firestore._fromJsObject(jsObject);
   }
 
   Firestore._fromJsObject(firestore_interop.FirestoreJsImpl jsObject)
@@ -53,6 +52,16 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   /// Returns non-null [CollectionReference] instance.
   CollectionReference collection(String collectionPath) =>
       CollectionReference.getInstance(jsObject.collection(collectionPath));
+
+  /// Creates and returns a new [Query] that includes all documents in the
+  /// database that are contained in a collection or subcollection with
+  /// the given collectionId.
+  ///
+  /// The collectionId identifies the collections to query over. Every
+  /// collection or subcollection with this ID as the last segment of
+  /// its path will be included. Cannot contain a slash.
+  Query collectionGroup(String collectionId) =>
+      Query.fromJsObject(jsObject.collectionGroup(collectionId));
 
   /// Gets a [DocumentReference] instance that refers to
   /// the document at the specified path.
@@ -890,9 +899,8 @@ abstract class _Updatable {
 
 class _FieldValueDelete implements FieldValue {
   @override
-  dynamic _jsify() {
-    return firestore_interop.FieldValue.delete();
-  }
+  firestore_interop.FieldValue _jsify() =>
+      firestore_interop.FieldValue.delete();
 
   @override
   String toString() => 'FieldValue.delete()';
@@ -900,9 +908,8 @@ class _FieldValueDelete implements FieldValue {
 
 class _FieldValueServerTimestamp implements FieldValue {
   @override
-  dynamic _jsify() {
-    return firestore_interop.FieldValue.serverTimestamp();
-  }
+  firestore_interop.FieldValue _jsify() =>
+      firestore_interop.FieldValue.serverTimestamp();
 
   @override
   String toString() => 'FieldValue.serverTimestamp()';
@@ -916,6 +923,7 @@ abstract class _FieldValueArray implements FieldValue {
 
 class _FieldValueArrayUnion extends _FieldValueArray {
   _FieldValueArrayUnion(List elements) : super(elements);
+
   @override
   _jsify() {
     // This uses var arg so cannot use js package
@@ -929,6 +937,7 @@ class _FieldValueArrayUnion extends _FieldValueArray {
 
 class _FieldValueArrayRemove extends _FieldValueArray {
   _FieldValueArrayRemove(List elements) : super(elements);
+
   @override
   _jsify() {
     // This uses var arg so cannot use js package
@@ -940,22 +949,25 @@ class _FieldValueArrayRemove extends _FieldValueArray {
   String toString() => 'FieldValue.arrayRemove($elements)';
 }
 
+class _FieldValueIncrement implements FieldValue {
+  final num n;
+
+  _FieldValueIncrement(this.n);
+
+  @override
+  firestore_interop.FieldValue _jsify() =>
+      firestore_interop.FieldValue.increment(n);
+
+  @override
+  String toString() => 'FieldValue.increment($n)';
+}
+
 dynamic jsifyFieldValue(FieldValue fieldValue) => fieldValue._jsify();
 
 /// Sentinel values that can be used when writing document fields with set()
 /// or update().
 abstract class FieldValue {
-  factory FieldValue._fromJs(dynamic jsFieldValue) {
-    if (jsFieldValue == firestore_interop.FieldValue.delete()) {
-      return FieldValue.delete();
-    } else if (jsFieldValue == firestore_interop.FieldValue.serverTimestamp()) {
-      return FieldValue.serverTimestamp();
-    } else {
-      throw ArgumentError.value(jsFieldValue, 'jsFieldValue',
-          "Invalid value provided. We don't support dartfying object like arrayUnion or arrayRemove since not needed");
-    }
-  }
-  dynamic _jsify();
+  firestore_interop.FieldValue _jsify();
 
   /// Returns a sentinel used with set() or update() to include a
   /// server-generated timestamp in the written data.
@@ -986,6 +998,20 @@ abstract class FieldValue {
   /// with an empty array.
   static FieldValue arrayRemove(List elements) =>
       _FieldValueArrayRemove(elements);
+
+  /// Returns a special value that can be used with set() or update() that tells
+  /// the server to increment the field's current value by the given value.
+
+  /// If either the operand or the current field value uses floating point
+  /// precision, all arithmetic follows IEEE 754 semantics. If both values
+  /// are integers, values outside of JavaScript's safe number range
+  /// (Number.MIN_SAFE_INTEGER to Number.MAX_SAFE_INTEGER) are also subject
+  /// to precision loss. Furthermore, once processed by the Firestore backend,
+  /// all integer operations are capped between -2^63 and 2^63-1.
+
+  /// If the current field value is not of type number, or if the field does not
+  /// yet exist, the transformation sets the field to the given value.
+  static FieldValue increment(num n) => _FieldValueIncrement(n);
 
   FieldValue._();
 
