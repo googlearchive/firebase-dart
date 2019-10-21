@@ -4,6 +4,7 @@
 /// See: <https://firebase.google.com/docs/reference/js/firebase>.
 library firebase;
 
+export 'src/analytics.dart';
 export 'src/app.dart';
 export 'src/auth.dart';
 export 'src/database.dart';
