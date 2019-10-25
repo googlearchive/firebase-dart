@@ -9,5 +9,6 @@ export 'src/app.dart';
 export 'src/auth.dart';
 export 'src/database.dart';
 export 'src/messaging.dart';
+export 'src/performance.dart';
 export 'src/storage.dart';
 export 'src/top_level.dart';

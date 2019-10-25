@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:js/js_util.dart' as js;
 
 import 'analytics.dart';
@@ -7,6 +9,7 @@ import 'database.dart';
 import 'firestore.dart';
 import 'interop/firebase_interop.dart' as firebase;
 import 'messaging.dart';
+import 'performance.dart';
 import 'storage.dart';
 
 export 'interop/firebase_interop.dart' show SDK_VERSION;
@@ -132,6 +135,14 @@ Analytics analytics([App app]) {
       (app != null) ? firebase.analytics(app.jsObject) : firebase.analytics();
 
   return Analytics.getInstance(jsObject);
+}
+
+Performance performance([App app]) {
+  var jsObject = (app != null)
+      ? firebase.performance(app.jsObject)
+      : firebase.performance();
+
+  return Performance.getInstance(jsObject);
 }
 
 /// Exception thrown when the firebase.js is not loaded.

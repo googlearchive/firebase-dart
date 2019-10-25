@@ -1,5 +1,6 @@
 ## 6.0.0
-
+- Added measurementId and appId to `FirebaseOptions` (both required for analytics)
+- Added analytics and performance interop
 - **BREAKING** Removed and renamed members across `auth` and `firestore` to
   align with v6 changes to
   [JS API](https://firebase.google.com/support/release-notes/js#version_600_-_may_7_2019).

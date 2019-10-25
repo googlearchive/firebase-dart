@@ -12,6 +12,7 @@ import 'database_interop.dart';
 import 'es6_interop.dart';
 import 'firestore_interop.dart';
 import 'messaging_interop.dart';
+import 'performance_interop.dart';
 import 'storage_interop.dart';
 
 @JS()
@@ -39,6 +40,8 @@ external FirestoreJsImpl firestore([AppJsImpl app]);
 external MessagingJsImpl messaging([AppJsImpl app]);
 @JS()
 external AnalyticsJsImpl analytics([AppJsImpl app]);
+@JS()
+external PerformanceJsImpl performance([AppJsImpl app]);
 
 /// https://firebase.google.com/docs/reference/js/firebase.User
 @anonymous
