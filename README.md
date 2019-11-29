@@ -49,7 +49,7 @@ Install the library from pub:
 
 ```yaml
 dependencies:
-  firebase: ^6.0.0
+  firebase: ^7.0.0
 ```
 
 ## Using this package for browser applications
