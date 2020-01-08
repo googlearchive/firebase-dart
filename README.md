@@ -94,6 +94,7 @@ void main() {
     authDomain: "YourAuthDomain",
     databaseURL: "YourDatabaseUrl",
     projectId: "YourProjectId",
+    appId: "YourAppId",
     storageBucket: "YourStorageBucket");
 
   fs.Firestore store = firestore();
