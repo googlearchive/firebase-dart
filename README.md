@@ -288,13 +288,13 @@ Below is a simple example of consuming remote config:
 final rc = firebase.remoteConfig();
 await rc.ensureInitialized();
 rc.defaultConfig = {'title': 'Hello', 'counter': 1, 'flag': false};
-print('title: ${rc.getString("title")}');     // <-- Hello
-print('counter: ${rc.getString("counter")}'); // <-- 1
-print('flag: ${rc.getString("flag")}');       // <-- false
+print('title: ${rc.getString("title")}');             // <-- Hello
+print('counter: ${rc.getNumber("counter").toInt()}'); // <-- 1
+print('flag: ${rc.getBoolean("flag")}');              // <-- false
 await rc.fetchAndActivate();
-print('title: ${rc.getString("title")}');     // <-- Welcome
-print('counter: ${rc.getString("counter")}'); // <-- 2
-print('flag: ${rc.getString("flag")}');       // <-- true
+print('title: ${rc.getString("title")}');             // <-- Welcome
+print('counter: ${rc.getNumber("counter").toInt()}'); // <-- 2
+print('flag: ${rc.getBoolean("flag")}');              // <-- true
 ```
 
 Refer to [Remote Config Documentation](https://firebase.google.com/docs/remote-config) for more details.
