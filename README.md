@@ -286,9 +286,7 @@ Below is a simple example of consuming remote config:
 
 ```dart
 final rc = firebase.remoteConfig();
-rc.ensureInitialized();
-rc.settings.minimumFetchInterval = Duration(seconds: 300);
-rc.settings.fetchTimeoutMillis = Duration(seconds: 5);
+await rc.ensureInitialized();
 rc.defaultConfig = {'title': 'Hello', 'counter': 1, 'flag': false};
 print('title: ${rc.getString("title")}');     // <-- Hello
 print('counter: ${rc.getString("counter")}'); // <-- 1
