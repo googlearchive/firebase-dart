@@ -15,6 +15,3 @@ lib/src/assets/service_account.json
 # Firebase function files
 tool/firebase_functions/.firebaserc
 tool/firebase_functions/functions/node_modules
-
-# Android Studio
-.idea/
