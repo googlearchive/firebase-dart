@@ -17,7 +17,8 @@ void main() {
     await config();
     admin = RemoteConfigAdmin(await readServiceAccountJson());
     final existingConfig = await admin.readRemoteConfig();
-    expect(existingConfig.isEmpty, true, reason: 'This unit test requires remote config to be empty.');
+    expect(existingConfig.isEmpty, true,
+        reason: 'This unit test requires remote config to be empty.');
     app = initializeApp(
       apiKey: apiKey,
       authDomain: authDomain,
@@ -115,7 +116,8 @@ void main() {
         expect(v.asString(), '$expectedValue');
         expect(v.getSource(), RemoteConfigValueSource.remote);
       }
-      expect(rc.getAll().map((k, v) => MapEntry(k, '${v.asString()}')), mergedParams.map((k, v) => MapEntry(k, '$v')));
+      expect(rc.getAll().map((k, v) => MapEntry(k, '${v.asString()}')),
+          mergedParams.map((k, v) => MapEntry(k, '$v')));
       for (var me in defaultParams.entries) {
         final dataType = me.key.split('_').last;
         if (remoteParams.containsKey(me.key)) {
@@ -148,7 +150,9 @@ void main() {
 
 /// This helper class uses Remote Config REST API to read and publish remote config parameters for testing.
 class RemoteConfigAdmin {
-  static final remoteConfigScopes = ['https://www.googleapis.com/auth/firebase.remoteconfig'];
+  static final remoteConfigScopes = [
+    'https://www.googleapis.com/auth/firebase.remoteconfig'
+  ];
 
   ServiceAccountCredentials _serviceAccountCredentials;
   String _projectId;
@@ -158,7 +162,8 @@ class RemoteConfigAdmin {
 
   RemoteConfigAdmin(Map<String, dynamic> serviceAccountJson) {
     _httpClient = http.Client();
-    _serviceAccountCredentials = ServiceAccountCredentials.fromJson(serviceAccountJson);
+    _serviceAccountCredentials =
+        ServiceAccountCredentials.fromJson(serviceAccountJson);
     _projectId = serviceAccountJson['project_id'];
   }
 
@@ -172,12 +177,13 @@ class RemoteConfigAdmin {
     };
   }
 
-  String get _endpointUrl => 'https://firebaseremoteconfig.googleapis.com/v1/projects/${_projectId}/remoteConfig';
+  String get _endpointUrl =>
+      'https://firebaseremoteconfig.googleapis.com/v1/projects/${_projectId}/remoteConfig';
 
   Future<String> _getAccessToken() async {
     if (_creds == null || _creds.accessToken.hasExpired) {
-      _creds =
-          await obtainAccessCredentialsViaServiceAccount(_serviceAccountCredentials, remoteConfigScopes, _httpClient);
+      _creds = await obtainAccessCredentialsViaServiceAccount(
+          _serviceAccountCredentials, remoteConfigScopes, _httpClient);
     }
     return _creds.accessToken.data;
   }
@@ -197,9 +203,11 @@ class RemoteConfigAdmin {
     }
     _etag = resp.headers['etag'];
     final config = jsonDecode(resp.body);
-    final result = ((config['parameters'] as Map<String, dynamic>) ?? {}).map((k, v) {
+    final result =
+        ((config['parameters'] as Map<String, dynamic>) ?? {}).map((k, v) {
       final dataType = k.split('_').last;
-      final value = ((v as Map<String, dynamic>)['defaultValue'] as Map<String, dynamic>)['value'];
+      final value = ((v as Map<String, dynamic>)['defaultValue']
+          as Map<String, dynamic>)['value'];
       dynamic v2;
       switch (dataType) {
         case 'bool':

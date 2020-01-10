@@ -48,10 +48,10 @@ Future config() async {
   }
 }
 
-
 Future<dynamic> readServiceAccountJson() async {
   try {
-    var response = await sw.fetch('packages/firebase/src/assets/service_account.json');
+    var response =
+        await sw.fetch('packages/firebase/src/assets/service_account.json');
     if (response.status > 399) {
       throw StateError(
           'Problem with server: ${response.status} ${response.body}');

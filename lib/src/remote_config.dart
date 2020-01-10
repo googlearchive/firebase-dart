@@ -16,7 +16,8 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
     return _expando[jsObject] ??= RemoteConfig._fromJsObject(jsObject);
   }
 
-  RemoteConfig._fromJsObject(RemoteConfigJsImpl jsObject) : super.fromJsObject(jsObject);
+  RemoteConfig._fromJsObject(RemoteConfigJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   /// Defines configuration for the Remote Config SDK.
   RemoteConfigSettings get settings {
@@ -97,8 +98,8 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
   /// Returns all config values.
   Map<String, RemoteConfigValue> getAll() {
     final List<String> keys = js_interop.objectKeys(jsObject.getAll());
-    final entries = keys
-        .map<MapEntry<String, RemoteConfigValue>>((dynamic k) => MapEntry<String, RemoteConfigValue>(k, getValue(k)));
+    final entries = keys.map<MapEntry<String, RemoteConfigValue>>(
+        (dynamic k) => MapEntry<String, RemoteConfigValue>(k, getValue(k)));
     return Map<String, RemoteConfigValue>.fromEntries(entries);
   }
 
@@ -136,7 +137,8 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
 
 /// Wraps a value with metadata and type-safe getters.
 class RemoteConfigValue extends JsObjectWrapper<ValueJsImpl> {
-  RemoteConfigValue._fromJsObject(ValueJsImpl jsObject) : super.fromJsObject(jsObject);
+  RemoteConfigValue._fromJsObject(ValueJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   /// Gets the value as a boolean.
   /// The following values (case insensitive) are interpreted as true:
@@ -185,7 +187,8 @@ enum RemoteConfigValueSource {
 
 /// Defines configuration options for the Remote Config SDK.
 class RemoteConfigSettings extends JsObjectWrapper<SettingsJsImpl> {
-  RemoteConfigSettings._fromJsObject(SettingsJsImpl jsObject) : super.fromJsObject(jsObject);
+  RemoteConfigSettings._fromJsObject(SettingsJsImpl jsObject)
+      : super.fromJsObject(jsObject);
 
   ///  Defines the maximum age in milliseconds of an entry in the config cache before
   ///  it is considered stale. Defaults to twelve hours.

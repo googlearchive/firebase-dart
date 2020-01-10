@@ -149,8 +149,9 @@ Messaging messaging([App app]) {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.remoteconfig>.
 RemoteConfig remoteConfig([App app]) {
-  var jsObject =
-      (app != null) ? firebase.remoteConfig(app.jsObject) : firebase.remoteConfig();
+  var jsObject = (app != null)
+      ? firebase.remoteConfig(app.jsObject)
+      : firebase.remoteConfig();
 
   return RemoteConfig.getInstance(jsObject);
 }
