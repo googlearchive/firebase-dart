@@ -1,5 +1,6 @@
 language: dart
 
+
 stages:
   - analyze_and_format
   - name: test
@@ -13,9 +14,9 @@ jobs:
       dart: dev
 
     - stage: test
-      dart: dev
+      dart: [dev, 2.8.0-dev.0.0, 2.8.0-dev.1.0, 2.8.0-dev.2.0]
       before_script: ./tool/travis_before_script.sh
-      dart_task: test # default to vm and chrome
+      dart_task: test test/firestore_test.dart
 
 # Only building master means that we don't run two builds for each pull request.
 branches:
