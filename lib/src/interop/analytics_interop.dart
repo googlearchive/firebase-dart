@@ -11,7 +11,7 @@ abstract class AnalyticsJsImpl {
   external void setCurrentScreen(String screenName,
       [AnalyticsCallOptionsJsImpl options]);
   external void setUserId(String id, [AnalyticsCallOptionsJsImpl options]);
-  external void setUserProperties(CustomParamsJsImpl properties,
+  external void setUserProperties(Object properties,
       [AnalyticsCallOptionsJsImpl options]);
 }
 
