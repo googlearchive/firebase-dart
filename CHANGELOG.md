@@ -1,3 +1,7 @@
+## 7.2.2
+
+- Enabled sending of user properties in analytics with `setUserProperties`
+
 ## 7.2.1
 
 - Mark intereop types `AuthProvider` and `OAuthCredential` anonymous. 
