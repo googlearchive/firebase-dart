@@ -1,4 +1,4 @@
-## 7.2.2
+## 7.2.2-dev
 
 - Enabled sending of user properties in analytics with `setUserProperties`.
 - Removed unused (and unusable) `CustomParams` class.
