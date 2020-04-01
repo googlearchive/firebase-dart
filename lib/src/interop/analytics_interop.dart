@@ -23,8 +23,3 @@ class AnalyticsCallOptionsJsImpl {
 
   external factory AnalyticsCallOptionsJsImpl({bool global});
 }
-
-@JS('CustomParams')
-class CustomParamsJsImpl {
-  //TODO: implement
-}

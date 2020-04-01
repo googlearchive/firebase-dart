@@ -65,9 +65,3 @@ class AnalyticsCallOptions
     jsObject.global = t;
   }
 }
-
-class CustomParams
-    extends JsObjectWrapper<analytics_interop.CustomParamsJsImpl> {
-  CustomParams._fromJsObject(analytics_interop.CustomParamsJsImpl jsObject)
-      : super.fromJsObject(jsObject);
-}
