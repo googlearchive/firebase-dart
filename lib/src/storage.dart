@@ -319,7 +319,9 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
       });
 
       var errorWrapper = allowInterop((e) => _changeController.addError(e));
-      var onCompletion = allowInterop(() => _changeController.close());
+      var onCompletion = allowInterop(() {
+        _changeController.close();
+      });
 
       void startListen() {
         _onStateChangedUnsubscribe = jsObject.on(
