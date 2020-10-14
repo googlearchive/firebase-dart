@@ -21,11 +21,20 @@ void main() async {
       storageBucket: storageBucket,
       messagingSenderId: messagingSenderId,
     );
-
-    await MessagesApp().showMessages();
   } on fb.FirebaseJsNotLoadedException catch (e) {
     print(e);
   }
+
+  final enableButton =
+      document.querySelector('#enable_notifications') as ButtonElement;
+
+  enableButton.disabled = false;
+
+  enableButton.onClick.listen((e) {
+    MessagesApp().showMessages();
+    enableButton.hidden = true;
+    document.querySelector('#content').hidden = false;
+  });
 }
 
 class MessagesApp {
@@ -75,8 +84,9 @@ class MessagesApp {
               'to': token
             }));
       });
-    } catch (e) {
+    } catch (e, stack) {
       permissionInput.value = 'denied';
+      print('$e\n$stack');
     }
   }
 }
