@@ -319,7 +319,12 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
       });
 
       var errorWrapper = allowInterop((e) => _changeController.addError(e));
-      var onCompletion = allowInterop(() => _changeController.close());
+      var onCompletion = allowInterop(() {
+        // Needing a block here (instead of an inline => function) seems to be a
+        // dart-lang/sdk quirk/feature.
+        // See https://github.com/dart-lang/sdk/issues/43781
+        _changeController.close();
+      });
 
       void startListen() {
         _onStateChangedUnsubscribe = jsObject.on(

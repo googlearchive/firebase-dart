@@ -1,3 +1,7 @@
+## 7.3.1
+
+- ensure onCompletion functions for UploadTasks don't returning anything. [Issue](https://github.com/FirebaseExtended/firebase-dart/issues/343).
+
 ## 7.3.0
 
 - added additional options to interop 'Settings' to Fix Timestamp Error.
