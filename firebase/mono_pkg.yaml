@@ -8,6 +8,7 @@ stages:
     - dartfmt
     - dartanalyzer: --fatal-warnings --fatal-infos .
     dart: [dev]
+  - command: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
   - command:
     - ../tool/travis_before_script.sh
     - pub run test

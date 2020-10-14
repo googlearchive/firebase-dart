@@ -54,7 +54,11 @@ for PKG in ${PKGS}; do
     echo
     echo -e "\033[1mPKG: ${PKG}; TASK: ${TASK}\033[22m"
     case ${TASK} in
-    command)
+    command_0)
+      echo 'pub run build_runner build example --fail-on-severe --delete-conflicting-outputs'
+      pub run build_runner build example --fail-on-severe --delete-conflicting-outputs || EXIT_CODE=$?
+      ;;
+    command_1)
       echo '../tool/travis_before_script.sh && pub run test'
       ../tool/travis_before_script.sh && pub run test || EXIT_CODE=$?
       ;;
