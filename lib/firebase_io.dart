@@ -55,7 +55,7 @@ class FirebaseClient {
   /// The response from a successful request contains a JSON with [:null:].
   ///
   /// See: <https://firebase.google.com/docs/reference/rest/database/#section-delete>.
-  Future<dynamic> delete(uri) => send('DELETE', uri);
+  Future<void> delete(uri) => send('DELETE', uri);
 
   /// Creates a request with a HTTP [method], [url] and optional data.
   /// The [url] can be either a `String` or `Uri`.

@@ -70,4 +70,26 @@ void main() {
     response = await fbClient.get(testUri);
     expect(response, {key: 'bob'});
   });
+
+  test('cleanup', () async {
+    final oneMinuteOld = DateTime.now().subtract(const Duration(minutes: 1));
+
+    final rootPath = '$databaseUri/pkg_firebase_test.json';
+    final response = await fbClient.get(rootPath) as Map<String, dynamic>;
+
+    if (response == null) {
+      return;
+    }
+    for (var entry in response.entries) {
+      if (entry.key.contains('T')) {
+        final oldUri = '$databaseUri/pkg_firebase_test/${entry.key}.json';
+        print(oldUri);
+        final split = entry.key.split('T');
+        final date = DateTime.tryParse(split.first);
+        if (date != null && date.isBefore(oneMinuteOld)) {
+          await fbClient.delete(oldUri);
+        }
+      }
+    }
+  });
 }
