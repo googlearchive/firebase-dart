@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-final _assetPath = 'shared_assets/lib';
+final _assetPath = 'lib';
 
 void main() {
   // make sure the working dir is the root of the project
