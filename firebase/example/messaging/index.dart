@@ -5,7 +5,7 @@ import 'dart:html';
 import 'package:firebase/firebase.dart' as fb;
 import 'package:http/browser_client.dart';
 import 'package:service_worker/window.dart' as sw;
-import 'package:shared_assets/assets.dart';
+import 'package:_shared_assets/assets.dart';
 
 void main() async {
   //Use for firebase package development only

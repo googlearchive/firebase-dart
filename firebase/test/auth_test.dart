@@ -6,7 +6,7 @@ import 'dart:core' as core show print;
 import 'dart:html';
 
 import 'package:firebase/firebase.dart';
-import 'package:shared_assets/assets.dart';
+import 'package:_shared_assets/assets.dart';
 import 'package:test/test.dart';
 
 import 'test_util.dart';
