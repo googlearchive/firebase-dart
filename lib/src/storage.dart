@@ -319,6 +319,8 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
       });
 
       var errorWrapper = allowInterop((e) => _changeController.addError(e));
+      // This seems to be a dart-lang/sdk error.
+      // See https://github.com/dart-lang/sdk/issues/43781
       var onCompletion = allowInterop(() {
         _changeController.close();
       });
