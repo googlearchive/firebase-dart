@@ -1,4 +1,4 @@
-## 7.3.2-dev
+## 7.3.2
 
 - Changing the return type of cloud function call return from 
   `Map<String, dynamic>` to `dynamic` so any value can be returned from the
