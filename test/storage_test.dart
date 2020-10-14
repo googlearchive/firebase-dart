@@ -17,10 +17,11 @@ void main() {
 
   setUp(() async {
     app = initializeApp(
-        apiKey: apiKey,
-        authDomain: authDomain,
-        databaseURL: databaseUrl,
-        storageBucket: storageBucket);
+      apiKey: apiKey,
+      authDomain: authDomain,
+      databaseURL: databaseUrl,
+      storageBucket: storageBucket,
+    );
   });
 
   tearDown(() async {

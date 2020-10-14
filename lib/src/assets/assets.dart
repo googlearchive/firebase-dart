@@ -6,16 +6,33 @@ import 'package:service_worker/worker.dart' as sw;
 Map<String, dynamic> _configVal;
 
 String get apiKey => _getConfig('API_KEY');
-String get authDomain => _getConfig('AUTH_DOMAIN');
-String get databaseUrl => _getConfig('DATABASE_URL');
-String get storageBucket => _getConfig('STORAGE_BUCKET');
+
+String get authDomain => _getConfig(
+      'AUTH_DOMAIN',
+      alt: '$projectId.firebaseapp.com',
+    );
+
+String get databaseUrl => _getConfig(
+      'DATABASE_URL',
+      alt: 'https://$projectId.firebaseio.com',
+    );
+
+String get storageBucket => _getConfig(
+      'STORAGE_BUCKET',
+      alt: '$projectId.appspot.com',
+    );
+
 String get projectId => _getConfig('PROJECT_ID');
+
 String get messagingSenderId => _getConfig('MESSAGING_SENDER_ID');
+
 String get appId => _getConfig('APP_ID');
+
 String get serverKey => _getConfig('SERVER_KEY');
+
 String get vapidKey => _getConfig('VAPID_KEY');
 
-String _getConfig(String key) {
+String _getConfig(String key, {String alt}) {
   if (_configVal == null) {
     throw StateError('You must call config() first');
   }
@@ -23,7 +40,10 @@ String _getConfig(String key) {
   var value = _configVal[key];
 
   if (value == null) {
-    throw ArgumentError('`$key` is not configured in `config.json`.');
+    if (alt == null) {
+      throw ArgumentError('`$key` is not configured in `config.json`.');
+    }
+    return alt;
   }
 
   return value;
