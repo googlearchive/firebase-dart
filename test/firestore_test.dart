@@ -923,21 +923,63 @@ void main() {
       });
 
       test('normal', () async {
-        var events = await ref.onSnapshot.take(4).toList();
-        expect(
-            events,
-            everyElement(isA<fs.QuerySnapshot>()
-                .having(
-                    (qs) => qs.metadata.fromCache, 'metadata.fromCache', isTrue)
-                .having((qs) => qs.metadata.hasPendingWrites,
-                    'metadata.hasPendingWrites', isFalse)
-                .having((qs) => qs.docChanges(), 'docChanges', hasLength(1))));
+        final completer = Completer();
+
+        final eventSet = Iterable.generate(5, (i) => 'key$i').toSet();
+
+        final eventsFuture = ref.onSnapshot.listen((event) {
+          final changes = event.docChanges();
+          for (var change in changes) {
+            final docData = change.doc.data();
+            if (docData.length == 1 && eventSet.remove(docData.keys.single)) {
+              expect(change.type, 'added');
+            }
+          }
+
+          if (eventSet.isEmpty && !completer.isCompleted) {
+            completer.complete();
+          }
+        });
+
+        for (var key in eventSet.toList()) {
+          await ref.add({key: 'value'});
+        }
+
+        await completer.future;
+
+        await eventsFuture.cancel();
       });
 
       test('metadata', () async {
-        var events = await ref.onSnapshotMetadata.take(5).toList();
-        expect(events.last.metadata.hasPendingWrites, isFalse);
-        expect(events.last.docChanges(), isEmpty);
+        final completer = Completer();
+
+        final eventSet = Iterable.generate(5, (i) => 'key$i').toSet();
+
+        final eventsFuture = ref.onSnapshotMetadata.listen((event) {
+          final changes = event.docChanges();
+          for (var change in changes) {
+            final docData = change.doc.data();
+            if (docData.length == 1 && eventSet.remove(docData.keys.single)) {
+              expect(change.type, 'added');
+            }
+          }
+
+          if (eventSet.isEmpty &&
+              !completer.isCompleted &&
+              // At some point we should get a metadata event where there are no
+              // pending writes!
+              !event.metadata.hasPendingWrites) {
+            completer.complete();
+          }
+        });
+
+        for (var key in eventSet.toList()) {
+          await ref.add({key: 'value'});
+        }
+
+        await completer.future;
+
+        await eventsFuture.cancel();
       });
     });
 
