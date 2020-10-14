@@ -16,8 +16,11 @@ import 'test_util.dart' show throwsToString, validDatePathComponent;
 
 // Delete entire collection
 // <https://firebase.google.com/docs/firestore/manage-data/delete-data#collections>
-Future _deleteCollection(fs.Firestore db, fs.CollectionReference collectionRef,
-    {int batchSize}) async {
+Future _deleteCollection(
+  fs.Firestore db,
+  fs.CollectionReference collectionRef, {
+  int batchSize,
+}) async {
   batchSize ??= 4;
   var query = collectionRef.orderBy('__name__').limit(batchSize);
 
@@ -53,11 +56,12 @@ void main() {
 
   setUp(() async {
     app = fb.initializeApp(
-        apiKey: apiKey,
-        authDomain: authDomain,
-        databaseURL: databaseUrl,
-        projectId: projectId,
-        storageBucket: storageBucket);
+      apiKey: apiKey,
+      authDomain: authDomain,
+      databaseURL: databaseUrl,
+      projectId: projectId,
+      storageBucket: storageBucket,
+    );
 
     firestore = fb.firestore();
   });
@@ -293,7 +297,9 @@ void main() {
       var snapshotData = snapshot.data();
 
       await docRef.set(
-          {'text': 'MessageNew', 'title': 'Ahoj'}, fs.SetOptions(merge: true));
+        {'text': 'MessageNew', 'title': 'Ahoj'},
+        fs.SetOptions(merge: true),
+      );
       snapshot = await docRef.get();
       snapshotData = snapshot.data();
 
@@ -348,13 +354,16 @@ void main() {
       }
 
       void expectSameMoment(DateTime value, DateTime expected) {
-        expect(value.isAtSameMomentAs(expected), isTrue,
-            reason: [
-              value.toUtc(),
-              'should be the same moment as',
-              expected.toUtc(),
-              '– ignoring timezone.'
-            ].join(' '));
+        expect(
+          value.isAtSameMomentAs(expected),
+          isTrue,
+          reason: [
+            value.toUtc(),
+            'should be the same moment as',
+            expected.toUtc(),
+            '– ignoring timezone.'
+          ].join(' '),
+        );
       }
 
       for (var key in map.keys) {
@@ -536,17 +545,20 @@ void main() {
 
       // read it
       data = (await docRef.get()).data();
-      expect(data, {
-        'array': [1, 2],
-        'array2': [10, 11],
-        'complex': [
-          100,
-          'text',
-          {
-            'sub': [1]
-          },
-        ]
-      });
+      expect(
+        data,
+        {
+          'array': [1, 2],
+          'array2': [10, 11],
+          'complex': [
+            100,
+            'text',
+            {
+              'sub': [1]
+            },
+          ]
+        },
+      );
 
       // update and remove some data
       var updateData = {
@@ -564,13 +576,16 @@ void main() {
 
       // read again
       data = (await docRef.get()).data();
-      expect(data, {
-        'array': [1, 2, 3],
-        'array2': [10],
-        'complex': [
-          'text',
-        ]
-      });
+      expect(
+        data,
+        {
+          'array': [1, 2, 3],
+          'array2': [10],
+          'complex': [
+            'text',
+          ]
+        },
+      );
     });
 
     group('transaction', () {
@@ -643,10 +658,14 @@ void main() {
         var snapshot = await docRef.get();
         var snapshotData = snapshot.data();
 
-        expect(snapshotData['description']['text'],
-            'Good morning after update!!!');
         expect(
-            snapshotData['description']['text_cs'], 'Dobre rano po uprave!!!');
+          snapshotData['description']['text'],
+          'Good morning after update!!!',
+        );
+        expect(
+          snapshotData['description']['text_cs'],
+          'Dobre rano po uprave!!!',
+        );
       });
 
       test('transaction with alternating fields as Strings and values',
@@ -668,10 +687,14 @@ void main() {
         var snapshot = await docRef.get();
         var snapshotData = snapshot.data();
 
-        expect(snapshotData['description']['text'],
-            'Good morning after update!!!');
         expect(
-            snapshotData['description']['text_cs'], 'Dobre rano po uprave!!!');
+          snapshotData['description']['text'],
+          'Good morning after update!!!',
+        );
+        expect(
+          snapshotData['description']['text_cs'],
+          'Dobre rano po uprave!!!',
+        );
       });
     });
 
@@ -879,7 +902,9 @@ void main() {
       expect(snapshot.docs, isNotEmpty);
       expect(snapshot.docs.length, snapshot.size);
       expect(
-          snapshot.docs[0].data()['text'], anyOf('hello', 'hi', 'ahoj', 'cau'));
+        snapshot.docs[0].data()['text'],
+        anyOf('hello', 'hi', 'ahoj', 'cau'),
+      );
     });
 
     test('collectionGroup', () async {
@@ -887,8 +912,10 @@ void main() {
       var snapshot = await group.get();
 
       expect(snapshot.size, greaterThanOrEqualTo(4));
-      expect(snapshot.docs.map((d) => d.ref.path),
-          everyElement(contains('index')));
+      expect(
+        snapshot.docs.map((d) => d.ref.path),
+        everyElement(contains('index')),
+      );
     });
 
     group('onSnapshot', () {
@@ -910,8 +937,10 @@ void main() {
 
         for (var change in snapshot.docChanges()) {
           if (change.type == 'added') {
-            expect(change.doc.id,
-                anyOf('message1', 'message2', 'message3', 'message4'));
+            expect(
+              change.doc.id,
+              anyOf('message1', 'message2', 'message3', 'message4'),
+            );
           }
         }
       });
@@ -1028,7 +1057,9 @@ void main() {
 
       expect(snapshot.size, 1);
       expect(
-          snapshot.docs[0].data()['description'], {'text': 'description text'});
+        snapshot.docs[0].data()['description'],
+        {'text': 'description text'},
+      );
 
       var message2Snapshot = await ref.doc('message2').get();
       snapshot =
@@ -1104,7 +1135,9 @@ void main() {
 
       expect(snapshot.size, 1);
       expect(
-          snapshot.docs[0].data()['description'], {'text': 'description text'});
+        snapshot.docs[0].data()['description'],
+        {'text': 'description text'},
+      );
 
       var message2Snapshot = await ref.doc('message2').get();
       snapshot =
