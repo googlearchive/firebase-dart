@@ -21,7 +21,7 @@ jobs:
       env: PKGS="firebase"
       script: tool/travis.sh command_0
     - stage: work
-      name: "SDK: dev; PKG: firebase; TASKS: `../tool/travis_before_script.sh && pub run test`"
+      name: "SDK: dev; PKG: firebase; TASKS: `pushd ../shared_assets && pub get && dart create_config.dart && popd && pub run test`"
       dart: dev
       os: linux
       env: PKGS="firebase"
