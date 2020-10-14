@@ -1,10 +1,13 @@
 ## 7.3.2-dev
 
-- Changing the return type of cloud function call return from Map<String, dynamic> to dynamic so any value can be returned from the cloud function call
+- Changing the return type of cloud function call return from 
+  `Map<String, dynamic>` to `dynamic` so any value can be returned from the
+  cloud function call.
 
 ## 7.3.1
 
-- ensure onCompletion functions for UploadTasks don't returning anything. [Issue](https://github.com/FirebaseExtended/firebase-dart/issues/343).
+- Ensure `onCompletion` functions for `UploadTasks` don't returning anything.
+  [Issue](https://github.com/FirebaseExtended/firebase-dart/issues/343).
 
 ## 7.3.0
 
