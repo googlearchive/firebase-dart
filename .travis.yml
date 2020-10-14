@@ -1,26 +1,37 @@
+# Created with package:mono_repo v2.5.0-dev
 language: dart
 
-stages:
-  - analyze_and_format
-  - name: test
-    if: (type != pull_request) OR (sender = kevmoo)
+# Custom configuration
+branches:
+  only:
+    - master
 
 jobs:
   include:
-    - dart: dev
-      dart_task: dartanalyzer
-    - dart_task: dartfmt
+    - stage: work
+      name: "SDK: dev; PKGS: firebase, shared_assets; TASKS: [`dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-warnings --fatal-infos .`]"
       dart: dev
-
-    - stage: test
+      os: linux
+      env: PKGS="firebase shared_assets"
+      script: tool/travis.sh dartfmt dartanalyzer
+    - stage: work
+      name: "SDK: dev; PKG: firebase; TASKS: `pub run build_runner build example --fail-on-severe --delete-conflicting-outputs`"
       dart: dev
-      before_script: ./tool/travis_before_script.sh
-      dart_task: test # default to vm and chrome
+      os: linux
+      env: PKGS="firebase"
+      script: tool/travis.sh command_0
+    - stage: work
+      name: "SDK: dev; PKG: firebase; TASKS: `pushd ../shared_assets && pub get && dart create_config.dart && popd && pub run test`"
+      dart: dev
+      os: linux
+      env: PKGS="firebase"
+      script: tool/travis.sh command_1
 
-# Only building master means that we don't run two builds for each pull request.
-branches:
-  only: [master]
+stages:
+  - work
 
 cache:
   directories:
-    - $HOME/.pub-cache
+    - "$HOME/.pub-cache"
+    - firebase/.dart_tool/build
+    - shared_assets/.dart_tool/build

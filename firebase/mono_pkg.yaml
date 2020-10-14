@@ -1,0 +1,21 @@
+# See https://github.com/google/mono_repo.dart for details on this file
+dart:
+- dev
+
+stages:
+- work:
+  - group:
+    - dartfmt
+    - dartanalyzer: --fatal-warnings --fatal-infos .
+    dart: [dev]
+  - command: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
+  - command:
+    - pushd ../shared_assets
+    - pub get
+    - dart create_config.dart
+    - popd
+    - pub run test
+
+cache:
+  directories:
+  - .dart_tool/build

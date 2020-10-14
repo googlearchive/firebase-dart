@@ -1,0 +1,8 @@
+# See https://github.com/google/mono_repo.dart for details on this file
+travis:
+  branches:
+    only:
+    - master
+
+merge_stages:
+- work

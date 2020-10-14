@@ -1,0 +1,13 @@
+# See https://github.com/google/mono_repo.dart for details on this file
+dart:
+- dev
+
+stages:
+- work:
+  - group:
+    - dartfmt
+    - dartanalyzer: --fatal-warnings --fatal-infos .
+
+cache:
+  directories:
+  - .dart_tool/build
