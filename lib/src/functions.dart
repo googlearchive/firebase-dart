@@ -74,5 +74,5 @@ class HttpsCallableResult
       functions_interop.HttpsCallableResultJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  Map<String, dynamic> get data => dartify(jsObject.data);
+  dynamic get data => dartify(jsObject.data);
 }
