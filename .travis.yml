@@ -8,13 +8,13 @@ branches:
 
 jobs:
   include:
-    - stage: analyzer_and_format
+    - stage: work
       name: "SDK: dev; PKGS: firebase, shared_assets; TASKS: [`dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-warnings --fatal-infos .`]"
       dart: dev
       os: linux
       env: PKGS="firebase shared_assets"
       script: tool/travis.sh dartfmt dartanalyzer
-    - stage: unit_test
+    - stage: work
       name: "SDK: dev; PKG: firebase; TASKS: `../tool/travis_before_script.sh && pub run test`"
       dart: dev
       os: linux
@@ -22,8 +22,7 @@ jobs:
       script: tool/travis.sh command
 
 stages:
-  - analyzer_and_format
-  - unit_test
+  - work
 
 cache:
   directories:

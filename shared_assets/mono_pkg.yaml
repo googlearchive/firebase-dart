@@ -3,7 +3,7 @@ dart:
 - dev
 
 stages:
-- analyzer_and_format:
+- work:
   - group:
     - dartfmt
     - dartanalyzer: --fatal-warnings --fatal-infos .
