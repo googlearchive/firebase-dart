@@ -20,7 +20,7 @@ const _firebaseScopes = [
 
 Future<AccessToken> getAccessToken(Client client) async {
   var serviceAccountJsonPath = (await Isolate.resolvePackageUri(
-          Uri.parse('package:firebase/src/assets/service_account.json')))
+          Uri.parse('package:shared_assets/service_account.json')))
       .toFilePath();
 
   var serviceAccountJsonString =
@@ -36,7 +36,7 @@ Future<AccessToken> getAccessToken(Client client) async {
 
 Future<String> getDatabaseUri() async {
   var serviceAccountJsonPath = (await Isolate.resolvePackageUri(
-          Uri.parse('package:firebase/src/assets/config.json')))
+          Uri.parse('package:shared_assets/config.json')))
       .toFilePath();
 
   var jsonString = File(serviceAccountJsonPath).readAsStringSync();
