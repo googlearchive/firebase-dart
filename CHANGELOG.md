@@ -3,6 +3,7 @@
 - Changing the return type of cloud function call return from 
   `Map<String, dynamic>` to `dynamic` so any value can be returned from the
   cloud function call.
+- Updated documented JS version to `7.23.0`.
 
 ## 7.3.1
 
