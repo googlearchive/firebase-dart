@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:html';
 
 import 'package:firebase/firebase.dart' as fb;
-import 'package:firebase/src/assets/assets.dart';
 import 'package:http/browser_client.dart';
 import 'package:service_worker/window.dart' as sw;
+import 'package:shared_assets/assets.dart';
 
 void main() async {
   //Use for firebase package development only
@@ -13,11 +13,14 @@ void main() async {
 
   try {
     fb.initializeApp(
-        apiKey: apiKey,
-        authDomain: authDomain,
-        databaseURL: databaseUrl,
-        storageBucket: storageBucket,
-        messagingSenderId: messagingSenderId);
+      apiKey: apiKey,
+      appId: appId,
+      projectId: projectId,
+      authDomain: authDomain,
+      databaseURL: databaseUrl,
+      storageBucket: storageBucket,
+      messagingSenderId: messagingSenderId,
+    );
 
     await MessagesApp().showMessages();
   } on fb.FirebaseJsNotLoadedException catch (e) {

@@ -2,7 +2,7 @@ import 'dart:html';
 
 import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firestore.dart';
-import 'package:firebase/src/assets/assets.dart';
+import 'package:shared_assets/assets.dart';
 
 void main() async {
   //Use for firebase package development only

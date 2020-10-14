@@ -2,10 +2,9 @@
 library messaging_demo.service_worker;
 
 import 'package:firebase/firebase.dart' as firebase;
-import 'package:firebase/src/assets/assets.dart';
-import 'package:service_worker/worker.dart' as sw;
-
 import 'package:js/js.dart';
+import 'package:service_worker/worker.dart' as sw;
+import 'package:shared_assets/assets.dart';
 
 void main(List<String> args) async {
   importScripts('https://www.gstatic.com/firebasejs/7.23.0/firebase-app.js');
@@ -14,7 +13,10 @@ void main(List<String> args) async {
 
   await config();
 
-  firebase.initializeApp(messagingSenderId: messagingSenderId);
+  firebase.initializeApp(
+    projectId: projectId,
+    messagingSenderId: messagingSenderId,
+  );
 
   final messaging = firebase.messaging();
   messaging.onBackgroundMessage.listen((payload) {

@@ -2,8 +2,8 @@
 import 'dart:convert';
 
 import 'package:firebase/firebase.dart';
-import 'package:firebase/src/assets/assets.dart';
 import 'package:path/path.dart' as p;
+import 'package:shared_assets/assets.dart';
 import 'package:test/test.dart';
 
 import 'test_util.dart';

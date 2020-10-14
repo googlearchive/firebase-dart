@@ -32,16 +32,17 @@ const String _defaultAppName = '[DEFAULT]';
 /// database URL and storage bucket.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase#.initializeApp>.
-App initializeApp(
-    {String apiKey,
-    String authDomain,
-    String databaseURL,
-    String projectId,
-    String storageBucket,
-    String messagingSenderId,
-    String name,
-    String measurementId,
-    String appId}) {
+App initializeApp({
+  String apiKey,
+  String authDomain,
+  String databaseURL,
+  String projectId,
+  String storageBucket,
+  String messagingSenderId,
+  String name,
+  String measurementId,
+  String appId,
+}) {
   name ??= _defaultAppName;
 
   try {
@@ -180,6 +181,7 @@ Performance performance([App app]) {
 /// Exception thrown when the firebase.js is not loaded.
 class FirebaseJsNotLoadedException implements Exception {
   final String message;
+
   FirebaseJsNotLoadedException(this.message);
 
   @override

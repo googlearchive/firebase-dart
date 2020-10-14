@@ -55,7 +55,7 @@ Future config() async {
   }
 
   try {
-    var response = await sw.fetch('packages/firebase/src/assets/config.json');
+    var response = await sw.fetch('packages/shared_assets/config.json');
     if (response.status > 399) {
       throw StateError(
           'Problem with server: ${response.status} ${response.body}');
