@@ -1,0 +1,18 @@
+# See https://github.com/google/mono_repo.dart for details on this file
+dart:
+- dev
+
+stages:
+- analyzer_and_format:
+  - group:
+    - dartfmt
+    - dartanalyzer: --fatal-warnings --fatal-infos .
+    dart: [dev]
+- unit_test:
+  - command:
+    - ../tool/travis_before_script.sh
+    - pub run test
+
+cache:
+  directories:
+  - .dart_tool/build
