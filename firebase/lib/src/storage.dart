@@ -214,10 +214,13 @@ class FullMetadata
   int get size => jsObject.size;
 
   /// Returns the time it was created as a [DateTime].
-  DateTime get timeCreated => DateTime.parse(jsObject.timeCreated);
+  DateTime get timeCreated => jsObject.timeCreated == null
+      ? null
+      : DateTime.parse(jsObject.timeCreated);
 
   /// Returns the time it was last updated as a [DateTime].
-  DateTime get updated => DateTime.parse(jsObject.updated);
+  DateTime get updated =>
+      jsObject.updated == null ? null : DateTime.parse(jsObject.updated);
 
   /// Creates a new FullMetadata from a [jsObject].
   static FullMetadata getInstance(jsObject) {
