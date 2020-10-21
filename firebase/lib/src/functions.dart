@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'interop/functions_interop.dart' as functions_interop;
 import 'js.dart';
 import 'utils.dart';
