@@ -63,8 +63,8 @@ for PKG in ${PKGS}; do
         pub run build_runner build example --fail-on-severe --delete-conflicting-outputs || EXIT_CODE=$?
         ;;
       command_1)
-        echo 'pushd ../shared_assets && pub get && dart create_config.dart && popd && pub run test'
-        pushd ../shared_assets && pub get && dart create_config.dart && popd && pub run test || EXIT_CODE=$?
+        echo 'pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test'
+        pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test || EXIT_CODE=$?
         ;;
       dartanalyzer)
         echo 'dartanalyzer --fatal-warnings --fatal-infos .'
