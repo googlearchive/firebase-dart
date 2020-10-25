@@ -9,8 +9,8 @@ pubspec.lock
 doc/api/
 
 # Files with private data. Used for development and testing
-shared_assets/lib/config.json
-shared_assets/lib/service_account.json
+_shared_assets/lib/config.json
+_shared_assets/lib/service_account.json
 
 # Firebase function files
 tool/firebase_functions/.firebaserc

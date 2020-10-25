@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:firebase/firebase.dart';
 import 'package:path/path.dart' as p;
-import 'package:shared_assets/assets.dart';
+import 'package:_shared_assets/assets.dart';
 import 'package:test/test.dart';
 
 import 'test_util.dart';

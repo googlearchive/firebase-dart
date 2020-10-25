@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:firebase/firebase.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_assets/assets.dart';
+import 'package:_shared_assets/assets.dart';
 import 'package:test/test.dart';
 
 /// Requires service account credentials for the project to be specified in `service_account.json`

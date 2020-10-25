@@ -16,8 +16,8 @@ dev_dependencies:
   path: ^1.3.9
   pedantic: ^1.3.0
   test: ^1.6.0
-  shared_assets:
-    path: ../shared_assets
+  _shared_assets:
+    path: ../_shared_assets
 
   build_runner: ^1.0.0
   build_test: ^1.0.0
