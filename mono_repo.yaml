@@ -1,4 +1,5 @@
-# See https://github.com/google/mono_repo.dart for details on this file
+# See https://pub.dev/packages/mono_repo for details on this file
+self_validate: work
 travis:
   branches:
     only:
