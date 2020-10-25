@@ -30,7 +30,7 @@ jobs:
       dart: dev
       os: linux
       env: PKGS="firebase"
-      before_script: ../_shared_assets && pub get && dart create_config.dart && popd
+      before_script: pushd ../_shared_assets && pub get && dart create_config.dart && popd
       script: tool/travis.sh command_1
 
 stages:
