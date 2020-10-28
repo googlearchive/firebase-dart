@@ -1,3 +1,8 @@
+## 7.3.3-dev
+
+- Fixed an issue with accessing properties on event during
+  `UploadTask.onStateChanged`.
+
 ## 7.3.2
 
 - Changing the return type of cloud function call return from 
