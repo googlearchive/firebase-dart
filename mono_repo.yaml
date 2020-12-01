@@ -1,9 +1,7 @@
 # See https://pub.dev/packages/mono_repo for details on this file
 self_validate: work
-travis:
-  branches:
-    only:
-    - master
+
+github:
 
 merge_stages:
 - work
