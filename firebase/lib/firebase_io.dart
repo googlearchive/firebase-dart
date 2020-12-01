@@ -10,18 +10,18 @@ import 'package:http/http.dart';
 class FirebaseClient {
   /// Auth credential.
   final String credential;
-  final BaseClient _client;
+  final Client _client;
 
   /// Creates a new FirebaseClient with [credential] and optional [client].
   ///
   /// For credential you can either use Firebase app's secret or
   /// an authentication token.
   /// See: <https://firebase.google.com/docs/reference/rest/database/user-auth>.
-  FirebaseClient(this.credential, {BaseClient client})
+  FirebaseClient(this.credential, {Client client})
       : _client = client ?? Client();
 
   /// Creates a new anonymous FirebaseClient with optional [client].
-  FirebaseClient.anonymous({BaseClient client})
+  FirebaseClient.anonymous({Client client})
       : credential = null,
         _client = client ?? Client();
 
