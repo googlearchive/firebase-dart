@@ -1,5 +1,7 @@
-## 7.3.3-dev
+## 7.3.3
 
+- `firebase_io.dart`: Changed the type of `client` in the `FirebaseClient`
+  constructors from `BaseClient` to `Client` from `package:http`.
 - Fixed an issue with accessing properties on event during
   `UploadTask.onStateChanged`.
 
