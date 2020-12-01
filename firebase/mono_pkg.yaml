@@ -6,7 +6,7 @@ stages:
 - work:
   - group:
     - dartfmt
-    - dartanalyzer: --fatal-warnings --fatal-infos .
+    - dartanalyzer: --fatal-infos .
     dart: [dev]
   - command: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
   - command:

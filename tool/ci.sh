@@ -67,8 +67,8 @@ for PKG in ${PKGS}; do
         pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test || EXIT_CODE=$?
         ;;
       dartanalyzer)
-        echo 'dartanalyzer --fatal-warnings --fatal-infos .'
-        dartanalyzer --fatal-warnings --fatal-infos . || EXIT_CODE=$?
+        echo 'dartanalyzer --fatal-infos .'
+        dartanalyzer --fatal-infos . || EXIT_CODE=$?
         ;;
       dartfmt)
         echo 'dartfmt -n --set-exit-if-changed .'
