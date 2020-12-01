@@ -6,7 +6,7 @@ stages:
 - work:
   - group:
     - dartfmt
-    - dartanalyzer: --fatal-warnings --fatal-infos .
+    - dartanalyzer: --fatal-infos .
 
 cache:
   directories:
