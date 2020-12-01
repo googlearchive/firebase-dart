@@ -1,0 +1,104 @@
+# Created with package:mono_repo v3.3.0
+name: Dart CI
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+defaults:
+  run:
+    shell: bash
+env:
+  PUB_ENVIRONMENT: bot.github
+
+jobs:
+  job_001:
+    name: mono_repo self validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: cedx/setup-dart@v2
+        with:
+          release-channel: stable
+          version: latest
+      - run: dart --version
+      - uses: actions/checkout@v2
+      - run: pub global activate mono_repo 3.3.0
+      - run: pub global run mono_repo generate --validate
+  job_002:
+    name: "OS: linux; SDK: dev; PKGS: _shared_assets, firebase; TASKS: [`dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-warnings --fatal-infos .`]"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:_shared_assets-firebase;commands:dartfmt-dartanalyzer"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:_shared_assets-firebase
+            os:ubuntu-latest;pub-cache-hosted;dart:dev
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: cedx/setup-dart@v2
+        with:
+          release-channel: dev
+      - run: dart --version
+      - uses: actions/checkout@v2
+      - env:
+          PKGS: _shared_assets firebase
+          TRAVIS_OS_NAME: linux
+        run: tool/ci.sh dartfmt dartanalyzer
+  job_003:
+    name: "OS: linux; SDK: dev; PKG: firebase; TASKS: `pub run build_runner build example --fail-on-severe --delete-conflicting-outputs`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:firebase;commands:command_0"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:firebase
+            os:ubuntu-latest;pub-cache-hosted;dart:dev
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: cedx/setup-dart@v2
+        with:
+          release-channel: dev
+      - run: dart --version
+      - uses: actions/checkout@v2
+      - env:
+          PKGS: firebase
+          TRAVIS_OS_NAME: linux
+        run: tool/ci.sh command_0
+  job_004:
+    name: "OS: linux; SDK: dev; PKG: firebase; TASKS: `pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:firebase;commands:command_1"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:firebase
+            os:ubuntu-latest;pub-cache-hosted;dart:dev
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: cedx/setup-dart@v2
+        with:
+          release-channel: dev
+      - run: dart --version
+      - uses: actions/checkout@v2
+      - env:
+          PKGS: firebase
+          TRAVIS_OS_NAME: linux
+        run: tool/ci.sh command_1
