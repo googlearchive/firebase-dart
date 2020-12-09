@@ -1,6 +1,7 @@
 [![Pub Package](https://img.shields.io/pub/v/firebase.svg)](https://pub.dev/packages/firebase)
 [![Build Status](https://travis-ci.org/FirebaseExtended/firebase-dart.svg?branch=master)](https://travis-ci.org/FirebaseExtended/firebase-dart)
 
+**PLEASE NOTE:** If you're looking for a package to use in your Flutter app, please have a look at the official documentation: [firebase.flutter.dev](https://firebase.flutter.dev/).
 
 ## Status
 
