@@ -7,9 +7,9 @@ import 'package:service_worker/worker.dart' as sw;
 import 'package:_shared_assets/assets.dart';
 
 void main(List<String> args) async {
-  importScripts('https://www.gstatic.com/firebasejs/7.23.0/firebase-app.js');
+  importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js');
   importScripts(
-      'https://www.gstatic.com/firebasejs/7.23.0/firebase-messaging.js');
+      'https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js');
 
   await config();
 
