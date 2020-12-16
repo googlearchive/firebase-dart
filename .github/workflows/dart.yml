@@ -13,13 +13,8 @@ defaults:
     shell: bash
 env:
   PUB_ENVIRONMENT: bot.github
-  API_KEY: "${{ secrets.API_KEY }}"
-  AUTH_DOMAIN: "${{ secrets.AUTH_DOMAIN }}"
-  DATABASE_URL: "${{ secrets.DATABASE_URL }}"
-  STORAGE_BUCKET: "${{ secrets.STORAGE_BUCKET }}"
-  PROJECT_ID: "${{ secrets.PROJECT_ID }}"
-  APP_ID: "${{ secrets.APP_ID }}"
-  SERVICE_ACCONUT_JSON: "${{ secrets.SERVICE_ACCONUT_JSON }}"
+  CONFIG_DATA: "${{ secrets.CONFIG_DATA }}"
+  SERVICE_ACCOUNT_JSON: "${{ secrets.SERVICE_ACCONUT_JSON }}"
 
 jobs:
   job_001:
