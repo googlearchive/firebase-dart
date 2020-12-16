@@ -6,6 +6,21 @@ github:
   env:
     CONFIG_DATA: ${{ secrets.CONFIG_DATA }}
     SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+  on_completion:
+  # Example job that pings a web hook url stored in a github secret with a
+  # json payload linking to the failed run.
+  - name: "Notify failure"
+    runs-on: ubuntu-latest
+    # By default this job will only run if all dependent jobs are successful,
+    # but we want to run in the failure case for this purpose.
+    if: failure()
+    steps:
+    - run: >
+        curl -H "Content-Type: application/json" -X POST -d \
+          "{'text':'Build failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'}" \
+          "${CHAT_WEBHOOK_URL}"
+      env:
+        CHAT_WEBHOOK_URL: ${{ secrets.CHAT_WEBHOOK_URL }}
 
 merge_stages:
 - analyze_and_format
