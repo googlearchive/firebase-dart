@@ -59,10 +59,10 @@ abstract class FirestoreJsImpl {
 @JS()
 @anonymous
 abstract class PersistenceSettings {
-  external factory PersistenceSettings(
+  external factory PersistenceSettings({
     bool experimentalForceOwningTab,
     bool synchronizeTabs,
-  );
+  });
 
   /// The latitude of this GeoPoint instance.
   external bool get experimentalForceOwningTab;
