@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html';
 
 import 'package:js/js.dart';
 import 'package:js/js_util.dart' as util;
@@ -21,38 +22,21 @@ dynamic dartify(Object jsObject) {
     return jsObject.map(dartify).toList();
   }
 
-  var jsDate = js.dartifyDate(jsObject);
-  if (jsDate != null) {
-    return jsDate;
-  }
-
-  if (util.hasProperty(jsObject, 'firestore') &&
-      util.hasProperty(jsObject, 'id') &&
-      util.hasProperty(jsObject, 'parent')) {
-    // This is likely a document reference – at least we hope
-    // TODO(kevmoo): figure out if there is a more robust way to detect
+  if (isFirestoreType(jsObject, 'DocumentReference')) {
     return DocumentReference.getInstance(jsObject);
   }
 
-  if (util.hasProperty(jsObject, 'latitude') &&
-      util.hasProperty(jsObject, 'longitude') &&
-      js.objectKeys(jsObject).length == 2) {
-    // This is likely a GeoPoint – return it as-is
+  if (isFirestoreType(jsObject, 'GeoPoint')) {
     return jsObject as GeoPoint;
   }
 
-  var proto = util.getProperty(jsObject, '__proto__');
-
-  if (util.hasProperty(proto, 'toDate') &&
-      util.hasProperty(proto, 'toMillis')) {
+  if (isFirestoreType(jsObject, 'Timestamp')) {
     return DateTime.fromMillisecondsSinceEpoch(
-        (jsObject as TimestampJsImpl).toMillis());
+      (jsObject as TimestampJsImpl).toMillis(),
+    );
   }
 
-  if (util.hasProperty(proto, 'isEqual') &&
-      util.hasProperty(proto, 'toBase64')) {
-    // This is likely a GeoPoint – return it as-is
-    // TODO(kevmoo): figure out if there is a more robust way to detect
+  if (isFirestoreType(jsObject, 'Blob')) {
     return jsObject as Blob;
   }
 
@@ -107,8 +91,7 @@ dynamic jsify(Object dartObject) {
     return dartObject;
   }
 
-  // NOTE: if the firestore JS lib is not imported, we'll get a DDC warning here
-  if (dartObject is GeoPoint) {
+  if (isFirestoreType(dartObject, 'GeoPoint')) {
     return dartObject;
   }
 
@@ -186,4 +169,23 @@ class _FirebaseErrorWrapper extends Error implements FirebaseError {
 
   @override
   String toString() => 'FirebaseError: $message ($code)';
+}
+
+bool isFirestoreType(Object object, String typeName) {
+  final type = tryGetType(['firebase', 'firestore', typeName]);
+  if (type == null) {
+    return false;
+  }
+  return util.instanceof(object, type);
+}
+
+Object tryGetType(List<String> path) {
+  Object start = window;
+  for (var item in path) {
+    if (start == null) {
+      return null;
+    }
+    start = util.getProperty(start, item);
+  }
+  return start;
 }

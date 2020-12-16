@@ -1,6 +1,7 @@
 ## 7.4.0-dev
 
 - Add optional `PersistenceSettings` parameter to `Firestore.enablePersistence`.
+- Improve testing for Firestore types.
 - Updated documented JS version to `8.2.0`.
 
 ## 7.3.3
