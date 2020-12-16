@@ -4,9 +4,9 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:_shared_assets/assets.dart';
 import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firestore.dart' as fs;
-import 'package:_shared_assets/assets.dart';
 import 'package:test/test.dart';
 
 import 'test_util.dart' show throwsToString, validDatePathComponent;

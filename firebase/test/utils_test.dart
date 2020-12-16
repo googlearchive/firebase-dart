@@ -1,7 +1,7 @@
 @TestOn('browser')
+import 'package:firebase/firestore.dart';
 import 'package:firebase/src/utils.dart';
-import 'package:firebase/src/interop/firestore_interop.dart';
-
+import 'package:js/js_util.dart' as util;
 import 'package:test/test.dart';
 
 void _testRoundTrip(Object value) {
@@ -42,10 +42,16 @@ void main() {
     });
 
     test('geopoint', () {
-      var value = {'latitude': 45.5122, 'longitude': -122.6587};
+      final geoClass = tryGetType(['firebase', 'firestore', 'GeoPoint']);
+
+      if (geoClass == null) {
+        fail('Forgot to include the firestore JS library!');
+      }
+
+      var value = util.callConstructor(geoClass, [45.5122, -122.6587]);
       var js = jsify(value);
       var roundTrip = dartify(js);
-      expect(roundTrip, const TypeMatcher<GeoPoint>());
+      expect(roundTrip, isA<GeoPoint>());
     });
   });
 }
