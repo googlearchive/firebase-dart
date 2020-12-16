@@ -6,11 +6,19 @@ on:
       - main
       - master
   pull_request:
+  schedule:
+    - cron: "0 0 * * 0"
 defaults:
   run:
     shell: bash
 env:
   PUB_ENVIRONMENT: bot.github
+  API_KEY: "${{ secrets.API_KEY }}"
+  AUTH_DOMAIN: "${{ secrets.AUTH_DOMAIN }}"
+  DATABASE_URL: "${{ secrets.DATABASE_URL }}"
+  STORAGE_BUCKET: "${{ secrets.STORAGE_BUCKET }}"
+  PROJECT_ID: "${{ secrets.PROJECT_ID }}"
+  APP_ID: "${{ secrets.APP_ID }}"
 
 jobs:
   job_001:
