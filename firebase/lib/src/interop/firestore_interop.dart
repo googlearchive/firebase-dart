@@ -451,20 +451,20 @@ abstract class Settings {
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore.SnapshotMetadata>.
 @JS()
 abstract class SnapshotMetadata {
-  /// [:true:] if the snapshot includes local writes (set() or update() calls)
+  /// `true` if the snapshot includes local writes (set() or update() calls)
   /// that haven't been committed to the backend yet.
   /// If your listener has opted into metadata updates via
   /// onDocumentMetadataSnapshot, onQueryMetadataSnapshot or onMetadataSnapshot,
   /// you receive another snapshot with [hasPendingWrites]
-  /// set to [:false:] once the writes have been committed to the backend.
+  /// set to `false` once the writes have been committed to the backend.
   external bool get hasPendingWrites;
 
   external set hasPendingWrites(bool v);
 
-  /// [:true:] if the snapshot was created from cached data rather than guaranteed
+  /// `true` if the snapshot was created from cached data rather than guaranteed
   /// up-to-date server data. If your listener has opted into metadata updates
   /// (onDocumentMetadataSnapshot, onQueryMetadataSnapshot or onMetadataSnapshot)
-  /// you will receive another snapshot with [fromCache] set to [:false:] once
+  /// you will receive another snapshot with [fromCache] set to `false` once
   /// the client has received up-to-date data from the backend.
   external bool get fromCache;
 
@@ -480,7 +480,7 @@ abstract class SnapshotMetadata {
 @JS()
 abstract class DocumentListenOptions {
   /// Raise an event even if only metadata of the document changed. Default is
-  /// [:false:].
+  /// `false`.
   external bool get includeMetadataChanges;
 
   external set includeMetadataChanges(bool v);

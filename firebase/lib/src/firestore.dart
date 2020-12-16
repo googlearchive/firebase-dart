@@ -293,7 +293,7 @@ class DocumentReference
 
   /// Attaches a listener for [DocumentSnapshot] events
   /// with [: {includeMetadataChanges: true} :] - raise an event even if only
-  /// metadata of the document changed. Default is [:false:].
+  /// metadata of the document changed. Default is `false`.
   Stream<DocumentSnapshot> get onMetadataChangesSnapshot => _createStream(
       _onMetadataController,
       firestore_interop.DocumentListenOptions(includeMetadataChanges: true));
@@ -473,7 +473,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// The [fieldPath] parameter is a String or `FieldPath` to sort by.
   ///
   /// The optional [directionStr] parameter is a direction to sort by
-  /// ([:asc:] or [:desc:]). If not specified, the default order is ascending.
+  /// (`asc` or `desc`). If not specified, the default order is ascending.
   ///
   /// Returns non-null created [Query].
   Query orderBy(/*String|FieldPath*/ fieldPath,
@@ -528,7 +528,9 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// The [fieldPath] parameter is a String or non-null `FieldPath` to compare.
   ///
   /// The [opStr] parameter is the operation string
-  /// (e.g [:<:], [:<=:], [:==:], [:>:], [:>=:]).
+  /// (e.g `<`, `<=`, `==`, `>`, `>=`).
+  /// For supported values see
+  /// https://firebase.google.com/docs/reference/js/firebase.firestore#wherefilterop
   ///
   /// The [value] parameter is the value for comparison.
   ///
@@ -567,7 +569,7 @@ class CollectionReference<T extends firestore_interop.CollectionReferenceJsImpl>
   String get id => jsObject.id;
 
   /// Nullable reference to the containing [DocumentReference] if this is
-  /// a subcollection. If this isn't a subcollection, the reference is [:null:].
+  /// a subcollection. If this isn't a subcollection, the reference is `null`.
   DocumentReference get parent =>
       DocumentReference.getInstance(jsObject.parent);
 
@@ -629,7 +631,7 @@ class DocumentChange
     extends JsObjectWrapper<firestore_interop.DocumentChangeJsImpl> {
   static final _expando = Expando<DocumentChange>();
 
-  /// Type of the change: [:added:], [:removed:] or [:modified:].
+  /// Type of the change: `added`, `removed` or `modified`.
   String get type => jsObject.type;
 
   /// The document affected by this change.
@@ -668,7 +670,7 @@ class DocumentSnapshot
     extends JsObjectWrapper<firestore_interop.DocumentSnapshotJsImpl> {
   static final _expando = Expando<DocumentSnapshot>();
 
-  /// Signals whether or not the data exists. [:true:] if the document exists.
+  /// Signals whether or not the data exists. `true` if the document exists.
   bool get exists => jsObject.exists;
 
   /// Provides the document's ID.
@@ -702,7 +704,7 @@ class DocumentSnapshot
   Map<String, dynamic> data() => dartify(jsObject.data());
 
   /// Retrieves the field specified by [fieldPath] parameter at the specified
-  /// field location or [:null:] if no such field exists in the document.
+  /// field location or `null` if no such field exists in the document.
   ///
   /// The [fieldPath] is the String or `FieldPath` - the path
   /// (e.g. 'foo' or 'foo.bar') to a specific field.
@@ -743,7 +745,7 @@ class QuerySnapshot
       .map((dynamic e) => DocumentSnapshot.getInstance(e))
       .toList();
 
-  /// [:true:] if there are no documents.
+  /// `true` if there are no documents.
   bool get empty => jsObject.empty;
 
   /// Non-null metadata about this snapshot, concerning its source and if it
@@ -871,7 +873,7 @@ class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl>
 /// to fix that Dart doesn't support varargs - we need to use [List]
 /// to call js function.
 abstract class _Updatable {
-  /// Calls js [:update():] method on [jsObject] with [data] or list of
+  /// Calls js `update()` method on [jsObject] with [data] or list of
   /// [fieldsAndValues] and optionally [documentRef].
   T _wrapUpdateFunctionCall<T>(jsObject, Map<String, dynamic> data,
       List< /*String|FieldPath|dynamic*/ dynamic> fieldsAndValues,

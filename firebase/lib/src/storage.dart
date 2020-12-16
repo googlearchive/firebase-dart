@@ -307,7 +307,7 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
       : super.fromJsObject(jsObject);
 
   /// Cancels a running task. Has no effect on a complete or failed task.
-  /// Returns [:true:] if it had an effect.
+  /// Returns `true` if it had an effect.
   bool cancel() => jsObject.cancel();
 
   ZoneCallback _onStateChangedUnsubscribe;
@@ -348,11 +348,11 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   }
 
   /// Pauses the running task. Has no effect on a paused or failed task.
-  /// Returns [:true:] if it had an effect.
+  /// Returns `true` if it had an effect.
   bool pause() => jsObject.pause();
 
   /// Resumes the paused task. Has no effect on a running or failed task.
-  /// Returns [:true:] if it had an effect.
+  /// Returns `true` if it had an effect.
   bool resume() => jsObject.resume();
 }
 

@@ -52,7 +52,7 @@ class FirebaseClient {
   Future<dynamic> patch(uri, json) => send('PATCH', uri, json: json);
 
   /// Deletes data from database using a HTTP DELETE request.
-  /// The response from a successful request contains a JSON with [:null:].
+  /// The response from a successful request contains a JSON with `null`.
   ///
   /// See: <https://firebase.google.com/docs/reference/rest/database/#section-delete>.
   Future<void> delete(uri) => send('DELETE', uri);

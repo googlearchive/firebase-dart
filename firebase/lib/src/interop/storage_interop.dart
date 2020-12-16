@@ -178,7 +178,7 @@ class StringFormat {
   external static String get BASE64URL;
 
   /// Indicates the string is a data URL, such as one obtained from
-  /// [:canvas.toDataURL():].
+  /// `canvas.toDataURL()`.
   external static String get DATA_URL;
 }
 
