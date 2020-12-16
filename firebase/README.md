@@ -7,42 +7,43 @@
 
 ![Status: Experimental](https://img.shields.io/badge/Status-Experimental-blue)
 
-This repository is maintained by Googlers but is not a supported Firebase product.  Issues here are answered by maintainers and other community members on GitHub on a best-effort basis.
+This repository is maintained by Googlers but is not a supported Firebase product. Issues here are answered by maintainers and other community members on GitHub on a best-effort basis.
 
 ## Introduction
 
 **NOTE:** This package provides three libraries:
 
-* For browser-based applications:
+- For browser-based applications:
   [`package:firebase/firebase.dart` and `package:firebase/firestore.dart`](#using-this-package-for-browser-applications)
   are wrappers over the [Firebase JS API](https://firebase.google.com/docs/reference/js/).
 
-* For the Dart VM and Fuchsia:
+- For the Dart VM and Fuchsia:
   [`package:firebase/firebase_io.dart`](#using-this-package-with-the-dart-vm-and-fuchsia)
   is a lightly maintained wrapper over the
   [Firebase Database REST API](https://firebase.google.com/docs/reference/rest/database/).
-  *Contributions to expand support to the other REST APIs are appreciated!* 
+  _Contributions to expand support to the other REST APIs are appreciated!_
 
 ### Other platforms
 
-* Flutter: [FlutterFire plugins](https://github.com/flutter/plugins/blob/master/FlutterFire.md)
+- Flutter: [FlutterFire plugins](https://github.com/flutter/plugins/blob/master/FlutterFire.md)
 
-* Node (via dart2js): [Anatoly Pulyaevskiy](https://github.com/pulyaevskiy) has
+- Node (via dart2js): [Anatoly Pulyaevskiy](https://github.com/pulyaevskiy) has
   been working on unofficial wrappers.
-  * [package:firebase_admin_interop](https://pub.dev/packages/firebase_admin_interop)
-  * [package:firebase_functions_interop](https://pub.dev/packages/firebase_functions_interop)
+  - [package:firebase_admin_interop](https://pub.dev/packages/firebase_admin_interop)
+  - [package:firebase_functions_interop](https://pub.dev/packages/firebase_functions_interop)
 
 ## Firebase Configuration
+
 You can find more information on how to use Firebase on the
 [Getting started](https://firebase.google.com/docs/web/setup) page.
 
 Don't forget to setup correct **rules** for your
 [realtime database](https://firebase.google.com/docs/database/security/),
-[storage](https://firebase.google.com/docs/storage/security/) and/or 
+[storage](https://firebase.google.com/docs/storage/security/) and/or
 [firestore](https://firebase.google.com/docs/firestore/security/get-started)
-in the Firebase console. 
+in the Firebase console.
 
-If you want to use [Firestore](https://firebase.google.com/docs/firestore/quickstart), 
+If you want to use [Firestore](https://firebase.google.com/docs/firestore/quickstart),
 you need to enable it in the Firebase console and include the
 [additional js script](#do-you-need-to-use-firestore).
 
@@ -67,7 +68,7 @@ For example:
 The firestore library is available in `firestore.dart`. You can find an
 example how to use this library in the [example/firestore](example/firestore).
 
-### Real-time Database Example 
+### Real-time Database Example
 
 ```dart
 import 'package:firebase/firebase.dart';
@@ -112,7 +113,7 @@ void main() {
     querySnapshot.docChanges().forEach((change) {
       if (change.type == "added") {
         // Do something with change.doc
-      }     
+      }
     });
   });
 }
@@ -136,15 +137,15 @@ import 'package:firebase/firebase_io.dart';
 void main() {
   var credential = ... // Retrieve auth credential
   var fbClient = new FirebaseClient(credential); // FirebaseClient.anonymous() is also available
-  
+
   var path = ... // Full path to your database location with .json appended
-  
+
   // GET
   var response = await fbClient.get(path);
-  
+
   // DELETE
   await fbClient.delete(path);
-  
+
   ...
 }
 ```
@@ -172,14 +173,14 @@ with configuration for your Firebase project.
 
 To run the io tests, you need to provide the `service_account.json` file. Go to
 `Settings/Project settings/Service accounts` tab in your project's Firebase
-console, select the `Firebase Admin SDK` and click on the 
+console, select the `Firebase Admin SDK` and click on the
 `Generate new private key` button, which downloads you a file.
 Rename the file to `service_account.json` and put it into the `lib/src/assets`
 folder.
 
 > Warning: Use the contents of
-[`lib/src/assets`](https://github.com/FirebaseExtended/firebase-dart/tree/master/lib/src/assets)
-is only for development and testing this package.
+> [`lib/src/assets`](https://github.com/FirebaseExtended/firebase-dart/tree/master/lib/src/assets)
+> is only for development and testing this package.
 
 ### App tests
 
@@ -191,9 +192,9 @@ Auth tests and some examples need to have **Auth providers** correctly set.
 The following providers need to be enabled in Firebase console,
 `Auth/Sign-in method` section:
 
-* E-mail/password
-* Anonymous
-* Phone
+- E-mail/password
+- Anonymous
+- Phone
 
 ### Database tests and example
 
@@ -211,15 +212,15 @@ write to database. Update your rules in Firebase console,
 ```
 
 > Warning: At the moment, anybody can read and write to your database.
-You *usually* don't want to have this in your production apps.
-You can find more information on how to setup correct database rules in the 
-official
-[Firebase documentation](https://firebase.google.com/docs/database/security/). 
+> You _usually_ don't want to have this in your production apps.
+> You can find more information on how to setup correct database rules in the
+> official
+> [Firebase documentation](https://firebase.google.com/docs/database/security/).
 
 ### Firestore tests and example
 
-To be able to run tests and example, Firestore needs to be enabled in the 
-`Database/Cloud Firestore` section. 
+To be able to run tests and example, Firestore needs to be enabled in the
+`Database/Cloud Firestore` section.
 
 Firestore tests and example need to have **public rules** to be able to read and
 write to Firestore. Update your rules in Firebase console,
@@ -236,10 +237,10 @@ service cloud.firestore {
 ```
 
 > Warning: At the moment, anybody can read and write to your Firestore.
-You *usually* don't want to have this in your production apps.
-You can find more information on how to setup correct Firestore rules in the 
-official
-[Firebase documentation](https://firebase.google.com/docs/firestore/security/get-started). 
+> You _usually_ don't want to have this in your production apps.
+> You can find more information on how to setup correct Firestore rules in the
+> official
+> [Firebase documentation](https://firebase.google.com/docs/firestore/security/get-started).
 
 You also need to include the additional `firebase-firestore.js` script.
 See [more info](#do-you-need-to-use-firestore).
@@ -248,7 +249,7 @@ See [more info](#do-you-need-to-use-firestore).
 
 Storage tests and example need to have **public rules** to be able to read and
 write to storage. Firebase Storage Rules Version 2 is
-[required](https://firebase.google.com/docs/storage/web/list-files) for `list` and 
+[required](https://firebase.google.com/docs/storage/web/list-files) for `list` and
 `listAll`. Update your rules in Firebase console, `Storage/Rules` section
 to:
 
@@ -264,11 +265,10 @@ service firebase.storage {
 ```
 
 > Warning: At the moment, anybody can read and write to your storage.
-You *usually* don't want to have this in your production apps.
-You can find more information on how to setup correct storage rules in the 
-official
-[Firebase documentation](https://firebase.google.com/docs/storage/security/). 
-
+> You _usually_ don't want to have this in your production apps.
+> You can find more information on how to setup correct storage rules in the
+> official
+> [Firebase documentation](https://firebase.google.com/docs/storage/security/).
 
 ### Remote Config example
 
@@ -285,6 +285,7 @@ responsibility to assure that numbers and booleans are defined appropriately. A 
 value can be represented as either of: `0/1`, `true/false`, `t/f`, `yes/no`, `y/n`, `on/off`.
 
 For example:
+
 ```
 title: Welcome
 counter: 2
@@ -312,17 +313,19 @@ Refer to [Remote Config Documentation](https://firebase.google.com/docs/remote-c
 
 In order to test remote config, you need to obtain service account credentials
 for your Firebase project. Each Firebase project has a default service account
-that will work for this purpose. The service account can be found in the 
+that will work for this purpose. The service account can be found in the
 GCP console by choosing the project, then in the menu: IAM & admin > Service accounts.
 
-Once you have located the service account, choose Actions > Create key. 
-Pick JSON as the format. Put the JSON file in `lib/src/assets/service_account.json`. 
+Once you have located the service account, choose Actions > Create key.
+Pick JSON as the format. Put the JSON file in `lib/src/assets/service_account.json`.
 
-Ensure that the remote config for your project is empty. The unit test will refuse 
+Ensure that the remote config for your project is empty. The unit test will refuse
 to run with the following message if it detects that the remote config of the project
-is not empty on start: 
+is not empty on start:
+
 ```
 This unit test requires remote config to be empty.
 ```
+
 This is done to avoid overwriting your remote config in case if you run the test
 in a Firebase project that is used for other purposes.
