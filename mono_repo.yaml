@@ -10,6 +10,7 @@ github:
     STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
     PROJECT_ID: ${{ secrets.PROJECT_ID }}
     APP_ID: ${{ secrets.APP_ID }}
+    SERVICE_ACCONUT_JSON: ${{ secrets.SERVICE_ACCONUT_JSON }}
 
 merge_stages:
 - work
