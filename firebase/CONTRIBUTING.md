@@ -5,22 +5,23 @@ the end).
 
 Please include the following information.
 
-* The version of Dart on your system.
+- The version of Dart on your system.
   You can do this by running `dart --version`.
-* The operation system you are running.
-* The version of the `firebase` package you are using.
+- The operation system you are running.
+- The version of the `firebase` package you are using.
   You can get this by looking at the `pubspec.lock` file.
 
 ```yaml
-  firebase:
-    description:
-      name: firebase
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
+firebase:
+  description:
+    name: firebase
+    url: "https://pub.dartlang.org"
+  source: hosted
+  version: "3.0.0"
 ```
 
 ### Before you contribute
+
 Before we can use your code, you must sign the
 [Google Individual Contributor License Agreement](https://cla.developers.google.com/about/google-individual)
 (CLA), which you can do online. The CLA is necessary mainly because you own the
@@ -37,9 +38,11 @@ possibly guide you. Coordinating up front makes it much easier to avoid
 frustration later on.
 
 ### Code reviews
+
 All submissions, including submissions by project members, require review.
 
 ### File headers
+
 All files in the project must start with the following header.
 
     // Copyright (c) 2016, Google.  Please see the AUTHORS file
@@ -47,6 +50,7 @@ All files in the project must start with the following header.
     // BSD-style license that can be found in the LICENSE file.
 
 ### The small print
+
 Contributions made by corporations are covered by a different agreement than the
 one above, the
 [Software Grant and Corporate Contributor License Agreement](https://developers.google.com/open-source/cla/corporate).
