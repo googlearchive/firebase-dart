@@ -1,0 +1,137 @@
+# Created with package:mono_repo v3.4.2
+name: Dart CI
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  schedule:
+    - cron: "0 0 * * 0"
+defaults:
+  run:
+    shell: bash
+env:
+  PUB_ENVIRONMENT: bot.github
+  CONFIG_DATA: "${{ secrets.CONFIG_DATA }}"
+  SERVICE_ACCOUNT_JSON: "${{ secrets.SERVICE_ACCOUNT_JSON }}"
+
+jobs:
+  job_001:
+    name: mono_repo self validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: cedx/setup-dart@v2
+        with:
+          release-channel: stable
+      - run: dart --version
+      - uses: actions/checkout@v2
+      - name: mono_repo self validate
+        run: pub global activate mono_repo 3.4.2
+      - name: mono_repo self validate
+        run: pub global run mono_repo generate --validate
+  job_002:
+    name: "work; PKGS: _shared_assets, firebase; `dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos .`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:_shared_assets-firebase;commands:dartfmt-dartanalyzer"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:_shared_assets-firebase
+            os:ubuntu-latest;pub-cache-hosted;dart:dev
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: cedx/setup-dart@v2
+        with:
+          release-channel: dev
+      - run: dart --version
+      - uses: actions/checkout@v2
+      - id: _shared_assets_pub_upgrade
+        name: "_shared_assets; pub upgrade --no-precompile"
+        working-directory: _shared_assets
+        run: pub upgrade --no-precompile
+      - name: "_shared_assets; dartfmt -n --set-exit-if-changed ."
+        if: "steps._shared_assets_pub_upgrade.conclusion == 'success'"
+        working-directory: _shared_assets
+        run: dartfmt -n --set-exit-if-changed .
+      - name: "_shared_assets; dartanalyzer --fatal-infos ."
+        if: "steps._shared_assets_pub_upgrade.conclusion == 'success'"
+        working-directory: _shared_assets
+        run: dartanalyzer --fatal-infos .
+      - id: firebase_pub_upgrade
+        name: "firebase; pub upgrade --no-precompile"
+        working-directory: firebase
+        run: pub upgrade --no-precompile
+      - name: "firebase; dartfmt -n --set-exit-if-changed ."
+        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        working-directory: firebase
+        run: dartfmt -n --set-exit-if-changed .
+      - name: "firebase; dartanalyzer --fatal-infos ."
+        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        working-directory: firebase
+        run: dartanalyzer --fatal-infos .
+  job_003:
+    name: "work; PKG: firebase; `pub run build_runner build example --fail-on-severe --delete-conflicting-outputs`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:firebase;commands:command_0"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:firebase
+            os:ubuntu-latest;pub-cache-hosted;dart:dev
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: cedx/setup-dart@v2
+        with:
+          release-channel: dev
+      - run: dart --version
+      - uses: actions/checkout@v2
+      - id: firebase_pub_upgrade
+        name: "firebase; pub upgrade --no-precompile"
+        working-directory: firebase
+        run: pub upgrade --no-precompile
+      - name: "firebase; pub run build_runner build example --fail-on-severe --delete-conflicting-outputs"
+        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        working-directory: firebase
+        run: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
+  job_004:
+    name: "work; PKG: firebase; `pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:firebase;commands:command_1"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:dev;packages:firebase
+            os:ubuntu-latest;pub-cache-hosted;dart:dev
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: cedx/setup-dart@v2
+        with:
+          release-channel: dev
+      - run: dart --version
+      - uses: actions/checkout@v2
+      - id: firebase_pub_upgrade
+        name: "firebase; pub upgrade --no-precompile"
+        working-directory: firebase
+        run: pub upgrade --no-precompile
+      - name: "firebase; pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
+        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        working-directory: firebase
+        run: "pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"

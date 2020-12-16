@@ -1,5 +1,5 @@
 [![Pub Package](https://img.shields.io/pub/v/firebase.svg)](https://pub.dev/packages/firebase)
-[![Build Status](https://travis-ci.org/FirebaseExtended/firebase-dart.svg?branch=master)](https://travis-ci.org/FirebaseExtended/firebase-dart)
+[![Dart CI](https://github.com/FirebaseExtended/firebase-dart/workflows/Dart%20CI/badge.svg?branch=master)](https://github.com/FirebaseExtended/firebase-dart/actions?query=workflow%3A%22Dart+CI%22+branch%3Amaster)
 
 **PLEASE NOTE:** If you're looking for a package to use in your Flutter app, please have a look at the official documentation: [firebase.flutter.dev](https://firebase.flutter.dev/).
 

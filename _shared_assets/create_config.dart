@@ -3,9 +3,14 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-final _assetPath = 'lib';
+const _assetPath = 'lib';
 
-void main() {
+const _mapping = {
+  'SERVICE_ACCOUNT_JSON': 'service_account.json',
+  'CONFIG_DATA': 'config.json',
+};
+
+void main(List<String> args) {
   // make sure the working dir is the root of the project
   if (!File('pubspec.yaml').existsSync()) {
     throw StateError('Not in the root! - ${Directory.current}');
@@ -16,42 +21,37 @@ void main() {
     throw StateError("'$samplePath should exist");
   }
 
-  var configPath = p.join(_assetPath, 'config.json');
-  var configFile = File(configPath);
+  if (args.contains('--dump')) {
+    for (var entry in _mapping.entries) {
+      final path = p.join(_assetPath, entry.value);
+      final file = File(path);
+      if (!file.existsSync()) {
+        throw StateError('File should exist at $path');
+      }
 
-  if (configFile.existsSync()) {
-    throw StateError("Config exists. It should not. '$configPath'");
-  }
-
-  var vars = [
-    'API_KEY',
-    'AUTH_DOMAIN',
-    'DATABASE_URL',
-    'STORAGE_BUCKET',
-    'PROJECT_ID',
-    'APP_ID',
-  ];
-
-  var config = <String, String>{};
-  for (var envVar in vars) {
-    if (Platform.environment.containsKey(envVar)) {
-      config[envVar] = Platform.environment[envVar];
-    } else {
-      throw StateError('Missing needed environment variable $envVar');
+      final content = base64.encode(file.readAsBytesSync());
+      print(entry.key);
+      print(content);
     }
+    return;
   }
 
-  configFile
-      .writeAsStringSync(const JsonEncoder.withIndent('  ').convert(config));
+  for (var entry in _mapping.entries) {
+    if (!Platform.environment.containsKey(entry.key)) {
+      throw StateError('Missing needed environment variable ${entry.key}');
+    }
+    final encodedValue = Platform.environment[entry.key];
+    if (encodedValue.isEmpty) {
+      throw StateError('Environment variable ${entry.key} is empty!');
+    }
 
-  // now for the service_account silly
-  if (!Platform.environment.containsKey('SERVICE_ACCOUNT_JSON')) {
-    throw StateError('Expected a ENV variable of SERVICE_ACCOUNT_JSON');
+    final path = p.join(_assetPath, entry.value);
+    final file = File(path);
+    if (file.existsSync()) {
+      throw StateError('No file should exist at $path');
+    }
+
+    final content = utf8.decode(base64.decode(encodedValue));
+    file.writeAsStringSync(content);
   }
-
-  var serviceAccountJson =
-      utf8.decode(base64.decode(Platform.environment['SERVICE_ACCOUNT_JSON']));
-
-  var serviceAccountPath = p.join(_assetPath, 'service_account.json');
-  File(serviceAccountPath).writeAsStringSync(serviceAccountJson);
 }

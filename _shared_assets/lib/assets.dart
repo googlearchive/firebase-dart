@@ -49,37 +49,31 @@ String _getConfig(String key, {String alt}) {
   return value;
 }
 
-Future config() async {
+Future<void> config() async {
   if (_configVal != null) {
     return;
   }
 
-  try {
-    var response = await sw.fetch('packages/_shared_assets/config.json');
-    if (response.status > 399) {
-      throw StateError(
-          'Problem with server: ${response.status} ${response.body}');
-    }
-
-    _configVal = jsonDecode(await response.text());
-  } catch (e) {
-    print('Error getting `config.json`. Make sure it exists.');
-    rethrow;
-  }
+  _configVal = await _readAssetJson('config.json');
 }
 
-Future<dynamic> readServiceAccountJson() async {
+Future<dynamic> readServiceAccountJson() =>
+    _readAssetJson('service_account.json');
+
+Future<dynamic> _readAssetJson(String assetFile) async {
   try {
-    var response =
-        await sw.fetch('packages/_shared_assets/service_account.json');
+    var response = await sw.fetch('packages/_shared_assets/$assetFile');
     if (response.status > 399) {
       throw StateError(
-          'Problem with server: ${response.status} ${response.body}');
+        'Problem with server: ${response.status} ${response.body}',
+      );
     }
 
     return jsonDecode(await response.text());
-  } catch (e) {
-    print('Error getting `service_account.json`. Make sure it exists.');
+  } catch (e, stack) {
+    print('Error getting `$assetFile`. Make sure it exists.');
+    print(e);
+    print(stack);
     rethrow;
   }
 }
