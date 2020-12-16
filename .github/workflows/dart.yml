@@ -39,7 +39,7 @@ jobs:
       - name: mono_repo self validate
         run: pub global run mono_repo generate --validate
   job_002:
-    name: "work; PKGS: _shared_assets, firebase; `dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos .`"
+    name: "analyze_and_format; PKGS: _shared_assets, firebase; `dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos .`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
@@ -82,7 +82,7 @@ jobs:
         working-directory: firebase
         run: dartanalyzer --fatal-infos .
   job_003:
-    name: "work; PKG: firebase; `pub run build_runner build example --fail-on-severe --delete-conflicting-outputs`"
+    name: "unit_test; PKG: firebase; `pub run build_runner build example --fail-on-severe --delete-conflicting-outputs`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
@@ -108,8 +108,11 @@ jobs:
         if: "steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
+    needs:
+      - job_001
+      - job_002
   job_004:
-    name: "work; PKG: firebase; `pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test`"
+    name: "unit_test; PKG: firebase; `pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
@@ -135,3 +138,22 @@ jobs:
         if: "steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: "pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
+    needs:
+      - job_001
+      - job_002
+  job_005:
+    name: Notify failure
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - run: |
+          curl -H "Content-Type: application/json" -X POST -d \
+            "{'text':'Build failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'}" \
+            "${CHAT_WEBHOOK_URL}"
+        env:
+          CHAT_WEBHOOK_URL: "${{ secrets.CHAT_WEBHOOK_URL }}"
+    needs:
+      - job_001
+      - job_002
+      - job_003
+      - job_004
