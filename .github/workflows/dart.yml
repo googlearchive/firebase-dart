@@ -46,8 +46,8 @@ jobs:
           pushd ../_shared_assets
           pub get
           dart create_config.dart
-          ls lib
+          echo 'looking at config'
           cat lib/config.json
+          echo 'looking at service account'
           cat lib/service_account.json
           popd
-          pub run test
