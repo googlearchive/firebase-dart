@@ -144,7 +144,7 @@ jobs:
   job_005:
     name: Notify failure
     runs-on: ubuntu-latest
-    if: failure()
+    if: "(github.event_name == 'push' || github.event_name == 'schedule') && failure()"
     steps:
       - run: |
           curl -H "Content-Type: application/json" -X POST -d \
