@@ -4,6 +4,7 @@ import 'package:js/js.dart';
 
 import 'app.dart';
 import 'interop/firestore_interop.dart' as firestore_interop;
+import 'interop/firestore_interop.dart';
 import 'js.dart';
 import 'utils.dart';
 
@@ -12,6 +13,7 @@ export 'interop/firestore_interop.dart'
         Blob,
         FieldPath,
         GeoPoint,
+        PersistenceSettings,
         setLogLevel,
         SetOptions,
         Settings,
@@ -87,8 +89,8 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   ///
   /// Returns non-null [Future] that represents successfully enabling
   /// persistent storage.
-  Future<Null> enablePersistence() =>
-      handleThenable(jsObject.enablePersistence());
+  Future<Null> enablePersistence([PersistenceSettings settings]) =>
+      handleThenable(jsObject.enablePersistence(settings));
 
   /// Executes the given [updateFunction] and then attempts to commit the
   /// changes applied within the transaction. If any document read within
