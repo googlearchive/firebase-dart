@@ -81,8 +81,6 @@ jobs:
         if: "steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: dartanalyzer --fatal-infos .
-    needs:
-      - job_001
   job_003:
     name: "unit_test; PKG: firebase; `pub run build_runner build example --fail-on-severe --delete-conflicting-outputs`"
     runs-on: ubuntu-latest
