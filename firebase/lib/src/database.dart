@@ -76,7 +76,8 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
 
   /// Creates a new DatabaseReference from a [jsObject].
   static DatabaseReference getInstance(
-      database_interop.ReferenceJsImpl jsObject) {
+    database_interop.ReferenceJsImpl jsObject,
+  ) {
     if (jsObject == null) {
       return null;
     }
@@ -164,15 +165,16 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
         allowInterop((update) => jsify(transactionUpdate(dartify(update))));
 
     var onCompleteWrap = allowInterop(
-        (error, bool committed, database_interop.DataSnapshotJsImpl snapshot) {
-      if (error != null) {
-        c.completeError(error);
-      } else {
-        c.complete(Transaction(
-            committed: committed,
-            snapshot: DataSnapshot.getInstance(snapshot)));
-      }
-    });
+      (error, bool committed, database_interop.DataSnapshotJsImpl snapshot) {
+        if (error != null) {
+          c.completeError(error);
+        } else {
+          c.complete(Transaction(
+              committed: committed,
+              snapshot: DataSnapshot.getInstance(snapshot)));
+        }
+      },
+    );
 
     jsObject.transaction(transactionUpdateWrap, onCompleteWrap, applyLocally);
     return c.future;
@@ -298,8 +300,10 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   Stream<QueryEvent> _createStream(String eventType) {
     StreamController<QueryEvent> streamController;
 
-    var callbackWrap = allowInterop((database_interop.DataSnapshotJsImpl data,
-        [String string]) {
+    var callbackWrap = allowInterop((
+      database_interop.DataSnapshotJsImpl data, [
+      String string,
+    ]) {
       streamController.add(QueryEvent(DataSnapshot.getInstance(data), string));
     });
 
@@ -314,7 +318,10 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
     }
 
     streamController = StreamController<QueryEvent>.broadcast(
-        onListen: startListen, onCancel: stopListen, sync: true);
+      onListen: startListen,
+      onCancel: stopListen,
+      sync: true,
+    );
     return streamController.stream;
   }
 
@@ -323,9 +330,10 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
     var c = Completer<QueryEvent>();
 
     jsObject.once(eventType, allowInterop(
-        (database_interop.DataSnapshotJsImpl snapshot, [String string]) {
-      c.complete(QueryEvent(DataSnapshot.getInstance(snapshot), string));
-    }), resolveError(c));
+      (database_interop.DataSnapshotJsImpl snapshot, [String string]) {
+        c.complete(QueryEvent(DataSnapshot.getInstance(snapshot), string));
+      },
+    ), resolveError(c));
 
     return c.future;
   }
@@ -349,9 +357,11 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   /// The [value] must be a [num], [String], [bool], or `null`, or the error
   /// is thrown.
   /// The optional [key] can be used to further limit the range of the query.
-  Query startAt(value, [String key]) => Query.fromJsObject(key == null
-      ? jsObject.startAt(jsify(value))
-      : jsObject.startAt(jsify(value), key));
+  Query startAt(value, [String key]) => Query.fromJsObject(
+        key == null
+            ? jsObject.startAt(jsify(value))
+            : jsObject.startAt(jsify(value), key),
+      );
 
   /// Returns a String representation of Query object.
   @override
@@ -376,7 +386,8 @@ class DataSnapshot
 
   /// Creates a new DataSnapshot from a [jsObject].
   static DataSnapshot getInstance(
-      database_interop.DataSnapshotJsImpl jsObject) {
+    database_interop.DataSnapshotJsImpl jsObject,
+  ) {
     if (jsObject == null) {
       return null;
     }
@@ -469,8 +480,8 @@ class ThenableReference
 
   /// Creates a new ThenableReference from a [jsObject].
   ThenableReference.fromJsObject(
-      database_interop.ThenableReferenceJsImpl jsObject)
-      : super._fromJsObject(jsObject);
+    database_interop.ThenableReferenceJsImpl jsObject,
+  ) : super._fromJsObject(jsObject);
 
   /// A Future property.
   Future<DatabaseReference> get future =>
@@ -488,8 +499,12 @@ class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
   /// Creates a new Transaction with optional [committed] and [snapshot]
   /// properties.
   factory Transaction({bool committed, DataSnapshot snapshot}) =>
-      Transaction.fromJsObject(database_interop.TransactionJsImpl(
-          committed: committed, snapshot: snapshot.jsObject));
+      Transaction.fromJsObject(
+        database_interop.TransactionJsImpl(
+          committed: committed,
+          snapshot: snapshot.jsObject,
+        ),
+      );
 
   /// Creates a new Transaction from a [jsObject].
   Transaction.fromJsObject(database_interop.TransactionJsImpl jsObject)
