@@ -49,5 +49,8 @@ void main(List<String> args) {
 
     final content = utf8.decode(base64.decode(Platform.environment[entry.key]));
     file.writeAsStringSync(content);
+    print('wrote to $path');
+    print('content:');
+    print(content);
   }
 }
