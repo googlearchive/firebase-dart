@@ -40,13 +40,14 @@ jobs:
         name: "firebase; pub upgrade --no-precompile"
         working-directory: firebase
         run: pub upgrade --no-precompile
-      - name: "firebase; pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+      - if: "steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: |
           pushd ../_shared_assets
           pub get
           dart create_config.dart
           ls lib
+          cat lib/config.json
+          cat lib/service_account.json
           popd
           pub run test
