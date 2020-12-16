@@ -39,6 +39,50 @@ jobs:
       - name: mono_repo self validate
         run: pub global run mono_repo generate --validate
   job_002:
+    name: "analyze_and_format; Dart 2.7.0; PKGS: _shared_assets, firebase; `dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos .`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:2.7.0;packages:_shared_assets-firebase;commands:dartfmt-dartanalyzer"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;dart:2.7.0;packages:_shared_assets-firebase
+            os:ubuntu-latest;pub-cache-hosted;dart:2.7.0
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: cedx/setup-dart@v2
+        with:
+          release-channel: stable
+          version: "2.7.0"
+      - run: dart --version
+      - uses: actions/checkout@v2
+      - id: _shared_assets_pub_upgrade
+        name: "_shared_assets; pub upgrade --no-precompile"
+        working-directory: _shared_assets
+        run: pub upgrade --no-precompile
+      - name: "_shared_assets; dartfmt -n --set-exit-if-changed ."
+        if: "steps._shared_assets_pub_upgrade.conclusion == 'success'"
+        working-directory: _shared_assets
+        run: dartfmt -n --set-exit-if-changed .
+      - name: "_shared_assets; dartanalyzer --fatal-infos ."
+        if: "steps._shared_assets_pub_upgrade.conclusion == 'success'"
+        working-directory: _shared_assets
+        run: dartanalyzer --fatal-infos .
+      - id: firebase_pub_upgrade
+        name: "firebase; pub upgrade --no-precompile"
+        working-directory: firebase
+        run: pub upgrade --no-precompile
+      - name: "firebase; dartfmt -n --set-exit-if-changed ."
+        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        working-directory: firebase
+        run: dartfmt -n --set-exit-if-changed .
+      - name: "firebase; dartanalyzer --fatal-infos ."
+        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        working-directory: firebase
+        run: dartanalyzer --fatal-infos .
+  job_003:
     name: "analyze_and_format; Dart dev; PKGS: _shared_assets, firebase; `dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos .`"
     runs-on: ubuntu-latest
     steps:
@@ -69,38 +113,6 @@ jobs:
         if: "steps._shared_assets_pub_upgrade.conclusion == 'success'"
         working-directory: _shared_assets
         run: dartanalyzer --fatal-infos .
-      - id: firebase_pub_upgrade
-        name: "firebase; pub upgrade --no-precompile"
-        working-directory: firebase
-        run: pub upgrade --no-precompile
-      - name: "firebase; dartfmt -n --set-exit-if-changed ."
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
-        working-directory: firebase
-        run: dartfmt -n --set-exit-if-changed .
-      - name: "firebase; dartanalyzer --fatal-infos ."
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
-        working-directory: firebase
-        run: dartanalyzer --fatal-infos .
-  job_003:
-    name: "analyze_and_format; Dart 2.7.0; PKG: firebase; `dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos .`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:2.7.0;packages:firebase;commands:dartfmt-dartanalyzer"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:2.7.0;packages:firebase
-            os:ubuntu-latest;pub-cache-hosted;dart:2.7.0
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: cedx/setup-dart@v2
-        with:
-          release-channel: stable
-          version: "2.7.0"
-      - run: dart --version
-      - uses: actions/checkout@v2
       - id: firebase_pub_upgrade
         name: "firebase; pub upgrade --no-precompile"
         working-directory: firebase
