@@ -8,4 +8,4 @@ github:
     SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
 
 merge_stages:
-- work
+- analyze_and_format

@@ -3,11 +3,11 @@ dart:
 - dev
 
 stages:
-- work:
+- analyze_and_format:
   - group:
     - dartfmt
     - dartanalyzer: --fatal-infos .
-    dart: [dev]
+- unit_test:
   - command: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
   - command:
     - pushd ../_shared_assets
