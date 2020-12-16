@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 const _assetPath = 'lib';
 
 const _mapping = {
-  //'SERVICE_ACCOUNT_JSON': 'service_account.json',
+  'SERVICE_ACCOUNT_JSON': 'service_account.json',
   'CONFIG_DATA': 'config.json',
 };
 
@@ -40,6 +40,10 @@ void main(List<String> args) {
     if (!Platform.environment.containsKey(entry.key)) {
       throw StateError('Missing needed environment variable ${entry.key}');
     }
+    final encodedValue = Platform.environment[entry.key];
+    if (encodedValue.isEmpty) {
+      throw StateError('Environment variable ${entry.key} is empty!');
+    }
 
     final path = p.join(_assetPath, entry.value);
     final file = File(path);
@@ -47,14 +51,7 @@ void main(List<String> args) {
       throw StateError('No file should exist at $path');
     }
 
-    final encodedValue = Platform.environment[entry.key];
-    print(encodedValue.length);
     final content = utf8.decode(base64.decode(encodedValue));
-
     file.writeAsStringSync(content);
-    print('wrote to $path');
-    print('content:');
-    print(content.length);
-    print(content);
   }
 }

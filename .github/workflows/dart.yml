@@ -14,7 +14,7 @@ defaults:
 env:
   PUB_ENVIRONMENT: bot.github
   CONFIG_DATA: "${{ secrets.CONFIG_DATA }}"
-  SERVICE_ACCOUNT_JSON: "${{ secrets.SERVICE_ACCONUT_JSON }}"
+  SERVICE_ACCOUNT_JSON: "${{ secrets.SERVICE_ACCOUNT_JSON }}"
 
 jobs:
   job_004:
