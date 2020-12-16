@@ -1,3 +1,7 @@
+## 7.3.4-dev
+
+- Updated documented JS version to `8.2.0`.
+
 ## 7.3.3
 
 - `firebase_io.dart`: Changed the type of `client` in the `FirebaseClient`
