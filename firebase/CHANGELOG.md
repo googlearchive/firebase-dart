@@ -1,5 +1,6 @@
-## 7.3.4-dev
+## 7.4.0-dev
 
+- Add optional `PersistenceSettings` parameter to `Firestore.enablePersistence`.
 - Updated documented JS version to `8.2.0`.
 
 ## 7.3.3

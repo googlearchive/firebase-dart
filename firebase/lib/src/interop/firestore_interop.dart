@@ -38,7 +38,9 @@ abstract class FirestoreJsImpl {
 
   external DocumentReferenceJsImpl doc(String documentPath);
 
-  external PromiseJsImpl<Null> enablePersistence();
+  external PromiseJsImpl<void> enablePersistence([
+    PersistenceSettings settings,
+  ]);
 
   external PromiseJsImpl<void> runTransaction(
       Func1<TransactionJsImpl, PromiseJsImpl> updateFunction);
@@ -48,6 +50,33 @@ abstract class FirestoreJsImpl {
   external PromiseJsImpl<Null> disableNetwork();
 
   external PromiseJsImpl<Null> enableNetwork();
+}
+
+/// Settings that can be passed to `Firestore.enablePersistence` to configure
+/// Firestore persistence.
+///
+/// See https://firebase.google.com/docs/reference/js/firebase.firestore.PersistenceSettings
+@JS()
+@anonymous
+abstract class PersistenceSettings {
+  external factory PersistenceSettings({
+    bool experimentalForceOwningTab,
+    bool synchronizeTabs,
+  });
+
+  /// The latitude of this GeoPoint instance.
+  external bool get experimentalForceOwningTab;
+
+  /// Whether to synchronize the in-memory state of multiple tabs.
+  ///
+  /// Setting this to true in all open tabs enables shared access to local
+  /// persistence, shared execution of queries and latency-compensated local
+  /// document updates across all connected instances.
+  //
+  // To enable this mode, `synchronizeTabs:true` needs to be set globally in all
+  // active tabs. If omitted or set to 'false', `enablePersistence()` will fail
+  // in all but the first tab.
+  external bool get synchronizeTabs;
 }
 
 @JS('WriteBatch')
