@@ -7,7 +7,6 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:js/js.dart';
 
-import '../func.dart';
 import 'app_interop.dart';
 import 'es6_interop.dart';
 import 'firebase_interop.dart';
@@ -43,7 +42,8 @@ abstract class FirestoreJsImpl {
   ]);
 
   external PromiseJsImpl<void> runTransaction(
-      Func1<TransactionJsImpl, PromiseJsImpl> updateFunction);
+    PromiseJsImpl Function(TransactionJsImpl) updateFunction,
+  );
 
   external void settings(Settings settings);
 
@@ -85,11 +85,16 @@ abstract class WriteBatchJsImpl {
 
   external WriteBatchJsImpl delete(DocumentReferenceJsImpl documentRef);
 
-  external WriteBatchJsImpl set(DocumentReferenceJsImpl documentRef, data,
-      [SetOptions options]);
+  external WriteBatchJsImpl set(
+    DocumentReferenceJsImpl documentRef,
+    data, [
+    SetOptions options,
+  ]);
 
   external WriteBatchJsImpl update(
-      DocumentReferenceJsImpl documentRef, dataOrFieldsAndValues);
+    DocumentReferenceJsImpl documentRef,
+    dataOrFieldsAndValues,
+  );
 }
 
 @JS('CollectionReference')
@@ -126,16 +131,18 @@ class FieldPath {
   /// Creates a [FieldPath] from the provided field names. If more than one
   /// field name is provided, the path will point to a nested field in
   /// a document.
-  external factory FieldPath(String fieldName0,
-      [String fieldName1,
-      String fieldName2,
-      String fieldName3,
-      String fieldName4,
-      String fieldName5,
-      String fieldName6,
-      String fieldName7,
-      String fieldName8,
-      String fieldName9]);
+  external factory FieldPath(
+    String fieldName0, [
+    String fieldName1,
+    String fieldName2,
+    String fieldName3,
+    String fieldName4,
+    String fieldName5,
+    String fieldName6,
+    String fieldName7,
+    String fieldName8,
+    String fieldName9,
+  ]);
 
   /// Returns a special sentinel FieldPath to refer to the ID of a document.
   /// It can be used in queries to sort or filter by the document ID.
@@ -230,7 +237,7 @@ abstract class DocumentReferenceJsImpl {
   external void Function() onSnapshot(
     optionsOrObserverOrOnNext,
     observerOrOnNextOrOnError, [
-    Func1<FirebaseError, dynamic> onError,
+    void Function(FirebaseError) onError,
   ]);
 
   external PromiseJsImpl<Null> set(data, [SetOptions options]);
@@ -295,35 +302,45 @@ abstract class QueryJsImpl {
   external set firestore(FirestoreJsImpl f);
 
   external QueryJsImpl endAt(
-      /*DocumentSnapshot|List<dynamic>*/
-      snapshotOrFieldValues);
+    /*DocumentSnapshot|List<dynamic>*/
+    snapshotOrFieldValues,
+  );
 
   external QueryJsImpl endBefore(
-      /*DocumentSnapshot|List<dynamic>*/
-      snapshotOrFieldValues);
+    /*DocumentSnapshot|List<dynamic>*/
+    snapshotOrFieldValues,
+  );
 
   external PromiseJsImpl<QuerySnapshotJsImpl> get();
 
   external QueryJsImpl limit(num limit);
 
   external void Function() onSnapshot(
-      SnapshotListenOptions options,
-      void Function(QuerySnapshotJsImpl) onNext,
-      Func1<FirebaseError, dynamic> onError);
+    SnapshotListenOptions options,
+    void Function(QuerySnapshotJsImpl) onNext,
+    void Function(FirebaseError) onError,
+  );
 
-  external QueryJsImpl orderBy(/*String|FieldPath*/ fieldPath,
-      [String /*'desc'|'asc'*/ directionStr]);
+  external QueryJsImpl orderBy(
+    /*String|FieldPath*/ fieldPath, [
+    String /*'desc'|'asc'*/ directionStr,
+  ]);
 
   external QueryJsImpl startAfter(
-      /*DocumentSnapshot|List<dynamic>*/
-      snapshotOrFieldValues);
+    /*DocumentSnapshot|List<dynamic>*/
+    snapshotOrFieldValues,
+  );
 
   external QueryJsImpl startAt(
-      /*DocumentSnapshot|List<dynamic>*/
-      snapshotOrFieldValues);
+    /*DocumentSnapshot|List<dynamic>*/
+    snapshotOrFieldValues,
+  );
 
-  external QueryJsImpl where(/*String|FieldPath*/ fieldPath,
-      String /*'<'|'<='|'=='|'>='|'>'*/ opStr, value);
+  external QueryJsImpl where(
+    /*String|FieldPath*/ fieldPath,
+    String /*'<'|'<='|'=='|'>='|'>'*/ opStr,
+    value,
+  );
 }
 
 @JS('QuerySnapshot')
@@ -364,13 +381,19 @@ abstract class TransactionJsImpl {
   external TransactionJsImpl delete(DocumentReferenceJsImpl documentRef);
 
   external PromiseJsImpl<DocumentSnapshotJsImpl> get(
-      DocumentReferenceJsImpl documentRef);
+    DocumentReferenceJsImpl documentRef,
+  );
 
-  external TransactionJsImpl set(DocumentReferenceJsImpl documentRef, data,
-      [SetOptions options]);
+  external TransactionJsImpl set(
+    DocumentReferenceJsImpl documentRef,
+    data, [
+    SetOptions options,
+  ]);
 
   external TransactionJsImpl update(
-      DocumentReferenceJsImpl documentRef, dataOrFieldsAndValues);
+    DocumentReferenceJsImpl documentRef,
+    dataOrFieldsAndValues,
+  );
 }
 
 @JS('Timestamp')
@@ -405,8 +428,9 @@ abstract class FirestoreError {
   external dynamic /*|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/ get code;
 
   external set code(
-      /*|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/
-      v);
+    /*|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/
+    v,
+  );
 
   external String get message;
 
@@ -420,11 +444,12 @@ abstract class FirestoreError {
 
   external set stack(String v);
 
-  external factory FirestoreError(
-      {/*|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/ code,
-      String message,
-      String name,
-      String stack});
+  external factory FirestoreError({
+    /*|'cancelled'|'unknown'|'invalid-argument'|'deadline-exceeded'|'not-found'|'already-exists'|'permission-denied'|'resource-exhausted'|'failed-precondition'|'aborted'|'out-of-range'|'unimplemented'|'internal'|'unavailable'|'data-loss'|'unauthenticated'*/ code,
+    String message,
+    String name,
+    String stack,
+  });
 }
 
 /// Options for use with `Query.onSnapshot() to control the behavior of the

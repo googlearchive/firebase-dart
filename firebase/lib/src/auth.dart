@@ -6,7 +6,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:js/js.dart';
 
 import 'app.dart';
-import 'func.dart';
 import 'interop/auth_interop.dart';
 import 'interop/firebase_interop.dart' as firebase_interop;
 import 'js.dart';
@@ -292,7 +291,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
     jsObject.languageCode = s;
   }
 
-  Func0 _onAuthUnsubscribe;
+  void Function() _onAuthUnsubscribe;
   StreamController<User> _changeController;
 
   /// Sends events when the users sign-in state changes.
@@ -326,7 +325,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
     return _changeController.stream;
   }
 
-  Func0 _onIdTokenChangedUnsubscribe;
+  void Function() _onIdTokenChangedUnsubscribe;
   StreamController<User> _idTokenChangedController;
 
   /// Sends events for changes to the signed-in user's ID token,
