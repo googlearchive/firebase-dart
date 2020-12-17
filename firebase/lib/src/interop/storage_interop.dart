@@ -5,51 +5,84 @@ library firebase.storage_interop;
 
 import 'package:js/js.dart';
 
-import '../func.dart';
 import 'app_interop.dart';
 import 'es6_interop.dart';
 
 @JS('Storage')
 abstract class StorageJsImpl {
   external AppJsImpl get app;
+
   external set app(AppJsImpl a);
+
   external int get maxOperationRetryTime;
+
   external set maxOperationRetryTime(int t);
+
   external int get maxUploadRetryTime;
+
   external set maxUploadRetryTime(int t);
+
   external ReferenceJsImpl ref([String path]);
+
   external ReferenceJsImpl refFromURL(String url);
+
   external void setMaxOperationRetryTime(int time);
+
   external void setMaxUploadRetryTime(int time);
 }
 
 @JS('Reference')
 abstract class ReferenceJsImpl {
   external String get bucket;
+
   external set bucket(String s);
+
   external String get fullPath;
+
   external set fullPath(String s);
+
   external String get name;
+
   external set name(String s);
+
   external ReferenceJsImpl get parent;
+
   external set parent(ReferenceJsImpl r);
+
   external ReferenceJsImpl get root;
+
   external set root(ReferenceJsImpl r);
+
   external StorageJsImpl get storage;
+
   external set storage(StorageJsImpl s);
+
   external ReferenceJsImpl child(String path);
+
   external PromiseJsImpl<void> delete();
+
   external PromiseJsImpl<String> getDownloadURL();
+
   external PromiseJsImpl<FullMetadataJsImpl> getMetadata();
+
   external PromiseJsImpl<ListResultJsImpl> list([ListOptionsJsImpl options]);
+
   external PromiseJsImpl<ListResultJsImpl> listAll();
+
   external UploadTaskJsImpl put(blob, [UploadMetadataJsImpl metadata]);
-  external UploadTaskJsImpl putString(String value,
-      [String format, UploadMetadataJsImpl metadata]);
+
+  external UploadTaskJsImpl putString(
+    String value, [
+    String format,
+    UploadMetadataJsImpl metadata,
+  ]);
+
   @override
   external String toString();
+
   external PromiseJsImpl<FullMetadataJsImpl> updateMetadata(
-      SettableMetadataJsImpl metadata);
+    SettableMetadataJsImpl metadata,
+  );
 }
 
 //@JS('FullMetadata')
@@ -57,62 +90,90 @@ abstract class ReferenceJsImpl {
 @anonymous
 class FullMetadataJsImpl extends UploadMetadataJsImpl {
   external String get bucket;
+
   external String get fullPath;
+
   external String get generation;
+
   external String get metageneration;
+
   external String get name;
+
   external int get size;
+
   external String get timeCreated;
+
   external String get updated;
 
-  external factory FullMetadataJsImpl(
-      {String md5Hash,
-      String cacheControl,
-      String contentDisposition,
-      String contentEncoding,
-      String contentLanguage,
-      String contentType,
-      dynamic customMetadata});
+  external factory FullMetadataJsImpl({
+    String md5Hash,
+    String cacheControl,
+    String contentDisposition,
+    String contentEncoding,
+    String contentLanguage,
+    String contentType,
+    dynamic customMetadata,
+  });
 }
 
 @JS()
 @anonymous
 class UploadMetadataJsImpl extends SettableMetadataJsImpl {
   external String get md5Hash;
+
   external set md5Hash(String s);
 
-  external factory UploadMetadataJsImpl(
-      {String md5Hash,
-      String cacheControl,
-      String contentDisposition,
-      String contentEncoding,
-      String contentLanguage,
-      String contentType,
-      dynamic customMetadata});
+  external factory UploadMetadataJsImpl({
+    String md5Hash,
+    String cacheControl,
+    String contentDisposition,
+    String contentEncoding,
+    String contentLanguage,
+    String contentType,
+    dynamic customMetadata,
+  });
 }
 
 @JS('UploadTask')
 abstract class UploadTaskJsImpl
     implements PromiseJsImpl<UploadTaskSnapshotJsImpl> {
   external UploadTaskSnapshotJsImpl get snapshot;
+
   external set snapshot(UploadTaskSnapshotJsImpl t);
+
   external bool cancel();
-  external Func0 on(String event,
-      [nextOrObserver, Func1 error, Func0 complete]);
+
+  external void Function() on(
+    String event, [
+    nextOrObserver,
+    void Function(dynamic) error,
+    void Function() complete,
+  ]);
+
   external bool pause();
+
   external bool resume();
+
   @override
-  external PromiseJsImpl<void> then([Func1 onResolve, Func1 onReject]);
+  external PromiseJsImpl<void> then([
+    void Function(dynamic) onResolve,
+    void Function(dynamic) onReject,
+  ]);
 }
 
 @JS()
 @anonymous
 abstract class UploadTaskSnapshotJsImpl {
   external int get bytesTransferred;
+
   external FullMetadataJsImpl get metadata;
+
   external ReferenceJsImpl get ref;
+
   external String get state;
+
   external UploadTaskJsImpl get task;
+
   external int get totalBytes;
 }
 
@@ -120,32 +181,48 @@ abstract class UploadTaskSnapshotJsImpl {
 @anonymous
 class SettableMetadataJsImpl {
   external String get cacheControl;
+
   external set cacheControl(String s);
+
   external String get contentDisposition;
+
   external set contentDisposition(String s);
+
   external String get contentEncoding;
+
   external set contentEncoding(String s);
+
   external String get contentLanguage;
+
   external set contentLanguage(String s);
+
   external String get contentType;
+
   external set contentType(String s);
+
   external dynamic get customMetadata;
+
   external set customMetadata(dynamic s);
-  external factory SettableMetadataJsImpl(
-      {String cacheControl,
-      String contentDisposition,
-      String contentEncoding,
-      String contentLanguage,
-      String contentType,
-      dynamic customMetadata});
+
+  external factory SettableMetadataJsImpl({
+    String cacheControl,
+    String contentDisposition,
+    String contentEncoding,
+    String contentLanguage,
+    String contentType,
+    dynamic customMetadata,
+  });
 }
 
 @JS()
 @anonymous
 class ListOptionsJsImpl {
   external set maxResults(int s);
+
   external int get maxResults;
+
   external set pageToken(String s);
+
   external String get pageToken;
 
   external factory ListOptionsJsImpl({int maxResults, String pageToken});
@@ -155,7 +232,9 @@ class ListOptionsJsImpl {
 @anonymous
 class ListResultJsImpl {
   external List<ReferenceJsImpl> get items;
+
   external String get nextPageToken;
+
   external List<ReferenceJsImpl> get prefixes;
 }
 

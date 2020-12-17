@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:js/js.dart';
 
 import 'app.dart';
-import 'func.dart';
 import 'interop/database_interop.dart' as database_interop;
 import 'js.dart';
 import 'utils.dart';
@@ -157,7 +156,7 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   /// type or the error is thrown.
   ///
   /// Set [applyLocally] to `false` to not see intermediate states.
-  Future<Transaction> transaction(Func1 transactionUpdate,
+  Future<Transaction> transaction(dynamic Function(dynamic) transactionUpdate,
       [bool applyLocally = true]) {
     var c = Completer<Transaction>();
 

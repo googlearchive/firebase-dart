@@ -5,7 +5,6 @@ import 'package:js/js.dart';
 import 'package:js/js_util.dart' as util;
 
 import 'firestore.dart';
-import 'func.dart';
 import 'interop/es6_interop.dart';
 import 'interop/firebase_interop.dart' show FirebaseError;
 import 'interop/firestore_interop.dart' show TimestampJsImpl;
@@ -131,7 +130,7 @@ Future<T> handleThenable<T>(PromiseJsImpl<T> thenable) async {
 
 /// Handles the [Future] object with the provided [mapper] function.
 PromiseJsImpl<S> handleFutureWithMapper<T, S>(
-    Future<T> future, Func1<T, S> mapper) {
+    Future<T> future, S Function(T value) mapper) {
   return PromiseJsImpl<S>(allowInterop((
     void Function(S) resolve,
     void Function(Object) reject,
