@@ -62,6 +62,7 @@ For example:
 
 ```html
 <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-firestore.js"></script>
 ```
 
