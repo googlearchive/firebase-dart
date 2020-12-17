@@ -453,25 +453,18 @@ abstract class Settings {
 
   external set host(String h);
 
-  external set ssl(bool v);
+  external set ignoreUndefinedProperties(bool v);
 
-  @Deprecated(
-    'This setting will be removed in a future release. You should update '
-    'your code to expect Timestamp objects and stop using the '
-    'timestampsInSnapshots setting.',
-  )
-  external set timestampsInSnapshots(bool v);
+  external set merge(bool v);
+
+  external set ssl(bool v);
 
   external factory Settings({
     int cacheSizeBytes,
     String host,
+    bool ignoreUndefinedProperties,
+    bool merge,
     bool ssl,
-    @Deprecated(
-      'This setting will be removed in a future release. You should update '
-      'your code to expect Timestamp objects and stop using the '
-      'timestampsInSnapshots setting.',
-    )
-        bool timestampsInSnapshots,
   });
 }
 

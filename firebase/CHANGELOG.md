@@ -1,5 +1,8 @@
-## 7.4.0-dev
+## 8.0.0-dev
 
+- Firestore `Settings`:
+  - Removed deprecated `timestampsInSnapshots`.
+  - Added `merge` and `ignoreUndefinedProperties`.
 - Add optional `PersistenceSettings` parameter to `Firestore.enablePersistence`.
 - Improve testing for Firestore types.
 - Updated documented JS version to `8.2.0`.
