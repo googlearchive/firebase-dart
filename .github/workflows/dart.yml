@@ -1,4 +1,4 @@
-# Created with package:mono_repo v3.4.2
+# Created with package:mono_repo v3.4.3
 name: Dart CI
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
       - run: dart --version
       - uses: actions/checkout@v2
       - name: mono_repo self validate
-        run: pub global activate mono_repo 3.4.2
+        run: pub global activate mono_repo 3.4.3
       - name: mono_repo self validate
         run: pub global run mono_repo generate --validate
   job_002:
@@ -63,11 +63,11 @@ jobs:
         working-directory: _shared_assets
         run: pub upgrade --no-precompile
       - name: "_shared_assets; dartfmt -n --set-exit-if-changed ."
-        if: "steps._shared_assets_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps._shared_assets_pub_upgrade.conclusion == 'success'"
         working-directory: _shared_assets
         run: dartfmt -n --set-exit-if-changed .
       - name: "_shared_assets; dartanalyzer --fatal-infos ."
-        if: "steps._shared_assets_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps._shared_assets_pub_upgrade.conclusion == 'success'"
         working-directory: _shared_assets
         run: dartanalyzer --fatal-infos .
       - id: firebase_pub_upgrade
@@ -75,11 +75,11 @@ jobs:
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; dartfmt -n --set-exit-if-changed ."
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: dartfmt -n --set-exit-if-changed .
       - name: "firebase; dartanalyzer --fatal-infos ."
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: dartanalyzer --fatal-infos .
   job_003:
@@ -106,11 +106,11 @@ jobs:
         working-directory: _shared_assets
         run: pub upgrade --no-precompile
       - name: "_shared_assets; dartfmt -n --set-exit-if-changed ."
-        if: "steps._shared_assets_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps._shared_assets_pub_upgrade.conclusion == 'success'"
         working-directory: _shared_assets
         run: dartfmt -n --set-exit-if-changed .
       - name: "_shared_assets; dartanalyzer --fatal-infos ."
-        if: "steps._shared_assets_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps._shared_assets_pub_upgrade.conclusion == 'success'"
         working-directory: _shared_assets
         run: dartanalyzer --fatal-infos .
       - id: firebase_pub_upgrade
@@ -118,11 +118,11 @@ jobs:
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; dartfmt -n --set-exit-if-changed ."
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: dartfmt -n --set-exit-if-changed .
       - name: "firebase; dartanalyzer --fatal-infos ."
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: dartanalyzer --fatal-infos .
   job_004:
@@ -150,7 +150,7 @@ jobs:
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; pub run build_runner build example --fail-on-severe --delete-conflicting-outputs"
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
     needs:
@@ -181,7 +181,7 @@ jobs:
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; pub run build_runner build example --fail-on-severe --delete-conflicting-outputs"
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
     needs:
@@ -213,7 +213,7 @@ jobs:
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: "pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
     needs:
@@ -244,7 +244,7 @@ jobs:
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
-        if: "steps.firebase_pub_upgrade.conclusion == 'success'"
+        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: "pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
     needs:
