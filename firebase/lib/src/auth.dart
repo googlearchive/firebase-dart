@@ -277,6 +277,38 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// Currently signed-in [User].
   User get currentUser => User.getInstance(jsObject.currentUser);
 
+  Completer<User> _currentUserAsyncCompleter;
+
+  /// If [currentUser] is not null, returns [currentUser], otherwise returns
+  /// `Future<User>` that will complete with the next [User] after sign-in
+  /// succeeds.
+  ///
+  /// Will never return `null`.
+  FutureOr<User> get currentUserAsync {
+    final current = currentUser;
+    if (current != null) {
+      return current;
+    }
+
+    if (_currentUserAsyncCompleter == null) {
+      _currentUserAsyncCompleter = Completer<User>();
+      final authStateChangedSub = onAuthStateChanged.listen(_authStateChanged);
+      _currentUserAsyncCompleter.future.then(
+        (_) => authStateChangedSub.cancel(),
+      );
+    }
+
+    return _currentUserAsyncCompleter.future;
+  }
+
+  void _authStateChanged(User user) {
+    if (user == null || _currentUserAsyncCompleter.isCompleted) {
+      return;
+    }
+    _currentUserAsyncCompleter.complete(user);
+    _currentUserAsyncCompleter = null;
+  }
+
   /// The current Auth instance's language code.
   /// When set to `null`, the default Firebase Console language setting
   /// is applied.
@@ -320,7 +352,10 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
       }
 
       _changeController = StreamController<User>.broadcast(
-          onListen: startListen, onCancel: stopListen, sync: true);
+        onListen: startListen,
+        onCancel: stopListen,
+        sync: true,
+      );
     }
     return _changeController.stream;
   }
