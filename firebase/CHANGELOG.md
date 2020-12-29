@@ -5,6 +5,7 @@
   - Added `merge` and `ignoreUndefinedProperties`.
 - Add optional `PersistenceSettings` parameter to `Firestore.enablePersistence`.
 - Improve testing for Firestore types.
+- `Auth`: added `FutureOr<User> get currentUserAsync`.
 - Updated documented JS version to `8.2.0`.
 
 ## 7.3.3

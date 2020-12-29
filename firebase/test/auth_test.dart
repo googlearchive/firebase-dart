@@ -5,8 +5,8 @@ import 'dart:core' hide print;
 import 'dart:core' as core show print;
 import 'dart:html';
 
-import 'package:firebase/firebase.dart';
 import 'package:_shared_assets/assets.dart';
+import 'package:firebase/firebase.dart';
 import 'package:test/test.dart';
 
 import 'test_util.dart';
@@ -269,6 +269,55 @@ void main() {
       }
       userCredential = null;
     });
+  });
+
+  test('waitCurrentUser', () async {
+    final authValue = auth();
+    expect(authValue.currentUser, isNull);
+
+    var currentUserAsync = authValue.currentUserAsync;
+
+    final userCredential = await authValue.signInAnonymously();
+
+    final user = await currentUserAsync;
+    addTearDown(() async {
+      if (user != null) {
+        await user.delete();
+      }
+    });
+
+    expect(user, same(authValue.currentUser));
+    expect(userCredential.user, same(authValue.currentUser));
+
+    currentUserAsync = authValue.currentUserAsync;
+    expect(
+      currentUserAsync,
+      isA<User>(),
+      reason: 'should be a User - not a Future',
+    );
+
+    await authValue.signOut();
+
+    expect(authValue.currentUser, isNull);
+
+    currentUserAsync = authValue.currentUserAsync;
+    expect(
+      currentUserAsync,
+      isA<Future>(),
+      reason: 'should be a User - not a Future',
+    );
+
+    final userCredential2 = await authValue.signInAnonymously();
+
+    final user2 = await currentUserAsync;
+    addTearDown(() async {
+      if (user2 != null) {
+        await user2.delete();
+      }
+    });
+
+    expect(user2, same(authValue.currentUser));
+    expect(userCredential2.user, same(authValue.currentUser));
   });
 
   group('user', () {
