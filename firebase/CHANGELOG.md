@@ -1,4 +1,4 @@
-## 8.0.0-dev
+## 8.0.0
 
 - Firestore `Settings`:
   - Removed deprecated `timestampsInSnapshots`.
