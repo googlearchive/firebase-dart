@@ -28,10 +28,10 @@ void main() {
     });
 
     test('httpsCallable', () async {
-      var data = {'text': 'firebase'};
-      var functionName = 'helloWorld';
+      final data = {'text': 'firebase'};
+      const functionName = 'helloWorld';
 
-      var result = await functions.httpsCallable(functionName).call(data);
+      final result = await functions.httpsCallable(functionName).call(data);
 
       expect(result.data['text'], 'hello world, firebase');
     });

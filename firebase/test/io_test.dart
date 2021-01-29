@@ -12,13 +12,13 @@ void main() {
   String testUri;
 
   setUpAll(() async {
-    var token = await getAccessToken(Client());
+    final token = await getAccessToken(Client());
     fbClient = FirebaseClient(token.data);
     databaseUri = await getDatabaseUri();
   });
 
   setUp(() {
-    var path = validDatePath();
+    final path = validDatePath();
     testUri = '$databaseUri/$path.json';
   });
 
@@ -34,12 +34,12 @@ void main() {
   });
 
   test('never-accessed path is null', () async {
-    var response = await fbClient.get(testUri);
+    final response = await fbClient.get(testUri);
     expect(response, isNull);
   });
 
   test('Uri is fine, too', () async {
-    var response = await fbClient.get(Uri.parse(testUri));
+    final response = await fbClient.get(Uri.parse(testUri));
     expect(response, isNull);
   });
 
@@ -55,7 +55,7 @@ void main() {
     var response = await fbClient.post(testUri, 'bob') as Map;
     expect(response, contains('name'));
 
-    var key = response['name'];
+    final key = response['name'];
 
     response = await fbClient.get(testUri);
     expect(response, {key: 'bob'});
@@ -65,7 +65,7 @@ void main() {
     var response = await fbClient.patch(testUri, {'someNewKey': 'bob'}) as Map;
     expect(response, contains('someNewKey'));
 
-    var key = 'someNewKey';
+    const key = 'someNewKey';
 
     response = await fbClient.get(testUri);
     expect(response, {key: 'bob'});

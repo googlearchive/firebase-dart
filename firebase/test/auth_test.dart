@@ -57,21 +57,21 @@ void main() {
       });
 
       test('type', () {
-        var verifier = RecaptchaVerifier('test-recaptcha');
+        final verifier = RecaptchaVerifier('test-recaptcha');
         expect(verifier.type, 'recaptcha');
       });
 
       test('render', () async {
-        var verifier = RecaptchaVerifier('test-recaptcha');
+        final verifier = RecaptchaVerifier('test-recaptcha');
         await verifier.render();
 
-        var iframe = document.querySelector('#test-recaptcha iframe');
+        final iframe = document.querySelector('#test-recaptcha iframe');
         expect(iframe, isNotNull);
         expect(iframe.getAttribute('src'), contains('recaptcha'));
       });
 
       test('clear', () async {
-        var verifier = RecaptchaVerifier('test-recaptcha');
+        final verifier = RecaptchaVerifier('test-recaptcha');
         await verifier.render();
 
         var iframe = document.querySelector('#test-recaptcha iframe');
@@ -91,11 +91,11 @@ void main() {
         expect(EmailAuthProvider.PROVIDER_ID, 'password');
       });
       test('instance', () {
-        var provider = EmailAuthProvider();
+        final provider = EmailAuthProvider();
         expect(provider.providerId, EmailAuthProvider.PROVIDER_ID);
       });
       test('credential', () {
-        var cred = EmailAuthProvider.credential('un', 'pw');
+        final cred = EmailAuthProvider.credential('un', 'pw');
         expect(cred.providerId, equals(EmailAuthProvider.PROVIDER_ID));
       });
     });
@@ -105,21 +105,21 @@ void main() {
         expect(FacebookAuthProvider.PROVIDER_ID, 'facebook.com');
       });
       test('instance', () {
-        var provider = FacebookAuthProvider();
+        final provider = FacebookAuthProvider();
         expect(provider.providerId, FacebookAuthProvider.PROVIDER_ID);
       });
       test('credential', () {
-        var cred = FacebookAuthProvider.credential('token');
+        final cred = FacebookAuthProvider.credential('token');
         expect(cred.providerId, equals(FacebookAuthProvider.PROVIDER_ID));
       });
       test('scope', () {
-        var provider = FacebookAuthProvider();
-        var providerWithScope = provider.addScope('user_birthday');
+        final provider = FacebookAuthProvider();
+        final providerWithScope = provider.addScope('user_birthday');
         expect(provider.providerId, equals(providerWithScope.providerId));
       });
       test('custom parameters', () {
-        var provider = FacebookAuthProvider();
-        var providerWithParameters =
+        final provider = FacebookAuthProvider();
+        final providerWithParameters =
             provider.setCustomParameters({'display': 'popup'});
         expect(provider.providerId, equals(providerWithParameters.providerId));
       });
@@ -127,17 +127,17 @@ void main() {
 
     group('OAuthProvider', () {
       test('instance', () {
-        var provider = OAuthProvider('example.com');
+        final provider = OAuthProvider('example.com');
         expect(provider.providerId, 'example.com');
       });
       test('scope', () {
-        var provider = OAuthProvider('example.com');
-        var providerWithScope = provider.addScope('email');
+        final provider = OAuthProvider('example.com');
+        final providerWithScope = provider.addScope('email');
         expect(provider.providerId, equals(providerWithScope.providerId));
       });
       test('custom parameters', () {
-        var provider = OAuthProvider('example.com');
-        var providerWithParameters =
+        final provider = OAuthProvider('example.com');
+        final providerWithParameters =
             provider.setCustomParameters({'display': 'popup'});
         expect(provider.providerId, equals(providerWithParameters.providerId));
       });
@@ -148,21 +148,21 @@ void main() {
         expect(GithubAuthProvider.PROVIDER_ID, 'github.com');
       });
       test('instance', () {
-        var provider = GithubAuthProvider();
+        final provider = GithubAuthProvider();
         expect(provider.providerId, GithubAuthProvider.PROVIDER_ID);
       });
       test('credential', () {
-        var cred = GithubAuthProvider.credential('token');
+        final cred = GithubAuthProvider.credential('token');
         expect(cred.providerId, equals(GithubAuthProvider.PROVIDER_ID));
       });
       test('scope', () {
-        var provider = GithubAuthProvider();
-        var providerWithScope = provider.addScope('repo');
+        final provider = GithubAuthProvider();
+        final providerWithScope = provider.addScope('repo');
         expect(provider.providerId, equals(providerWithScope.providerId));
       });
       test('custom parameters', () {
-        var provider = GithubAuthProvider();
-        var providerWithParameters =
+        final provider = GithubAuthProvider();
+        final providerWithParameters =
             provider.setCustomParameters({'allow_signup': 'false'});
         expect(provider.providerId, equals(providerWithParameters.providerId));
       });
@@ -173,22 +173,22 @@ void main() {
         expect(GoogleAuthProvider.PROVIDER_ID, 'google.com');
       });
       test('instance', () {
-        var provider = GoogleAuthProvider();
+        final provider = GoogleAuthProvider();
         expect(provider.providerId, GoogleAuthProvider.PROVIDER_ID);
       });
       test('credential', () {
-        var cred = GoogleAuthProvider.credential('idToken', 'accessToken');
+        final cred = GoogleAuthProvider.credential('idToken', 'accessToken');
         expect(cred.providerId, equals(GoogleAuthProvider.PROVIDER_ID));
       });
       test('scope', () {
-        var provider = GoogleAuthProvider();
-        var providerWithScope =
+        final provider = GoogleAuthProvider();
+        final providerWithScope =
             provider.addScope('https://www.googleapis.com/auth/plus.login');
         expect(provider.providerId, equals(providerWithScope.providerId));
       });
       test('custom parameters', () {
-        var provider = GoogleAuthProvider();
-        var providerWithParameters = provider
+        final provider = GoogleAuthProvider();
+        final providerWithParameters = provider
             .setCustomParameters({'login_hint': 'some_email@example.com'});
         expect(provider.providerId, equals(providerWithParameters.providerId));
       });
@@ -199,16 +199,16 @@ void main() {
         expect(TwitterAuthProvider.PROVIDER_ID, 'twitter.com');
       });
       test('instance', () {
-        var provider = TwitterAuthProvider();
+        final provider = TwitterAuthProvider();
         expect(provider.providerId, TwitterAuthProvider.PROVIDER_ID);
       });
       test('credential', () {
-        var cred = TwitterAuthProvider.credential('token', 'secret');
+        final cred = TwitterAuthProvider.credential('token', 'secret');
         expect(cred.providerId, equals(TwitterAuthProvider.PROVIDER_ID));
       });
       test('custom parameters', () {
-        var provider = TwitterAuthProvider();
-        var providerWithParameters =
+        final provider = TwitterAuthProvider();
+        final providerWithParameters =
             provider.setCustomParameters({'lang': 'es'});
         expect(provider.providerId, equals(providerWithParameters.providerId));
       });
@@ -219,11 +219,11 @@ void main() {
         expect(PhoneAuthProvider.PROVIDER_ID, 'phone');
       });
       test('instance', () {
-        var provider = PhoneAuthProvider();
+        final provider = PhoneAuthProvider();
         expect(provider.providerId, PhoneAuthProvider.PROVIDER_ID);
       });
       test('credential', () {
-        var cred = PhoneAuthProvider.credential('id', 'code');
+        final cred = PhoneAuthProvider.credential('id', 'code');
         expect(cred.providerId, equals(PhoneAuthProvider.PROVIDER_ID));
       });
     });
@@ -386,25 +386,25 @@ void main() {
       userCredential =
           await authValue.createUserWithEmailAndPassword(userEmail, 'janicka');
 
-      var token = await userCredential.user.getIdToken();
+      final token = await userCredential.user.getIdToken();
 
       // The following is a basic verification of a JWT token
       // See https://en.wikipedia.org/wiki/JSON_Web_Token
-      var split = token.split('.').map((t) {
+      final split = token.split('.').map((t) {
         // If `t.length` is not a multiple of 4, pad it to the right w/ `=`.
-        var originalLength = t.length;
-        var remainder = (originalLength / 4).ceil() * 4 - originalLength;
+        final originalLength = t.length;
+        final remainder = (originalLength / 4).ceil() * 4 - originalLength;
         t = "$t${'=' * remainder}";
         return base64Url.decode(t);
       }).toList();
 
       expect(split, hasLength(3));
 
-      var header = jsonDecode(utf8.decode(split.first));
+      final header = jsonDecode(utf8.decode(split.first));
       expect(header, isMap);
       expect(header, containsPair('alg', isNotEmpty));
 
-      var payload = jsonDecode(utf8.decode(split[1]));
+      final payload = jsonDecode(utf8.decode(split[1]));
       expect(payload, isMap);
       expect(payload, containsPair('email', userEmail));
     });
@@ -413,7 +413,7 @@ void main() {
       userCredential =
           await authValue.createUserWithEmailAndPassword(userEmail, 'janicka');
 
-      var token = await userCredential.user.getIdTokenResult();
+      final token = await userCredential.user.getIdTokenResult();
 
       expect(token.signInProvider, 'password');
 
@@ -467,8 +467,8 @@ void main() {
       userCredential = await authValue.signInAnonymously();
       expect(userCredential.user.isAnonymous, isTrue);
 
-      var credential = EmailAuthProvider.credential(userEmail, 'janicka');
-      var userCred = await userCredential.user.linkWithCredential(credential);
+      final credential = EmailAuthProvider.credential(userEmail, 'janicka');
+      final userCred = await userCredential.user.linkWithCredential(credential);
 
       expect(userCred.operationType, 'link');
       expect(userCred.user.uid, userCredential.user.uid);
@@ -480,8 +480,8 @@ void main() {
       userCredential =
           await authValue.createUserWithEmailAndPassword(userEmail, 'janicka');
 
-      var credential = EmailAuthProvider.credential(userEmail, 'janicka');
-      var userCred =
+      final credential = EmailAuthProvider.credential(userEmail, 'janicka');
+      final userCred =
           await userCredential.user.reauthenticateWithCredential(credential);
 
       expect(userCred.operationType, 'reauthenticate');
@@ -498,7 +498,7 @@ void main() {
     test('reauthenticate with bad credential fails', () async {
       userCredential =
           await authValue.createUserWithEmailAndPassword(userEmail, 'janicka');
-      var credential = EmailAuthProvider.credential(userEmail, 'something');
+      final credential = EmailAuthProvider.credential(userEmail, 'something');
 
       expect(
         userCredential.user.reauthenticateWithCredential(credential),
@@ -521,9 +521,9 @@ void main() {
       lastAuthEventUser = null;
       lastIdTokenChangedUser = null;
 
-      var credential = EmailAuthProvider.credential(userEmail, 'janicka');
+      final credential = EmailAuthProvider.credential(userEmail, 'janicka');
 
-      var userCred = await authValue.signInWithCredential(credential);
+      final userCred = await authValue.signInWithCredential(credential);
 
       // Firefox takes a second to get the event values that are checked below
       await _wait();
@@ -539,7 +539,7 @@ void main() {
     });
 
     test('signInWithEmailAndPassword', () async {
-      var credential =
+      final credential =
           await authValue.createUserWithEmailAndPassword(userEmail, 'janicka');
 
       expect(credential.user.email, userEmail);
@@ -549,7 +549,7 @@ void main() {
 
       await _wait();
 
-      var credential2 =
+      final credential2 =
           await authValue.signInWithEmailAndPassword(userEmail, 'janicka');
 
       expect(credential.user.email, credential2.user.email);
@@ -591,7 +591,7 @@ void main() {
       expect(userCredential, isNotNull);
       expect(userCredential.user.displayName, isNull);
 
-      var profile = UserProfile(displayName: 'Other User');
+      final profile = UserProfile(displayName: 'Other User');
       await userCredential.user.updateProfile(profile);
       expect(userCredential.user.displayName, 'Other User');
     });
@@ -599,7 +599,7 @@ void main() {
     test('toJson', () async {
       expect(userCredential, isNotNull);
 
-      var profile =
+      final profile =
           UserProfile(displayName: 'Other User', photoURL: 'http://google.com');
       await userCredential.user.updateProfile(profile);
 
@@ -611,7 +611,7 @@ void main() {
 
       await authValue.signOut();
       await authValue.signInAnonymously();
-      var user = authValue.currentUser;
+      final user = authValue.currentUser;
 
       userMap = user.toJson();
       expect(userMap, isNotNull);

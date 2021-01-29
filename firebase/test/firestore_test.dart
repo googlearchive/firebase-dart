@@ -22,11 +22,11 @@ Future _deleteCollection(
   int batchSize,
 }) async {
   batchSize ??= 4;
-  var query = collectionRef.orderBy('__name__').limit(batchSize);
+  final query = collectionRef.orderBy('__name__').limit(batchSize);
 
   int snapshotSize;
   do {
-    var snapshot = await query.get();
+    final snapshot = await query.get();
     snapshotSize = snapshot.size;
 
     // When there are no documents left, we are done
@@ -35,7 +35,7 @@ Future _deleteCollection(
     }
 
     // Delete documents in a batch
-    var batch = db.batch();
+    final batch = db.batch();
     for (var doc in snapshot.docs) {
       batch.delete(doc.ref);
     }
@@ -83,8 +83,8 @@ void main() {
 
   group('equality', () {
     test('GeoPoint', () {
-      var a = fs.GeoPoint(1, 2);
-      var b = fs.GeoPoint(1, 2);
+      final a = fs.GeoPoint(1, 2);
+      final b = fs.GeoPoint(1, 2);
       expect(a.isEqual(b), isTrue);
       expect(a.isEqual(a), isTrue);
       expect(b.isEqual(a), isTrue);
@@ -105,21 +105,21 @@ void main() {
     });
 
     test('FieldPath', () {
-      var a = fs.FieldPath('bob');
-      var b = fs.FieldPath('bob');
+      final a = fs.FieldPath('bob');
+      final b = fs.FieldPath('bob');
       expect(a.isEqual(b), isTrue);
       expect(a.isEqual(a), isTrue);
       expect(b.isEqual(a), isTrue);
     });
 
     test('Blob', () {
-      var a = fs.Blob.fromBase64String('AQIDBA==');
-      var b = fs.Blob.fromBase64String('AQIDBA==');
+      final a = fs.Blob.fromBase64String('AQIDBA==');
+      final b = fs.Blob.fromBase64String('AQIDBA==');
       expect(a.isEqual(b), isTrue);
       expect(a.isEqual(a), isTrue);
       expect(b.isEqual(a), isTrue);
 
-      var c = fs.Blob.fromUint8Array(Uint8List.fromList([1, 2, 3, 4]));
+      final c = fs.Blob.fromUint8Array(Uint8List.fromList([1, 2, 3, 4]));
       expect(a.isEqual(c), isTrue);
       expect(c.isEqual(a), isTrue);
     });
@@ -146,14 +146,14 @@ void main() {
     });
 
     test('create document with auto generated ID', () {
-      var docRef = ref.doc();
+      final docRef = ref.doc();
 
       expect(docRef, isNotNull);
       expect(docRef.id, isNotEmpty);
     });
 
     test('create document', () {
-      var docRef = ref.doc('message1');
+      final docRef = ref.doc('message1');
 
       expect(docRef, isNotNull);
       expect(docRef.id, 'message1');
@@ -162,20 +162,20 @@ void main() {
     });
 
     test('get document in collection', () {
-      var docRef = ref.doc('message2');
-      var docRefSecond = firestore.doc('messages/message2');
+      final docRef = ref.doc('message2');
+      final docRefSecond = firestore.doc('messages/message2');
       expect(docRefSecond, isNotNull);
       expect(docRefSecond.id, docRef.id);
     });
 
     test('get document in collection of document', () {
-      var docRef = ref.doc('message3').collection('words').doc('word1');
+      final docRef = ref.doc('message3').collection('words').doc('word1');
       expect(docRef, isNotNull);
       expect(docRef.id, 'word1');
     });
 
     test('collection path', () {
-      var childRef = firestore.collection('${ref.path}/message4/words');
+      final childRef = firestore.collection('${ref.path}/message4/words');
       expect(childRef, isNotNull);
       expect(childRef.id, 'words');
       expect(childRef.parent.id, 'message4');
@@ -197,8 +197,8 @@ void main() {
     });
 
     test('ref is equal', () async {
-      var a = firestore.collection('a');
-      var b = firestore.collection('a');
+      final a = firestore.collection('a');
+      final b = firestore.collection('a');
 
       expect(a.isEqual(b), isTrue);
       expect(a.isEqual(ref), isFalse);
@@ -208,16 +208,16 @@ void main() {
     });
 
     test('delete collection', () async {
-      var nycRef = ref.doc('NYC');
+      final nycRef = ref.doc('NYC');
       await nycRef.set({'name': 'NYC'});
-      var sfRef = ref.doc('SF');
+      final sfRef = ref.doc('SF');
       await sfRef.set({'name': 'SF', 'population': 0});
-      var laRef = ref.doc('LA');
+      final laRef = ref.doc('LA');
       await laRef.set({'name': 'LA'});
 
       await _deleteCollection(firestore, ref);
 
-      var snapshot = await ref.get();
+      final snapshot = await ref.get();
       expect(snapshot.empty, isTrue);
       expect(snapshot.docs.isEmpty, isTrue);
     });
@@ -229,24 +229,24 @@ void main() {
       await nycRef.delete();
       nycRef = ref.doc('NYC');
 
-      var snapshot = await nycRef.get();
+      final snapshot = await nycRef.get();
       expect(snapshot.exists, isFalse);
     });
 
     test('snapshot is equal', () async {
-      var aRef = ref.doc('a');
-      var bRef = ref.doc('b');
+      final aRef = ref.doc('a');
+      final bRef = ref.doc('b');
 
-      var a = await aRef.get();
-      var b = await aRef.get();
-      var c = await bRef.get();
+      final a = await aRef.get();
+      final b = await aRef.get();
+      final c = await bRef.get();
 
       expect(a.isEqual(b), isTrue);
       expect(a.isEqual(c), isFalse);
     });
 
     test('delete fields', () async {
-      var nycRef = ref.doc('NYC');
+      final nycRef = ref.doc('NYC');
       await nycRef.set({'name': 'New York', 'population': 1000});
 
       var snapshot = await nycRef.get();
@@ -263,16 +263,16 @@ void main() {
     });
 
     test('set document', () async {
-      var docRef = ref.doc('message1');
+      final docRef = ref.doc('message1');
       await docRef.set({'text': 'Hi!'});
 
-      var snapshot = await docRef.get();
+      final snapshot = await docRef.get();
       expect(snapshot.id, 'message1');
       expect(snapshot.exists, true);
     });
 
     test('set overwrites document', () async {
-      var docRef = ref.doc('message2');
+      final docRef = ref.doc('message2');
 
       await docRef.set({'text': 'Message2'});
       var snapshot = await docRef.get();
@@ -290,7 +290,7 @@ void main() {
     });
 
     test('set with merge', () async {
-      var docRef = ref.doc('message3');
+      final docRef = ref.doc('message3');
 
       await docRef.set({'text': 'Message3'});
       var snapshot = await docRef.get();
@@ -308,18 +308,18 @@ void main() {
     });
 
     test('reference values', () async {
-      var ref = firestore.collection(testPath);
-      var mapValue = DateTime.now().toIso8601String();
-      var documentToReference = ref.doc('reference_target');
+      final ref = firestore.collection(testPath);
+      final mapValue = DateTime.now().toIso8601String();
+      final documentToReference = ref.doc('reference_target');
       await documentToReference.set({'value': mapValue});
 
-      var docWithReference = ref.doc('doc');
+      final docWithReference = ref.doc('doc');
       await docWithReference.set({'ref': documentToReference});
 
-      var snapshot = await docWithReference.get();
+      final snapshot = await docWithReference.get();
 
       Future validateValue(fs.DocumentReference ref) async {
-        var mySnap = await ref.get();
+        final mySnap = await ref.get();
         expect(mySnap.get('value'), mapValue);
       }
 
@@ -328,7 +328,7 @@ void main() {
     });
 
     group('validate simple types', () {
-      var map = <String, Object>{
+      final map = <String, Object>{
         'string': 'Hello world!',
         'bool': true,
         'num': 3.14159265,
@@ -369,13 +369,13 @@ void main() {
       for (var key in map.keys) {
         final value = map[key];
         test(key, () async {
-          var ref = firestore.collection(testPath);
-          var docRef = ref.doc('types');
+          final ref = firestore.collection(testPath);
+          final docRef = ref.doc('types');
           await docRef.set({'value': value});
-          var snapshot = await docRef.get();
+          final snapshot = await docRef.get();
 
-          var snapshotDataValue = snapshot.data()['value'];
-          var snapshotGetValue = snapshot.get('value');
+          final snapshotDataValue = snapshot.data()['value'];
+          final snapshotGetValue = snapshot.get('value');
 
           if (value is DateTime) {
             expectSameMoment(snapshotDataValue, value);
@@ -397,15 +397,15 @@ void main() {
     });
 
     test('get field', () async {
-      var docRef = ref.doc('message4');
+      final docRef = ref.doc('message4');
 
-      var map = {
+      final map = {
         'stringExample': 'Hello world!',
         'innerMap': {'someNumber': 3.14159265}
       };
 
       await docRef.set(map);
-      var snapshot = await docRef.get();
+      final snapshot = await docRef.get();
 
       expect(snapshot.get('stringExample'), 'Hello world!');
       expect(snapshot.get('innerMap.someNumber'), 3.14159265);
@@ -414,7 +414,7 @@ void main() {
     });
 
     test('add document', () async {
-      var docRef = await ref.add({'text': 'MessageAdd'});
+      final docRef = await ref.add({'text': 'MessageAdd'});
 
       expect(docRef, isNotNull);
       expect(docRef.id, isNotNull);
@@ -422,7 +422,7 @@ void main() {
     });
 
     test('update document with Map', () async {
-      var docRef = await ref.add({'text': 'Ahoj'});
+      final docRef = await ref.add({'text': 'Ahoj'});
       await docRef.update(data: {'text': 'Ahoj2'});
 
       var snapshot = await docRef.get();
@@ -440,17 +440,17 @@ void main() {
     });
 
     test('update with serverTimestamp', () async {
-      var docRef = await ref.add({'text': 'Good night'});
+      final docRef = await ref.add({'text': 'Good night'});
       await docRef.update(data: {'timestamp': fs.FieldValue.serverTimestamp()});
 
-      var snapshot = await docRef.get();
-      var timeStamp = snapshot.data()['timestamp'];
+      final snapshot = await docRef.get();
+      final timeStamp = snapshot.data()['timestamp'];
 
       expect(timeStamp, isA<DateTime>());
     });
 
     test('increment', () async {
-      var docRef = ref.doc('increment');
+      final docRef = ref.doc('increment');
 
       await docRef.set({
         'increment': {'int': 1, 'double': 3.141, 'nonnumber': 'firebase'}
@@ -464,8 +464,8 @@ void main() {
         }
       }, fs.SetOptions(merge: true));
 
-      var snapshot = await docRef.get();
-      var snapshotData = snapshot.data();
+      final snapshot = await docRef.get();
+      final snapshotData = snapshot.data();
 
       expect(snapshotData, {
         'increment': {'int': 101, 'double': 4.759, 'nonnumber': 42}
@@ -473,19 +473,19 @@ void main() {
     });
 
     test('update nested with dot notation', () async {
-      var docRef = await ref.add({
+      final docRef = await ref.add({
         'greeting': {'text': 'Good Morning'}
       });
       await docRef.update(data: {'greeting.text': 'Good Morning after update'});
 
-      var snapshot = await docRef.get();
-      var snapshotData = snapshot.data();
+      final snapshot = await docRef.get();
+      final snapshotData = snapshot.data();
 
       expect(snapshotData['greeting']['text'], 'Good Morning after update');
     });
 
     test('update with FieldPath', () async {
-      var docRef = await ref.add({
+      final docRef = await ref.add({
         'greeting': {'text': 'Good Evening'}
       });
       await docRef.update(fieldsAndValues: [
@@ -495,15 +495,15 @@ void main() {
         'Dobry vecer po uprave'
       ]);
 
-      var snapshot = await docRef.get();
-      var snapshotData = snapshot.data();
+      final snapshot = await docRef.get();
+      final snapshotData = snapshot.data();
 
       expect(snapshotData['greeting']['text'], 'Good Evening after update');
       expect(snapshotData['greeting']['text_cs'], 'Dobry vecer po uprave');
     });
 
     test('update with alternating fields as Strings and values', () async {
-      var docRef = await ref.add({
+      final docRef = await ref.add({
         'greeting': {'text': 'Hello'}
       });
       await docRef.update(fieldsAndValues: [
@@ -513,15 +513,15 @@ void main() {
         'Ahoj po uprave'
       ]);
 
-      var snapshot = await docRef.get();
-      var snapshotData = snapshot.data();
+      final snapshot = await docRef.get();
+      final snapshotData = snapshot.data();
 
       expect(snapshotData['greeting']['text'], 'Hello after update');
       expect(snapshotData['greeting']['text_cs'], 'Ahoj po uprave');
     });
 
     test('array field value', () async {
-      var docRef = ref.doc('array_field_value');
+      final docRef = ref.doc('array_field_value');
 
       // Make sure FieldValue class is exported by using it here
       final fieldValueArrayUnion = fs.FieldValue.arrayUnion([1, 2]);
@@ -561,7 +561,7 @@ void main() {
       );
 
       // update and remove some data
-      var updateData = {
+      final updateData = {
         'array': fs.FieldValue.arrayUnion([2, 3]),
         'array2': fs.FieldValue.arrayRemove([11, 12]),
         // try to remove a complex object
@@ -590,41 +590,42 @@ void main() {
 
     group('transaction', () {
       test('simple', () async {
-        var docRef = ref.doc('message5');
+        final docRef = ref.doc('message5');
         await docRef.set({'text': 'Hi'});
 
         await firestore.runTransaction((transaction) async {
           transaction.update(docRef, data: {'text': 'Hi from transaction'});
         });
 
-        var snapshot = await docRef.get();
-        var snapshotData = snapshot.data();
+        final snapshot = await docRef.get();
+        final snapshotData = snapshot.data();
 
         expect(snapshotData['text'], 'Hi from transaction');
       });
 
       test('returns updated value', () async {
-        var docRef = ref.doc('message6');
+        final docRef = ref.doc('message6');
         await docRef.set({'text': 'Hi'});
 
-        var newValue = await firestore.runTransaction((transaction) async {
-          var documentSnapshot = await transaction.get(docRef);
-          var value = '${documentSnapshot.data()['text']} val from transaction';
+        final newValue = await firestore.runTransaction((transaction) async {
+          final documentSnapshot = await transaction.get(docRef);
+          final value =
+              '${documentSnapshot.data()['text']} val from transaction';
           transaction.update(docRef, data: {'text': value});
           return value;
         });
 
         expect(newValue, 'Hi val from transaction');
 
-        var snapshot = await docRef.get();
-        var snapshotData = snapshot.data();
+        final snapshot = await docRef.get();
+        final snapshotData = snapshot.data();
 
         expect(snapshotData['text'], newValue);
       });
 
       test('fails', () async {
         // update is before get -> transaction fails
-        var docRef = ref.doc('message7');
+        final docRef = ref.doc('message7');
         await docRef.set({'text': 'Hi'});
 
         expect(
@@ -641,7 +642,7 @@ void main() {
       });
 
       test('with FieldPath', () async {
-        var docRef = ref.doc('message8');
+        final docRef = ref.doc('message8');
         await docRef.set({
           'description': {'text': 'Good morning!!!'}
         });
@@ -655,8 +656,8 @@ void main() {
           ]);
         });
 
-        var snapshot = await docRef.get();
-        var snapshotData = snapshot.data();
+        final snapshot = await docRef.get();
+        final snapshotData = snapshot.data();
 
         expect(
           snapshotData['description']['text'],
@@ -670,7 +671,7 @@ void main() {
 
       test('transaction with alternating fields as Strings and values',
           () async {
-        var docRef = ref.doc('message8');
+        final docRef = ref.doc('message8');
         await docRef.set({
           'description': {'text': 'Good morning!!!'}
         });
@@ -684,8 +685,8 @@ void main() {
           ]);
         });
 
-        var snapshot = await docRef.get();
-        var snapshotData = snapshot.data();
+        final snapshot = await docRef.get();
+        final snapshotData = snapshot.data();
 
         expect(
           snapshotData['description']['text'],
@@ -699,17 +700,17 @@ void main() {
     });
 
     test('WriteBatch operations', () async {
-      var nycRef = ref.doc('NYC');
+      final nycRef = ref.doc('NYC');
       await nycRef.set({'name': 'NYC'});
-      var sfRef = ref.doc('SF');
+      final sfRef = ref.doc('SF');
       await sfRef.set({'name': 'SF', 'population': 0});
-      var laRef = ref.doc('LA');
+      final laRef = ref.doc('LA');
       await laRef.set({'name': 'LA'});
 
       var collectionSnapshot = await ref.get();
       expect(collectionSnapshot.size, 3);
 
-      var batch = firestore.batch();
+      final batch = firestore.batch();
       batch.set(nycRef, {'name': 'New York'});
       batch.update(sfRef, data: {'population': 1000000});
       batch.delete(laRef);
@@ -728,13 +729,13 @@ void main() {
     });
 
     test('WriteBatch operations with FieldPath', () async {
-      var sfRef = ref.doc('SF');
+      final sfRef = ref.doc('SF');
       await sfRef.set({
         'name': {'short': 'SF'},
         'population': 0
       });
 
-      var batch = firestore.batch();
+      final batch = firestore.batch();
       batch.update(sfRef, fieldsAndValues: [
         fs.FieldPath('name', 'long'),
         'San Francisco',
@@ -743,21 +744,21 @@ void main() {
       ]);
       await batch.commit();
 
-      var snapshot = await sfRef.get();
-      var snapshotData = snapshot.data();
+      final snapshot = await sfRef.get();
+      final snapshotData = snapshot.data();
 
       expect(snapshotData['name']['long'], 'San Francisco');
       expect(snapshotData['population'], 1000000);
     });
 
     test('WriteBatch with alternating fields as Strings and values', () async {
-      var sfRef = ref.doc('SF');
+      final sfRef = ref.doc('SF');
       await sfRef.set({
         'name': {'short': 'SF'},
         'population': 0
       });
 
-      var batch = firestore.batch();
+      final batch = firestore.batch();
       batch.update(sfRef, fieldsAndValues: [
         'name.long',
         'San Francisco',
@@ -766,8 +767,8 @@ void main() {
       ]);
       await batch.commit();
 
-      var snapshot = await sfRef.get();
-      var snapshotData = snapshot.data();
+      final snapshot = await sfRef.get();
+      final snapshotData = snapshot.data();
 
       expect(snapshotData['name']['long'], 'San Francisco');
       expect(snapshotData['population'], 1000000);
@@ -775,15 +776,15 @@ void main() {
   });
 
   test('metadata docChanges', () async {
-    var ref = firestore.collection('$testPath/with/index');
+    final ref = firestore.collection('$testPath/with/index');
 
     await _deleteCollection(firestore, ref);
 
     var count = 0;
     ref.onSnapshotMetadata.listen(expectAsync1((qs) {
       count++;
-      var metadata = qs.metadata;
-      var changes = qs.docChanges();
+      final metadata = qs.metadata;
+      final changes = qs.docChanges();
       switch (count) {
         case 1:
           expect(changes.single.type, 'added');
@@ -848,34 +849,34 @@ void main() {
     });
 
     test('get document data', () async {
-      var docRef = ref.doc('message1');
-      var snapshot = await docRef.get();
+      final docRef = ref.doc('message1');
+      final snapshot = await docRef.get();
       expect(snapshot, isNotNull);
       expect(snapshot.exists, isTrue);
 
-      var data = snapshot.data();
+      final data = snapshot.data();
       expect(data, isNotNull);
       expect(data['text'], 'hello');
     });
 
     test('get nonexistent document', () async {
-      var docRef = ref.doc('message0');
-      var snapshot = await docRef.get();
+      final docRef = ref.doc('message0');
+      final snapshot = await docRef.get();
       expect(snapshot.exists, isFalse);
     });
 
     test('get documents where', () async {
-      var snapshot = await ref.where('new', '==', true).get();
+      final snapshot = await ref.where('new', '==', true).get();
       expect(snapshot.size, 2);
     });
 
     test('get documents where with FieldPath', () async {
-      var snapshot = await ref.where(fs.FieldPath('new'), '==', true).get();
+      final snapshot = await ref.where(fs.FieldPath('new'), '==', true).get();
       expect(snapshot.size, 2);
     });
 
     test('get documents using compound query', () async {
-      var snapshot =
+      final snapshot =
           await ref.where('new', '==', true).where('text', '==', 'hello').get();
       expect(snapshot.size, 1);
       expect(snapshot.docs.length, 1);
@@ -883,11 +884,11 @@ void main() {
     });
 
     test('query snapshot is equal', () async {
-      var snapshotA =
+      final snapshotA =
           await ref.where('new', '==', true).where('text', '==', 'hello').get();
-      var snapshotB =
+      final snapshotB =
           await ref.where('new', '==', true).where('text', '==', 'hello').get();
-      var snapshotC = await ref
+      final snapshotC = await ref
           .where('new', '==', false)
           .where('text', '==', 'hello')
           .get();
@@ -897,7 +898,7 @@ void main() {
     });
 
     test('get all documents', () async {
-      var snapshot = await ref.get();
+      final snapshot = await ref.get();
       expect(snapshot.size, 4);
       expect(snapshot.docs, isNotEmpty);
       expect(snapshot.docs.length, snapshot.size);
@@ -908,8 +909,8 @@ void main() {
     });
 
     test('collectionGroup', () async {
-      var group = firestore.collectionGroup('index');
-      var snapshot = await group.get();
+      final group = firestore.collectionGroup('index');
+      final snapshot = await group.get();
 
       expect(snapshot.size, greaterThanOrEqualTo(4));
       expect(
@@ -920,9 +921,9 @@ void main() {
 
     group('onSnapshot', () {
       test('from ref', () async {
-        var snapshot = await ref.onSnapshot.first;
+        final snapshot = await ref.onSnapshot.first;
 
-        var size = snapshot.docs.length;
+        final size = snapshot.docs.length;
         expect(size, inInclusiveRange(1, 4));
 
         expect(snapshot.docChanges(), hasLength(size));
@@ -946,7 +947,7 @@ void main() {
       });
 
       test('from ref.doc', () async {
-        var doc = await ref.doc('message1').onSnapshot.first;
+        final doc = await ref.doc('message1').onSnapshot.first;
         expect(doc.exists, isTrue);
         expect(doc.data()['text'], 'hello');
       });
@@ -1035,7 +1036,7 @@ void main() {
     });
 
     test('get documents where with limit', () async {
-      var snapshot = await ref.where('new', '==', true).limit(1).get();
+      final snapshot = await ref.where('new', '==', true).limit(1).get();
       expect(snapshot.size, 1);
     });
 
@@ -1061,7 +1062,7 @@ void main() {
         {'text': 'description text'},
       );
 
-      var message2Snapshot = await ref.doc('message2').get();
+      final message2Snapshot = await ref.doc('message2').get();
       snapshot =
           await ref.orderBy('text').startAt(snapshot: message2Snapshot).get();
 
@@ -1085,7 +1086,7 @@ void main() {
 
       expect(snapshot.empty, isTrue);
 
-      var message2Snapshot = await ref.doc('message2').get();
+      final message2Snapshot = await ref.doc('message2').get();
       snapshot = await ref
           .orderBy('text')
           .startAfter(snapshot: message2Snapshot)
@@ -1110,7 +1111,7 @@ void main() {
 
       expect(snapshot.empty, isTrue);
 
-      var message2Snapshot = await ref.doc('message2').get();
+      final message2Snapshot = await ref.doc('message2').get();
       snapshot =
           await ref.orderBy('text').endBefore(snapshot: message2Snapshot).get();
 
@@ -1139,7 +1140,7 @@ void main() {
         {'text': 'description text'},
       );
 
-      var message2Snapshot = await ref.doc('message2').get();
+      final message2Snapshot = await ref.doc('message2').get();
       snapshot =
           await ref.orderBy('text').endAt(snapshot: message2Snapshot).get();
 

@@ -5,15 +5,15 @@ import 'package:js/js_util.dart' as util;
 import 'package:test/test.dart';
 
 void _testRoundTrip(Object value) {
-  var js = jsify(value);
-  var roundTrip = dartify(js);
+  final js = jsify(value);
+  final roundTrip = dartify(js);
   expect(roundTrip, value);
 }
 
 void main() {
   group('jsify and dartify', () {
     group('basic objects', () {
-      var jsonObjects = {
+      final jsonObjects = {
         'int': 0,
         'null': null,
         'string': 'string',
@@ -48,9 +48,9 @@ void main() {
         fail('Forgot to include the firestore JS library!');
       }
 
-      var value = util.callConstructor(geoClass, [45.5122, -122.6587]);
-      var js = jsify(value);
-      var roundTrip = dartify(js);
+      final value = util.callConstructor(geoClass, [45.5122, -122.6587]);
+      final js = jsify(value);
+      final roundTrip = dartify(js);
       expect(roundTrip, isA<GeoPoint>());
     });
   });

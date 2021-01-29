@@ -61,18 +61,18 @@ void main() {
     });
 
     test('has toJson', () {
-      var toJsonString = ref.toJson() as String;
+      final toJsonString = ref.toJson() as String;
       expect(toJsonString, startsWith(databaseUrl));
 
-      var uri = Uri.parse(ref.toJson() as String);
+      final uri = Uri.parse(ref.toJson() as String);
       expect(uri.pathSegments, hasLength(1));
     });
 
     test('remove', () async {
-      var eventFuture = ref.onValue.first;
+      final eventFuture = ref.onValue.first;
 
       await ref.remove();
-      var event = await eventFuture;
+      final event = await eventFuture;
 
       expect(event.snapshot.val(), isNull);
       expect(event.snapshot.toJson(), isNull);
@@ -94,26 +94,26 @@ void main() {
     });
 
     test('key', () {
-      var childRef = ref.child(key);
+      final childRef = ref.child(key);
       expect(key, childRef.key);
     });
 
     test('parent', () {
-      var childRef = ref.child('text');
+      final childRef = ref.child('text');
       expect(childRef.parent.toString(), ref.toString());
     });
 
     test('root', () {
-      var childRef = ref.child('text');
+      final childRef = ref.child('text');
       expect(childRef.root.toString(), contains(databaseUrl));
     });
 
     test('empty push and set', () async {
-      var childRef = ref.push();
+      final childRef = ref.push();
       expect(childRef.key, isNotNull);
       await childRef.set({'text': 'ahoj'});
 
-      var event = await childRef.once('value');
+      final event = await childRef.once('value');
       expect(event.snapshot.val()['text'], 'ahoj');
     });
 
@@ -122,26 +122,26 @@ void main() {
     });
 
     test('transaction', () async {
-      var childRef = ref.child('todos');
+      final childRef = ref.child('todos');
       await childRef.set('Cooking');
 
       await childRef
           .transaction((currentValue) => '$currentValue delicious dinner!');
 
-      var event = await childRef.once('value');
-      var val = event.snapshot.val();
+      final event = await childRef.once('value');
+      final val = event.snapshot.val();
       expect(val, isNot('Cooking'));
       expect(val, 'Cooking delicious dinner!');
     });
 
     test('distinctListeners', () async {
-      var sub1 = ref.onValue.listen(expectAsync1((event) {
+      final sub1 = ref.onValue.listen(expectAsync1((event) {
         // print('first listener called.');
       }, count: 1));
 
       addTearDown(sub1.cancel);
 
-      var sub2 = ref.onValue.listen(expectAsync1((event) {
+      final sub2 = ref.onValue.listen(expectAsync1((event) {
         // print('second listener called.');
       }, count: 0));
 
@@ -149,15 +149,15 @@ void main() {
         // print('second listener cancelled.')
       });
 
-      var anotherRef = database.ref('test');
-      var sub3 = anotherRef.onValue.listen(expectAsync1((event) {
+      final anotherRef = database.ref('test');
+      final sub3 = anotherRef.onValue.listen(expectAsync1((event) {
         // print('third listener called.');
       }, count: 1));
 
       addTearDown(sub3.cancel);
 
-      var yetAnotherRef = database.ref('test');
-      var sub4 = yetAnotherRef.onValue.listen(expectAsync1((event) {
+      final yetAnotherRef = database.ref('test');
+      final sub4 = yetAnotherRef.onValue.listen(expectAsync1((event) {
         // print('fourth listener called.');
       }, count: 0));
 
@@ -167,12 +167,12 @@ void main() {
     });
 
     test('onValue', () async {
-      var childRef = ref.child('todos');
+      final childRef = ref.child('todos');
       // ignore: unawaited_futures
       childRef.set(['Programming', 'Cooking', 'Walking with dog']);
 
-      var subscription = childRef.onValue.listen(expectAsync1((event) {
-        var todos = event.snapshot.val();
+      final subscription = childRef.onValue.listen(expectAsync1((event) {
+        final todos = event.snapshot.val();
         expect(todos, isNotNull);
         expect(todos.length, 3);
         expect(todos, contains('Programming'));
@@ -182,12 +182,12 @@ void main() {
     });
 
     test('onChildAdded', () async {
-      var childRef = ref.child('todos');
+      final childRef = ref.child('todos');
 
-      var todos = [];
+      final todos = [];
       var eventsCount = 0;
-      var subscription = childRef.onChildAdded.listen(expectAsync1((event) {
-        var val = event.snapshot.val();
+      final subscription = childRef.onChildAdded.listen(expectAsync1((event) {
+        final val = event.snapshot.val();
         todos.add(val);
         eventsCount++;
         expect(eventsCount, isNonZero);
@@ -203,13 +203,13 @@ void main() {
     });
 
     test('onChildRemoved', () async {
-      var childRef = ref.child('todos');
-      var childKey = childRef.push('Programming').key;
+      final childRef = ref.child('todos');
+      final childKey = childRef.push('Programming').key;
       childRef.push('Cooking');
       childRef.push('Walking with dog');
 
-      var subscription = childRef.onChildRemoved.listen(expectAsync1((event) {
-        var val = event.snapshot.val();
+      final subscription = childRef.onChildRemoved.listen(expectAsync1((event) {
+        final val = event.snapshot.val();
         expect(val, 'Programming');
         expect(val, isNot('Cooking'));
       }, count: 1));
@@ -219,13 +219,13 @@ void main() {
     });
 
     test('onChildChanged', () async {
-      var childRef = ref.child('todos');
-      var childKey = childRef.push('Programming').key;
+      final childRef = ref.child('todos');
+      final childKey = childRef.push('Programming').key;
       childRef.push('Cooking');
       childRef.push('Walking with dog');
 
-      var subscription = childRef.onChildChanged.listen(expectAsync1((event) {
-        var val = event.snapshot.val();
+      final subscription = childRef.onChildChanged.listen(expectAsync1((event) {
+        final val = event.snapshot.val();
         expect(val, 'Programming a Firebase lib');
         expect(val, isNot('Programming'));
         expect(val, isNot('Cooking'));
@@ -236,8 +236,8 @@ void main() {
     });
 
     test('onChildMoved', () async {
-      var childRef = ref.child('todos');
-      var childPushRef = childRef.push('Programming');
+      final childRef = ref.child('todos');
+      final childPushRef = childRef.push('Programming');
       // ignore: unawaited_futures
       childPushRef.setPriority(5);
       // ignore: unawaited_futures
@@ -245,9 +245,9 @@ void main() {
       // ignore: unawaited_futures
       childRef.push('Walking with dog').setPriority(15);
 
-      var subscription =
+      final subscription =
           childRef.orderByPriority().onChildMoved.listen(expectAsync1((event) {
-                var val = event.snapshot.val();
+                final val = event.snapshot.val();
                 expect(val, 'Programming');
                 expect(val, isNot('Cooking'));
               }, count: 1));
@@ -258,14 +258,14 @@ void main() {
     });
 
     test('endAt', () async {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       childRef.push('rose');
       childRef.push('tulip');
       childRef.push('chicory');
       childRef.push('sunflower');
 
-      var event = await childRef.orderByValue().endAt('rose').once('value');
-      var flowers = [];
+      final event = await childRef.orderByValue().endAt('rose').once('value');
+      final flowers = [];
       event.snapshot.forEach((snapshot) {
         flowers.add(snapshot.val());
       });
@@ -276,7 +276,7 @@ void main() {
     });
 
     test('endAt with wrong parameter', () {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       childRef.push({'name': 'rose'});
 
       expect(() => childRef.orderByValue().endAt({'name': 'rose'}),
@@ -284,14 +284,14 @@ void main() {
     });
 
     test('startAt', () async {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       childRef.push('rose');
       childRef.push('tulip');
       childRef.push('chicory');
       childRef.push('sunflower');
 
-      var event = await childRef.orderByValue().startAt('rose').once('value');
-      var flowers = [];
+      final event = await childRef.orderByValue().startAt('rose').once('value');
+      final flowers = [];
       event.snapshot.forEach((snapshot) {
         flowers.add(snapshot.val());
       });
@@ -302,7 +302,7 @@ void main() {
     });
 
     test('startAt with wrong parameter', () {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       childRef.push({'name': 'chicory'});
 
       expect(() => childRef.orderByValue().startAt({'name': 'chicory'}),
@@ -310,12 +310,12 @@ void main() {
     });
 
     test('equalTo', () async {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       childRef.push('rose');
       childRef.push('tulip');
 
-      var event = await childRef.orderByValue().equalTo('rose').once('value');
-      var flowers = [];
+      final event = await childRef.orderByValue().equalTo('rose').once('value');
+      final flowers = [];
       event.snapshot.forEach((snapshot) {
         flowers.add(snapshot.val());
       });
@@ -326,7 +326,7 @@ void main() {
     });
 
     test('equalTo with wrong parameter', () async {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       childRef.push({'name': 'sunflower'});
 
       expect(() => childRef.orderByValue().equalTo({'name': 'sunflower'}),
@@ -334,7 +334,7 @@ void main() {
     });
 
     test('isEqual', () async {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       childRef.push('rose');
       childRef.push('tulip');
       childRef.push('chicory');
@@ -344,7 +344,7 @@ void main() {
       expect(ref.child('flowers').isEqual(childRef), isTrue);
       expect(childRef.parent.isEqual(ref), isTrue);
 
-      var childQuery = childRef.limitToFirst(2);
+      final childQuery = childRef.limitToFirst(2);
       expect(childRef.limitToFirst(2).isEqual(childQuery), isTrue);
       expect(childRef.limitToLast(2).isEqual(childQuery), isFalse);
       expect(
@@ -352,14 +352,14 @@ void main() {
     });
 
     test('limitToFirst', () async {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       childRef.push('rose');
       childRef.push('tulip');
       childRef.push('chicory');
       childRef.push('sunflower');
 
-      var event = await childRef.orderByValue().limitToFirst(2).once('value');
-      var flowers = [];
+      final event = await childRef.orderByValue().limitToFirst(2).once('value');
+      final flowers = [];
       event.snapshot.forEach((snapshot) {
         flowers.add(snapshot.val());
       });
@@ -371,14 +371,14 @@ void main() {
     });
 
     test('limitToLast', () async {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       childRef.push('rose');
       childRef.push('tulip');
       childRef.push('chicory');
       childRef.push('sunflower');
 
-      var event = await childRef.orderByValue().limitToLast(1).once('value');
-      var flowers = [];
+      final event = await childRef.orderByValue().limitToLast(1).once('value');
+      final flowers = [];
       event.snapshot.forEach((snapshot) {
         flowers.add(snapshot.val());
       });
@@ -389,14 +389,14 @@ void main() {
     });
 
     test('orderByKey', () async {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       await childRef.child('one').set('rose');
       await childRef.child('two').set('tulip');
       await childRef.child('three').set('chicory');
       await childRef.child('four').set('sunflower');
 
-      var event = await childRef.orderByKey().once('value');
-      var flowers = [];
+      final event = await childRef.orderByKey().once('value');
+      final flowers = [];
       event.snapshot.forEach((snapshot) {
         flowers.add(snapshot.key);
       });
@@ -407,14 +407,14 @@ void main() {
     });
 
     test('orderByValue', () async {
-      var childRef = ref.child('flowers');
+      final childRef = ref.child('flowers');
       childRef.push('rose');
       childRef.push('tulip');
       childRef.push('chicory');
       childRef.push('sunflower');
 
-      var event = await childRef.orderByValue().once('value');
-      var flowers = [];
+      final event = await childRef.orderByValue().once('value');
+      final flowers = [];
       event.snapshot.forEach((snapshot) {
         flowers.add(snapshot.val());
       });
@@ -425,13 +425,13 @@ void main() {
     });
 
     test('orderByChild', () async {
-      var childRef = ref.child('people');
+      final childRef = ref.child('people');
       childRef.push({'name': 'Alex', 'age': 27});
       childRef.push({'name': 'Andrew', 'age': 43});
       childRef.push({'name': 'James', 'age': 12});
 
-      var event = await childRef.orderByChild('age').once('value');
-      var people = [];
+      final event = await childRef.orderByChild('age').once('value');
+      final people = [];
       event.snapshot.forEach((snapshot) {
         people.add(snapshot.val());
       });
@@ -442,7 +442,7 @@ void main() {
     });
 
     test('orderByPriority', () async {
-      var childRef = ref.child('people');
+      final childRef = ref.child('people');
       await childRef
           .child('one')
           .setWithPriority({'name': 'Alex', 'age': 27}, 10);
@@ -453,8 +453,8 @@ void main() {
           .child('three')
           .setWithPriority({'name': 'James', 'age': 12}, 700);
 
-      var event = await childRef.orderByPriority().once('value');
-      var people = [];
+      final event = await childRef.orderByPriority().once('value');
+      final people = [];
       event.snapshot.forEach((snapshot) {
         people.add(snapshot.val());
       });
@@ -465,7 +465,7 @@ void main() {
     });
 
     test('set with priority', () async {
-      var childRef = ref.child('people');
+      final childRef = ref.child('people');
       await childRef
           .child('one')
           .setWithPriority({'name': 'Alex', 'age': 27}, 1.0);
@@ -476,8 +476,8 @@ void main() {
           .child('three')
           .setWithPriority({'name': 'James', 'age': 12}, null);
 
-      var event = await childRef.once('value');
-      var priorities = [];
+      final event = await childRef.once('value');
+      final priorities = [];
       event.snapshot.forEach((snapshot) {
         priorities.add(snapshot.getPriority());
       });
@@ -490,7 +490,7 @@ void main() {
 
     test('update with complex object', () async {
       // Regression test for github.com/FirebaseExtended/firebase-dart/issues/173
-      var childRef = ref.child('people');
+      final childRef = ref.child('people');
       await childRef.child('one').update({
         'list': [
           {'key': 'value'}
@@ -499,7 +499,7 @@ void main() {
     });
 
     test('set with wrong priority type', () {
-      var childRef = ref.child('people');
+      final childRef = ref.child('people');
 
       expect(
           () => childRef

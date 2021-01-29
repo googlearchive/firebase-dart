@@ -4,7 +4,7 @@ import 'dart:html';
 import 'package:firebase/firebase.dart' as fb;
 import 'package:_shared_assets/assets.dart';
 
-void main() async {
+Future<void> main() async {
   //Use for firebase package development only
   await config();
 
@@ -52,8 +52,8 @@ class AuthApp {
 
     registerForm.onSubmit.listen((e) {
       e.preventDefault();
-      var emailValue = email.value.trim();
-      var passwordvalue = password.value.trim();
+      final emailValue = email.value.trim();
+      final passwordvalue = password.value.trim();
       _registerUser(emailValue, passwordvalue);
     });
 
@@ -85,12 +85,12 @@ class AuthApp {
     });
   }
 
-  void _registerUser(String email, String password) async {
+  Future<void> _registerUser(String email, String password) async {
     if (email.isNotEmpty && password.isNotEmpty) {
       var trySignin = false;
       try {
         // Modifies persistence state. More info: https://firebase.google.com/docs/auth/web/auth-state-persistence
-        var selectedPersistence = _getSelectedValue(persistenceState);
+        final selectedPersistence = _getSelectedValue(persistenceState);
         await auth.setPersistence(selectedPersistence);
         await auth.createUserWithEmailAndPassword(email, password);
       } on fb.FirebaseError catch (e) {
@@ -124,7 +124,7 @@ class AuthApp {
       password.value = '';
       error.text = '';
 
-      var data = <String, dynamic>{
+      final data = <String, dynamic>{
         'email': user.email,
         'emailVerified': user.emailVerified,
         'isAnonymous': user.isAnonymous,
@@ -134,7 +134,7 @@ class AuthApp {
 
       data.forEach((k, v) {
         if (v != null) {
-          var row = authInfo.addRow();
+          final row = authInfo.addRow();
 
           row.addCell()
             ..text = k

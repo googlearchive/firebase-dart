@@ -18,9 +18,7 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
       : super.fromJsObject(jsObject);
 
   /// Defines configuration for the Remote Config SDK.
-  RemoteConfigSettings get settings {
-    return RemoteConfigSettings._fromJsObject(jsObject.settings);
-  }
+  RemoteConfigSettings get settings => RemoteConfigSettings._fromJsObject(jsObject.settings);
 
   /// Contains default values for configs. To set default config, compose a map and then assign it to `defaultConfig`.
   /// Any modifications to the map after the assignment will not take effect.
@@ -34,9 +32,7 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
   /// defaultsMap['x'] = 1;                       // remoteConfig.defaultConfig will not be updated.
   /// remoteConfig.defaultConfig['x'] = 1;        // Runtime error: attempt to modify an unmodifiable map.
   /// ```
-  Map<String, dynamic> get defaultConfig {
-    return Map.unmodifiable(dartifyMap(jsObject.defaultConfig));
-  }
+  Map<String, dynamic> get defaultConfig => Map.unmodifiable(dartifyMap(jsObject.defaultConfig));
 
   set defaultConfig(Map<String, dynamic> value) {
     jsObject.defaultConfig = jsify(value);
@@ -72,26 +68,18 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
   ///  Makes the last fetched config available to the getters.
   ///  Returns a future which resolves to `true` if the current call activated the fetched configs.
   ///  If the fetched configs were already activated, the promise will resolve to `false`.
-  Future<bool> activate() async {
-    return handleThenable(jsObject.activate());
-  }
+  Future<bool> activate() async => handleThenable(jsObject.activate());
 
   ///  Ensures the last activated config are available to the getters.
-  Future<void> ensureInitialized() async {
-    return handleThenable(jsObject.ensureInitialized());
-  }
+  Future<void> ensureInitialized() async => handleThenable(jsObject.ensureInitialized());
 
   /// Fetches and caches configuration from the Remote Config service.
-  Future<void> fetch() async {
-    return handleThenable(jsObject.fetch());
-  }
+  Future<void> fetch() async => handleThenable(jsObject.fetch());
 
   /// Performs fetch and activate operations, as a convenience.
   /// Returns a promise which resolves to true if the current call activated the fetched configs.
   /// If the fetched configs were already activated, the promise will resolve to false.
-  Future<bool> fetchAndActivate() async {
-    return handleThenable(jsObject.fetchAndActivate());
-  }
+  Future<bool> fetchAndActivate() async => handleThenable(jsObject.fetchAndActivate());
 
   /// Returns all config values.
   Map<String, RemoteConfigValue> getAll() {
@@ -103,26 +91,18 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
 
   ///  Gets the value for the given key as a boolean.
   ///  Convenience method for calling `remoteConfig.getValue(key).asString()`.
-  bool getBoolean(String key) {
-    return jsObject.getBoolean(key);
-  }
+  bool getBoolean(String key) => jsObject.getBoolean(key);
 
   ///  Gets the value for the given key as a number.
   ///  Convenience method for calling `remoteConfig.getValue(key).asNumber()`.
-  num getNumber(String key) {
-    return jsObject.getNumber(key);
-  }
+  num getNumber(String key) => jsObject.getNumber(key);
 
   ///  Gets the value for the given key as a string.
   ///  Convenience method for calling `remoteConfig.getValue(key).asString()`.
-  String getString(String key) {
-    return jsObject.getString(key);
-  }
+  String getString(String key) => jsObject.getString(key);
 
   ///  Gets the value for the given key.
-  RemoteConfigValue getValue(String key) {
-    return RemoteConfigValue._fromJsObject(jsObject.getValue(key));
-  }
+  RemoteConfigValue getValue(String key) => RemoteConfigValue._fromJsObject(jsObject.getValue(key));
 
   void setLogLevel(RemoteConfigLogLevel value) {
     jsObject.setLogLevel(const {
@@ -141,19 +121,13 @@ class RemoteConfigValue extends JsObjectWrapper<ValueJsImpl> {
   /// Gets the value as a boolean.
   /// The following values (case insensitive) are interpreted as true:
   /// `"1"`, `"true"`, `"t"`, `"yes"`, `"y"`, `"on"`. Other values are interpreted as false.
-  bool asBoolean() {
-    return jsObject.asBoolean();
-  }
+  bool asBoolean() => jsObject.asBoolean();
 
   ///  Gets the value as a number. Returns `0` if the value is not a number.
-  num asNumber() {
-    return jsObject.asNumber();
-  }
+  num asNumber() => jsObject.asNumber();
 
   /// Gets the value as a string.
-  String asString() {
-    return jsObject.asString();
-  }
+  String asString() => jsObject.asString();
 
   /// Returns the source of the value.
   RemoteConfigValueSource getSource() {
@@ -190,9 +164,7 @@ class RemoteConfigSettings extends JsObjectWrapper<SettingsJsImpl> {
 
   ///  Defines the maximum age in milliseconds of an entry in the config cache before
   ///  it is considered stale. Defaults to twelve hours.
-  Duration get minimumFetchInterval {
-    return Duration(milliseconds: jsObject.minimumFetchIntervalMillis);
-  }
+  Duration get minimumFetchInterval => Duration(milliseconds: jsObject.minimumFetchIntervalMillis);
 
   set minimumFetchInterval(Duration value) {
     jsObject.minimumFetchIntervalMillis = value.inMilliseconds;
@@ -200,9 +172,7 @@ class RemoteConfigSettings extends JsObjectWrapper<SettingsJsImpl> {
 
   /// Defines the maximum amount of time to wait for a response when fetching
   /// configuration from the Remote Config server. Defaults to one minute.
-  Duration get fetchTimeoutMillis {
-    return Duration(milliseconds: jsObject.fetchTimeoutMillis);
-  }
+  Duration get fetchTimeoutMillis => Duration(milliseconds: jsObject.fetchTimeoutMillis);
 
   set fetchTimeoutMillis(Duration value) {
     jsObject.fetchTimeoutMillis = value.inMilliseconds;

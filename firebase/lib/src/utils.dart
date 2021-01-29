@@ -44,17 +44,15 @@ dynamic dartify(Object jsObject) {
 }
 
 Map<String, dynamic> dartifyMap(Object jsObject) {
-  var keys = js.objectKeys(jsObject);
-  var map = <String, dynamic>{};
+  final keys = js.objectKeys(jsObject);
+  final map = <String, dynamic>{};
   for (var key in keys) {
     map[key] = dartify(util.getProperty(jsObject, key));
   }
   return map;
 }
 
-dynamic jsifyList(Iterable list) {
-  return js.toJSArray(list.map(jsify).toList());
-}
+dynamic jsifyList(Iterable list) => js.toJSArray(list.map(jsify).toList());
 
 /// Returns the JS implementation from Dart Object.
 dynamic jsify(Object dartObject) {
@@ -71,7 +69,7 @@ dynamic jsify(Object dartObject) {
   }
 
   if (dartObject is Map) {
-    var jsMap = util.newObject();
+    final jsMap = util.newObject();
     dartObject.forEach((key, value) {
       util.setProperty(jsMap, key, jsify(value));
     });
@@ -130,17 +128,15 @@ Future<T> handleThenable<T>(PromiseJsImpl<T> thenable) async {
 
 /// Handles the [Future] object with the provided [mapper] function.
 PromiseJsImpl<S> handleFutureWithMapper<T, S>(
-    Future<T> future, S Function(T value) mapper) {
-  return PromiseJsImpl<S>(allowInterop((
+    Future<T> future, S Function(T value) mapper) => PromiseJsImpl<S>(allowInterop((
     void Function(S) resolve,
-    void Function(Object) reject,
+    Null Function(Object) reject,
   ) {
     future.then((value) {
-      var mappedValue = mapper(value);
+      final mappedValue = mapper(value);
       resolve(mappedValue);
     }).catchError(reject);
   }));
-}
 
 /// Resolves error.
 void Function(Object) resolveError(Completer c) =>

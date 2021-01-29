@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:service_worker/worker.dart' as sw;
+import 'package:http/http.dart';
 
 Map<String, dynamic> _configVal;
 
@@ -62,14 +62,14 @@ Future<dynamic> readServiceAccountJson() =>
 
 Future<dynamic> _readAssetJson(String assetFile) async {
   try {
-    var response = await sw.fetch('packages/_shared_assets/$assetFile');
-    if (response.status > 399) {
+    var response = await get('packages/_shared_assets/$assetFile');
+    if (response.statusCode > 399) {
       throw StateError(
-        'Problem with server: ${response.status} ${response.body}',
+        'Problem with server: ${response.statusCode} ${response.body}',
       );
     }
 
-    return jsonDecode(await response.text());
+    return jsonDecode(await response.body);
   } catch (e, stack) {
     print('Error getting `$assetFile`. Make sure it exists.');
     print(e);

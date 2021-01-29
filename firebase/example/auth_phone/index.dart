@@ -4,7 +4,7 @@ import 'dart:html';
 import 'package:firebase/firebase.dart' as fb;
 import 'package:_shared_assets/assets.dart';
 
-void main() async {
+Future<void> main() async {
   //Use for firebase package development only
   await config();
 
@@ -54,13 +54,13 @@ class PhoneAuthApp {
 
     registerForm.onSubmit.listen((e) {
       e.preventDefault();
-      var phoneValue = _phoneElement.value.trim();
+      final phoneValue = _phoneElement.value.trim();
       _registerUser(phoneValue);
     });
 
     verificationForm.onSubmit.listen((e) {
       e.preventDefault();
-      var codeValue = _codeElement.value.trim();
+      final codeValue = _codeElement.value.trim();
       _verifyUser(codeValue);
     });
 
@@ -96,7 +96,7 @@ class PhoneAuthApp {
     _initVerifier();
   }
 
-  void _registerUser(String phone) async {
+  Future<void> _registerUser(String phone) async {
     if (phone.isNotEmpty) {
       try {
         _registerSubmit.disabled = _phoneElement.disabled = true;
@@ -146,7 +146,7 @@ class PhoneAuthApp {
       error.text = '';
       authInfo.style.display = 'block';
 
-      var data = <String, dynamic>{
+      final data = <String, dynamic>{
         'email': user.email,
         'emailVerified': user.emailVerified,
         'isAnonymous': user.isAnonymous,
@@ -157,7 +157,7 @@ class PhoneAuthApp {
 
       data.forEach((k, v) {
         if (v != null) {
-          var row = authInfo.addRow();
+          final row = authInfo.addRow();
 
           row.addCell()
             ..text = k

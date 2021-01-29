@@ -109,7 +109,7 @@ class StorageReference
 
   /// Returns a long lived download URL for this reference.
   Future<Uri> getDownloadURL() async {
-    var uriString = await handleThenable(jsObject.getDownloadURL());
+    final uriString = await handleThenable(jsObject.getDownloadURL());
     return Uri.parse(uriString);
   }
 
@@ -286,10 +286,8 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   Future<UploadTaskSnapshot> _future;
 
   /// Returns the UploadTaskSnapshot when the upload successfully completes.
-  Future<UploadTaskSnapshot> get future {
-    return _future ??=
+  Future<UploadTaskSnapshot> get future => _future ??=
         handleThenable(jsObject).then(UploadTaskSnapshot.getInstance);
-  }
 
   /// Returns the upload task snapshot of the current task state.
   UploadTaskSnapshot get snapshot =>
@@ -316,13 +314,13 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   /// Stream for upload task state changed event.
   Stream<UploadTaskSnapshot> get onStateChanged {
     if (_changeController == null) {
-      var nextWrapper =
+      final nextWrapper =
           allowInterop((storage_interop.UploadTaskSnapshotJsImpl data) {
         _changeController.add(UploadTaskSnapshot.getInstance(data));
       });
 
-      var errorWrapper = allowInterop((e) => _changeController.addError(e));
-      var onCompletion = allowInterop(() {
+      final errorWrapper = allowInterop((e) => _changeController.addError(e));
+      final onCompletion = allowInterop(() {
         // Needing a block here (instead of an inline => function) seems to be a
         // dart-lang/sdk quirk/feature.
         // See https://github.com/dart-lang/sdk/issues/43781

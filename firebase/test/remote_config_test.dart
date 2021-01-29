@@ -40,7 +40,7 @@ void main() {
   });
 
   group('RemoteConfig', () {
-    final defaultParams = const {
+    const defaultParams = {
       'unit_test_string': 'default',
       'unit_test_number': 1,
       'unit_test_boolean': false,
@@ -48,7 +48,7 @@ void main() {
       'unit_test_local_number': 3.5,
       'unit_test_local_bool': true,
     };
-    final remoteParams = const {
+    const remoteParams = {
       'unit_test_string': 'remote',
       'unit_test_number': 2.5,
       'unit_test_boolean': true,
@@ -116,7 +116,7 @@ void main() {
         expect(v.asString(), '$expectedValue');
         expect(v.getSource(), RemoteConfigValueSource.remote);
       }
-      expect(rc.getAll().map((k, v) => MapEntry(k, '${v.asString()}')),
+      expect(rc.getAll().map((k, v) => MapEntry(k, v.asString())),
           mergedParams.map((k, v) => MapEntry(k, '$v')));
       for (var me in defaultParams.entries) {
         final dataType = me.key.split('_').last;
@@ -167,15 +167,13 @@ class RemoteConfigAdmin {
     _projectId = serviceAccountJson['project_id'];
   }
 
-  Map<String, dynamic> _createConfigDef(Map<String, dynamic> params) {
-    return {
+  Map<String, dynamic> _createConfigDef(Map<String, dynamic> params) => {
       'conditions': [],
       'parameters': params.map((k, v) => MapEntry(k, {
             'defaultValue': {'value': '$v'},
             'description': 'Created by firebase-dart unit tests'
           })),
     };
-  }
 
   String get _endpointUrl => 'https://firebaseremoteconfig.googleapis.com'
       '/v1/projects/$_projectId/remoteConfig';
