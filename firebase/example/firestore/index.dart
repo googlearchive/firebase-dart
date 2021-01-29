@@ -1,8 +1,8 @@
 import 'dart:html';
 
+import 'package:_shared_assets/assets.dart';
 import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firestore.dart';
-import 'package:_shared_assets/assets.dart';
 
 Future<void> main() async {
   //Use for firebase package development only
@@ -33,12 +33,12 @@ class MessagesApp {
 
   MessagesApp()
       : ref = fb.firestore().collection('pkg_firestore'),
-        messages = querySelector('#messages'),
-        newMessage = querySelector('#new_message'),
-        submit = querySelector('#submit'),
-        newMessageForm = querySelector('#new_message_form'),
-        disableNetwork = querySelector('#disable'),
-        enableNetwork = querySelector('#enable') {
+        messages = querySelector('#messages') as UListElement,
+        newMessage = querySelector('#new_message') as InputElement,
+        submit = querySelector('#submit') as InputElement,
+        newMessageForm = querySelector('#new_message_form') as FormElement,
+        disableNetwork = querySelector('#disable') as ButtonElement,
+        enableNetwork = querySelector('#enable') as ButtonElement {
     newMessage.disabled = false;
 
     submit.disabled = false;
@@ -58,7 +58,7 @@ class MessagesApp {
     newMessageForm.onSubmit.listen((e) async {
       e.preventDefault();
 
-      if (newMessage.value.trim().isNotEmpty) {
+      if (newMessage.value!.trim().isNotEmpty) {
         // store also created at for purposes of ordering
         final map = {'text': newMessage.value, 'createdAt': DateTime.now()};
 

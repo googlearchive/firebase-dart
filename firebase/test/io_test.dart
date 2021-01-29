@@ -1,19 +1,22 @@
 @TestOn('vm')
+import 'package:_shared_assets/assets_io.dart';
 import 'package:firebase/firebase_io.dart';
 import 'package:http/http.dart';
-import 'package:_shared_assets/assets_io.dart';
 import 'package:test/test.dart';
 
 import 'test_util.dart';
 
 void main() {
-  String databaseUri;
-  FirebaseClient fbClient;
-  String testUri;
+  late String databaseUri;
+  late FirebaseClient fbClient;
+  late String testUri;
 
   setUpAll(() async {
     final token = await getAccessToken(Client());
     fbClient = FirebaseClient(token.data);
+
+    addTearDown(fbClient.close);
+
     databaseUri = await getDatabaseUri();
   });
 
@@ -24,13 +27,6 @@ void main() {
 
   tearDown(() async {
     await fbClient.delete(testUri);
-    testUri = null;
-  });
-
-  tearDownAll(() {
-    if (fbClient != null) {
-      fbClient.close();
-    }
   });
 
   test('never-accessed path is null', () async {
@@ -75,7 +71,7 @@ void main() {
     final oneMinuteOld = DateTime.now().subtract(const Duration(minutes: 1));
 
     final rootPath = '$databaseUri/pkg_firebase_test.json';
-    final response = await fbClient.get(rootPath) as Map<String, dynamic>;
+    final response = await fbClient.get(rootPath) as Map<String, dynamic>?;
 
     if (response == null) {
       return;

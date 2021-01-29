@@ -47,18 +47,18 @@ abstract class AuthJsImpl {
 
   external void Function() onIdTokenChanged(
     nextOrObserver, [
-    void Function(dynamic) opt_error,
-    void Function() opt_completed,
+    void Function(Object) error,
+    void Function() completed,
   ]);
 
   external PromiseJsImpl<void> sendSignInLinkToEmail(
     String email, [
-    ActionCodeSettings actionCodeSettings,
+    ActionCodeSettings? actionCodeSettings,
   ]);
 
   external PromiseJsImpl<void> sendPasswordResetEmail(
     String email, [
-    ActionCodeSettings actionCodeSettings,
+    ActionCodeSettings? actionCodeSettings,
   ]);
 
   external PromiseJsImpl<void> setPersistence(String persistence);
@@ -66,7 +66,7 @@ abstract class AuthJsImpl {
   external PromiseJsImpl<UserCredentialJsImpl> signInAnonymously();
 
   external PromiseJsImpl<UserCredentialJsImpl> signInWithCredential(
-    OAuthCredential credential,
+    AuthCredential credential,
   );
 
   external PromiseJsImpl<UserCredentialJsImpl> signInWithCustomToken(
@@ -215,8 +215,8 @@ class GoogleAuthProviderJsImpl extends AuthProviderJsImpl {
   external GoogleAuthProviderJsImpl setCustomParameters(customOAuthParameters);
 
   external static OAuthCredential credential([
-    String idToken,
-    String accessToken,
+    String? idToken,
+    String? accessToken,
   ]);
 }
 
@@ -228,7 +228,7 @@ class OAuthProviderJsImpl extends AuthProviderJsImpl {
 
   external OAuthProviderJsImpl setCustomParameters(customOAuthParameters);
 
-  external OAuthCredential credential([String idToken, String accessToken]);
+  external OAuthCredential credential([String? idToken, String? accessToken]);
 }
 
 @JS('TwitterAuthProvider')
@@ -427,11 +427,11 @@ class AndroidSettings {
   });
 }
 
-/// https://firebase.google.com/docs/reference/js/firebase.auth#.UserCredential
+/// https://firebase.google.com/docs/reference/js/firebase.auth#usercredential
 @JS()
 @anonymous
 class UserCredentialJsImpl {
-  external UserJsImpl get user;
+  external UserJsImpl? get user;
 
   external OAuthCredential get credential;
 

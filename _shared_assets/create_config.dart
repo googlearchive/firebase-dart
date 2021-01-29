@@ -40,7 +40,7 @@ void main(List<String> args) {
     if (!Platform.environment.containsKey(entry.key)) {
       throw StateError('Missing needed environment variable ${entry.key}');
     }
-    final encodedValue = Platform.environment[entry.key];
+    final encodedValue = Platform.environment[entry.key] as String;
     if (encodedValue.isEmpty) {
       throw StateError('Environment variable ${entry.key} is empty!');
     }

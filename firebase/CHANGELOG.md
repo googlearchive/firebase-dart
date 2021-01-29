@@ -1,3 +1,7 @@
+## 9.0.0-nullsafety.0
+
+- Enable null safety
+
 ## 8.0.0
 
 - Firestore `Settings`:

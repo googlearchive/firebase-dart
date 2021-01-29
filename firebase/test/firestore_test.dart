@@ -19,7 +19,7 @@ import 'test_util.dart' show throwsToString, validDatePathComponent;
 Future _deleteCollection(
   fs.Firestore db,
   fs.CollectionReference collectionRef, {
-  int batchSize,
+  int? batchSize,
 }) async {
   batchSize ??= 4;
   final query = collectionRef.orderBy('__name__').limit(batchSize);
@@ -47,8 +47,8 @@ Future _deleteCollection(
 void main() {
   final testPath = 'pkg_firebase_test_${validDatePathComponent()}';
 
-  fb.App app;
-  fs.Firestore firestore;
+  late fb.App app;
+  late fs.Firestore firestore;
 
   setUpAll(() async {
     await config();
@@ -63,14 +63,9 @@ void main() {
       storageBucket: storageBucket,
     );
 
-    firestore = fb.firestore();
-  });
+    addTearDown(app.delete);
 
-  tearDown(() async {
-    if (app != null) {
-      await app.delete();
-      app = null;
-    }
+    firestore = fb.firestore();
   });
 
   group('instance', () {
@@ -126,17 +121,14 @@ void main() {
   });
 
   group('Collections and documents', () {
-    fs.CollectionReference ref;
+    late fs.CollectionReference ref;
 
     setUp(() {
       ref = firestore.collection(testPath);
-    });
 
-    tearDown(() async {
-      if (ref != null) {
+      addTearDown(() async {
         await _deleteCollection(firestore, ref);
-        ref = null;
-      }
+      });
     });
 
     test('collection exists', () {
@@ -183,17 +175,14 @@ void main() {
   });
 
   group('DocumentReference', () {
-    fs.CollectionReference ref;
+    late fs.CollectionReference ref;
 
     setUp(() {
       ref = firestore.collection(testPath);
-    });
 
-    tearDown(() async {
-      if (ref != null) {
+      addTearDown(() async {
         await _deleteCollection(firestore, ref);
-        ref = null;
-      }
+      });
     });
 
     test('ref is equal', () async {
@@ -328,7 +317,7 @@ void main() {
     });
 
     group('validate simple types', () {
-      final map = <String, Object>{
+      final map = <String, Object?>{
         'string': 'Hello world!',
         'bool': true,
         'num': 3.14159265,
@@ -382,11 +371,14 @@ void main() {
             expectSameMoment(snapshotGetValue, value);
           } else if (key == 'geoPoint') {
             // NOTE: `is` checks on interop objects always return true
-            expectSameGeo(snapshotDataValue, value);
+            expectSameGeo(snapshotDataValue, value as fs.GeoPoint);
             expectSameGeo(snapshotGetValue, value);
           } else if (key.startsWith('blob - ')) {
             // NOTE: `is` checks on interop objects always return true
-            expect((snapshotDataValue as fs.Blob).isEqual(value), isTrue);
+            expect(
+              (snapshotDataValue as fs.Blob).isEqual(value as fs.Blob),
+              isTrue,
+            );
             expect((snapshotGetValue as fs.Blob).isEqual(value), isTrue);
           } else {
             expect(snapshotDataValue, value);
@@ -820,12 +812,13 @@ void main() {
   });
 
   group('Quering data', () {
-    fs.CollectionReference ref;
+    late fs.CollectionReference ref;
 
     setUp(() async {
       ref = firestore.collection('$testPath/with/index');
 
       await _deleteCollection(firestore, ref);
+      addTearDown(() => _deleteCollection(firestore, ref));
 
       await ref
           .doc('message1')
@@ -839,13 +832,6 @@ void main() {
           .doc('message3')
           .set({'text': 'ahoj', 'lang': 'cs', 'new': true});
       await ref.doc('message4').set({'text': 'cau', 'lang': 'cs'});
-    });
-
-    tearDown(() async {
-      if (ref != null) {
-        await _deleteCollection(firestore, ref);
-        ref = null;
-      }
     });
 
     test('get document data', () async {

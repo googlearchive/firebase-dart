@@ -8,12 +8,8 @@ class Functions extends JsObjectWrapper<functions_interop.FunctionsJsImpl> {
   static final _expando = Expando<Functions>();
 
   /// Creates a new Functions from a [jsObject].
-  static Functions getInstance(functions_interop.FunctionsJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= Functions._fromJsObject(jsObject);
-  }
+  static Functions getInstance(functions_interop.FunctionsJsImpl jsObject) =>
+      _expando[jsObject] ??= Functions._fromJsObject(jsObject);
 
   Functions._fromJsObject(functions_interop.FunctionsJsImpl jsObject)
       : super.fromJsObject(jsObject);
@@ -21,7 +17,7 @@ class Functions extends JsObjectWrapper<functions_interop.FunctionsJsImpl> {
   Functions get functions => getInstance(jsObject);
 
   HttpsCallable httpsCallable(String name,
-      [functions_interop.HttpsCallableOptions options]) {
+      [functions_interop.HttpsCallableOptions? options]) {
     functions_interop.HttpsCallableJsImpl httpCallableImpl;
     if (options != null) {
       httpCallableImpl = jsObject.httpsCallable(name, options);
@@ -40,12 +36,8 @@ class HttpsCallable
 
   /// Creates a new HttpsCallable from a [jsObject].
   static HttpsCallable getInstance(
-      functions_interop.HttpsCallableJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= HttpsCallable._fromJsObject(jsObject);
-  }
+          functions_interop.HttpsCallableJsImpl jsObject) =>
+      _expando[jsObject] ??= HttpsCallable._fromJsObject(jsObject);
 
   HttpsCallable._fromJsObject(functions_interop.HttpsCallableJsImpl jsObject)
       : super.fromJsObject(jsObject);
@@ -61,12 +53,8 @@ class HttpsCallableResult
 
   /// Creates a new HttpsCallableResult from a [jsObject].
   static HttpsCallableResult getInstance(
-      functions_interop.HttpsCallableResultJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= HttpsCallableResult._fromJsObject(jsObject);
-  }
+          functions_interop.HttpsCallableResultJsImpl jsObject) =>
+      _expando[jsObject] ??= HttpsCallableResult._fromJsObject(jsObject);
 
   HttpsCallableResult._fromJsObject(
       functions_interop.HttpsCallableResultJsImpl jsObject)

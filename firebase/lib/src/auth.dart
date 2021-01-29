@@ -82,10 +82,8 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   /// returned instead of creating a new instance.
   ///
   /// If [jsObject] is `null`, `null` is returned.
-  static User getInstance(firebase_interop.UserJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
+  static User? getInstance(firebase_interop.UserJsImpl? jsObject) {
+    if (jsObject == null) return null;
     return _expando[jsObject] ??= User._fromJsObject(jsObject);
   }
 
@@ -107,7 +105,7 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
 
   /// Links the user account with the given credentials, and returns any
   /// available additional user information, such as user name.
-  Future<UserCredential> linkWithCredential(OAuthCredential credential) =>
+  Future<UserCredential> linkWithCredential(AuthCredential credential) =>
       handleThenable(jsObject.linkWithCredential(credential))
           .then((u) => UserCredential.fromJsObject(u));
 
@@ -136,7 +134,7 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   /// Re-authenticates a user using a fresh credential, and returns any
   /// available additional user information, such as user name.
   Future<UserCredential> reauthenticateWithCredential(
-          OAuthCredential credential) =>
+          AuthCredential credential) =>
       handleThenable(jsObject.reauthenticateWithCredential(credential))
           .then((o) => UserCredential.fromJsObject(o));
 
@@ -184,12 +182,14 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   ///
   /// The Android package name and iOS bundle ID will be respected only if
   /// they are configured in the same Firebase Auth project used.
-  Future<void> sendEmailVerification([ActionCodeSettings actionCodeSettings]) =>
+  Future<void> sendEmailVerification(
+          [ActionCodeSettings? actionCodeSettings]) =>
       handleThenable(jsObject.sendEmailVerification(actionCodeSettings));
 
   /// Unlinks a provider with [providerId] from a user account.
   Future<User> unlink(String providerId) =>
-      handleThenable(jsObject.unlink(providerId)).then(User.getInstance);
+      handleThenable(jsObject.unlink(providerId))
+          .then((v) => User.getInstance(v)!);
 
   /// Updates the user's e-mail address to [newEmail].
   Future<void> updateEmail(String newEmail) =>
@@ -209,7 +209,7 @@ class User extends UserInfo<firebase_interop.UserJsImpl> {
   Future<void> updateProfile(firebase_interop.UserProfile profile) =>
       handleThenable(jsObject.updateProfile(profile));
 
-  Future<IdTokenResult> getIdTokenResult([bool forceRefresh]) {
+  Future<IdTokenResult> getIdTokenResult([bool? forceRefresh]) {
     final promise = forceRefresh == null
         ? jsObject.getIdTokenResult()
         : jsObject.getIdTokenResult(forceRefresh);
@@ -275,9 +275,9 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   App get app => App.getInstance(jsObject.app);
 
   /// Currently signed-in [User].
-  User get currentUser => User.getInstance(jsObject.currentUser);
+  User? get currentUser => User.getInstance(jsObject.currentUser);
 
-  Completer<User> _currentUserAsyncCompleter;
+  Completer<User>? _currentUserAsyncCompleter;
 
   /// If [currentUser] is not null, returns [currentUser], otherwise returns
   /// `Future<User>` that will complete with the next [User] after sign-in
@@ -293,19 +293,19 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
     if (_currentUserAsyncCompleter == null) {
       _currentUserAsyncCompleter = Completer<User>();
       final authStateChangedSub = onAuthStateChanged.listen(_authStateChanged);
-      _currentUserAsyncCompleter.future.then(
+      _currentUserAsyncCompleter!.future.then(
         (_) => authStateChangedSub.cancel(),
       );
     }
 
-    return _currentUserAsyncCompleter.future;
+    return _currentUserAsyncCompleter!.future;
   }
 
-  void _authStateChanged(User user) {
-    if (user == null || _currentUserAsyncCompleter.isCompleted) {
+  void _authStateChanged(User? user) {
+    if (user == null || _currentUserAsyncCompleter!.isCompleted) {
       return;
     }
-    _currentUserAsyncCompleter.complete(user);
+    _currentUserAsyncCompleter!.complete(user);
     _currentUserAsyncCompleter = null;
   }
 
@@ -323,8 +323,8 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
     jsObject.languageCode = s;
   }
 
-  void Function() _onAuthUnsubscribe;
-  StreamController<User> _changeController;
+  void Function()? _onAuthUnsubscribe;
+  StreamController<User?>? _changeController;
 
   /// Sends events when the users sign-in state changes.
   ///
@@ -332,13 +332,13 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// To keep the old behavior, see [onIdTokenChanged].
   ///
   /// If the value is `null`, there is no signed-in user.
-  Stream<User> get onAuthStateChanged {
+  Stream<User?> get onAuthStateChanged {
     if (_changeController == null) {
       final nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
-        _changeController.add(User.getInstance(user));
+        _changeController!.add(User.getInstance(user));
       });
 
-      final errorWrapper = allowInterop((e) => _changeController.addError(e));
+      final errorWrapper = allowInterop((e) => _changeController!.addError(e));
 
       void startListen() {
         assert(_onAuthUnsubscribe == null);
@@ -347,7 +347,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
       }
 
       void stopListen() {
-        _onAuthUnsubscribe();
+        _onAuthUnsubscribe!();
         _onAuthUnsubscribe = null;
       }
 
@@ -357,11 +357,37 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
         sync: true,
       );
     }
-    return _changeController.stream;
+    return _changeController!.stream;
   }
 
-  void Function() _onIdTokenChangedUnsubscribe;
-  StreamController<User> _idTokenChangedController;
+  void Function()? _onIdTokenChangedUnsubscribe;
+  late final StreamController<User?> _idTokenChangedController =
+      _createIdTokenChangedController();
+
+  StreamController<User?> _createIdTokenChangedController() {
+    final nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
+      _idTokenChangedController.add(User.getInstance(user));
+    });
+
+    final errorWrapper = allowInterop(_idTokenChangedController.addError);
+
+    void startListen() {
+      assert(_onIdTokenChangedUnsubscribe == null);
+      _onIdTokenChangedUnsubscribe =
+          jsObject.onIdTokenChanged(nextWrapper, errorWrapper);
+    }
+
+    void stopListen() {
+      _onIdTokenChangedUnsubscribe!();
+      _onIdTokenChangedUnsubscribe = null;
+    }
+
+    return StreamController<User>.broadcast(
+      onListen: startListen,
+      onCancel: stopListen,
+      sync: true,
+    );
+  }
 
   /// Sends events for changes to the signed-in user's ID token,
   /// which includes sign-in, sign-out, and token refresh events.
@@ -369,39 +395,11 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// This method has the same behavior as [onAuthStateChanged] had prior to 4.0.0.
   ///
   /// If the value is `null`, there is no signed-in user.
-  Stream<User> get onIdTokenChanged {
-    if (_idTokenChangedController == null) {
-      final nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
-        _idTokenChangedController.add(User.getInstance(user));
-      });
-
-      final errorWrapper =
-          allowInterop((e) => _idTokenChangedController.addError(e));
-
-      void startListen() {
-        assert(_onIdTokenChangedUnsubscribe == null);
-        _onIdTokenChangedUnsubscribe =
-            jsObject.onIdTokenChanged(nextWrapper, errorWrapper);
-      }
-
-      void stopListen() {
-        _onIdTokenChangedUnsubscribe();
-        _onIdTokenChangedUnsubscribe = null;
-      }
-
-      _idTokenChangedController = StreamController<User>.broadcast(
-          onListen: startListen, onCancel: stopListen, sync: true);
-    }
-    return _idTokenChangedController.stream;
-  }
+  Stream<User?> get onIdTokenChanged => _idTokenChangedController.stream;
 
   /// Creates a new Auth from a [jsObject].
-  static Auth getInstance(AuthJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= Auth._fromJsObject(jsObject);
-  }
+  static Auth getInstance(AuthJsImpl jsObject) =>
+      _expando[jsObject] ??= Auth._fromJsObject(jsObject);
 
   Auth._fromJsObject(AuthJsImpl jsObject) : super.fromJsObject(jsObject);
 
@@ -470,7 +468,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// [Auth.signInWithEmailLink] with the email address and
   /// the email link supplied in the email sent to the user.
   Future sendSignInLinkToEmail(String email,
-          [ActionCodeSettings actionCodeSettings]) =>
+          [ActionCodeSettings? actionCodeSettings]) =>
       handleThenable(jsObject.sendSignInLinkToEmail(email, actionCodeSettings));
 
   /// Sends a password reset e-mail to the given [email].
@@ -493,7 +491,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// The Android package name and iOS bundle ID will be respected only if
   /// they are configured in the same Firebase Auth project used.
   Future sendPasswordResetEmail(String email,
-          [ActionCodeSettings actionCodeSettings]) =>
+          [ActionCodeSettings? actionCodeSettings]) =>
       handleThenable(
           jsObject.sendPasswordResetEmail(email, actionCodeSettings));
 
@@ -519,7 +517,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
 
   /// Asynchronously signs in with the given credentials, and returns any
   /// available additional user information, such as user name.
-  Future<UserCredential> signInWithCredential(OAuthCredential credential) =>
+  Future<UserCredential> signInWithCredential(AuthCredential credential) =>
       handleThenable(jsObject.signInWithCredential(credential))
           .then((u) => UserCredential.fromJsObject(u));
 
@@ -643,7 +641,7 @@ class EmailAuthProvider extends AuthProvider<EmailAuthProviderJsImpl> {
       : super.fromJsObject(jsObject);
 
   /// Creates a credential for e-mail.
-  static OAuthCredential credential(String email, String password) =>
+  static AuthCredential credential(String email, String password) =>
       EmailAuthProviderJsImpl.credential(email, password);
 }
 
@@ -753,7 +751,7 @@ class GoogleAuthProvider extends AuthProvider<GoogleAuthProviderJsImpl> {
 
   /// Creates a credential for Google.
   /// At least one of [idToken] and [accessToken] is required.
-  static OAuthCredential credential([String idToken, String accessToken]) =>
+  static OAuthCredential credential([String? idToken, String? accessToken]) =>
       GoogleAuthProviderJsImpl.credential(idToken, accessToken);
 }
 
@@ -785,7 +783,7 @@ class OAuthProvider extends AuthProvider<OAuthProviderJsImpl> {
 
   /// Creates a credential for Google.
   /// At least one of [idToken] and [accessToken] is required.
-  OAuthCredential credential([String idToken, String accessToken]) =>
+  OAuthCredential credential([String? idToken, String? accessToken]) =>
       jsObject.credential(idToken, accessToken);
 }
 
@@ -826,7 +824,7 @@ class PhoneAuthProvider extends AuthProvider<PhoneAuthProviderJsImpl> {
 
   /// Creates a new PhoneAuthProvider with the optional [Auth] instance
   /// in which sign-ins should occur.
-  factory PhoneAuthProvider([Auth auth]) =>
+  factory PhoneAuthProvider([Auth? auth]) =>
       PhoneAuthProvider.fromJsObject((auth != null)
           ? PhoneAuthProviderJsImpl(auth.jsObject)
           : PhoneAuthProviderJsImpl());
@@ -849,7 +847,7 @@ class PhoneAuthProvider extends AuthProvider<PhoneAuthProviderJsImpl> {
   /// Creates a phone auth credential given the verification ID
   /// from [verifyPhoneNumber] and the [verificationCode] that was sent to the
   /// user's mobile device.
-  static OAuthCredential credential(
+  static AuthCredential credential(
           String verificationId, String verificationCode) =>
       PhoneAuthProviderJsImpl.credential(verificationId, verificationCode);
 }
@@ -904,11 +902,13 @@ class RecaptchaVerifier extends ApplicationVerifier<RecaptchaVerifierJsImpl> {
   ///       }
   ///     });
   factory RecaptchaVerifier(container,
-          [Map<String, dynamic> parameters, App app]) =>
+          [Map<String, dynamic>? parameters, App? app]) =>
       (parameters != null)
           ? ((app != null)
-              ? RecaptchaVerifier.fromJsObject(RecaptchaVerifierJsImpl(
-                  container, jsify(parameters), app.jsObject))
+              ? RecaptchaVerifier.fromJsObject(
+                  RecaptchaVerifierJsImpl(
+                      container, jsify(parameters), app.jsObject),
+                )
               : RecaptchaVerifier.fromJsObject(
                   RecaptchaVerifierJsImpl(container, jsify(parameters))))
           : RecaptchaVerifier.fromJsObject(RecaptchaVerifierJsImpl(container));
@@ -952,7 +952,7 @@ class ConfirmationResult extends JsObjectWrapper<ConfirmationResultJsImpl> {
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth#.UserCredential>
 class UserCredential extends JsObjectWrapper<UserCredentialJsImpl> {
   /// Returns the user.
-  User get user => User.getInstance(jsObject.user);
+  User? get user => User.getInstance(jsObject.user)!;
 
   /// Returns the auth credential.
   OAuthCredential get credential => jsObject.credential;

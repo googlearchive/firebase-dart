@@ -1,7 +1,7 @@
 import 'dart:html';
 
-import 'package:firebase/firebase.dart' as fb;
 import 'package:_shared_assets/assets.dart';
+import 'package:firebase/firebase.dart' as fb;
 
 Future<void> main() async {
   //Use for firebase package development only
@@ -29,10 +29,10 @@ class MessagesApp {
 
   MessagesApp()
       : ref = fb.database().ref('pkg_firebase/examples/database'),
-        messages = querySelector('#messages'),
-        newMessage = querySelector('#new_message'),
-        submit = querySelector('#submit'),
-        newMessageForm = querySelector('#new_message_form') {
+        messages = querySelector('#messages') as UListElement,
+        newMessage = querySelector('#new_message') as InputElement,
+        submit = querySelector('#submit') as InputElement,
+        newMessageForm = querySelector('#new_message_form') as FormElement {
     newMessage.disabled = false;
 
     submit.disabled = false;
@@ -40,7 +40,7 @@ class MessagesApp {
     newMessageForm.onSubmit.listen((e) async {
       e.preventDefault();
 
-      if (newMessage.value.trim().isNotEmpty) {
+      if (newMessage.value!.trim().isNotEmpty) {
         final map = {'text': newMessage.value};
 
         try {

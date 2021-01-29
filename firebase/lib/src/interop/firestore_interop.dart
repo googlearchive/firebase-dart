@@ -38,10 +38,10 @@ abstract class FirestoreJsImpl {
   external DocumentReferenceJsImpl doc(String documentPath);
 
   external PromiseJsImpl<void> enablePersistence([
-    PersistenceSettings settings,
+    PersistenceSettings? settings,
   ]);
 
-  external PromiseJsImpl<void> runTransaction(
+  external PromiseJsImpl runTransaction(
     PromiseJsImpl Function(TransactionJsImpl) updateFunction,
   );
 
@@ -364,7 +364,7 @@ abstract class QuerySnapshotJsImpl {
 
   external set query(QueryJsImpl v);
 
-  external num get size;
+  external int get size;
 
   external set size(num v);
 

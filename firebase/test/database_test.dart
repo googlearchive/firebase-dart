@@ -1,6 +1,6 @@
 @TestOn('browser')
-import 'package:firebase/firebase.dart' as fb;
 import 'package:_shared_assets/assets.dart';
+import 'package:firebase/firebase.dart' as fb;
 import 'package:test/test.dart';
 
 import 'test_util.dart';
@@ -14,26 +14,19 @@ final _throwsInvalidKey = throwsToString(
 
 void main() {
   fb.App app;
-  fb.Database database;
+  late fb.Database database;
 
-  setUpAll(() async {
-    await config();
-  });
+  setUpAll(config);
 
-  setUp(() async {
+  setUp(() {
     app = fb.initializeApp(
         apiKey: apiKey,
         authDomain: authDomain,
         databaseURL: databaseUrl,
         storageBucket: storageBucket);
-    database = fb.database();
-  });
 
-  tearDown(() async {
-    if (app != null) {
-      await app.delete();
-      app = null;
-    }
+    addTearDown(() => app.delete());
+    database = fb.database();
   });
 
   group('instance', () {
@@ -45,19 +38,15 @@ void main() {
   });
 
   group('DatabaseReference', () {
-    fb.DatabaseReference ref;
-    String key;
+    late fb.DatabaseReference ref;
+    late String key;
 
     setUp(() {
       ref = database.ref(validDatePath());
       key = ref.push({'text': 'hello'}).key;
       expect(key, isNotNull);
-    });
 
-    tearDown(() async {
-      await ref.remove();
-      ref = null;
-      key = null;
+      addTearDown(ref.remove);
     });
 
     test('has toJson', () {
@@ -514,7 +503,7 @@ void main() {
           throwsToString(
               contains('Second argument must be a valid Firebase priority')));
     });
-  });
+  }, timeout: const Timeout(Duration(seconds: 5)));
 }
 
 class _TestClass {}

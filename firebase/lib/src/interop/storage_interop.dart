@@ -22,7 +22,7 @@ abstract class StorageJsImpl {
 
   external set maxUploadRetryTime(int t);
 
-  external ReferenceJsImpl ref([String path]);
+  external ReferenceJsImpl ref([String? path]);
 
   external ReferenceJsImpl refFromURL(String url);
 
@@ -65,7 +65,7 @@ abstract class ReferenceJsImpl {
 
   external PromiseJsImpl<FullMetadataJsImpl> getMetadata();
 
-  external PromiseJsImpl<ListResultJsImpl> list([ListOptionsJsImpl options]);
+  external PromiseJsImpl<ListResultJsImpl> list([ListOptionsJsImpl? options]);
 
   external PromiseJsImpl<ListResultJsImpl> listAll();
 
@@ -124,12 +124,12 @@ class UploadMetadataJsImpl extends SettableMetadataJsImpl {
   external set md5Hash(String s);
 
   external factory UploadMetadataJsImpl({
-    String md5Hash,
-    String cacheControl,
-    String contentDisposition,
-    String contentEncoding,
-    String contentLanguage,
-    String contentType,
+    String? md5Hash,
+    String? cacheControl,
+    String? contentDisposition,
+    String? contentEncoding,
+    String? contentLanguage,
+    String? contentType,
     dynamic customMetadata,
   });
 }
@@ -146,7 +146,7 @@ abstract class UploadTaskJsImpl
   external void Function() on(
     String event, [
     nextOrObserver,
-    void Function(dynamic) error,
+    void Function(Object) error,
     void Function() complete,
   ]);
 
@@ -205,11 +205,11 @@ class SettableMetadataJsImpl {
   external set customMetadata(dynamic s);
 
   external factory SettableMetadataJsImpl({
-    String cacheControl,
-    String contentDisposition,
-    String contentEncoding,
-    String contentLanguage,
-    String contentType,
+    String? cacheControl,
+    String? contentDisposition,
+    String? contentEncoding,
+    String? contentLanguage,
+    String? contentType,
     dynamic customMetadata,
   });
 }
@@ -225,7 +225,7 @@ class ListOptionsJsImpl {
 
   external String get pageToken;
 
-  external factory ListOptionsJsImpl({int maxResults, String pageToken});
+  external factory ListOptionsJsImpl({int? maxResults, String? pageToken});
 }
 
 @JS()

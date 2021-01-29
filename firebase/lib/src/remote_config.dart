@@ -7,12 +7,8 @@ import 'utils.dart';
 class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
   static final _expando = Expando<RemoteConfig>();
 
-  static RemoteConfig getInstance(RemoteConfigJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= RemoteConfig._fromJsObject(jsObject);
-  }
+  static RemoteConfig getInstance(RemoteConfigJsImpl jsObject) =>
+      _expando[jsObject] ??= RemoteConfig._fromJsObject(jsObject);
 
   RemoteConfig._fromJsObject(RemoteConfigJsImpl jsObject)
       : super.fromJsObject(jsObject);
@@ -42,7 +38,7 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
 
   /// Returns the timestamp of the last *successful* fetch, or `null` if the instance either hasn't fetched
   /// or initialization is incomplete.
-  DateTime get fetchTime {
+  DateTime? get fetchTime {
     if (jsObject.fetchTimeMillis < 0) {
       return null;
     } else {
@@ -62,8 +58,7 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
       case 'throttle':
         return RemoteConfigFetchStatus.throttle;
       default:
-        assert(false);
-        return null;
+        throw UnimplementedError(jsObject.lastFetchStatus);
     }
   }
 
@@ -114,7 +109,7 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
       RemoteConfigLogLevel.debug: 'debug',
       RemoteConfigLogLevel.error: 'error',
       RemoteConfigLogLevel.silent: 'silent',
-    }[value]);
+    }[value]!);
   }
 }
 
@@ -144,8 +139,7 @@ class RemoteConfigValue extends JsObjectWrapper<ValueJsImpl> {
       case 'remote':
         return RemoteConfigValueSource.remote;
       default:
-        assert(false);
-        return null;
+        throw UnimplementedError(jsObject.getSource());
     }
   }
 }

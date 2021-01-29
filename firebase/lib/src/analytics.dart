@@ -5,18 +5,14 @@ import 'utils.dart';
 class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
   static final _expando = Expando<Analytics>();
 
-  static Analytics getInstance(analytics_interop.AnalyticsJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= Analytics._fromJsObject(jsObject);
-  }
+  static Analytics getInstance(analytics_interop.AnalyticsJsImpl jsObject) =>
+      _expando[jsObject] ??= Analytics._fromJsObject(jsObject);
 
   Analytics._fromJsObject(analytics_interop.AnalyticsJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
   void logEvent(String eventName, Map<dynamic, dynamic> eventParams,
-      [AnalyticsCallOptions options]) {
+      [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.logEvent(eventName, jsify(eventParams), options.jsObject);
     } else {
@@ -28,7 +24,7 @@ class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
     jsObject.setAnalyticsCollectionEnabled(enabled);
   }
 
-  void setCurrentScreen(String screenName, [AnalyticsCallOptions options]) {
+  void setCurrentScreen(String screenName, [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.setCurrentScreen(screenName, options.jsObject);
     } else {
@@ -36,7 +32,7 @@ class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
     }
   }
 
-  void setUserId(String id, [AnalyticsCallOptions options]) {
+  void setUserId(String id, [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.setUserId(id, options.jsObject);
     } else {
@@ -45,7 +41,7 @@ class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
   }
 
   void setUserProperties(Map<String, String> properties,
-      [AnalyticsCallOptions options]) {
+      [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.setUserProperties(jsify(properties), options.jsObject);
     } else {

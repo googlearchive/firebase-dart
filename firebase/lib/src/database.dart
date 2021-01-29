@@ -26,12 +26,8 @@ class Database extends JsObjectWrapper<database_interop.DatabaseJsImpl> {
   App get app => App.getInstance(jsObject.app);
 
   /// Creates a new Database from a [jsObject].
-  static Database getInstance(database_interop.DatabaseJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= Database._fromJsObject(jsObject);
-  }
+  static Database getInstance(database_interop.DatabaseJsImpl jsObject) =>
+      _expando[jsObject] ??= Database._fromJsObject(jsObject);
 
   Database._fromJsObject(database_interop.DatabaseJsImpl jsObject)
       : super.fromJsObject(jsObject);
@@ -45,7 +41,7 @@ class Database extends JsObjectWrapper<database_interop.DatabaseJsImpl> {
   void goOnline() => jsObject.goOnline();
 
   /// Returns a [DatabaseReference] to the root or provided [path].
-  DatabaseReference ref([String path]) =>
+  DatabaseReference ref([String? path]) =>
       DatabaseReference.getInstance(jsObject.ref(path));
 
   /// Returns a [DatabaseReference] from provided [url].
@@ -76,12 +72,8 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   /// Creates a new DatabaseReference from a [jsObject].
   static DatabaseReference getInstance(
     database_interop.ReferenceJsImpl jsObject,
-  ) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= DatabaseReference._fromJsObject(jsObject);
-  }
+  ) =>
+      _expando[jsObject] ??= DatabaseReference._fromJsObject(jsObject);
 
   DatabaseReference._fromJsObject(T jsObject) : super.fromJsObject(jsObject);
 
@@ -199,7 +191,7 @@ class QueryEvent {
   final DataSnapshot snapshot;
 
   /// String containing the key of the previous child.
-  final String prevChildKey;
+  final String? prevChildKey;
 
   /// Creates a new QueryEvent with [snapshot] and optional [prevChildKey].
   QueryEvent(this.snapshot, [this.prevChildKey]);
@@ -219,40 +211,37 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   /// DatabaseReference to the Query's location.
   DatabaseReference get ref => DatabaseReference.getInstance(jsObject.ref);
 
-  Stream<QueryEvent> _onValue;
+  late final Stream<QueryEvent> _onValue = _createStream('value');
 
   /// Stream for a value event. Event is triggered once with the initial
   /// data stored at location, and then again each time the data changes.
-  Stream<QueryEvent> get onValue => _onValue ??= _createStream('value');
+  Stream<QueryEvent> get onValue => _onValue;
 
-  Stream<QueryEvent> _onChildAdded;
+  late final Stream<QueryEvent> _onChildAdded = _createStream('child_added');
 
   /// Stream for a child_added event. Event is triggered once for each
   /// initial child at location, and then again every time a new child is added.
-  Stream<QueryEvent> get onChildAdded =>
-      _onChildAdded ??= _createStream('child_added');
+  Stream<QueryEvent> get onChildAdded => _onChildAdded;
 
-  Stream<QueryEvent> _onChildRemoved;
+  late final Stream<QueryEvent> _onChildRemoved =
+      _createStream('child_removed');
 
   /// Stream for a child_removed event. Event is triggered once every time
   /// a child is removed.
-  Stream<QueryEvent> get onChildRemoved =>
-      _onChildRemoved ??= _createStream('child_removed');
+  Stream<QueryEvent> get onChildRemoved => _onChildRemoved;
 
-  Stream<QueryEvent> _onChildChanged;
+  late final Stream<QueryEvent> _onChildChanged =
+      _createStream('child_changed');
 
   /// Stream for a child_changed event. Event is triggered when the data
   /// stored in a child (or any of its descendants) changes.
   /// Single child_changed event may represent multiple changes to the child.
-  Stream<QueryEvent> get onChildChanged =>
-      _onChildChanged ??= _createStream('child_changed');
-
-  Stream<QueryEvent> _onChildMoved;
+  Stream<QueryEvent> get onChildChanged => _onChildChanged;
+  late final Stream<QueryEvent> _onChildMoved = _createStream('child_moved');
 
   /// Stream for a child_moved event. Event is triggered when a child's priority
   /// changes such that its position relative to its siblings changes.
-  Stream<QueryEvent> get onChildMoved =>
-      _onChildMoved ??= _createStream('child_moved');
+  Stream<QueryEvent> get onChildMoved => _onChildMoved;
 
   /// Creates a new Query from a [jsObject].
   Query.fromJsObject(T jsObject) : super.fromJsObject(jsObject);
@@ -263,7 +252,7 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   /// The [value] must be a [num], [String], [bool], or `null`, or the error
   /// is thrown.
   /// The optional [key] can be used to further limit the range of the query.
-  Query endAt(value, [String key]) => Query.fromJsObject(key == null
+  Query endAt(value, [String? key]) => Query.fromJsObject(key == null
       ? jsObject.endAt(jsify(value))
       : jsObject.endAt(jsify(value), key));
 
@@ -272,7 +261,7 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   /// The [value] must be a [num], [String], [bool], or `null`, or the error
   /// is thrown.
   /// The optional [key] can be used to further limit the range of the query.
-  Query equalTo(value, [String key]) => Query.fromJsObject(key == null
+  Query equalTo(value, [String? key]) => Query.fromJsObject(key == null
       ? jsObject.equalTo(jsify(value))
       : jsObject.equalTo(jsify(value), key));
 
@@ -297,11 +286,11 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
       Query.fromJsObject(jsObject.limitToLast(limit));
 
   Stream<QueryEvent> _createStream(String eventType) {
-    StreamController<QueryEvent> streamController;
+    late StreamController<QueryEvent> streamController;
 
     final callbackWrap = allowInterop((
       database_interop.DataSnapshotJsImpl data, [
-      String string,
+      String? string,
     ]) {
       streamController.add(QueryEvent(DataSnapshot.getInstance(data), string));
     });
@@ -329,7 +318,7 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
     final c = Completer<QueryEvent>();
 
     jsObject.once(eventType, allowInterop(
-      (database_interop.DataSnapshotJsImpl snapshot, [String string]) {
+      (database_interop.DataSnapshotJsImpl snapshot, [String? string]) {
         c.complete(QueryEvent(DataSnapshot.getInstance(snapshot), string));
       },
     ), resolveError(c));
@@ -356,7 +345,7 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   /// The [value] must be a [num], [String], [bool], or `null`, or the error
   /// is thrown.
   /// The optional [key] can be used to further limit the range of the query.
-  Query startAt(value, [String key]) => Query.fromJsObject(
+  Query startAt(value, [String? key]) => Query.fromJsObject(
         key == null
             ? jsObject.startAt(jsify(value))
             : jsObject.startAt(jsify(value), key),
@@ -386,12 +375,8 @@ class DataSnapshot
   /// Creates a new DataSnapshot from a [jsObject].
   static DataSnapshot getInstance(
     database_interop.DataSnapshotJsImpl jsObject,
-  ) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= DataSnapshot._fromJsObject(jsObject);
-  }
+  ) =>
+      _expando[jsObject] ??= DataSnapshot._fromJsObject(jsObject);
 
   DataSnapshot._fromJsObject(database_interop.DataSnapshotJsImpl jsObject)
       : super.fromJsObject(jsObject);
@@ -475,7 +460,8 @@ class OnDisconnect
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database.ThenableReference>.
 class ThenableReference
     extends DatabaseReference<database_interop.ThenableReferenceJsImpl> {
-  Future<DatabaseReference> _future;
+  late final Future<DatabaseReference> _future =
+      handleThenable(jsObject).then(DatabaseReference.getInstance);
 
   /// Creates a new ThenableReference from a [jsObject].
   ThenableReference.fromJsObject(
@@ -483,8 +469,7 @@ class ThenableReference
   ) : super._fromJsObject(jsObject);
 
   /// A Future property.
-  Future<DatabaseReference> get future =>
-      _future ??= handleThenable(jsObject).then(DatabaseReference.getInstance);
+  Future<DatabaseReference> get future => _future;
 }
 
 /// A structure used in [DatabaseReference.transaction].
@@ -497,11 +482,11 @@ class Transaction extends JsObjectWrapper<database_interop.TransactionJsImpl> {
 
   /// Creates a new Transaction with optional [committed] and [snapshot]
   /// properties.
-  factory Transaction({bool committed, DataSnapshot snapshot}) =>
+  factory Transaction({bool? committed, DataSnapshot? snapshot}) =>
       Transaction.fromJsObject(
         database_interop.TransactionJsImpl(
           committed: committed,
-          snapshot: snapshot.jsObject,
+          snapshot: snapshot?.jsObject,
         ),
       );
 

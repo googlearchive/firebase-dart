@@ -7,11 +7,12 @@ import 'package:js/js_util.dart' as util;
 import 'firestore.dart';
 import 'interop/es6_interop.dart';
 import 'interop/firebase_interop.dart' show FirebaseError;
-import 'interop/firestore_interop.dart' show TimestampJsImpl;
+import 'interop/firestore_interop.dart'
+    show DocumentReferenceJsImpl, TimestampJsImpl;
 import 'interop/js_interop.dart' as js;
 
 /// Returns Dart representation from JS Object.
-dynamic dartify(Object jsObject) {
+dynamic dartify(Object? jsObject) {
   if (_isBasicType(jsObject)) {
     return jsObject;
   }
@@ -22,7 +23,7 @@ dynamic dartify(Object jsObject) {
   }
 
   if (isFirestoreType(jsObject, 'DocumentReference')) {
-    return DocumentReference.getInstance(jsObject);
+    return DocumentReference.getInstance(jsObject as DocumentReferenceJsImpl);
   }
 
   if (isFirestoreType(jsObject, 'GeoPoint')) {
@@ -40,7 +41,7 @@ dynamic dartify(Object jsObject) {
   }
 
   // Assume a map then...
-  return dartifyMap(jsObject);
+  return dartifyMap(jsObject!);
 }
 
 Map<String, dynamic> dartifyMap(Object jsObject) {
@@ -55,7 +56,7 @@ Map<String, dynamic> dartifyMap(Object jsObject) {
 dynamic jsifyList(Iterable list) => js.toJSArray(list.map(jsify).toList());
 
 /// Returns the JS implementation from Dart Object.
-dynamic jsify(Object dartObject) {
+dynamic jsify(Object? dartObject) {
   if (_isBasicType(dartObject)) {
     return dartObject;
   }
@@ -105,7 +106,7 @@ dynamic callMethod(Object jsObject, String method, List<dynamic> args) =>
 
 /// Returns `true` if the [value] is a very basic built-in type - e.g.
 /// `null`, [num], [bool] or [String]. It returns `false` in the other case.
-bool _isBasicType(Object value) {
+bool _isBasicType(Object? value) {
   if (value == null || value is num || value is bool || value is String) {
     return true;
   }
@@ -119,7 +120,7 @@ Future<T> handleThenable<T>(PromiseJsImpl<T> thenable) async {
     value = await util.promiseToFuture(thenable);
   } catch (e) {
     if (util.hasProperty(e, 'code')) {
-      throw _FirebaseErrorWrapper(e);
+      throw _FirebaseErrorWrapper(e as FirebaseError);
     }
     rethrow;
   }
@@ -167,7 +168,7 @@ class _FirebaseErrorWrapper extends Error implements FirebaseError {
   String toString() => 'FirebaseError: $message ($code)';
 }
 
-bool isFirestoreType(Object object, String typeName) {
+bool isFirestoreType(Object? object, String typeName) {
   final type = tryGetType(['firebase', 'firestore', typeName]);
   if (type == null) {
     return false;
@@ -175,8 +176,8 @@ bool isFirestoreType(Object object, String typeName) {
   return util.instanceof(object, type);
 }
 
-Object tryGetType(List<String> path) {
-  Object start = window;
+Object? tryGetType(List<String> path) {
+  Object? start = window;
   for (var item in path) {
     if (start == null) {
       return null;

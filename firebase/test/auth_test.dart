@@ -23,7 +23,7 @@ Future _wait() async {
 }
 
 void main() {
-  App app;
+  late App app;
 
   setUpAll(() async {
     await config();
@@ -34,22 +34,18 @@ void main() {
       apiKey: apiKey,
       authDomain: authDomain,
     );
-  });
 
-  tearDown(() async {
-    if (app != null) {
-      await app.delete();
-      app = null;
-    }
+    addTearDown(() => app.delete());
   });
 
   group('verifiers', () {
-    DivElement el;
+    late DivElement el;
 
     group('Recaptcha', () {
       setUp(() {
-        el = document.createElement('div')..id = 'test-recaptcha';
-        document.body.append(el);
+        el = (document.createElement('div') as DivElement)
+          ..id = 'test-recaptcha';
+        document.body!.append(el);
       });
 
       tearDown(() {
@@ -65,7 +61,8 @@ void main() {
         final verifier = RecaptchaVerifier('test-recaptcha');
         await verifier.render();
 
-        final iframe = document.querySelector('#test-recaptcha iframe');
+        final iframe =
+            document.querySelector('#test-recaptcha iframe') as IFrameElement;
         expect(iframe, isNotNull);
         expect(iframe.getAttribute('src'), contains('recaptcha'));
       });
@@ -230,8 +227,11 @@ void main() {
   });
 
   group('anonymous user', () {
-    Auth authValue;
-    UserCredential userCredential;
+    late Auth authValue;
+    UserCredential? userCredential;
+
+    User user() => userCredential!.user!;
+
     setUp(() async {
       authValue = auth();
       expect(authValue.currentUser, isNull);
@@ -240,27 +240,27 @@ void main() {
 
     tearDown(() async {
       if (userCredential != null) {
-        await userCredential.user.delete();
+        await user().delete();
         userCredential = null;
       }
     });
 
     test('properties', () {
-      expect(userCredential.user.isAnonymous, isTrue);
-      expect(userCredential.user.emailVerified, isFalse);
-      expect(userCredential.user.providerData, isEmpty);
-      expect(userCredential.user.providerId, 'firebase');
-      expect(userCredential.user.metadata, isNotNull);
-      expect(userCredential.user.metadata.lastSignInTime, isNotNull);
-      expect(userCredential.user.metadata.creationTime, isNotNull);
+      expect(user().isAnonymous, isTrue);
+      expect(user().emailVerified, isFalse);
+      expect(user().providerData, isEmpty);
+      expect(user().providerId, 'firebase');
+      expect(user().metadata, isNotNull);
+      expect(user().metadata.lastSignInTime, isNotNull);
+      expect(user().metadata.creationTime, isNotNull);
     });
 
     test('delete', () async {
-      await userCredential.user.delete();
+      await user().delete();
       expect(authValue.currentUser, isNull);
 
       try {
-        await userCredential.user.delete();
+        await user().delete();
         fail('user.delete should throw');
       } on FirebaseError catch (e) {
         expect(e.code, 'auth/app-deleted');
@@ -281,9 +281,7 @@ void main() {
 
     final user = await currentUserAsync;
     addTearDown(() async {
-      if (user != null) {
-        await user.delete();
-      }
+      await user.delete();
     });
 
     expect(user, same(authValue.currentUser));
@@ -310,31 +308,29 @@ void main() {
     final userCredential2 = await authValue.signInAnonymously();
 
     final user2 = await currentUserAsync;
-    addTearDown(() async {
-      if (user2 != null) {
-        await user2.delete();
-      }
-    });
+    addTearDown(user2.delete);
 
     expect(user2, same(authValue.currentUser));
     expect(userCredential2.user, same(authValue.currentUser));
   });
 
   group('user', () {
-    Auth authValue;
-    UserCredential userCredential;
-    String userEmail;
-    User lastAuthEventUser;
-    User lastIdTokenChangedUser;
+    late Auth authValue;
+    UserCredential? userCredential;
 
-    StreamSubscription authStateChangeSubscription;
-    StreamSubscription idTokenChangedSubscription;
+    User user() => userCredential!.user!;
+
+    late String userEmail;
+    User? lastAuthEventUser;
+    User? lastIdTokenChangedUser;
+
+    StreamSubscription? authStateChangeSubscription;
+    StreamSubscription? idTokenChangedSubscription;
 
     setUp(() {
       authValue = auth();
       expect(authValue.currentUser, isNull);
 
-      expect(userEmail, isNull);
       userEmail = getTestEmail();
 
       expect(lastAuthEventUser, isNull);
@@ -363,20 +359,19 @@ void main() {
     });
 
     tearDown(() async {
-      userEmail = null;
       if (userCredential != null) {
-        await userCredential.user.delete();
+        await user().delete();
         userCredential = null;
       }
 
       if (authStateChangeSubscription != null) {
-        await authStateChangeSubscription.cancel();
+        await authStateChangeSubscription!.cancel();
         authStateChangeSubscription = null;
         lastAuthEventUser = null;
       }
 
       if (idTokenChangedSubscription != null) {
-        await idTokenChangedSubscription.cancel();
+        await idTokenChangedSubscription!.cancel();
         idTokenChangedSubscription = null;
         lastIdTokenChangedUser = null;
       }
@@ -386,7 +381,7 @@ void main() {
       userCredential =
           await authValue.createUserWithEmailAndPassword(userEmail, 'janicka');
 
-      final token = await userCredential.user.getIdToken();
+      final token = await user().getIdToken();
 
       // The following is a basic verification of a JWT token
       // See https://en.wikipedia.org/wiki/JSON_Web_Token
@@ -413,7 +408,7 @@ void main() {
       userCredential =
           await authValue.createUserWithEmailAndPassword(userEmail, 'janicka');
 
-      final token = await userCredential.user.getIdTokenResult();
+      final token = await userCredential!.user!.getIdTokenResult();
 
       expect(token.signInProvider, 'password');
 
@@ -431,8 +426,8 @@ void main() {
       userCredential =
           await authValue.createUserWithEmailAndPassword(userEmail, 'janicka');
       expect(userCredential, isNotNull);
-      expect(userCredential.user.email, userEmail);
-      expect(userCredential.user.phoneNumber, isNull);
+      expect(userCredential!.user!.email, userEmail);
+      expect(userCredential!.user!.phoneNumber, isNull);
     });
 
     test('fetchSignInMethodsForEmail', () async {
@@ -460,18 +455,19 @@ void main() {
     test('signInAnonymously', () async {
       userCredential = await authValue.signInAnonymously();
 
-      expect(userCredential.user.isAnonymous, isTrue);
+      expect(userCredential!.user!.isAnonymous, isTrue);
     });
 
     test('linkWithCredential anonymous user', () async {
       userCredential = await authValue.signInAnonymously();
-      expect(userCredential.user.isAnonymous, isTrue);
+      expect(userCredential!.user!.isAnonymous, isTrue);
 
       final credential = EmailAuthProvider.credential(userEmail, 'janicka');
-      final userCred = await userCredential.user.linkWithCredential(credential);
+      final userCred =
+          await userCredential!.user!.linkWithCredential(credential);
 
       expect(userCred.operationType, 'link');
-      expect(userCred.user.uid, userCredential.user.uid);
+      expect(userCred.user!.uid, userCredential!.user!.uid);
       expect(userCred.additionalUserInfo, isNotNull);
       expect(userCred.additionalUserInfo.isNewUser, isFalse);
     });
@@ -482,17 +478,17 @@ void main() {
 
       final credential = EmailAuthProvider.credential(userEmail, 'janicka');
       final userCred =
-          await userCredential.user.reauthenticateWithCredential(credential);
+          await userCredential!.user!.reauthenticateWithCredential(credential);
 
       expect(userCred.operationType, 'reauthenticate');
-      expect(userCred.user.uid, userCredential.user.uid);
+      expect(userCred.user!.uid, userCredential!.user!.uid);
 
       expect(lastAuthEventUser, isNotNull);
-      expect(lastAuthEventUser.email, userEmail);
-      expect(lastIdTokenChangedUser.email, userEmail);
+      expect(lastAuthEventUser!.email, userEmail);
+      expect(lastIdTokenChangedUser!.email, userEmail);
 
       expect(authValue.currentUser, isNotNull);
-      expect(authValue.currentUser.email, userEmail);
+      expect(authValue.currentUser!.email, userEmail);
     });
 
     test('reauthenticate with bad credential fails', () async {
@@ -501,7 +497,7 @@ void main() {
       final credential = EmailAuthProvider.credential(userEmail, 'something');
 
       expect(
-        userCredential.user.reauthenticateWithCredential(credential),
+        userCredential!.user!.reauthenticateWithCredential(credential),
         throwsToString(contains(
             'The password is invalid or the user does not have a password')),
       );
@@ -542,7 +538,7 @@ void main() {
       final credential =
           await authValue.createUserWithEmailAndPassword(userEmail, 'janicka');
 
-      expect(credential.user.email, userEmail);
+      expect(credential.user!.email, userEmail);
       expect(credential.additionalUserInfo.isNewUser, isTrue);
 
       await authValue.signOut();
@@ -552,7 +548,7 @@ void main() {
       final credential2 =
           await authValue.signInWithEmailAndPassword(userEmail, 'janicka');
 
-      expect(credential.user.email, credential2.user.email);
+      expect(credential.user!.email, credential2.user!.email);
       expect(credential2.additionalUserInfo.isNewUser, isFalse);
     });
 
@@ -569,41 +565,36 @@ void main() {
   });
 
   group('registered user', () {
-    Auth authValue;
-    UserCredential userCredential;
+    late Auth authValue;
+    late UserCredential userCredential;
 
     setUp(() async {
       authValue = auth();
 
       userCredential = await authValue.createUserWithEmailAndPassword(
-          getTestEmail(), 'hesloheslo');
+        getTestEmail(),
+        'hesloheslo',
+      );
+
+      addTearDown(userCredential.user!.delete);
+
       expect(authValue.currentUser, isNotNull);
     });
 
-    tearDown(() async {
-      if (userCredential != null) {
-        await userCredential.user.delete();
-        userCredential = null;
-      }
-    });
-
     test('update profile', () async {
-      expect(userCredential, isNotNull);
-      expect(userCredential.user.displayName, isNull);
+      expect(userCredential.user!.displayName, isNull);
 
       final profile = UserProfile(displayName: 'Other User');
-      await userCredential.user.updateProfile(profile);
-      expect(userCredential.user.displayName, 'Other User');
+      await userCredential.user!.updateProfile(profile);
+      expect(userCredential.user!.displayName, 'Other User');
     });
 
     test('toJson', () async {
-      expect(userCredential, isNotNull);
-
       final profile =
           UserProfile(displayName: 'Other User', photoURL: 'http://google.com');
-      await userCredential.user.updateProfile(profile);
+      await userCredential.user!.updateProfile(profile);
 
-      var userMap = userCredential.user.toJson();
+      var userMap = userCredential.user!.toJson();
       expect(userMap, isNotNull);
       expect(userMap, isNotEmpty);
       expect(userMap['displayName'], 'Other User');
@@ -611,7 +602,7 @@ void main() {
 
       await authValue.signOut();
       await authValue.signInAnonymously();
-      final user = authValue.currentUser;
+      final user = authValue.currentUser!;
 
       userMap = user.toJson();
       expect(userMap, isNotNull);

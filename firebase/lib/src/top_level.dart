@@ -33,15 +33,15 @@ const String _defaultAppName = '[DEFAULT]';
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase#.initializeApp>.
 App initializeApp({
-  String apiKey,
-  String authDomain,
-  String databaseURL,
-  String projectId,
-  String storageBucket,
-  String messagingSenderId,
-  String name,
-  String measurementId,
-  String appId,
+  String? apiKey,
+  String? authDomain,
+  String? databaseURL,
+  String? projectId,
+  String? storageBucket,
+  String? messagingSenderId,
+  String? name,
+  String? measurementId,
+  String? appId,
 }) {
   name ??= _defaultAppName;
 
@@ -75,7 +75,7 @@ App initializeApp({
 /// to access does not exist.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.app>.
-App app([String name]) {
+App app([String? name]) {
   final jsObject = (name != null) ? firebase.app(name) : firebase.app();
 
   return App.getInstance(jsObject);
@@ -84,7 +84,7 @@ App app([String name]) {
 /// Gets the [Auth] object for the default App or a given App.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth>.
-Auth auth([App app]) {
+Auth auth([App? app]) {
   final jsObject =
       (app != null) ? firebase.auth(app.jsObject) : firebase.auth();
 
@@ -97,7 +97,7 @@ Auth auth([App app]) {
 /// global constants and methods associated with the database service.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database>.
-Database database([App app]) {
+Database database([App? app]) {
   final jsObject =
       (app != null) ? firebase.database(app.jsObject) : firebase.database();
 
@@ -110,7 +110,7 @@ Database database([App app]) {
 /// the project's storage location, or uses the default app if none is provided.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage>.
-Storage storage([App app]) {
+Storage storage([App? app]) {
   final jsObject =
       (app != null) ? firebase.storage(app.jsObject) : firebase.storage();
 
@@ -120,7 +120,7 @@ Storage storage([App app]) {
 /// Accesses the [Firestore] service for the default App or a given app.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore>.
-Firestore firestore([App app]) {
+Firestore firestore([App? app]) {
   final jsObject =
       (app != null) ? firebase.firestore(app.jsObject) : firebase.firestore();
 
@@ -130,7 +130,7 @@ Firestore firestore([App app]) {
 /// Accesses the [Functions] service for the default App or a given app.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.functions>.
-Functions functions([App app]) {
+Functions functions([App? app]) {
   final jsObject =
       (app != null) ? firebase.functions(app.jsObject) : firebase.functions();
 
@@ -140,7 +140,7 @@ Functions functions([App app]) {
 /// Accesses the [Messaging] service for the default App or a given app.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.messaging>.
-Messaging messaging([App app]) {
+Messaging messaging([App? app]) {
   final jsObject =
       (app != null) ? firebase.messaging(app.jsObject) : firebase.messaging();
 
@@ -150,7 +150,7 @@ Messaging messaging([App app]) {
 /// Accesses the [RemoteConfig] service for the default App or a given app.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.remoteconfig>.
-RemoteConfig remoteConfig([App app]) {
+RemoteConfig remoteConfig([App? app]) {
   final jsObject = (app != null)
       ? firebase.remoteConfig(app.jsObject)
       : firebase.remoteConfig();
@@ -161,7 +161,7 @@ RemoteConfig remoteConfig([App app]) {
 /// Accesses the [Analytics] service for the default App or a given app.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.analytics>.
-Analytics analytics([App app]) {
+Analytics analytics([App? app]) {
   final jsObject =
       (app != null) ? firebase.analytics(app.jsObject) : firebase.analytics();
 
@@ -171,7 +171,7 @@ Analytics analytics([App app]) {
 /// Accesses the [Performance] service for the default App or a given app.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.performance>.
-Performance performance([App app]) {
+Performance performance([App? app]) {
   final jsObject = (app != null)
       ? firebase.performance(app.jsObject)
       : firebase.performance();
