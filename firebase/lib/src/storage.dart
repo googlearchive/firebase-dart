@@ -286,8 +286,8 @@ class UploadTask extends JsObjectWrapper<storage_interop.UploadTaskJsImpl> {
   Future<UploadTaskSnapshot> _future;
 
   /// Returns the UploadTaskSnapshot when the upload successfully completes.
-  Future<UploadTaskSnapshot> get future => _future ??=
-        handleThenable(jsObject).then(UploadTaskSnapshot.getInstance);
+  Future<UploadTaskSnapshot> get future =>
+      _future ??= handleThenable(jsObject).then(UploadTaskSnapshot.getInstance);
 
   /// Returns the upload task snapshot of the current task state.
   UploadTaskSnapshot get snapshot =>

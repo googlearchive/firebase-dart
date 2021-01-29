@@ -17,7 +17,8 @@ class Performance
   Performance._fromJsObject(performance_interop.PerformanceJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  Trace trace(String traceName) => Trace.fromJsObject(jsObject.trace(traceName));
+  Trace trace(String traceName) =>
+      Trace.fromJsObject(jsObject.trace(traceName));
 }
 
 class Trace extends JsObjectWrapper<performance_interop.TraceJsImpl> {

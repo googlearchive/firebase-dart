@@ -18,7 +18,8 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
       : super.fromJsObject(jsObject);
 
   /// Defines configuration for the Remote Config SDK.
-  RemoteConfigSettings get settings => RemoteConfigSettings._fromJsObject(jsObject.settings);
+  RemoteConfigSettings get settings =>
+      RemoteConfigSettings._fromJsObject(jsObject.settings);
 
   /// Contains default values for configs. To set default config, compose a map and then assign it to `defaultConfig`.
   /// Any modifications to the map after the assignment will not take effect.
@@ -32,7 +33,8 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
   /// defaultsMap['x'] = 1;                       // remoteConfig.defaultConfig will not be updated.
   /// remoteConfig.defaultConfig['x'] = 1;        // Runtime error: attempt to modify an unmodifiable map.
   /// ```
-  Map<String, dynamic> get defaultConfig => Map.unmodifiable(dartifyMap(jsObject.defaultConfig));
+  Map<String, dynamic> get defaultConfig =>
+      Map.unmodifiable(dartifyMap(jsObject.defaultConfig));
 
   set defaultConfig(Map<String, dynamic> value) {
     jsObject.defaultConfig = jsify(value);
@@ -71,7 +73,8 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
   Future<bool> activate() async => handleThenable(jsObject.activate());
 
   ///  Ensures the last activated config are available to the getters.
-  Future<void> ensureInitialized() async => handleThenable(jsObject.ensureInitialized());
+  Future<void> ensureInitialized() async =>
+      handleThenable(jsObject.ensureInitialized());
 
   /// Fetches and caches configuration from the Remote Config service.
   Future<void> fetch() async => handleThenable(jsObject.fetch());
@@ -79,7 +82,8 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
   /// Performs fetch and activate operations, as a convenience.
   /// Returns a promise which resolves to true if the current call activated the fetched configs.
   /// If the fetched configs were already activated, the promise will resolve to false.
-  Future<bool> fetchAndActivate() async => handleThenable(jsObject.fetchAndActivate());
+  Future<bool> fetchAndActivate() async =>
+      handleThenable(jsObject.fetchAndActivate());
 
   /// Returns all config values.
   Map<String, RemoteConfigValue> getAll() {
@@ -102,7 +106,8 @@ class RemoteConfig extends JsObjectWrapper<RemoteConfigJsImpl> {
   String getString(String key) => jsObject.getString(key);
 
   ///  Gets the value for the given key.
-  RemoteConfigValue getValue(String key) => RemoteConfigValue._fromJsObject(jsObject.getValue(key));
+  RemoteConfigValue getValue(String key) =>
+      RemoteConfigValue._fromJsObject(jsObject.getValue(key));
 
   void setLogLevel(RemoteConfigLogLevel value) {
     jsObject.setLogLevel(const {
@@ -164,7 +169,8 @@ class RemoteConfigSettings extends JsObjectWrapper<SettingsJsImpl> {
 
   ///  Defines the maximum age in milliseconds of an entry in the config cache before
   ///  it is considered stale. Defaults to twelve hours.
-  Duration get minimumFetchInterval => Duration(milliseconds: jsObject.minimumFetchIntervalMillis);
+  Duration get minimumFetchInterval =>
+      Duration(milliseconds: jsObject.minimumFetchIntervalMillis);
 
   set minimumFetchInterval(Duration value) {
     jsObject.minimumFetchIntervalMillis = value.inMilliseconds;
@@ -172,7 +178,8 @@ class RemoteConfigSettings extends JsObjectWrapper<SettingsJsImpl> {
 
   /// Defines the maximum amount of time to wait for a response when fetching
   /// configuration from the Remote Config server. Defaults to one minute.
-  Duration get fetchTimeoutMillis => Duration(milliseconds: jsObject.fetchTimeoutMillis);
+  Duration get fetchTimeoutMillis =>
+      Duration(milliseconds: jsObject.fetchTimeoutMillis);
 
   set fetchTimeoutMillis(Duration value) {
     jsObject.fetchTimeoutMillis = value.inMilliseconds;

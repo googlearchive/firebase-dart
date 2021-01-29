@@ -168,12 +168,12 @@ class RemoteConfigAdmin {
   }
 
   Map<String, dynamic> _createConfigDef(Map<String, dynamic> params) => {
-      'conditions': [],
-      'parameters': params.map((k, v) => MapEntry(k, {
-            'defaultValue': {'value': '$v'},
-            'description': 'Created by firebase-dart unit tests'
-          })),
-    };
+        'conditions': [],
+        'parameters': params.map((k, v) => MapEntry(k, {
+              'defaultValue': {'value': '$v'},
+              'description': 'Created by firebase-dart unit tests'
+            })),
+      };
 
   String get _endpointUrl => 'https://firebaseremoteconfig.googleapis.com'
       '/v1/projects/$_projectId/remoteConfig';
