@@ -334,11 +334,11 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// If the value is `null`, there is no signed-in user.
   Stream<User> get onAuthStateChanged {
     if (_changeController == null) {
-      var nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
+      final nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
         _changeController.add(User.getInstance(user));
       });
 
-      var errorWrapper = allowInterop((e) => _changeController.addError(e));
+      final errorWrapper = allowInterop((e) => _changeController.addError(e));
 
       void startListen() {
         assert(_onAuthUnsubscribe == null);
@@ -371,11 +371,11 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// If the value is `null`, there is no signed-in user.
   Stream<User> get onIdTokenChanged {
     if (_idTokenChangedController == null) {
-      var nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
+      final nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
         _idTokenChangedController.add(User.getInstance(user));
       });
 
-      var errorWrapper =
+      final errorWrapper =
           allowInterop((e) => _idTokenChangedController.addError(e));
 
       void startListen() {

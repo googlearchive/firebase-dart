@@ -104,6 +104,7 @@ abstract class AuthJsImpl {
   external PromiseJsImpl<String> verifyPasswordResetCode(String code);
 }
 
+// ignore: avoid_classes_with_only_static_members
 /// An enumeration of the possible persistence mechanism types.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth.Auth#.Persistence>

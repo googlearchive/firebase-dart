@@ -4,7 +4,7 @@ import 'package:firebase/firebase.dart' as fb;
 import 'package:firebase/firestore.dart';
 import 'package:_shared_assets/assets.dart';
 
-void main() async {
+Future<void> main() async {
   //Use for firebase package development only
   await config();
 
@@ -60,7 +60,7 @@ class MessagesApp {
 
       if (newMessage.value.trim().isNotEmpty) {
         // store also created at for purposes of ordering
-        var map = {'text': newMessage.value, 'createdAt': DateTime.now()};
+        final map = {'text': newMessage.value, 'createdAt': DateTime.now()};
 
         try {
           newMessage.value = '';
@@ -75,7 +75,7 @@ class MessagesApp {
   void showMessages() {
     ref.orderBy('createdAt').onSnapshot.listen((querySnapshot) {
       for (var change in querySnapshot.docChanges()) {
-        var docSnapshot = change.doc;
+        final docSnapshot = change.doc;
         switch (change.type) {
           case 'added':
             _renderItemView(docSnapshot);
@@ -92,23 +92,23 @@ class MessagesApp {
   }
 
   void _renderItemView(DocumentSnapshot docSnapshot) {
-    var spanElement = SpanElement()..text = docSnapshot.data()['text'];
+    final spanElement = SpanElement()..text = docSnapshot.data()['text'];
 
-    var aElementDelete = AnchorElement(href: '#')
+    final aElementDelete = AnchorElement(href: '#')
       ..text = 'Delete'
       ..onClick.listen((e) {
         e.preventDefault();
         _deleteItem(docSnapshot);
       });
 
-    var aElementUpdate = AnchorElement(href: '#')
+    final aElementUpdate = AnchorElement(href: '#')
       ..text = 'To Uppercase'
       ..onClick.listen((e) {
         e.preventDefault();
         _uppercaseItem(docSnapshot);
       });
 
-    var element = LIElement()
+    final element = LIElement()
       ..id = 'item-${docSnapshot.id}'
       ..append(spanElement)
       ..append(aElementDelete)
@@ -117,7 +117,7 @@ class MessagesApp {
   }
 
   void _removeItemView(DocumentSnapshot docSnapshot) {
-    var element = querySelector('#item-${docSnapshot.id}');
+    final element = querySelector('#item-${docSnapshot.id}');
 
     if (element != null) {
       element.remove();
@@ -125,7 +125,7 @@ class MessagesApp {
   }
 
   void _modifyItemView(DocumentSnapshot docSnapshot) {
-    var element = querySelector('#item-${docSnapshot.id} span');
+    final element = querySelector('#item-${docSnapshot.id} span');
 
     if (element != null) {
       element.text = docSnapshot.data()['text'];
@@ -141,8 +141,8 @@ class MessagesApp {
   }
 
   Future _uppercaseItem(DocumentSnapshot docSnapshot) async {
-    var value = docSnapshot.data();
-    var valueUppercase = value['text'].toString().toUpperCase();
+    final value = docSnapshot.data();
+    final valueUppercase = value['text'].toString().toUpperCase();
     value['text'] = valueUppercase;
 
     try {

@@ -3,7 +3,7 @@ import 'dart:html';
 import 'package:firebase/firebase.dart' as fb;
 import 'package:_shared_assets/assets.dart';
 
-void main() async {
+Future<void> main() async {
   //Use for firebase package development only
   await config();
 
@@ -31,10 +31,10 @@ class ImageUploadApp {
 
     _uploadImage.onChange.listen((e) async {
       e.preventDefault();
-      var file = (e.target as FileUploadInputElement).files[0];
+      final file = (e.target as FileUploadInputElement).files[0];
 
-      var customMetadata = {'location': 'Prague', 'owner': 'You'};
-      var uploadTask = ref.child(file.name).put(
+      final customMetadata = {'location': 'Prague', 'owner': 'You'};
+      final uploadTask = ref.child(file.name).put(
           file,
           fb.UploadMetadata(
               contentType: file.type, customMetadata: customMetadata));
@@ -44,11 +44,11 @@ class ImageUploadApp {
       });
 
       try {
-        var snapshot = await uploadTask.future;
-        var filePath = await snapshot.ref.getDownloadURL();
-        var image = ImageElement(src: filePath.toString());
+        final snapshot = await uploadTask.future;
+        final filePath = await snapshot.ref.getDownloadURL();
+        final image = ImageElement(src: filePath.toString());
         document.body.append(image);
-        var metadata = snapshot.metadata.customMetadata;
+        final metadata = snapshot.metadata.customMetadata;
         querySelector('#message').text = 'Metadata: ${metadata.toString()}';
       } catch (e) {
         print(e);

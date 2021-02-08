@@ -33,27 +33,27 @@ void main() {
 
   group('Reference', () {
     final pathPrefix = validDatePath();
-    final fileName = 'storage_test.json';
+    const fileName = 'storage_test.json';
     final filePath = p.join(pathPrefix, fileName);
 
     StorageReference ref;
 
     setUp(() async {
-      var storage = app.storage();
+      final storage = app.storage();
 
       ref = storage.ref(filePath);
-      var metadata = UploadMetadata(
+      final metadata = UploadMetadata(
           contentType: r'application/json',
           customMetadata: {'the answer': '42'});
-      var bytes = JsonUtf8Encoder().convert([1, 2, 3]);
+      final bytes = JsonUtf8Encoder().convert([1, 2, 3]);
 
-      var upload = ref.put(bytes, metadata);
-      var snapShot = await upload.future;
+      final upload = ref.put(bytes, metadata);
+      final snapShot = await upload.future;
 
       expect(snapShot.bytesTransferred, 7);
       expect(snapShot.state, TaskState.SUCCESS);
 
-      var md = snapShot.metadata;
+      final md = snapShot.metadata;
       expect(md.bucket, storageBucket);
       expect(md.name, fileName);
       expect(md.fullPath, filePath);
@@ -72,14 +72,14 @@ void main() {
     });
 
     test('getDownloadURL', () async {
-      var downloadUrl = await ref.getDownloadURL();
+      final downloadUrl = await ref.getDownloadURL();
 
       expect(downloadUrl.toString(), contains(storageBucket));
       expect(downloadUrl.pathSegments.last, contains(filePath));
     });
 
     test('getMetadata', () async {
-      var md = await ref.getMetadata();
+      final md = await ref.getMetadata();
 
       expect(md.bucket, storageBucket);
       expect(md.name, fileName);
@@ -92,9 +92,9 @@ void main() {
     });
 
     test('updateMetadata', () async {
-      var newMetadata = SettableMetadata(contentType: 'text/plain');
+      final newMetadata = SettableMetadata(contentType: 'text/plain');
 
-      var md = await ref.updateMetadata(newMetadata);
+      final md = await ref.updateMetadata(newMetadata);
 
       expect(md.bucket, storageBucket);
       expect(md.name, fileName);
@@ -110,7 +110,7 @@ void main() {
       Iterable<StorageReference> refs;
 
       setUp(() async {
-        var storage = app.storage();
+        final storage = app.storage();
         subfolder = storage.ref(validDatePath()).child('sub');
         refs = ['a', 'b', 'c', 'd'].map((n) => subfolder.child(n));
         await Future.wait(refs.map((r) => r.putString('Dartlang <3').future));
@@ -121,14 +121,14 @@ void main() {
       });
 
       test('paginated list', () async {
-        var pageA = await subfolder.list(ListOptions(maxResults: 2));
+        final pageA = await subfolder.list(ListOptions(maxResults: 2));
 
         expect(pageA.prefixes, hasLength(0));
         expect(pageA.items, hasLength(2));
         expect(pageA.items.map((f) => f.name), containsAllInOrder(['a', 'b']));
         expect(pageA.nextPageToken, isNotNull);
 
-        var pageB = await subfolder
+        final pageB = await subfolder
             .list(ListOptions(maxResults: 2, pageToken: pageA.nextPageToken));
 
         expect(pageB.items, hasLength(2));
@@ -136,13 +136,13 @@ void main() {
       });
 
       test('listAll', () async {
-        var folder = await subfolder.parent.listAll();
+        final folder = await subfolder.parent.listAll();
 
         expect(folder.prefixes, hasLength(1));
         expect(folder.prefixes.first.name, equals('sub'));
         expect(folder.items, hasLength(0));
 
-        var sub = await subfolder.listAll();
+        final sub = await subfolder.listAll();
 
         expect(sub.prefixes, hasLength(0));
         expect(sub.items, hasLength(4));

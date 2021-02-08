@@ -89,7 +89,7 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   ///
   /// Returns non-null [Future] that represents successfully enabling
   /// persistent storage.
-  Future<Null> enablePersistence([PersistenceSettings settings]) =>
+  Future<void> enablePersistence([PersistenceSettings settings]) =>
       handleThenable(jsObject.enablePersistence(settings));
 
   /// Executes the given [updateFunction] and then attempts to commit the
@@ -104,7 +104,7 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   /// Else, if the transaction failed, a rejected Future with the corresponding
   /// failure error will be returned.
   Future runTransaction(Function(Transaction) updateFunction) {
-    var updateFunctionWrap = allowInterop((transaction) =>
+    final updateFunctionWrap = allowInterop((transaction) =>
         handleFutureWithMapper(
             updateFunction(Transaction.getInstance(transaction)), jsify));
 
@@ -160,7 +160,7 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl>
   /// Returns non-null [Future] that resolves once all of the writes in the
   /// batch have been successfully written to the backend as an atomic unit.
   /// Note that it won't resolve while you're offline.
-  Future<Null> commit() => handleThenable(jsObject.commit());
+  Future<void> commit() => handleThenable(jsObject.commit());
 
   /// Deletes the document referred to by the provided [DocumentReference].
   ///
@@ -189,7 +189,7 @@ class WriteBatch extends JsObjectWrapper<firestore_interop.WriteBatchJsImpl>
   /// Returns non-null [WriteBatch] instance. Used for chaining method calls.
   WriteBatch set(DocumentReference documentRef, Map<String, dynamic> data,
       [firestore_interop.SetOptions options]) {
-    var jsObjectSet = (options != null)
+    final jsObjectSet = (options != null)
         ? jsObject.set(documentRef.jsObject, jsify(data), options)
         : jsObject.set(documentRef.jsObject, jsify(data));
     return WriteBatch.getInstance(jsObjectSet);
@@ -273,7 +273,7 @@ class DocumentReference
   /// Returns non-null [Future] that resolves once the document has been
   /// successfully deleted from the backend (Note that it won't resolve
   /// while you're offline).
-  Future<Null> delete() => handleThenable(jsObject.delete());
+  Future<void> delete() => handleThenable(jsObject.delete());
 
   /// Reads the document referred to by this [DocumentReference].
   /// Note: [get()] attempts to provide up-to-date data when possible
@@ -304,12 +304,12 @@ class DocumentReference
       StreamController<DocumentSnapshot> controller,
       [firestore_interop.DocumentListenOptions options]) {
     if (controller == null) {
-      var nextWrapper =
+      final nextWrapper =
           allowInterop((firestore_interop.DocumentSnapshotJsImpl snapshot) {
         controller.add(DocumentSnapshot.getInstance(snapshot));
       });
 
-      var errorWrapper = allowInterop((e) => controller.addError(e));
+      final errorWrapper = allowInterop((e) => controller.addError(e));
 
       ZoneCallback onSnapshotUnsubscribe;
 
@@ -344,9 +344,9 @@ class DocumentReference
   ///
   /// Returns non-null [Future] that resolves once the data has been successfully
   /// written to the backend. (Note that it won't resolve while you're offline).
-  Future<Null> set(Map<String, dynamic> data,
+  Future<void> set(Map<String, dynamic> data,
       [firestore_interop.SetOptions options]) {
-    var jsObjectSet = (options != null)
+    final jsObjectSet = (options != null)
         ? jsObject.set(jsify(data), options)
         : jsObject.set(jsify(data));
     return handleThenable(jsObjectSet);
@@ -366,7 +366,7 @@ class DocumentReference
   ///
   /// Returns non-null [Future] that resolves once the data has been successfully
   /// written to the backend (Note that it won't resolve while you're offline).
-  Future<Null> update(
+  Future<void> update(
           {Map<String, dynamic> data,
           List< /*String|FieldPath|dynamic*/ dynamic> fieldsAndValues}) =>
       handleThenable(_wrapUpdateFunctionCall(jsObject, data, fieldsAndValues));
@@ -443,16 +443,16 @@ class Query<T extends firestore_interop.QueryJsImpl>
   StreamController<QuerySnapshot> _createStream(bool includeMetadataChanges) {
     StreamController<QuerySnapshot> controller;
 
-    var nextWrapper =
+    final nextWrapper =
         allowInterop((firestore_interop.QuerySnapshotJsImpl snapshot) {
       controller.add(QuerySnapshot._fromJsObject(snapshot));
     });
 
-    var errorWrapper = allowInterop((e) => controller.addError(e));
+    final errorWrapper = allowInterop((e) => controller.addError(e));
 
     ZoneCallback onSnapshotUnsubscribe;
 
-    var options = firestore_interop.SnapshotListenOptions(
+    final options = firestore_interop.SnapshotListenOptions(
         includeMetadataChanges: includeMetadataChanges);
 
     void startListen() {
@@ -480,7 +480,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
   /// Returns non-null created [Query].
   Query orderBy(/*String|FieldPath*/ fieldPath,
       [String /*'desc'|'asc'*/ directionStr]) {
-    var jsObjectOrderBy = (directionStr != null)
+    final jsObjectOrderBy = (directionStr != null)
         ? jsObject.orderBy(fieldPath, directionStr)
         : jsObject.orderBy(fieldPath);
     return Query.fromJsObject(jsObjectOrderBy);
@@ -551,7 +551,7 @@ class Query<T extends firestore_interop.QueryJsImpl>
           'Please provide either snapshot or fieldValues parameter.');
     }
 
-    var args = (snapshot != null)
+    final args = (snapshot != null)
         ? [snapshot.jsObject]
         : fieldValues.map(jsify).toList();
     return callMethod(jsObject, method, args);
@@ -617,7 +617,7 @@ class CollectionReference<T extends firestore_interop.CollectionReferenceJsImpl>
   ///
   /// Returns non-null [DocumentReference].
   DocumentReference doc([String documentPath]) {
-    var jsObjectDoc =
+    final jsObjectDoc =
         (documentPath != null) ? jsObject.doc(documentPath) : jsObject.doc();
     return DocumentReference.getInstance(jsObjectDoc);
   }
@@ -775,7 +775,7 @@ class QuerySnapshot
 
   /// Enumerates all of the documents in the [QuerySnapshot].
   void forEach(Function(DocumentSnapshot) callback) {
-    var callbackWrap =
+    final callbackWrap =
         allowInterop((s) => callback(DocumentSnapshot.getInstance(s)));
     return jsObject.forEach(callbackWrap);
   }
@@ -843,7 +843,7 @@ class Transaction extends JsObjectWrapper<firestore_interop.TransactionJsImpl>
   /// Returns non-null [Transaction] used for chaining method calls.
   Transaction set(DocumentReference documentRef, Map<String, dynamic> data,
       [firestore_interop.SetOptions options]) {
-    var jsObjectSet = (options != null)
+    final jsObjectSet = (options != null)
         ? jsObject.set(documentRef.jsObject, jsify(data), options)
         : jsObject.set(documentRef.jsObject, jsify(data));
     return Transaction.getInstance(jsObjectSet);
@@ -885,7 +885,7 @@ abstract class _Updatable {
           'Please provide either data or fieldsAndValues parameter.');
     }
 
-    var args = (data != null)
+    final args = (data != null)
         ? [jsify(data)]
         : fieldsAndValues
             .map((f) => (f is firestore_interop.FieldPath) ? f : jsify(f))
@@ -929,11 +929,10 @@ class _FieldValueArrayUnion extends _FieldValueArray {
   _FieldValueArrayUnion(List elements) : super(elements);
 
   @override
-  firestore_interop.FieldValue _jsify() {
-    // This uses var arg so cannot use js package
-    return callMethod(
-        firestore_interop.fieldValues, 'arrayUnion', jsifyList(elements));
-  }
+  firestore_interop.FieldValue _jsify() =>
+      // This uses var arg so cannot use js package
+      callMethod(
+          firestore_interop.fieldValues, 'arrayUnion', jsifyList(elements));
 
   @override
   String toString() => 'FieldValue.arrayUnion($elements)';
@@ -943,11 +942,10 @@ class _FieldValueArrayRemove extends _FieldValueArray {
   _FieldValueArrayRemove(List elements) : super(elements);
 
   @override
-  firestore_interop.FieldValue _jsify() {
-    // This uses var arg so cannot use js package
-    return callMethod(
-        firestore_interop.fieldValues, 'arrayRemove', jsifyList(elements));
-  }
+  firestore_interop.FieldValue _jsify() =>
+      // This uses var arg so cannot use js package
+      callMethod(
+          firestore_interop.fieldValues, 'arrayRemove', jsifyList(elements));
 
   @override
   String toString() => 'FieldValue.arrayRemove($elements)';

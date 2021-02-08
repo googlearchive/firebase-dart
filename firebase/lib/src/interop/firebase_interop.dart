@@ -3,7 +3,6 @@
 @JS('firebase')
 library firebase.firebase_interop;
 
-import 'package:firebase/src/interop/remote_config_interop.dart';
 import 'package:js/js.dart';
 
 import 'analytics_interop.dart';
@@ -15,6 +14,7 @@ import 'firestore_interop.dart';
 import 'functions_interop.dart';
 import 'messaging_interop.dart';
 import 'performance_interop.dart';
+import 'remote_config_interop.dart';
 import 'storage_interop.dart';
 
 @JS()

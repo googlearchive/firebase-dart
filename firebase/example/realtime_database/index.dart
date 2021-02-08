@@ -3,7 +3,7 @@ import 'dart:html';
 import 'package:firebase/firebase.dart' as fb;
 import 'package:_shared_assets/assets.dart';
 
-void main() async {
+Future<void> main() async {
   //Use for firebase package development only
   await config();
 
@@ -41,7 +41,7 @@ class MessagesApp {
       e.preventDefault();
 
       if (newMessage.value.trim().isNotEmpty) {
-        var map = {'text': newMessage.value};
+        final map = {'text': newMessage.value};
 
         try {
           await ref.push(map).future;
@@ -55,25 +55,25 @@ class MessagesApp {
 
   void showMessages() {
     ref.onChildAdded.listen((e) {
-      var datasnapshot = e.snapshot;
+      final datasnapshot = e.snapshot;
 
-      var spanElement = SpanElement()..text = datasnapshot.val()['text'];
+      final spanElement = SpanElement()..text = datasnapshot.val()['text'];
 
-      var aElementDelete = AnchorElement(href: '#')
+      final aElementDelete = AnchorElement(href: '#')
         ..text = 'Delete'
         ..onClick.listen((e) {
           e.preventDefault();
           _deleteItem(datasnapshot);
         });
 
-      var aElementUpdate = AnchorElement(href: '#')
+      final aElementUpdate = AnchorElement(href: '#')
         ..text = 'To Uppercase'
         ..onClick.listen((e) {
           e.preventDefault();
           _uppercaseItem(datasnapshot);
         });
 
-      var element = LIElement()
+      final element = LIElement()
         ..id = datasnapshot.key
         ..append(spanElement)
         ..append(aElementDelete)
@@ -82,8 +82,8 @@ class MessagesApp {
     });
 
     ref.onChildChanged.listen((e) {
-      var datasnapshot = e.snapshot;
-      var element = querySelector('#${datasnapshot.key} span');
+      final datasnapshot = e.snapshot;
+      final element = querySelector('#${datasnapshot.key} span');
 
       if (element != null) {
         element.text = datasnapshot.val()['text'];
@@ -91,9 +91,9 @@ class MessagesApp {
     });
 
     ref.onChildRemoved.listen((e) {
-      var datasnapshot = e.snapshot;
+      final datasnapshot = e.snapshot;
 
-      var element = querySelector('#${datasnapshot.key}');
+      final element = querySelector('#${datasnapshot.key}');
 
       if (element != null) {
         element.remove();
@@ -109,9 +109,9 @@ class MessagesApp {
     }
   }
 
-  void _uppercaseItem(fb.DataSnapshot datasnapshot) async {
-    var value = datasnapshot.val();
-    var valueUppercase = value['text'].toString().toUpperCase();
+  Future<void> _uppercaseItem(fb.DataSnapshot datasnapshot) async {
+    final value = datasnapshot.val();
+    final valueUppercase = value['text'].toString().toUpperCase();
     value['text'] = valueUppercase;
 
     try {

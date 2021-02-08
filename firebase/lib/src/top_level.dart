@@ -76,7 +76,7 @@ App initializeApp({
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.app>.
 App app([String name]) {
-  var jsObject = (name != null) ? firebase.app(name) : firebase.app();
+  final jsObject = (name != null) ? firebase.app(name) : firebase.app();
 
   return App.getInstance(jsObject);
 }
@@ -85,7 +85,8 @@ App app([String name]) {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.auth>.
 Auth auth([App app]) {
-  var jsObject = (app != null) ? firebase.auth(app.jsObject) : firebase.auth();
+  final jsObject =
+      (app != null) ? firebase.auth(app.jsObject) : firebase.auth();
 
   return Auth.getInstance(jsObject);
 }
@@ -97,7 +98,7 @@ Auth auth([App app]) {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.database>.
 Database database([App app]) {
-  var jsObject =
+  final jsObject =
       (app != null) ? firebase.database(app.jsObject) : firebase.database();
 
   return Database.getInstance(jsObject);
@@ -110,7 +111,7 @@ Database database([App app]) {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.storage>.
 Storage storage([App app]) {
-  var jsObject =
+  final jsObject =
       (app != null) ? firebase.storage(app.jsObject) : firebase.storage();
 
   return Storage.getInstance(jsObject);
@@ -120,7 +121,7 @@ Storage storage([App app]) {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.firestore>.
 Firestore firestore([App app]) {
-  var jsObject =
+  final jsObject =
       (app != null) ? firebase.firestore(app.jsObject) : firebase.firestore();
 
   return Firestore.getInstance(jsObject);
@@ -130,7 +131,7 @@ Firestore firestore([App app]) {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.functions>.
 Functions functions([App app]) {
-  var jsObject =
+  final jsObject =
       (app != null) ? firebase.functions(app.jsObject) : firebase.functions();
 
   return Functions.getInstance(jsObject);
@@ -140,7 +141,7 @@ Functions functions([App app]) {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.messaging>.
 Messaging messaging([App app]) {
-  var jsObject =
+  final jsObject =
       (app != null) ? firebase.messaging(app.jsObject) : firebase.messaging();
 
   return Messaging.getInstance(jsObject);
@@ -150,7 +151,7 @@ Messaging messaging([App app]) {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.remoteconfig>.
 RemoteConfig remoteConfig([App app]) {
-  var jsObject = (app != null)
+  final jsObject = (app != null)
       ? firebase.remoteConfig(app.jsObject)
       : firebase.remoteConfig();
 
@@ -161,7 +162,7 @@ RemoteConfig remoteConfig([App app]) {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.analytics>.
 Analytics analytics([App app]) {
-  var jsObject =
+  final jsObject =
       (app != null) ? firebase.analytics(app.jsObject) : firebase.analytics();
 
   return Analytics.getInstance(jsObject);
@@ -171,7 +172,7 @@ Analytics analytics([App app]) {
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase.performance>.
 Performance performance([App app]) {
-  var jsObject = (app != null)
+  final jsObject = (app != null)
       ? firebase.performance(app.jsObject)
       : firebase.performance();
 
@@ -194,7 +195,7 @@ bool _firebaseNotLoaded(error) {
   }
 
   if (js.hasProperty(error, 'message')) {
-    var message = js.getProperty(error, 'message');
+    final message = js.getProperty(error, 'message');
     return message == 'firebase is not defined' ||
         message == "Can't find variable: firebase";
   }

@@ -44,7 +44,7 @@ class App extends JsObjectWrapper<AppJsImpl> {
 
   /// Returns [Storage] service optionally initialized with a custom storage bucket.
   Storage storage([String url]) {
-    var jsObjectStorage =
+    final jsObjectStorage =
         (url != null) ? jsObject.storage(url) : jsObject.storage();
     return Storage.getInstance(jsObjectStorage);
   }

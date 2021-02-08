@@ -10,6 +10,7 @@ import 'es6_interop.dart';
 
 external void enableLogging([logger, bool persistent]);
 
+// ignore: avoid_classes_with_only_static_members
 /// A placeholder value for auto-populating the current timestamp
 /// (time since the Unix epoch, in milliseconds) as determined
 /// by the Firebase servers.

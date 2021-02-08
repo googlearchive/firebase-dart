@@ -50,7 +50,7 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
   Future<String> getToken() => handleThenable(jsObject.getToken());
 
   StreamController<Payload> _onMessageController;
-  StreamController<Null> _onTokenRefresh;
+  StreamController<void> _onTokenRefresh;
   StreamController<Payload> _onBackgroundMessage;
 
   /// When a push message is received and the user is currently on a page for your origin,
@@ -64,7 +64,7 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
 
   /// You should listen for token refreshes so your web app knows when FCM
   /// has invalidated your existing token and you need to call [getToken] to get a new token.
-  Stream<Null> get onTokenRefresh => _createNullStream(_onTokenRefresh);
+  Stream<void> get onTokenRefresh => _createNullStream(_onTokenRefresh);
 
   Stream<Payload> _createOnMessageStream(StreamController<Payload> controller) {
     if (controller == null) {
@@ -92,7 +92,7 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
     return controller.stream;
   }
 
-  Stream<Null> _createNullStream(StreamController controller) {
+  Stream<void> _createNullStream(StreamController controller) {
     if (controller == null) {
       final nextWrapper = allowInterop((_) => null);
       final errorWrapper = allowInterop((e) {
@@ -110,7 +110,7 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
         onSnapshotUnsubscribe = null;
       }
 
-      controller = StreamController<Null>.broadcast(
+      controller = StreamController<void>.broadcast(
           onListen: startListen, onCancel: stopListen, sync: true);
     }
     return controller.stream;
@@ -123,8 +123,11 @@ class Notification
       : super.fromJsObject(jsObject);
 
   String get title => jsObject.title;
+
   String get body => jsObject.body;
+
   String get clickAction => jsObject.click_action;
+
   String get icon => jsObject.icon;
 }
 
@@ -134,7 +137,10 @@ class Payload extends JsObjectWrapper<messaging_interop.PayloadJsImpl> {
 
   Notification get notification =>
       Notification._fromJsObject(jsObject.notification);
+
   String get collapseKey => jsObject.collapse_key;
+
   String get from => jsObject.from;
+
   Map<String, dynamic> get data => dartify(jsObject.data);
 }

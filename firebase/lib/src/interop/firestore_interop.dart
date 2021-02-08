@@ -47,9 +47,9 @@ abstract class FirestoreJsImpl {
 
   external void settings(Settings settings);
 
-  external PromiseJsImpl<Null> disableNetwork();
+  external PromiseJsImpl<void> disableNetwork();
 
-  external PromiseJsImpl<Null> enableNetwork();
+  external PromiseJsImpl<void> enableNetwork();
 }
 
 /// Settings that can be passed to `Firestore.enablePersistence` to configure
@@ -81,7 +81,7 @@ abstract class PersistenceSettings {
 
 @JS('WriteBatch')
 abstract class WriteBatchJsImpl {
-  external PromiseJsImpl<Null> commit();
+  external PromiseJsImpl<void> commit();
 
   external WriteBatchJsImpl delete(DocumentReferenceJsImpl documentRef);
 
@@ -230,7 +230,7 @@ abstract class DocumentReferenceJsImpl {
 
   external CollectionReferenceJsImpl collection(String collectionPath);
 
-  external PromiseJsImpl<Null> delete();
+  external PromiseJsImpl<void> delete();
 
   external PromiseJsImpl<DocumentSnapshotJsImpl> get();
 
@@ -240,9 +240,9 @@ abstract class DocumentReferenceJsImpl {
     void Function(FirebaseError) onError,
   ]);
 
-  external PromiseJsImpl<Null> set(data, [SetOptions options]);
+  external PromiseJsImpl<void> set(data, [SetOptions options]);
 
-  external PromiseJsImpl<Null> update(dataOrFieldsAndValues);
+  external PromiseJsImpl<void> update(dataOrFieldsAndValues);
 }
 
 @JS('DocumentSnapshot')

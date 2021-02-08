@@ -17,25 +17,18 @@ class Performance
   Performance._fromJsObject(performance_interop.PerformanceJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  Trace trace(String traceName) {
-    return Trace.fromJsObject(jsObject.trace(traceName));
-  }
+  Trace trace(String traceName) =>
+      Trace.fromJsObject(jsObject.trace(traceName));
 }
 
 class Trace extends JsObjectWrapper<performance_interop.TraceJsImpl> {
   Trace.fromJsObject(performance_interop.TraceJsImpl jsObject)
       : super.fromJsObject(jsObject);
-  String getAttribute(String attr) {
-    return jsObject.getAttribute(attr);
-  }
+  String getAttribute(String attr) => jsObject.getAttribute(attr);
 
-  Map<String, dynamic> getAttributes() {
-    return dartify(jsObject.getAttributes());
-  }
+  Map<String, dynamic> getAttributes() => dartify(jsObject.getAttributes());
 
-  int getMetric(String metricName) {
-    return jsObject.getMetric(metricName);
-  }
+  int getMetric(String metricName) => jsObject.getMetric(metricName);
 
   void incrementMetric(String metricName, [int num]) {
     if (num != null) {

@@ -158,12 +158,12 @@ class DatabaseReference<T extends database_interop.ReferenceJsImpl>
   /// Set [applyLocally] to `false` to not see intermediate states.
   Future<Transaction> transaction(dynamic Function(dynamic) transactionUpdate,
       [bool applyLocally = true]) {
-    var c = Completer<Transaction>();
+    final c = Completer<Transaction>();
 
-    var transactionUpdateWrap =
+    final transactionUpdateWrap =
         allowInterop((update) => jsify(transactionUpdate(dartify(update))));
 
-    var onCompleteWrap = allowInterop(
+    final onCompleteWrap = allowInterop(
       (error, bool committed, database_interop.DataSnapshotJsImpl snapshot) {
         if (error != null) {
           c.completeError(error);
@@ -299,7 +299,7 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
   Stream<QueryEvent> _createStream(String eventType) {
     StreamController<QueryEvent> streamController;
 
-    var callbackWrap = allowInterop((
+    final callbackWrap = allowInterop((
       database_interop.DataSnapshotJsImpl data, [
       String string,
     ]) {
@@ -326,7 +326,7 @@ class Query<T extends database_interop.QueryJsImpl> extends JsObjectWrapper<T> {
 
   /// Listens for exactly one [eventType] and then stops listening.
   Future<QueryEvent> once(String eventType) {
-    var c = Completer<QueryEvent>();
+    final c = Completer<QueryEvent>();
 
     jsObject.once(eventType, allowInterop(
       (database_interop.DataSnapshotJsImpl snapshot, [String string]) {
@@ -409,7 +409,7 @@ class DataSnapshot
   /// Enumerates the top-level children of the DataSnapshot in their query-order.
   /// [action] is called for each child DataSnapshot.
   bool forEach(Function(DataSnapshot) action) {
-    var actionWrap = allowInterop((d) => action(DataSnapshot.getInstance(d)));
+    final actionWrap = allowInterop((d) => action(DataSnapshot.getInstance(d)));
     return jsObject.forEach(actionWrap);
   }
 

@@ -7,4 +7,3 @@ environment:
 dependencies:
   googleapis_auth: ^0.2.12
   http: ^0.12.2
-  service_worker: ^0.2.0

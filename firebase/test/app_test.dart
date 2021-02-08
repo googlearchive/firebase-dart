@@ -66,7 +66,7 @@ void main() {
     });
 
     test('Can be created with name', () async {
-      var app2 = fb.initializeApp(
+      final app2 = fb.initializeApp(
           apiKey: apiKey,
           authDomain: authDomain,
           databaseURL: databaseUrl,
