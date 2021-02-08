@@ -7,12 +7,8 @@ class Performance
   static final _expando = Expando<Performance>();
 
   static Performance getInstance(
-      performance_interop.PerformanceJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= Performance._fromJsObject(jsObject);
-  }
+          performance_interop.PerformanceJsImpl jsObject) =>
+      _expando[jsObject] ??= Performance._fromJsObject(jsObject);
 
   Performance._fromJsObject(performance_interop.PerformanceJsImpl jsObject)
       : super.fromJsObject(jsObject);
@@ -24,13 +20,14 @@ class Performance
 class Trace extends JsObjectWrapper<performance_interop.TraceJsImpl> {
   Trace.fromJsObject(performance_interop.TraceJsImpl jsObject)
       : super.fromJsObject(jsObject);
+
   String getAttribute(String attr) => jsObject.getAttribute(attr);
 
   Map<String, dynamic> getAttributes() => dartify(jsObject.getAttributes());
 
   int getMetric(String metricName) => jsObject.getMetric(metricName);
 
-  void incrementMetric(String metricName, [int num]) {
+  void incrementMetric(String metricName, [int? num]) {
     if (num != null) {
       jsObject.incrementMetric(metricName, num);
     } else {

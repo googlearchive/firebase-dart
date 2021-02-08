@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:html';
 
-import 'package:firebase/firebase.dart' as fb;
 import 'package:_shared_assets/assets.dart';
+import 'package:firebase/firebase.dart' as fb;
 
 Future<void> main() async {
   //Use for firebase package development only
@@ -34,17 +34,19 @@ class AuthApp {
 
   AuthApp()
       : auth = fb.auth(),
-        email = querySelector('#email'),
-        password = querySelector('#password'),
-        authInfo = querySelector('#auth_info'),
-        error = querySelector('#register_form p'),
-        logout = querySelector('#logout_btn'),
-        registerForm = querySelector('#register_form'),
-        persistenceState = querySelector('#persistent_state'),
-        verifyEmail = querySelector('#verify_email'),
-        verifyEmailLanguage = querySelector('#verify_email_language'),
-        registeredUser = querySelector('#registered_user'),
-        verifyEmailContainer = querySelector('#verify_email_container') {
+        email = querySelector('#email') as InputElement,
+        password = querySelector('#password') as InputElement,
+        authInfo = querySelector('#auth_info') as TableElement,
+        error = querySelector('#register_form p') as ParagraphElement,
+        logout = querySelector('#logout_btn') as AnchorElement,
+        registerForm = querySelector('#register_form') as FormElement,
+        persistenceState = querySelector('#persistent_state') as SelectElement,
+        verifyEmail = querySelector('#verify_email') as ButtonElement,
+        verifyEmailLanguage =
+            querySelector('#verify_email_language') as SelectElement,
+        registeredUser = querySelector('#registered_user') as DivElement,
+        verifyEmailContainer =
+            querySelector('#verify_email_container') as DivElement {
     logout.onClick.listen((e) {
       e.preventDefault();
       auth.signOut();
@@ -52,14 +54,14 @@ class AuthApp {
 
     registerForm.onSubmit.listen((e) {
       e.preventDefault();
-      final emailValue = email.value.trim();
-      final passwordvalue = password.value.trim();
-      _registerUser(emailValue, passwordvalue);
+      final emailValue = email.value!.trim();
+      final passwordValue = password.value!.trim();
+      _registerUser(emailValue, passwordValue);
     });
 
     // After opening
     if (auth.currentUser != null) {
-      _setLayout(auth.currentUser);
+      _setLayout(auth.currentUser!);
     }
 
     // When auth state changes
@@ -74,7 +76,7 @@ class AuthApp {
         // url should be any authorized domain in your console - we use here,
         // for this example, authDomain because it is whitelisted by default
         // More info: https://firebase.google.com/docs/auth/web/passing-state-in-email-actions
-        await auth.currentUser.sendEmailVerification(
+        await auth.currentUser!.sendEmailVerification(
             fb.ActionCodeSettings(url: 'https://$authDomain'));
         verifyEmail.text = 'Verification email sent!';
       } catch (e) {
@@ -114,9 +116,9 @@ class AuthApp {
   }
 
   String _getSelectedValue(SelectElement element) =>
-      element.options[element.selectedIndex].value;
+      element.options[element.selectedIndex!].value;
 
-  void _setLayout(fb.User user) {
+  void _setLayout(fb.User? user) {
     if (user != null) {
       registerForm.style.display = 'none';
       registeredUser.style.display = 'block';

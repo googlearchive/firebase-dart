@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
-Map<String, dynamic> _configVal;
+Map<String, dynamic>? _configVal;
 
 String get apiKey => _getConfig('API_KEY');
 
@@ -32,12 +32,8 @@ String get serverKey => _getConfig('SERVER_KEY');
 
 String get vapidKey => _getConfig('VAPID_KEY');
 
-String _getConfig(String key, {String alt}) {
-  if (_configVal == null) {
-    throw StateError('You must call config() first');
-  }
-
-  var value = _configVal[key];
+String _getConfig(String key, {String? alt}) {
+  var value = _configVal![key];
 
   if (value == null) {
     if (alt == null) {
@@ -62,7 +58,7 @@ Future<dynamic> readServiceAccountJson() =>
 
 Future<dynamic> _readAssetJson(String assetFile) async {
   try {
-    var response = await get('packages/_shared_assets/$assetFile');
+    var response = await get(Uri.parse('packages/_shared_assets/$assetFile'));
     if (response.statusCode > 399) {
       throw StateError(
         'Problem with server: ${response.statusCode} ${response.body}',

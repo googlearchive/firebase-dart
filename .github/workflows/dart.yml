@@ -39,52 +39,7 @@ jobs:
       - name: mono_repo self validate
         run: pub global run mono_repo generate --validate
   job_002:
-    name: "analyze_and_format; Dart 2.7.0; PKGS: _shared_assets, firebase; `dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos .`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:2.7.0;packages:_shared_assets-firebase;commands:dartfmt-dartanalyzer"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:2.7.0;packages:_shared_assets-firebase
-            os:ubuntu-latest;pub-cache-hosted;dart:2.7.0
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v0.3
-        with:
-          sdk: "2.7.0"
-      - id: checkout
-        uses: actions/checkout@v2
-      - id: _shared_assets_pub_upgrade
-        name: "_shared_assets; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: _shared_assets
-        run: pub upgrade --no-precompile
-      - name: "_shared_assets; dartfmt -n --set-exit-if-changed ."
-        if: "always() && steps._shared_assets_pub_upgrade.conclusion == 'success'"
-        working-directory: _shared_assets
-        run: dartfmt -n --set-exit-if-changed .
-      - name: "_shared_assets; dartanalyzer --fatal-infos ."
-        if: "always() && steps._shared_assets_pub_upgrade.conclusion == 'success'"
-        working-directory: _shared_assets
-        run: dartanalyzer --fatal-infos .
-      - id: firebase_pub_upgrade
-        name: "firebase; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: firebase
-        run: pub upgrade --no-precompile
-      - name: "firebase; dartfmt -n --set-exit-if-changed ."
-        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
-        working-directory: firebase
-        run: dartfmt -n --set-exit-if-changed .
-      - name: "firebase; dartanalyzer --fatal-infos ."
-        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
-        working-directory: firebase
-        run: dartanalyzer --fatal-infos .
-  job_003:
-    name: "analyze_and_format; Dart dev; PKGS: _shared_assets, firebase; `dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos .`"
+    name: "analyze_and_format; PKGS: _shared_assets, firebase; `dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos .`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
@@ -128,40 +83,8 @@ jobs:
         if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
         working-directory: firebase
         run: dartanalyzer --fatal-infos .
-  job_004:
-    name: "unit_test; Dart 2.7.0; PKG: firebase; `pub run build_runner build example --fail-on-severe --delete-conflicting-outputs`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:2.7.0;packages:firebase;commands:command_0"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:2.7.0;packages:firebase
-            os:ubuntu-latest;pub-cache-hosted;dart:2.7.0
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v0.3
-        with:
-          sdk: "2.7.0"
-      - id: checkout
-        uses: actions/checkout@v2
-      - id: firebase_pub_upgrade
-        name: "firebase; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: firebase
-        run: pub upgrade --no-precompile
-      - name: "firebase; pub run build_runner build example --fail-on-severe --delete-conflicting-outputs"
-        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
-        working-directory: firebase
-        run: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
-    needs:
-      - job_001
-      - job_002
-      - job_003
-  job_005:
-    name: "unit_test; Dart dev; PKG: firebase; `pub run build_runner build example --fail-on-severe --delete-conflicting-outputs`"
+  job_003:
+    name: "unit_test; PKG: firebase; `pub run build_runner build example --fail-on-severe --delete-conflicting-outputs`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
@@ -191,41 +114,8 @@ jobs:
     needs:
       - job_001
       - job_002
-      - job_003
-  job_006:
-    name: "unit_test; Dart 2.7.0; PKG: firebase; `pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:2.7.0;packages:firebase;commands:command_1"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:2.7.0;packages:firebase
-            os:ubuntu-latest;pub-cache-hosted;dart:2.7.0
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v0.3
-        with:
-          sdk: "2.7.0"
-      - id: checkout
-        uses: actions/checkout@v2
-      - id: firebase_pub_upgrade
-        name: "firebase; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: firebase
-        run: pub upgrade --no-precompile
-      - name: "firebase; pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
-        if: "always() && steps.firebase_pub_upgrade.conclusion == 'success'"
-        working-directory: firebase
-        run: "pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
-    needs:
-      - job_001
-      - job_002
-      - job_003
-  job_007:
-    name: "unit_test; Dart dev; PKG: firebase; `pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test`"
+  job_004:
+    name: "unit_test; PKG: firebase; `pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
@@ -255,8 +145,7 @@ jobs:
     needs:
       - job_001
       - job_002
-      - job_003
-  job_008:
+  job_005:
     name: Notify failure
     runs-on: ubuntu-latest
     if: "(github.event_name == 'push' || github.event_name == 'schedule') && failure()"
@@ -272,6 +161,3 @@ jobs:
       - job_002
       - job_003
       - job_004
-      - job_005
-      - job_006
-      - job_007

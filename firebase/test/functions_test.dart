@@ -4,7 +4,7 @@ import 'package:_shared_assets/assets.dart';
 import 'package:test/test.dart';
 
 void main() {
-  App app;
+  late App app;
 
   setUpAll(() async {
     await config();
@@ -20,7 +20,7 @@ void main() {
   });
 
   group('Functions', () {
-    Functions functions;
+    late Functions functions;
 
     setUp(() async {
       functions = app.functions();

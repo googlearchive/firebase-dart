@@ -9,12 +9,8 @@ import 'utils.dart';
 class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
   static final _expando = Expando<Messaging>();
 
-  static Messaging getInstance(messaging_interop.MessagingJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= Messaging._fromJsObject(jsObject);
-  }
+  static Messaging getInstance(messaging_interop.MessagingJsImpl jsObject) =>
+      _expando[jsObject] ??= Messaging._fromJsObject(jsObject);
 
   static bool isSupported() => messaging_interop.isSupported();
 
@@ -49,71 +45,67 @@ class Messaging extends JsObjectWrapper<messaging_interop.MessagingJsImpl> {
   /// that can be used to send push messages to this user.
   Future<String> getToken() => handleThenable(jsObject.getToken());
 
-  StreamController<Payload> _onMessageController;
-  StreamController<void> _onTokenRefresh;
-  StreamController<Payload> _onBackgroundMessage;
+  late final StreamController<Payload> _onMessageController =
+      _createOnMessageStreamController();
+  late final StreamController<void> _onTokenRefresh = _createNullStream();
+  late final StreamController<Payload> _onBackgroundMessage =
+      _createBackgroundMessagedStream();
 
-  /// When a push message is received and the user is currently on a page for your origin,
-  /// the message is passed to the page and an [onMessage] event is dispatched with the payload of the push message.
-  Stream<Payload> get onMessage => _createOnMessageStream(_onMessageController);
+  /// When a push message is received and the user is currently on a page for
+  /// your origin, the message is passed to the page and an [onMessage] event
+  /// is dispatched with the payload of the push message.
+  Stream<Payload> get onMessage => _onMessageController.stream;
 
-  /// FCM directs push messages to your web page's [onMessage] callback if the user currently has it open.
+  /// FCM directs push messages to your web page's [onMessage] callback if the
+  /// user currently has it open.
+  ///
   /// Otherwise, it calls your callback passed into [onBackgroundMessage].
-  Stream<Payload> get onBackgroundMessage =>
-      _createBackgroundMessagedStream(_onBackgroundMessage);
+  Stream<Payload> get onBackgroundMessage => _onBackgroundMessage.stream;
 
   /// You should listen for token refreshes so your web app knows when FCM
   /// has invalidated your existing token and you need to call [getToken] to get a new token.
-  Stream<void> get onTokenRefresh => _createNullStream(_onTokenRefresh);
+  Stream<void> get onTokenRefresh => _onTokenRefresh.stream;
 
-  Stream<Payload> _createOnMessageStream(StreamController<Payload> controller) {
-    if (controller == null) {
-      controller = StreamController.broadcast(sync: true);
-      final nextWrapper = allowInterop((payload) {
-        controller.add(Payload._fromJsObject(payload));
-      });
-      final errorWrapper = allowInterop((e) {
-        controller.addError(e);
-      });
-      jsObject.onMessage(nextWrapper, errorWrapper);
-    }
-    return controller.stream;
+  StreamController<Payload> _createOnMessageStreamController() {
+    final controller = StreamController<Payload>.broadcast(sync: true);
+    final nextWrapper = allowInterop((payload) {
+      controller.add(Payload._fromJsObject(payload));
+    });
+    final errorWrapper = allowInterop(controller.addError);
+    jsObject.onMessage(nextWrapper, errorWrapper);
+    return controller;
   }
 
-  Stream<Payload> _createBackgroundMessagedStream(
-      StreamController<Payload> controller) {
-    if (controller == null) {
-      controller = StreamController.broadcast(sync: true);
-      final nextWrapper = allowInterop((payload) {
-        controller.add(Payload._fromJsObject(payload));
-      });
-      jsObject.setBackgroundMessageHandler(nextWrapper);
-    }
-    return controller.stream;
+  StreamController<Payload> _createBackgroundMessagedStream() {
+    final controller = StreamController<Payload>.broadcast(sync: true);
+    final nextWrapper = allowInterop((payload) {
+      controller.add(Payload._fromJsObject(payload));
+    });
+    jsObject.setBackgroundMessageHandler(nextWrapper);
+    return controller;
   }
 
-  Stream<void> _createNullStream(StreamController controller) {
-    if (controller == null) {
-      final nextWrapper = allowInterop((_) => null);
-      final errorWrapper = allowInterop((e) {
-        controller.addError(e);
-      });
-      ZoneCallback onSnapshotUnsubscribe;
+  StreamController<void> _createNullStream() {
+    ZoneCallback? onSnapshotUnsubscribe;
+    late StreamController controller;
 
-      void startListen() {
-        onSnapshotUnsubscribe =
-            jsObject.onTokenRefresh(nextWrapper, errorWrapper);
-      }
+    final nextWrapper = allowInterop((_) => null);
+    final errorWrapper = allowInterop((e) {
+      controller.addError(e);
+    });
 
-      void stopListen() {
-        onSnapshotUnsubscribe();
-        onSnapshotUnsubscribe = null;
-      }
-
-      controller = StreamController<void>.broadcast(
-          onListen: startListen, onCancel: stopListen, sync: true);
+    void startListen() {
+      onSnapshotUnsubscribe =
+          jsObject.onTokenRefresh(nextWrapper, errorWrapper);
     }
-    return controller.stream;
+
+    void stopListen() {
+      onSnapshotUnsubscribe!();
+      onSnapshotUnsubscribe = null;
+    }
+
+    return controller = StreamController<void>.broadcast(
+        onListen: startListen, onCancel: stopListen, sync: true);
   }
 }
 

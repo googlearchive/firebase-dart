@@ -9,7 +9,7 @@ import 'package:http/http.dart';
 /// and PATCH methods.
 class FirebaseClient {
   /// Auth credential.
-  final String credential;
+  final String? credential;
   final Client _client;
 
   /// Creates a new FirebaseClient with [credential] and optional [client].
@@ -17,11 +17,11 @@ class FirebaseClient {
   /// For credential you can either use Firebase app's secret or
   /// an authentication token.
   /// See: <https://firebase.google.com/docs/reference/rest/database/user-auth>.
-  FirebaseClient(this.credential, {Client client})
+  FirebaseClient(this.credential, {Client? client})
       : _client = client ?? Client();
 
   /// Creates a new anonymous FirebaseClient with optional [client].
-  FirebaseClient.anonymous({Client client})
+  FirebaseClient.anonymous({Client? client})
       : credential = null,
         _client = client ?? Client();
 
@@ -59,7 +59,7 @@ class FirebaseClient {
 
   /// Creates a request with a HTTP [method], [url] and optional data.
   /// The [url] can be either a `String` or `Uri`.
-  Future<dynamic> send(String method, url, {json}) async {
+  Future<Object?> send(String method, url, {json}) async {
     final uri = url is String ? Uri.parse(url) : url as Uri;
 
     final request = Request(method, uri);
@@ -75,7 +75,7 @@ class FirebaseClient {
     final streamedResponse = await _client.send(request);
     final response = await Response.fromStream(streamedResponse);
 
-    Object bodyJson;
+    Object? bodyJson;
     try {
       bodyJson = jsonDecode(response.body);
     } on FormatException {

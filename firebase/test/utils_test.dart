@@ -4,7 +4,7 @@ import 'package:firebase/src/utils.dart';
 import 'package:js/js_util.dart' as util;
 import 'package:test/test.dart';
 
-void _testRoundTrip(Object value) {
+void _testRoundTrip(Object? value) {
   final js = jsify(value);
   final roundTrip = dartify(js);
   expect(roundTrip, value);

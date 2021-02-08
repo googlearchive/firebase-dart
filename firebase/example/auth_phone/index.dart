@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:html';
 
-import 'package:firebase/firebase.dart' as fb;
 import 'package:_shared_assets/assets.dart';
+import 'package:firebase/firebase.dart' as fb;
 
 Future<void> main() async {
   //Use for firebase package development only
@@ -32,20 +32,20 @@ class PhoneAuthApp {
   final TableElement authInfo;
   final ParagraphElement error;
 
-  fb.RecaptchaVerifier verifier;
-  fb.ConfirmationResult confirmationResult;
+  fb.RecaptchaVerifier? verifier;
+  fb.ConfirmationResult? confirmationResult;
 
   PhoneAuthApp()
       : auth = fb.auth(),
-        logout = querySelector('#logout_btn'),
-        error = querySelector('.error'),
-        authInfo = querySelector('#auth_info'),
-        _phoneElement = querySelector('#phone'),
-        _codeElement = querySelector('#code'),
-        registerForm = querySelector('#register_form'),
-        verificationForm = querySelector('#verification_form'),
-        _registerSubmit = querySelector('#register'),
-        _verifySubmit = querySelector('#verify') {
+        logout = querySelector('#logout_btn') as AnchorElement,
+        error = querySelector('.error') as ParagraphElement,
+        authInfo = querySelector('#auth_info') as TableElement,
+        _phoneElement = querySelector('#phone') as InputElement,
+        _codeElement = querySelector('#code') as InputElement,
+        registerForm = querySelector('#register_form') as FormElement,
+        verificationForm = querySelector('#verification_form') as FormElement,
+        _registerSubmit = querySelector('#register') as InputElement,
+        _verifySubmit = querySelector('#verify') as InputElement {
     logout.onClick.listen((e) {
       e.preventDefault();
       auth.signOut();
@@ -54,13 +54,13 @@ class PhoneAuthApp {
 
     registerForm.onSubmit.listen((e) {
       e.preventDefault();
-      final phoneValue = _phoneElement.value.trim();
+      final phoneValue = _phoneElement.value!.trim();
       _registerUser(phoneValue);
     });
 
     verificationForm.onSubmit.listen((e) {
       e.preventDefault();
-      final codeValue = _codeElement.value.trim();
+      final codeValue = _codeElement.value!.trim();
       _verifyUser(codeValue);
     });
 
@@ -92,7 +92,7 @@ class PhoneAuthApp {
   }
 
   void _resetVerifier() {
-    verifier.clear();
+    verifier!.clear();
     _initVerifier();
   }
 
@@ -101,7 +101,7 @@ class PhoneAuthApp {
       try {
         _registerSubmit.disabled = _phoneElement.disabled = true;
         error.text = 'Signing in...';
-        confirmationResult = await auth.signInWithPhoneNumber(phone, verifier);
+        confirmationResult = await auth.signInWithPhoneNumber(phone, verifier!);
         error.text = '';
         verificationForm.style.display = 'block';
         registerForm.style.display = 'none';
@@ -122,7 +122,7 @@ class PhoneAuthApp {
       try {
         _verifySubmit.disabled = _codeElement.disabled = true;
         error.text = 'Verifying...';
-        await confirmationResult.confirm(code);
+        await confirmationResult!.confirm(code);
         error.text = '';
       } catch (e, stack) {
         window.console.error(e);
@@ -136,7 +136,7 @@ class PhoneAuthApp {
     }
   }
 
-  void _setLayout(fb.User user) {
+  void _setLayout(fb.User? user) {
     if (user != null) {
       registerForm.style.display = 'none';
       verificationForm.style.display = 'none';

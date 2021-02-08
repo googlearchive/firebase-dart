@@ -31,7 +31,7 @@ abstract class DatabaseJsImpl {
 
   external void goOnline();
 
-  external ReferenceJsImpl ref([String path]);
+  external ReferenceJsImpl ref([String? path]);
 
   external ReferenceJsImpl refFromURL(String url);
 }
@@ -209,7 +209,7 @@ class TransactionJsImpl {
   external DataSnapshotJsImpl get snapshot;
 
   external factory TransactionJsImpl({
-    bool committed,
-    DataSnapshotJsImpl snapshot,
+    bool? committed,
+    DataSnapshotJsImpl? snapshot,
   });
 }

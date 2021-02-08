@@ -4,7 +4,7 @@ import 'package:firebase/firebase.dart' as fb;
 import 'package:test/test.dart';
 
 void main() {
-  fb.App app;
+  late fb.App app;
 
   setUpAll(() async {
     await config();
@@ -17,13 +17,8 @@ void main() {
         databaseURL: databaseUrl,
         projectId: projectId,
         storageBucket: storageBucket);
-  });
 
-  tearDown(() async {
-    if (app != null) {
-      await app.delete();
-      app = null;
-    }
+    addTearDown(() => app.delete());
   });
 
   group('App instance', () {

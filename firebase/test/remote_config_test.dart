@@ -1,21 +1,28 @@
 @TestOn('browser')
 import 'dart:convert';
 
+import 'package:_shared_assets/assets.dart';
 import 'package:firebase/firebase.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart' as http;
-import 'package:_shared_assets/assets.dart';
 import 'package:test/test.dart';
 
 /// Requires service account credentials for the project to be specified in `service_account.json`
 /// in order to publish config parameters for testing.
 void main() {
-  App app;
-  RemoteConfigAdmin admin;
+  late App app;
+  late RemoteConfigAdmin admin;
 
   setUpAll(() async {
     await config();
     admin = RemoteConfigAdmin(await readServiceAccountJson());
+
+    addTearDown(() async {
+      // Clear remote config on exit
+      await admin.publishRemoteConfig({});
+      admin.dispose();
+    });
+
     final existingConfig = await admin.readRemoteConfig();
     expect(existingConfig.isEmpty, true,
         reason: 'This unit test requires remote config to be empty.');
@@ -27,16 +34,8 @@ void main() {
       storageBucket: storageBucket,
       appId: appId,
     );
-  });
 
-  tearDownAll(() async {
-    // Clear remote config on exit
-    await admin.publishRemoteConfig({});
-    admin.dispose();
-    if (app != null) {
-      await app.delete();
-      app = null;
-    }
+    addTearDown(() => app.delete());
   });
 
   group('RemoteConfig', () {
@@ -59,7 +58,7 @@ void main() {
     // Remote params overwrite default params
     final mergedParams = Map.from(defaultParams)..addAll(remoteParams);
 
-    RemoteConfig rc;
+    late RemoteConfig rc;
 
     setUpAll(() async {
       await admin.publishRemoteConfig(remoteParams);
@@ -154,18 +153,17 @@ class RemoteConfigAdmin {
     'https://www.googleapis.com/auth/firebase.remoteconfig'
   ];
 
-  ServiceAccountCredentials _serviceAccountCredentials;
-  String _projectId;
-  http.Client _httpClient;
-  AccessCredentials _creds;
-  String _etag;
+  late final ServiceAccountCredentials _serviceAccountCredentials;
+  late final String _projectId;
+  final http.Client _httpClient = http.Client();
 
-  RemoteConfigAdmin(Map<String, dynamic> serviceAccountJson) {
-    _httpClient = http.Client();
-    _serviceAccountCredentials =
-        ServiceAccountCredentials.fromJson(serviceAccountJson);
-    _projectId = serviceAccountJson['project_id'];
-  }
+  AccessCredentials? _creds;
+  String? _etag;
+
+  RemoteConfigAdmin(Map<String, dynamic> serviceAccountJson)
+      : _projectId = serviceAccountJson['project_id'],
+        _serviceAccountCredentials =
+            ServiceAccountCredentials.fromJson(serviceAccountJson);
 
   Map<String, dynamic> _createConfigDef(Map<String, dynamic> params) => {
         'conditions': [],
@@ -175,15 +173,17 @@ class RemoteConfigAdmin {
             })),
       };
 
-  String get _endpointUrl => 'https://firebaseremoteconfig.googleapis.com'
-      '/v1/projects/$_projectId/remoteConfig';
+  Uri get _endpointUrl => Uri.parse(
+        'https://firebaseremoteconfig.googleapis.com'
+        '/v1/projects/$_projectId/remoteConfig',
+      );
 
   Future<String> _getAccessToken() async {
-    if (_creds == null || _creds.accessToken.hasExpired) {
+    if (_creds == null || _creds!.accessToken.hasExpired) {
       _creds = await obtainAccessCredentialsViaServiceAccount(
           _serviceAccountCredentials, remoteConfigScopes, _httpClient);
     }
-    return _creds.accessToken.data;
+    return _creds!.accessToken.data;
   }
 
   Future<Map<String, dynamic>> readRemoteConfig() async {
@@ -199,10 +199,10 @@ class RemoteConfigAdmin {
     if (resp.statusCode != 200) {
       throw Exception('Could not read confg. Response: ${resp.body}');
     }
-    _etag = resp.headers['etag'];
+    _etag = resp.headers['etag']!;
     final config = jsonDecode(resp.body);
     final result =
-        ((config['parameters'] as Map<String, dynamic>) ?? {}).map((k, v) {
+        ((config['parameters'] as Map<String, dynamic>?) ?? {}).map((k, v) {
       final dataType = k.split('_').last;
       final value = ((v as Map<String, dynamic>)['defaultValue']
           as Map<String, dynamic>)['value'];

@@ -24,12 +24,8 @@ class App extends JsObjectWrapper<AppJsImpl> {
   FirebaseOptions get options => jsObject.options;
 
   /// Creates a new App from a [jsObject].
-  static App getInstance(AppJsImpl jsObject) {
-    if (jsObject == null) {
-      return null;
-    }
-    return _expando[jsObject] ??= App._fromJsObject(jsObject);
-  }
+  static App getInstance(AppJsImpl jsObject) =>
+      _expando[jsObject] ??= App._fromJsObject(jsObject);
 
   App._fromJsObject(AppJsImpl jsObject) : super.fromJsObject(jsObject);
 
@@ -43,7 +39,7 @@ class App extends JsObjectWrapper<AppJsImpl> {
   Future delete() => handleThenable(jsObject.delete());
 
   /// Returns [Storage] service optionally initialized with a custom storage bucket.
-  Storage storage([String url]) {
+  Storage storage([String? url]) {
     final jsObjectStorage =
         (url != null) ? jsObject.storage(url) : jsObject.storage();
     return Storage.getInstance(jsObjectStorage);
@@ -53,7 +49,7 @@ class App extends JsObjectWrapper<AppJsImpl> {
   Firestore firestore() => Firestore.getInstance(jsObject.firestore());
 
   /// Returns [Functions] service.
-  Functions functions([String region]) {
+  Functions functions([String? region]) {
     if (region == null) {
       return Functions.getInstance(jsObject.functions());
     }
