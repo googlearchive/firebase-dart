@@ -324,7 +324,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   }
 
   void Function()? _onAuthUnsubscribe;
-  StreamController<User?>? _changeController;
+  late final StreamController<User?> _changeController = _createController();
 
   /// Sends events when the users sign-in state changes.
   ///
@@ -332,32 +332,33 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
   /// To keep the old behavior, see [onIdTokenChanged].
   ///
   /// If the value is `null`, there is no signed-in user.
-  Stream<User?> get onAuthStateChanged {
-    if (_changeController == null) {
-      final nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
-        _changeController!.add(User.getInstance(user));
-      });
+  Stream<User?> get onAuthStateChanged => _changeController.stream;
 
-      final errorWrapper = allowInterop((e) => _changeController!.addError(e));
+  StreamController<User?> _createController() {
+    late StreamController<User?> changeController;
 
-      void startListen() {
-        assert(_onAuthUnsubscribe == null);
-        _onAuthUnsubscribe =
-            jsObject.onAuthStateChanged(nextWrapper, errorWrapper);
-      }
+    final nextWrapper = allowInterop((firebase_interop.UserJsImpl? user) {
+      changeController.add(User.getInstance(user));
+    });
 
-      void stopListen() {
-        _onAuthUnsubscribe!();
-        _onAuthUnsubscribe = null;
-      }
+    final errorWrapper = allowInterop((e) => changeController.addError(e));
 
-      _changeController = StreamController<User>.broadcast(
-        onListen: startListen,
-        onCancel: stopListen,
-        sync: true,
-      );
+    void startListen() {
+      assert(_onAuthUnsubscribe == null);
+      _onAuthUnsubscribe =
+          jsObject.onAuthStateChanged(nextWrapper, errorWrapper);
     }
-    return _changeController!.stream;
+
+    void stopListen() {
+      _onAuthUnsubscribe!();
+      _onAuthUnsubscribe = null;
+    }
+
+    return changeController = StreamController<User?>.broadcast(
+      onListen: startListen,
+      onCancel: stopListen,
+      sync: true,
+    );
   }
 
   void Function()? _onIdTokenChangedUnsubscribe;
@@ -365,16 +366,16 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
       _createIdTokenChangedController();
 
   StreamController<User?> _createIdTokenChangedController() {
-    final nextWrapper = allowInterop((firebase_interop.UserJsImpl user) {
-      _idTokenChangedController.add(User.getInstance(user));
-    });
-
-    final errorWrapper = allowInterop(_idTokenChangedController.addError);
+    late StreamController<User?> idTokenChangedController;
 
     void startListen() {
       assert(_onIdTokenChangedUnsubscribe == null);
-      _onIdTokenChangedUnsubscribe =
-          jsObject.onIdTokenChanged(nextWrapper, errorWrapper);
+      _onIdTokenChangedUnsubscribe = jsObject.onIdTokenChanged(
+        allowInterop((firebase_interop.UserJsImpl? user) {
+          idTokenChangedController.add(User.getInstance(user));
+        }),
+        allowInterop(idTokenChangedController.addError),
+      );
     }
 
     void stopListen() {
@@ -382,7 +383,7 @@ class Auth extends JsObjectWrapper<AuthJsImpl> {
       _onIdTokenChangedUnsubscribe = null;
     }
 
-    return StreamController<User>.broadcast(
+    return idTokenChangedController = StreamController<User?>.broadcast(
       onListen: startListen,
       onCancel: stopListen,
       sync: true,
