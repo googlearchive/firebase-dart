@@ -1,4 +1,4 @@
-# Created with package:mono_repo v3.4.3
+# Created with package:mono_repo v3.4.6
 name: Dart CI
 on:
   push:
@@ -29,13 +29,13 @@ jobs:
           restore-keys: |
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: cedx/setup-dart@v2
+      - uses: dart-lang/setup-dart@v0.3
         with:
-          release-channel: stable
-      - run: dart --version
-      - uses: actions/checkout@v2
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v2
       - name: mono_repo self validate
-        run: pub global activate mono_repo 3.4.3
+        run: pub global activate mono_repo 3.4.6
       - name: mono_repo self validate
         run: pub global run mono_repo generate --validate
   job_002:
@@ -52,14 +52,14 @@ jobs:
             os:ubuntu-latest;pub-cache-hosted;dart:2.7.0
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: cedx/setup-dart@v2
+      - uses: dart-lang/setup-dart@v0.3
         with:
-          release-channel: stable
-          version: "2.7.0"
-      - run: dart --version
-      - uses: actions/checkout@v2
+          sdk: "2.7.0"
+      - id: checkout
+        uses: actions/checkout@v2
       - id: _shared_assets_pub_upgrade
         name: "_shared_assets; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: _shared_assets
         run: pub upgrade --no-precompile
       - name: "_shared_assets; dartfmt -n --set-exit-if-changed ."
@@ -72,6 +72,7 @@ jobs:
         run: dartanalyzer --fatal-infos .
       - id: firebase_pub_upgrade
         name: "firebase; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; dartfmt -n --set-exit-if-changed ."
@@ -96,13 +97,14 @@ jobs:
             os:ubuntu-latest;pub-cache-hosted;dart:dev
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: cedx/setup-dart@v2
+      - uses: dart-lang/setup-dart@v0.3
         with:
-          release-channel: dev
-      - run: dart --version
-      - uses: actions/checkout@v2
+          sdk: dev
+      - id: checkout
+        uses: actions/checkout@v2
       - id: _shared_assets_pub_upgrade
         name: "_shared_assets; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: _shared_assets
         run: pub upgrade --no-precompile
       - name: "_shared_assets; dartfmt -n --set-exit-if-changed ."
@@ -115,6 +117,7 @@ jobs:
         run: dartanalyzer --fatal-infos .
       - id: firebase_pub_upgrade
         name: "firebase; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; dartfmt -n --set-exit-if-changed ."
@@ -139,14 +142,14 @@ jobs:
             os:ubuntu-latest;pub-cache-hosted;dart:2.7.0
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: cedx/setup-dart@v2
+      - uses: dart-lang/setup-dart@v0.3
         with:
-          release-channel: stable
-          version: "2.7.0"
-      - run: dart --version
-      - uses: actions/checkout@v2
+          sdk: "2.7.0"
+      - id: checkout
+        uses: actions/checkout@v2
       - id: firebase_pub_upgrade
         name: "firebase; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; pub run build_runner build example --fail-on-severe --delete-conflicting-outputs"
@@ -171,13 +174,14 @@ jobs:
             os:ubuntu-latest;pub-cache-hosted;dart:dev
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: cedx/setup-dart@v2
+      - uses: dart-lang/setup-dart@v0.3
         with:
-          release-channel: dev
-      - run: dart --version
-      - uses: actions/checkout@v2
+          sdk: dev
+      - id: checkout
+        uses: actions/checkout@v2
       - id: firebase_pub_upgrade
         name: "firebase; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; pub run build_runner build example --fail-on-severe --delete-conflicting-outputs"
@@ -202,14 +206,14 @@ jobs:
             os:ubuntu-latest;pub-cache-hosted;dart:2.7.0
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: cedx/setup-dart@v2
+      - uses: dart-lang/setup-dart@v0.3
         with:
-          release-channel: stable
-          version: "2.7.0"
-      - run: dart --version
-      - uses: actions/checkout@v2
+          sdk: "2.7.0"
+      - id: checkout
+        uses: actions/checkout@v2
       - id: firebase_pub_upgrade
         name: "firebase; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
@@ -234,13 +238,14 @@ jobs:
             os:ubuntu-latest;pub-cache-hosted;dart:dev
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: cedx/setup-dart@v2
+      - uses: dart-lang/setup-dart@v0.3
         with:
-          release-channel: dev
-      - run: dart --version
-      - uses: actions/checkout@v2
+          sdk: dev
+      - id: checkout
+        uses: actions/checkout@v2
       - id: firebase_pub_upgrade
         name: "firebase; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: firebase
         run: pub upgrade --no-precompile
       - name: "firebase; pushd ../_shared_assets && pub get && dart create_config.dart && popd && pub run test"
