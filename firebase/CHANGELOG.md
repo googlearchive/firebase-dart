@@ -1,6 +1,7 @@
-## 9.0.0-nullsafety.0
+## 9.0.0
 
 - Enable null safety
+- Require Dart 2.12 or greater.
 
 ## 8.0.0
 
