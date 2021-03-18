@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:js/js_util.dart' as js;
 
 import 'analytics.dart';

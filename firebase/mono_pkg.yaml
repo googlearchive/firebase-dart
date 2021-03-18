@@ -1,5 +1,6 @@
 # See https://pub.dev/packages/mono_repo for details on this file
 dart:
+- 2.12.0
 - dev
 
 stages:
@@ -7,6 +8,7 @@ stages:
   - group:
     - dartfmt
     - dartanalyzer: --fatal-infos .
+    dart: dev
 - unit_test:
   - command: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
   - command:
