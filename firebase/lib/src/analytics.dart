@@ -32,7 +32,7 @@ class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
     }
   }
 
-  void setUserId(String id, [AnalyticsCallOptions? options]) {
+  void setUserId(String? id, [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.setUserId(id, options.jsObject);
     } else {

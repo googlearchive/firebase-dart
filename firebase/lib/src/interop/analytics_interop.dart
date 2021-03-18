@@ -10,7 +10,7 @@ abstract class AnalyticsJsImpl {
   external void setAnalyticsCollectionEnabled(bool enabled);
   external void setCurrentScreen(String? screenName,
       [AnalyticsCallOptionsJsImpl options]);
-  external void setUserId(String id, [AnalyticsCallOptionsJsImpl options]);
+  external void setUserId(String? id, [AnalyticsCallOptionsJsImpl options]);
   external void setUserProperties(Object properties,
       [AnalyticsCallOptionsJsImpl options]);
 }
