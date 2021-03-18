@@ -24,7 +24,7 @@ class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
     jsObject.setAnalyticsCollectionEnabled(enabled);
   }
 
-  void setCurrentScreen(String screenName, [AnalyticsCallOptions? options]) {
+  void setCurrentScreen(String? screenName, [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.setCurrentScreen(screenName, options.jsObject);
     } else {

@@ -8,7 +8,7 @@ abstract class AnalyticsJsImpl {
   external void logEvent(String eventName, Object eventParams,
       [AnalyticsCallOptionsJsImpl options]);
   external void setAnalyticsCollectionEnabled(bool enabled);
-  external void setCurrentScreen(String screenName,
+  external void setCurrentScreen(String? screenName,
       [AnalyticsCallOptionsJsImpl options]);
   external void setUserId(String id, [AnalyticsCallOptionsJsImpl options]);
   external void setUserProperties(Object properties,
