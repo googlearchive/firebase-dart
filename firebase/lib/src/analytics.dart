@@ -11,7 +11,7 @@ class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
   Analytics._fromJsObject(analytics_interop.AnalyticsJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  void logEvent(String eventName, Map<dynamic, dynamic> eventParams,
+  void logEvent(String eventName, Map<String, dynamic> eventParams,
       [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.logEvent(eventName, jsify(eventParams), options.jsObject);
