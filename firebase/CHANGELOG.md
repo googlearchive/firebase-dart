@@ -1,5 +1,11 @@
 ## 9.0.1-dev
 
+- Relax null-safe restrictions in analytics.  
+  This fixes these issues:
+  - Allow resetting the screen name by passing a null screen name.
+  - Allow resetting the user id by passing a null uid.
+  - Allow resetting a user property by passing a null value for the user property.
+
 ## 9.0.0
 
 - Enable null safety

@@ -11,7 +11,7 @@ class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
   Analytics._fromJsObject(analytics_interop.AnalyticsJsImpl jsObject)
       : super.fromJsObject(jsObject);
 
-  void logEvent(String eventName, Map<dynamic, dynamic> eventParams,
+  void logEvent(String eventName, Map<String, dynamic> eventParams,
       [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.logEvent(eventName, jsify(eventParams), options.jsObject);
@@ -24,7 +24,7 @@ class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
     jsObject.setAnalyticsCollectionEnabled(enabled);
   }
 
-  void setCurrentScreen(String screenName, [AnalyticsCallOptions? options]) {
+  void setCurrentScreen(String? screenName, [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.setCurrentScreen(screenName, options.jsObject);
     } else {
@@ -32,7 +32,7 @@ class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
     }
   }
 
-  void setUserId(String id, [AnalyticsCallOptions? options]) {
+  void setUserId(String? id, [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.setUserId(id, options.jsObject);
     } else {
@@ -40,7 +40,7 @@ class Analytics extends JsObjectWrapper<analytics_interop.AnalyticsJsImpl> {
     }
   }
 
-  void setUserProperties(Map<String, String> properties,
+  void setUserProperties(Map<String, String?> properties,
       [AnalyticsCallOptions? options]) {
     if (options != null) {
       jsObject.setUserProperties(jsify(properties), options.jsObject);
