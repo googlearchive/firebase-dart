@@ -6,17 +6,17 @@ dart:
 stages:
 - analyze_and_format:
   - group:
-    - dartfmt
-    - dartanalyzer: --fatal-infos .
+    - format
+    - analyze: --fatal-infos .
     dart: dev
 - unit_test:
-  - command: pub run build_runner build example --fail-on-severe --delete-conflicting-outputs
+  - command: dart run build_runner build example --fail-on-severe --delete-conflicting-outputs
   - command:
     - pushd ../_shared_assets
-    - pub get
+    - dart pub get
     - dart create_config.dart
     - popd
-    - pub run test
+    - dart test
 
 cache:
   directories:
