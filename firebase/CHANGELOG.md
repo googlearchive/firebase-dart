@@ -1,3 +1,7 @@
+## 9.0.2-dev
+
+- Updated documented and tested JS library version to `8.7.1` (July 8, 2021).
+
 ## 9.0.1
 
 - Relax null-safe restrictions in analytics.  
