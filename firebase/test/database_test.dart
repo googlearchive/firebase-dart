@@ -495,13 +495,13 @@ void main() {
               .child('one')
               .setWithPriority({'name': 'Alex', 'age': 27}, {'priority': 10}),
           throwsToString(
-              contains('Second argument must be a valid Firebase priority')));
+              contains('priority argument must be a valid Firebase priority')));
       expect(
           () => childRef
               .child('two')
               .setWithPriority({'name': 'Andrew', 'age': 43}, true),
           throwsToString(
-              contains('Second argument must be a valid Firebase priority')));
+              contains('priority argument must be a valid Firebase priority')));
     });
   }, timeout: const Timeout(Duration(seconds: 5)));
 }
