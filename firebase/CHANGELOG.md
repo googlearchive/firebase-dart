@@ -1,4 +1,4 @@
-## 9.0.2-dev
+## 9.0.2
 
 - Updated documented and tested JS library version to `8.10.0` (August 19, 2021).
 
