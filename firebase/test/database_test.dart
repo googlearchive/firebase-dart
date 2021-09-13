@@ -20,20 +20,22 @@ void main() {
 
   setUp(() {
     app = fb.initializeApp(
-        apiKey: apiKey,
-        authDomain: authDomain,
-        databaseURL: databaseUrl,
-        storageBucket: storageBucket);
+      apiKey: apiKey,
+      authDomain: authDomain,
+      databaseURL: databaseUrl,
+      storageBucket: storageBucket,
+      name: 'database_test_app',
+    );
 
     addTearDown(() => app.delete());
-    database = fb.database();
+    database = fb.database(app);
   });
 
   group('instance', () {
     test('App exists', () {
       expect(database, isNotNull);
       expect(database.app, isNotNull);
-      expect(database.app.name, fb.app().name);
+      expect(database.app.name, 'database_test_app');
     });
   });
 
