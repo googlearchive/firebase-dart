@@ -1,5 +1,5 @@
 # See https://pub.dev/packages/mono_repo for details on this file
-dart:
+sdk:
 - 2.12.0
 - dev
 
@@ -8,7 +8,7 @@ stages:
   - group:
     - format
     - analyze: --fatal-infos .
-    dart: dev
+    sdk: dev
 - unit_test:
   - command: dart run build_runner build example --fail-on-severe --delete-conflicting-outputs
   - command:
