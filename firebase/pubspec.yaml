@@ -6,6 +6,12 @@ repository: https://github.com/FirebaseExtended/firebase-dart
 environment:
   sdk: '>=2.12.0 <3.0.0'
 
+platforms:
+  web:
+  windows:
+  linux:
+  macos:
+
 dependencies:
   http: ^0.13.0
   http_parser: ^4.0.0
