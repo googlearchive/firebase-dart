@@ -2,6 +2,7 @@
 /// services are accessed.
 ///
 /// See: <https://firebase.google.com/docs/reference/js/firebase>.
+@Deprecated('This package will receive no further updates.')
 library firebase;
 
 export 'src/analytics.dart';
