@@ -1,3 +1,6 @@
+@Deprecated('This package will receive no further updates.')
+library firebase.firebase_io;
+
 import 'dart:async';
 import 'dart:convert';
 
